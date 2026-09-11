@@ -1,6 +1,6 @@
 import { test, expect } from "@playwright/test";
 
-const ADMIN_EMAIL = process.env.E2E_ADMIN_EMAIL || "griffinskimutai@gmail.com";
+const ADMIN_EMAIL = process.env.E2E_ADMIN_EMAIL || "info@budgetndiostory.org";
 const ADMIN_PASSWORD = process.env.E2E_ADMIN_PASSWORD || "StrongPass123!";
 
 test.describe("Admin CMS — civic module CRUD", () => {

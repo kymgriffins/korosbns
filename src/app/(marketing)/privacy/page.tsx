@@ -55,7 +55,7 @@ const sections = [
       "Right to restrict processing of your data",
       "Right to data portability — receive your data in a structured, machine-readable format",
       "Right to object to processing of your data for direct marketing",
-      "To exercise any of these rights, contact our Data Protection Officer at dpo@budgetndiostory.org",
+      "To exercise any of these rights, contact our Data Protection Officer at info@budgetndiostory.org",
     ],
   },
   {
@@ -73,7 +73,7 @@ const sections = [
     icon: Mail,
     title: "Contact Our Data Protection Officer",
     content: [
-      "Email: dpo@budgetndiostory.org",
+      "Email: info@budgetndiostory.org",
       "Phone: +254 700 000 000 (Weekdays, 9 AM - 5 PM EAT)",
       "Physical address: Budget Ndio Story, Nairobi, Kenya",
       "Response time: We aim to respond to all privacy inquiries within 72 hours",

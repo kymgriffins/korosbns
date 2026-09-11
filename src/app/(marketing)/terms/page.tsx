@@ -82,7 +82,7 @@ export default function TermsPage() {
                     <section>
                         <h2 className="text-2xl font-bold mb-4">8. Contact</h2>
                         <p>
-                            If you have any questions about these Terms of Service, please contact us at <a href="mailto:info@budgetndiostory.com" className="text-primary hover:underline">info@budgetndiostory.com</a>.
+                            If you have any questions about these Terms of Service, please contact us at <a href="mailto:info@budgetndiostory.org" className="text-primary hover:underline">info@budgetndiostory.org</a>.
                         </p>
                     </section>
                 </div>

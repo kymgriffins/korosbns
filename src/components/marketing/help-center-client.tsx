@@ -418,7 +418,7 @@ export default function HelpCenterClient() {
                 </div>
                 <div className="text-left">
                   <p className="text-xs font-bold text-foreground">Email Inquiries</p>
-                  <p className="text-[11px] text-muted-foreground">hello@budgetndiostory.org</p>
+                  <p className="text-[11px] text-muted-foreground">info@budgetndiostory.org</p>
                 </div>
               </Link>
 

@@ -29,7 +29,7 @@ export const socialAuthAdapter = {
   simulateSocialLogin: (provider: SocialAuthProvider, email?: string): SocialUser => {
     return {
       id: `usr-${provider}-${Date.now()}`,
-      email: email || `citizen@budgetndiostory.org`,
+      email: email || `info@budgetndiostory.org`,
       name: provider === "google" ? "Google Citizen User" : "Apple Citizen User",
       provider,
       token: `jwt-${provider}-token-spec-2026`,

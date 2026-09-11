@@ -45,7 +45,7 @@ const sections = [
     icon: Mail,
     title: "Vulnerability Disclosure Policy",
     description:
-      "We welcome responsible disclosure of security vulnerabilities. If you discover a security issue, please email us at security@budgetndiostory.org with details. We commit to acknowledging receipt within 48 hours and will work diligently to address verified vulnerabilities. We ask that you refrain from publicly disclosing vulnerabilities until we have had reasonable time to address them.",
+      "We welcome responsible disclosure of security vulnerabilities. If you discover a security issue, please email us at info@budgetndiostory.org with details. We commit to acknowledging receipt within 48 hours and will work diligently to address verified vulnerabilities. We ask that you refrain from publicly disclosing vulnerabilities until we have had reasonable time to address them.",
   },
 ];
 
