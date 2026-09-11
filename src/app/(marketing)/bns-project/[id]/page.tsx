@@ -1,3 +1,4 @@
+import featuredFallback from "@/data/fallbacks/featured-projects.json";
 import { redirect } from "next/navigation";
 import type { Metadata } from "next";
 import { studiosEvidenceData } from "@/data/studios-evidence";

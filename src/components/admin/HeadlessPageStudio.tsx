@@ -24,6 +24,9 @@ import {
   Play,
   Eye,
   UploadCloud,
+  ArrowUp,
+  ArrowDown,
+  Image as ImageIcon,
   Columns,
   Film,
   Sliders,
@@ -35,6 +38,7 @@ import { Input } from "@/components/ui/input";
 import { MASTER_CMS_EMAIL } from "@/lib/headless-cms";
 import { LivePagePreview, type DeviceMode } from "./LivePagePreview";
 import { CustomPageStudioEditor } from "./CustomPageStudioEditor";
+import { WysiwygProseEditor } from "./WysiwygProseEditor";
 import { MediaAssetPicker, type MediaSelection } from "./MediaAssetPicker";
 import { MediaEmbed } from "@/components/ui/media-embed";
 type PageKey =
@@ -48,7 +52,7 @@ type PageKey =
   | "featured-blogs"
   | "custom-pages";
 
-type TabKey = "sections" | "hero" | "core" | "deliverables" | "buttons" | "faqs" | "media";
+type TabKey = "sections" | "hero" | "carousel" | "core" | "deliverables" | "buttons" | "faqs" | "media";
 
 interface PageMeta {
   key: PageKey;
@@ -487,6 +491,64 @@ export function HeadlessPageStudio() {
   };
 
   // Featured Evidence & Blogs Handlers
+  
+  // Hero Carousel Stills Handlers
+  const heroStills = (landingData.heroReelStills as any[]) || [];
+
+  const handleMoveCarouselStill = (index: number, direction: "up" | "down") => {
+    const targetIndex = direction === "up" ? index - 1 : index + 1;
+    if (targetIndex < 0 || targetIndex >= heroStills.length) return;
+    const updated = [...heroStills];
+    const temp = updated[index];
+    updated[index] = updated[targetIndex];
+    updated[targetIndex] = temp;
+    setLandingData({ ...landingData, heroReelStills: updated });
+    toast.success(`Reordered slide to position #${targetIndex + 1}`);
+  };
+
+  const handleDeleteCarouselStill = (index: number) => {
+    if (heroStills.length <= 1) {
+      toast.error("At least one hero reel slide must remain.");
+      return;
+    }
+    const updated = heroStills.filter((_, i) => i !== index);
+    setLandingData({ ...landingData, heroReelStills: updated });
+    toast.success("Removed slide from hero carousel.");
+  };
+
+  const handleUpdateCarouselStill = (index: number, field: string, value: any) => {
+    const updated = heroStills.map((still, i) => (i === index ? { ...still, [field]: value } : still));
+    setLandingData({ ...landingData, heroReelStills: updated });
+  };
+
+  const handleAddCarouselStill = () => {
+    const newSlide = {
+      id: `slide-${Date.now()}`,
+      src: "/images/media/129A4039.jpg",
+      alt: "Budget Ndio Story civic engagement session",
+      caption: "Civic Evidence · National",
+      programme: "connect",
+      storyTitle: "New Evidence Moment",
+      storyLine: "Field capture documenting budget scrutiny and public participation.",
+    };
+    const updated = [...heroStills, newSlide];
+    setLandingData({ ...landingData, heroReelStills: updated });
+    toast.success("Added new slide to hero carousel. Reorder and edit below.");
+  };
+
+  // Reorder Featured Story
+  const handleMoveFeaturedStory = (index: number, direction: "up" | "down") => {
+    const results = featuredData.results || [];
+    const targetIndex = direction === "up" ? index - 1 : index + 1;
+    if (targetIndex < 0 || targetIndex >= results.length) return;
+    const updated = [...results];
+    const temp = updated[index];
+    updated[index] = updated[targetIndex];
+    updated[targetIndex] = temp;
+    setFeaturedData({ ...featuredData, results: updated });
+    toast.success(`Reordered story to position #${targetIndex + 1}`);
+  };
+
   const handleAddFeaturedStory = () => {
     const id = `story-${Date.now().toString(36)}`;
     const newStory = {
@@ -828,7 +890,7 @@ export function HeadlessPageStudio() {
               </div>
 
               <div className="space-y-2">
-                {(featuredData.results || []).map((story: any) => {
+                {(featuredData.results || []).map((story: any, idx: number) => {
                   const isSelected = (selectedFeaturedStory?.id === story.id);
                   return (
                     <div
@@ -842,29 +904,67 @@ export function HeadlessPageStudio() {
                     >
                       <div className="flex items-start justify-between gap-2">
                         <div className="space-y-1">
-                          <span className="rounded bg-primary/20 px-1.5 py-0.5 font-mono text-[9px] font-bold text-primary uppercase">
-                            {story.programmeLabel || story.programmeSlug}
-                          </span>
+                          <div className="flex items-center gap-1.5">
+                            <span className="rounded bg-primary/20 px-1.5 py-0.5 font-mono text-[9px] font-bold text-primary uppercase">
+                              {story.programmeLabel || story.programmeSlug}
+                            </span>
+                            <span className="font-mono text-[9px] text-muted-foreground">
+                              #{idx + 1}
+                            </span>
+                          </div>
                           <h3 className="line-clamp-2 text-xs font-bold text-foreground">
                             {story.title}
                           </h3>
                           <div className="flex items-center gap-2 text-[10px] text-muted-foreground">
                             <span>{story.authorName}</span>
-                            {story.videoId && <span>• Video ID: {story.videoId}</span>}
+                            {story.videoId && <span>• ID: {story.videoId}</span>}
                           </div>
                         </div>
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="sm"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleDeleteFeaturedStory(story.id);
-                          }}
-                          className="h-7 w-7 p-0 text-muted-foreground hover:text-rose-500"
-                        >
-                          <Trash2 className="size-3.5" />
-                        </Button>
+                        <div className="flex flex-col items-center gap-1">
+                          <div className="flex items-center">
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="sm"
+                              disabled={idx === 0}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleMoveFeaturedStory(idx, "up");
+                              }}
+                              className="h-5 w-5 p-0 text-muted-foreground hover:text-foreground disabled:opacity-30"
+                              title="Move Up in sequence"
+                            >
+                              <ArrowUp className="size-3" />
+                            </Button>
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="sm"
+                              disabled={idx === (featuredData.results || []).length - 1}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleMoveFeaturedStory(idx, "down");
+                              }}
+                              className="h-5 w-5 p-0 text-muted-foreground hover:text-foreground disabled:opacity-30"
+                              title="Move Down in sequence"
+                            >
+                              <ArrowDown className="size-3" />
+                            </Button>
+                          </div>
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleDeleteFeaturedStory(story.id);
+                            }}
+                            className="h-6 w-6 p-0 text-muted-foreground hover:text-rose-500"
+                            title="Delete story"
+                          >
+                            <Trash2 className="size-3" />
+                          </Button>
+                        </div>
                       </div>
                     </div>
                   );
@@ -1465,6 +1565,211 @@ export function HeadlessPageStudio() {
           )}
 
           {/* TAB 2: HERO & HEADLINES */}
+                    {/* HERO REEL & CAROUSEL STILLS MANAGER */}
+          {activeTab === "carousel" && selectedPageKey === "landing" && (
+            <div className="space-y-6">
+              <div className="rounded-2xl border border-border bg-card p-6 shadow-xs space-y-4">
+                <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border/50 pb-4">
+                  <div>
+                    <h2 className="text-base font-bold text-foreground flex items-center gap-2">
+                      <ImageIcon className="size-4 text-primary" />
+                      <span>Landing Hero Reel &amp; Image Carousel ({heroStills.length} Slides)</span>
+                    </h2>
+                    <p className="text-xs text-muted-foreground mt-0.5">
+                      Order, select from Cloudflare R2, alter, or delete images that rotate in the partner homepage hero reel.
+                    </p>
+                  </div>
+                  <Button
+                    type="button"
+                    onClick={handleAddCarouselStill}
+                    size="sm"
+                    className="gap-1.5 bg-primary text-primary-foreground text-xs font-bold"
+                  >
+                    <Plus className="size-3.5" />
+                    <span>Add New Slide</span>
+                  </Button>
+                </div>
+
+                <div className="space-y-4">
+                  {heroStills.map((slide: any, idx: number) => (
+                    <div
+                      key={slide.id || idx}
+                      className="rounded-xl border border-border/80 bg-muted/20 p-4 space-y-4 transition-all hover:border-primary/50 shadow-xs"
+                    >
+                      {/* Slide Top Bar */}
+                      <div className="flex flex-wrap items-center justify-between gap-2 border-b border-border/40 pb-2.5">
+                        <div className="flex items-center gap-2">
+                          <span className="rounded-md bg-primary/15 px-2 py-0.5 font-mono text-[11px] font-bold text-primary">
+                            Slide #{idx + 1} of {heroStills.length}
+                          </span>
+                          <span className="font-heading text-xs font-bold text-foreground truncate max-w-xs">
+                            {slide.storyTitle || "Untitled Slide"}
+                          </span>
+                        </div>
+
+                        <div className="flex items-center gap-1.5">
+                          {/* Reorder Buttons */}
+                          <div className="flex items-center rounded-lg border border-border/60 bg-background p-0.5">
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="sm"
+                              disabled={idx === 0}
+                              onClick={() => handleMoveCarouselStill(idx, "up")}
+                              className="h-6 px-1.5 text-xs text-muted-foreground hover:text-foreground disabled:opacity-30"
+                              title="Move Slide Up (Earlier in sequence)"
+                            >
+                              <ArrowUp className="size-3 mr-1" />
+                              <span className="text-[10px] font-semibold">Up</span>
+                            </Button>
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="sm"
+                              disabled={idx === heroStills.length - 1}
+                              onClick={() => handleMoveCarouselStill(idx, "down")}
+                              className="h-6 px-1.5 text-xs text-muted-foreground hover:text-foreground disabled:opacity-30"
+                              title="Move Slide Down (Later in sequence)"
+                            >
+                              <ArrowDown className="size-3 mr-1" />
+                              <span className="text-[10px] font-semibold">Down</span>
+                            </Button>
+                          </div>
+
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleDeleteCarouselStill(idx)}
+                            className="h-7 w-7 p-0 text-muted-foreground hover:text-rose-500"
+                            title="Delete this slide"
+                          >
+                            <Trash2 className="size-3.5" />
+                          </Button>
+                        </div>
+                      </div>
+
+                      {/* Slide Content Grid */}
+                      <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-start">
+                        {/* Thumbnail & Media Picker */}
+                        <div className="md:col-span-4 space-y-2">
+                          <div className="relative aspect-[16/10] overflow-hidden rounded-lg border border-border bg-neutral-900">
+                            {slide.src ? (
+                              <img
+                                src={slide.src}
+                                alt={slide.alt || ""}
+                                className="size-full object-cover"
+                              />
+                            ) : (
+                              <div className="flex size-full items-center justify-center text-xs text-muted-foreground">
+                                No image selected
+                              </div>
+                            )}
+                          </div>
+
+                          <div className="flex items-center gap-2">
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="sm"
+                              onClick={() => setMediaPickerOpen(true)}
+                              className="h-7 w-full text-[11px] font-semibold gap-1 text-primary"
+                            >
+                              <UploadCloud className="size-3" />
+                              <span>Select from R2 / Media</span>
+                            </Button>
+                          </div>
+                        </div>
+
+                        {/* Editable Text Fields */}
+                        <div className="md:col-span-8 space-y-3">
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <div>
+                              <label className="text-[11px] font-semibold text-foreground">
+                                Story Title (Moment Headline)
+                              </label>
+                              <Input
+                                value={slide.storyTitle ?? ""}
+                                onChange={(e) => handleUpdateCarouselStill(idx, "storyTitle", e.target.value)}
+                                className="mt-1 h-7 text-xs font-semibold"
+                                placeholder="e.g. Hall full of questions"
+                              />
+                            </div>
+                            <div>
+                              <label className="text-[11px] font-semibold text-foreground">
+                                Programme Tag
+                              </label>
+                              <select
+                                value={slide.programme ?? "connect"}
+                                onChange={(e) => handleUpdateCarouselStill(idx, "programme", e.target.value)}
+                                className="mt-1 flex h-7 w-full rounded-md border border-input bg-background px-2 text-xs text-foreground"
+                              >
+                                <option value="connect">Connect</option>
+                                <option value="mashinani">Mashinani</option>
+                                <option value="wanahabari-lab">Wanahabari Lab</option>
+                                <option value="studios">BNS Studio</option>
+                              </select>
+                            </div>
+                          </div>
+
+                          <div>
+                            <label className="text-[11px] font-semibold text-foreground">
+                              Story Line (Observational Caption)
+                            </label>
+                            <Input
+                              value={slide.storyLine ?? ""}
+                              onChange={(e) => handleUpdateCarouselStill(idx, "storyLine", e.target.value)}
+                              className="mt-1 h-7 text-xs"
+                              placeholder="e.g. Desks filled, camera rolling — a May town hall listens from the back row."
+                            />
+                          </div>
+
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <div>
+                              <label className="text-[11px] font-semibold text-foreground">
+                                Image URL / Path
+                              </label>
+                              <Input
+                                value={slide.src ?? ""}
+                                onChange={(e) => handleUpdateCarouselStill(idx, "src", e.target.value)}
+                                className="mt-1 h-7 text-xs font-mono"
+                                placeholder="/images/... or R2 URL"
+                              />
+                            </div>
+                            <div>
+                              <label className="text-[11px] font-semibold text-foreground">
+                                Bottom Tag / Caption
+                              </label>
+                              <Input
+                                value={slide.caption ?? ""}
+                                onChange={(e) => handleUpdateCarouselStill(idx, "caption", e.target.value)}
+                                className="mt-1 h-7 text-xs"
+                                placeholder="e.g. Town hall · Mashinani"
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="pt-2 flex justify-center">
+                  <Button
+                    type="button"
+                    onClick={handleAddCarouselStill}
+                    variant="outline"
+                    size="sm"
+                    className="gap-1.5 text-xs font-semibold"
+                  >
+                    <Plus className="size-3.5" />
+                    <span>Add Another Slide to Reel</span>
+                  </Button>
+                </div>
+              </div>
+            </div>
+          )}
+
           {activeTab === "hero" && (
             <div className="space-y-5 rounded-2xl border border-border bg-card p-6 shadow-xs">
               <div className="border-b border-border/50 pb-3">

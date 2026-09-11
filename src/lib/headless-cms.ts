@@ -21,6 +21,8 @@ import socialsContent from "@/content/socials.json";
 import timelineContent from "@/content/timeline.json";
 import partnerPageSectionsContent from "@/content/partner-page-sections.json";
 import customPagesContent from "@/content/custom-pages.json";
+import teamContent from "@/data/team.json";
+import partnersContent from "@/data/partners.json";
 import featuredProjectsContent from "@/data/fallbacks/featured-projects.json";
 import orgContent from "@/data/org/org.json";
 import countiesAllocationsContent from "@/data/counties-allocations.json";
@@ -73,6 +75,8 @@ export type CmsCollectionSlug =
   | CoreCmsCollectionSlug
   | "partner-page-sections"
   | "custom-pages"
+  | "team"
+  | "partners"
   | "featured-projects"
   | "org"
   | "counties-allocations"
@@ -182,6 +186,30 @@ export const CMS_COLLECTIONS_CATALOG: Record<CmsCollectionSlug, CmsCollectionMet
     itemCount: Object.keys((partnerPageSectionsContent as { pages?: Record<string, unknown> }).pages ?? {}).length,
     lastUpdated: new Date().toISOString(),
     schemaKeys: ["policy", "pages"],
+  },
+  team: {
+    slug: "team",
+    name: "Organization Team Members",
+    category: "Organization & Team",
+    description: "Verified leadership, board advisors, investigators, and content architects.",
+    filePath: "src/data/team.json",
+    itemCount: Array.isArray((teamContent as { members?: unknown[] })?.members)
+      ? (teamContent as { members: unknown[] }).members.length
+      : 5,
+    lastUpdated: new Date().toISOString(),
+    schemaKeys: ["provenance", "count", "members"],
+  },
+  partners: {
+    slug: "partners",
+    name: "Consortium Partners & Fellows",
+    category: "Organization & Team",
+    description: "Verified institutional partners and individual investigators (Organizations vs Individuals).",
+    filePath: "src/data/partners.json",
+    itemCount: Array.isArray((partnersContent as { partners?: unknown[] })?.partners)
+      ? (partnersContent as { partners: unknown[] }).partners.length
+      : 10,
+    lastUpdated: new Date().toISOString(),
+    schemaKeys: ["provenance", "count", "partners"],
   },
   "custom-pages": {
     slug: "custom-pages",
@@ -385,6 +413,8 @@ const _cmsDataCache: Record<CmsCollectionSlug, Record<string, unknown>> = {
   timeline: timelineContent as Record<string, unknown>,
   "partner-page-sections": partnerPageSectionsContent as Record<string, unknown>,
   "custom-pages": customPagesContent as Record<string, unknown>,
+  team: teamContent as unknown as Record<string, unknown>,
+  partners: partnersContent as unknown as Record<string, unknown>,
   "featured-projects": featuredProjectsContent as Record<string, unknown>,
   org: orgContent as unknown as Record<string, unknown>,
   "counties-allocations": countiesAllocationsContent as unknown as Record<string, unknown>,

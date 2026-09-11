@@ -1,0 +1,98 @@
+{
+  "provenance": {
+    "source": "Budget Ndio Story Institutional Registry",
+    "lastVerified": "2026-09-11",
+    "entityType": "team_members"
+  },
+  "count": 5,
+  "members": [
+    {
+      "id": "millicent-makina",
+      "name": "Millicent Makina",
+      "role": "Board Advisor",
+      "entityType": "individual",
+      "image": "/images/avatars/team/Millicent Makina.jpeg",
+      "tagline": "Governance Expert & Civic Impact Strategist",
+      "bio": "Millicent is a distinguished governance advisor with extensive experience guiding non-profit boards, international development initiatives, and public interest institutions.",
+      "socials": {
+        "linkedin": "https://www.linkedin.com/in/millicentmakina/"
+      },
+      "focusAreas": [
+        "Board Governance & Organizational Stewardship",
+        "Public Sector Accountability & Compliance",
+        "Long-Term Strategic Impact Planning"
+      ]
+    },
+    {
+      "id": "james-maingi-mutinda",
+      "name": "James Maingi Mutinda",
+      "role": "Director Partnerships",
+      "entityType": "individual",
+      "image": "/images/avatars/team/James Mutinda.jpeg",
+      "tagline": "Strategic Alliances & Institutional Growth Lead",
+      "bio": "Drives BNS's strategic coalitions, international development partnerships, and institutional growth. James bridges youth-led movements with policy research institutions.",
+      "socials": {
+        "linkedin": "https://www.linkedin.com/in/james-maingi-99b76615b/"
+      },
+      "focusAreas": [
+        "Consortium Alliances & Institutional Partnerships",
+        "Resource Mobilization & Sustainability Strategy",
+        "Campus & Regional Expansion Initiatives"
+      ]
+    },
+    {
+      "id": "movine-omondi",
+      "name": "Movine Omondi",
+      "role": "Executive Director & Founder",
+      "entityType": "individual",
+      "image": "/images/avatars/movine/129A4293.jpg",
+      "tagline": "Civic-Tech Innovator & Public Finance Watchdog",
+      "bio": "Leads the vision, investigative direction, and digital civic tooling across BNS Connect, Mashinani, and Wanahabari Lab.",
+      "socials": {
+        "twitter": "https://x.com/budgetndiostory",
+        "linkedin": "https://www.linkedin.com/company/budget-ndio-story"
+      },
+      "focusAreas": [
+        "Civic Tech Product Architecture",
+        "Grassroots County Mobilization",
+        "Forensic Public Finance Investigation"
+      ]
+    },
+    {
+      "id": "calvina-praise",
+      "name": "Calvina Praise",
+      "role": "Lead Youth Content Strategist & Producer",
+      "entityType": "individual",
+      "image": "/images/media/129A4039.jpg",
+      "tagline": "Short-Form Civic Media Architect",
+      "bio": "Calvina develops and executes youth-centered content strategies for Instagram, TikTok, and YouTube focused on public finance and civic engagement.",
+      "socials": {
+        "tiktok": "https://www.tiktok.com/@budget.ndio.story"
+      },
+      "focusAreas": [
+        "Short-Form Video Production & Educational Carousels",
+        "Interactive Audience Polling & Civic Debates",
+        "Youth Budget Demystification"
+      ]
+    },
+    {
+      "id": "dr-lyla-latif",
+      "name": "Dr. Lyla Latif",
+      "role": "Principal Investigator (Project TERRA) & Fellow",
+      "entityType": "individual",
+      "image": "/images/events/red-flags-book-launch/dr-lyla-latif.jpeg",
+      "tagline": "Tax and Tech Governance Specialist | Managing Partner Lai & Latif",
+      "bio": "Lecturer @UoNLawFaculty, Chair @CFS_UoN, Non-Executive Director @TaxJusticeNet. Leading research on digital fiscal ontology, platform labour invisibility, and African revenue mobilization.",
+      "website": "https://lai-latif.com",
+      "socials": {
+        "twitter": "https://x.com/LylaALatif",
+        "website": "http://www.lai-latif.com/"
+      },
+      "focusAreas": [
+        "Digital Fiscal Ontology & Platform Labour",
+        "Algorithmic Governance in Taxation",
+        "Extractive Contracts & Illicit Capital Flight"
+      ]
+    }
+  ]
+}

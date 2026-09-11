@@ -47,6 +47,7 @@ describe("featuredProjectsData", () => {
     vi.spyOn(youtubeMeta, "fetchYoutubeChannelRss").mockRejectedValue(
       new Error("network"),
     );
+    vi.spyOn(globalThis, "fetch").mockRejectedValue(new Error("network"));
 
     const result = await featuredProjectsData.fetch();
     expect(result).toHaveLength(3);

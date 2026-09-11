@@ -1,0 +1,140 @@
+{
+  "provenance": {
+    "source": "Budget Ndio Story Verified Partners Registry",
+    "lastVerified": "2026-09-11",
+    "entityType": "consortium_partners_and_investigators"
+  },
+  "count": 10,
+  "partners": [
+    {
+      "id": "house-of-fiscal-wisdom",
+      "name": "House of Fiscal Wisdom",
+      "entityType": "organization",
+      "category": "Research Institution & Secretariat",
+      "role": "Institutional Host & Research Secretariat for Project TERRA",
+      "location": "Nairobi, Kenya",
+      "website": "https://www.house-of-fiscal-wisdom.org",
+      "logo_url": "/images/events/afrodad-2026/james-maingi-mutinda.jpeg",
+      "description": "A Global Commission on Financing Development headquartered in Nairobi, positioning itself as an African institutional alternative to the Bretton Woods architecture.",
+      "tier": "consortium",
+      "is_active": true
+    },
+    {
+      "id": "luminate",
+      "name": "Luminate",
+      "entityType": "organization",
+      "category": "Philanthropic Funder",
+      "role": "Funder — Governance, digital rights, and public accountability",
+      "location": "Global",
+      "website": "https://luminategroup.com",
+      "logo_url": "",
+      "description": "A global foundation working to ensure that everyone — especially those who are underrepresented — has the information, rights, and power to influence the decisions that affect their lives.",
+      "tier": "sponsor",
+      "is_active": true
+    },
+    {
+      "id": "cabri",
+      "name": "CABRI (Collaborative Africa Budget Reform Initiative)",
+      "entityType": "organization",
+      "category": "Intergovernmental Peer Learning Network",
+      "role": "Co-production partner on digital PFM and IFMIS country reform briefings",
+      "location": "Pretoria, South Africa",
+      "website": "https://www.cabri-sbo.org",
+      "logo_url": "/images/hall/129A4248.jpg",
+      "description": "An intergovernmental organisation that provides a platform for peer learning and exchange for African ministries of finance and planning.",
+      "tier": "partner",
+      "is_active": true
+    },
+    {
+      "id": "afrodad",
+      "name": "AFRODAD",
+      "entityType": "organization",
+      "category": "Pan-African Policy Network",
+      "role": "Continental debt scrutiny forum & sovereign debt monitoring partner",
+      "location": "Harare, Zimbabwe / Nairobi, Kenya",
+      "website": "https://afrodad.org",
+      "logo_url": "/images/events/afrodad-2026/george-wajackoyah.jpeg",
+      "description": "African Forum and Network on Debt and Development — empowering African citizens to actively participate in sustainable economic development through debt policy scrutiny.",
+      "tier": "partner",
+      "is_active": true
+    },
+    {
+      "id": "tisa-kenya",
+      "name": "TISA Kenya (The Institute for Social Accountability)",
+      "entityType": "organization",
+      "category": "Civil Society Watchdog",
+      "role": "Partner — Transparency, county devolution tracking, and citizen integrity",
+      "location": "Nairobi, Kenya",
+      "website": "https://newtisa.tisa.co.ke/",
+      "logo_url": "https://newtisa.tisa.co.ke/wp-content/uploads/2025/03/New-TISA-logo.svg",
+      "description": "A civil society initiative dedicated to promoting sound public finance management and citizen oversight in Kenya.",
+      "tier": "consortium",
+      "is_active": true
+    },
+    {
+      "id": "cfs-uon",
+      "name": "Committee on Fiscal Studies (University of Nairobi)",
+      "entityType": "organization",
+      "category": "Academic Research Center",
+      "role": "Academic research partner on fiscal law, digital economy, and sovereign debt",
+      "location": "Nairobi, Kenya",
+      "website": "https://cfs.uonbi.ac.ke",
+      "logo_url": "",
+      "description": "A center of excellence in fiscal law and policy based at the University of Nairobi Faculty of Law.",
+      "tier": "partner",
+      "is_active": true
+    },
+    {
+      "id": "tax-justice-network",
+      "name": "Tax Justice Network (TJN)",
+      "entityType": "organization",
+      "category": "Global Advocacy Network",
+      "role": "Partner — Illicit financial flows, tax havens, and multinational corporate tax fairness",
+      "location": "Bristol, UK / Global",
+      "website": "https://taxjustice.net",
+      "logo_url": "",
+      "description": "An independent international network dedicated to researching and advocating for systemic tax justice.",
+      "tier": "partner",
+      "is_active": true
+    },
+    {
+      "id": "dr-lyla-latif-partner",
+      "name": "Dr. Lyla Latif",
+      "entityType": "individual",
+      "category": "Academic & Legal Expert",
+      "role": "Principal Investigator (Project TERRA) | Managing Partner, Lai & Latif Advocates",
+      "location": "Nairobi, Kenya",
+      "website": "https://lai-latif.com",
+      "logo_url": "/images/events/red-flags-book-launch/dr-lyla-latif.jpeg",
+      "description": "Lecturer at University of Nairobi Faculty of Law, Chair of the Committee on Fiscal Studies, and Non-Executive Director at Tax Justice Network. Specialist in tax and tech governance.",
+      "tier": "investigator",
+      "is_active": true
+    },
+    {
+      "id": "prof-attiya-waris",
+      "name": "Prof. Attiya Waris",
+      "entityType": "individual",
+      "category": "Academic & International UN Expert",
+      "role": "UN Independent Expert on Foreign Debt & Human Rights | Co-Founder House of Fiscal Wisdom",
+      "location": "Nairobi, Kenya / Geneva",
+      "website": "",
+      "logo_url": "",
+      "description": "Professor of Public Finance Law and leading authority on fiscal sociology, tax justice, and human rights in public spending.",
+      "tier": "investigator",
+      "is_active": true
+    },
+    {
+      "id": "prof-george-wajackoyah",
+      "name": "Prof. George Wajackoyah",
+      "entityType": "individual",
+      "category": "Legal Scholar & Civic Panelist",
+      "role": "AFRODAD Continental Panelist on Sovereign Debt Accountability",
+      "location": "Nairobi, Kenya",
+      "website": "",
+      "logo_url": "/images/events/afrodad-2026/george-wajackoyah.jpeg",
+      "description": "Key legal commentator speaking on continental sovereign debt frameworks and parliamentary oversight.",
+      "tier": "investigator",
+      "is_active": true
+    }
+  ]
+}

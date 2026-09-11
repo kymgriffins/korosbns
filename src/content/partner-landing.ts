@@ -48,6 +48,7 @@ const rawLanding = landingJson as {
     secondaryHref?: string;
   };
   programmeExplains?: PartnerProgrammeExplain[];
+  heroReelStills?: PartnerLandingStill[];
 };
 
 /** Canonical programme noun phrases — hero, sections, and CTA must reuse these. */
@@ -126,7 +127,7 @@ export const PARTNER_LANDING_CTA = {
   secondaryHref: rawLanding.partnerCta?.secondaryHref ?? "/programmes",
 };
 
-export const PARTNER_LANDING_STILLS: PartnerLandingStill[] = [
+export const DEFAULT_PARTNER_LANDING_STILLS: PartnerLandingStill[] = [
   {
     id: "townhall-room",
     src: "/images/cohort1 groundworks/129A3964.jpg",
@@ -209,6 +210,12 @@ export const PARTNER_LANDING_STILLS: PartnerLandingStill[] = [
     storyLine: "A speaker takes the mic under the Budget Ndio Story banner.",
   },
 ];
+
+
+export const PARTNER_LANDING_STILLS: PartnerLandingStill[] =
+  Array.isArray(rawLanding.heroReelStills) && rawLanding.heroReelStills.length > 0
+    ? rawLanding.heroReelStills
+    : DEFAULT_PARTNER_LANDING_STILLS;
 
 /** Hero bottom-left: programme names only — phrase lives in sections. */
 export const PARTNER_HERO_PROGRAMME_LINES = [

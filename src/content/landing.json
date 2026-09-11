@@ -22,7 +22,10 @@
       "cycle": "Formulation → Budget Day → continuous scrutiny",
       "href": "/programmes/connect",
       "ctaLabel": "Read more",
-      "stillIds": ["maingi-afrodad", "wajackoyah-afrodad"]
+      "stillIds": [
+        "maingi-afrodad",
+        "wajackoyah-afrodad"
+      ]
     },
     {
       "slug": "mashinani",
@@ -35,7 +38,10 @@
       "cycle": "Estimates → assembly → disbursement & delivery",
       "href": "/programmes/mashinani",
       "ctaLabel": "Read more",
-      "stillIds": ["townhall-room", "townhall-brief"]
+      "stillIds": [
+        "townhall-room",
+        "townhall-brief"
+      ]
     },
     {
       "slug": "wanahabari-lab",
@@ -48,7 +54,10 @@
       "cycle": "Post–Budget Day → investigations & public narrative",
       "href": "/programmes/wanahabari-lab",
       "ctaLabel": "Read more",
-      "stillIds": ["hall-camera", "latif-launch"]
+      "stillIds": [
+        "hall-camera",
+        "latif-launch"
+      ]
     }
   ],
   "featuredIntro": {
@@ -70,14 +79,23 @@
     "headlineBefore": "Follow the budget.",
     "headlineHighlight": "Find the story.",
     "body": "Kenya's public money moves fast, and mostly out of sight. We turn opaque fiscal policy into verified intelligence for partners, institutions, and newsrooms — nationally and in select counties.",
-    "primaryCta": { "label": "See how programmes work", "href": "#explain-connect" },
-    "secondaryCta": { "label": "Partner with BNS", "href": "/contact?intent=partner" },
+    "primaryCta": {
+      "label": "See how programmes work",
+      "href": "#explain-connect"
+    },
+    "secondaryCta": {
+      "label": "Partner with BNS",
+      "href": "/contact?intent=partner"
+    },
     "videoSrcKey": "heroLandingVideoMp4"
   },
   "storyIntro": {
     "title": "Featured programme evidence",
     "body": "House of Fiscal Wisdom with Dr. Lyla Latif — forensic briefing on illicit financial flows, produced with Wanahabari Lab as evidence partners can brief against.",
-    "cta": { "label": "View programmes", "href": "/programmes" },
+    "cta": {
+      "label": "View programmes",
+      "href": "/programmes"
+    },
     "images": [
       {
         "src": "/images/towwnhallmay/129A3912.jpg",
@@ -142,8 +160,16 @@
     "seeMoreLabel": "Browse evidence",
     "seeMoreHref": "/bns-studio",
     "seeMoreNewTab": true,
-    "primaryCta": { "label": "Start a commission", "href": "/bns-studio#booking", "newTab": true },
-    "secondaryCta": { "label": "Browse productions", "href": "/bns-studio", "newTab": true }
+    "primaryCta": {
+      "label": "Start a commission",
+      "href": "/bns-studio#booking",
+      "newTab": true
+    },
+    "secondaryCta": {
+      "label": "Browse productions",
+      "href": "/bns-studio",
+      "newTab": true
+    }
   },
   "socials": {
     "eyebrow": "Stay connected",
@@ -155,20 +181,133 @@
   },
   "navigation": {
     "primary": [
-      { "label": "Programmes", "href": "/programmes" },
-      { "label": "Learn", "href": "/learn" },
-      { "label": "About", "href": "/about" }
+      {
+        "label": "Programmes",
+        "href": "/programmes"
+      },
+      {
+        "label": "Learn",
+        "href": "/learn"
+      },
+      {
+        "label": "About",
+        "href": "/about"
+      }
     ],
     "secondary": [
-      { "label": "Reports", "href": "/reports" },
-      { "label": "Studios", "href": "/bns-studio" }
+      {
+        "label": "Reports",
+        "href": "/reports"
+      },
+      {
+        "label": "Studios",
+        "href": "/bns-studio"
+      }
     ],
     "desktop": [
-      { "label": "Programmes", "href": "/programmes" },
-      { "label": "Learn", "href": "/learn" },
-      { "label": "Reports", "href": "/reports" },
-      { "label": "Studios", "href": "/bns-studio" },
-      { "label": "About", "href": "/about" }
+      {
+        "label": "Programmes",
+        "href": "/programmes"
+      },
+      {
+        "label": "Learn",
+        "href": "/learn"
+      },
+      {
+        "label": "Reports",
+        "href": "/reports"
+      },
+      {
+        "label": "Studios",
+        "href": "/bns-studio"
+      },
+      {
+        "label": "About",
+        "href": "/about"
+      }
     ]
-  }
+  },
+  "heroReelStills": [
+    {
+      "id": "townhall-room",
+      "src": "/images/cohort1 groundworks/129A3964.jpg",
+      "alt": "Audience seated in a town hall while a facilitator speaks at the front",
+      "caption": "Town hall · Mashinani",
+      "programme": "mashinani",
+      "storyTitle": "Hall full of questions",
+      "storyLine": "Desks filled, camera rolling — a May town hall listens from the back row."
+    },
+    {
+      "id": "hall-workshop",
+      "src": "/images/hall/129A4248.jpg",
+      "alt": "Working groups at desks during a civic convening workshop",
+      "caption": "Convening · Mashinani",
+      "programme": "mashinani",
+      "storyTitle": "Tables mid-brief",
+      "storyLine": "Small groups lean over phones and notebooks while a facilitator checks in."
+    },
+    {
+      "id": "townhall-brief",
+      "src": "/images/towwnhallmay/129A3912.jpg",
+      "alt": "Speaker with microphone and papers at a Budget Ndio Story town hall",
+      "caption": "Floor briefing · Mashinani",
+      "programme": "mashinani",
+      "storyTitle": "Mic and estimates",
+      "storyLine": "Papers in hand, mic open — the briefing stays close to the room."
+    },
+    {
+      "id": "movine-floor",
+      "src": "/images/avatars/movine/129A4293.jpg",
+      "alt": "Movine Omondi speaking beside a Budget Ndio Story banner at a civic convening",
+      "caption": "Movine Omondi · Floor",
+      "programme": "connect",
+      "storyTitle": "Banner and brief",
+      "storyLine": "Movine takes the floor under the Budget Ndio Story banner."
+    },
+    {
+      "id": "hall-camera",
+      "src": "/images/media/129A4039.jpg",
+      "alt": "Crew member filming a town hall on a gimbal camera",
+      "caption": "Field capture · Wanahabari",
+      "programme": "wanahabari-lab",
+      "storyTitle": "Recording the room",
+      "storyLine": "Gimbal up — the convening is filmed as it happens."
+    },
+    {
+      "id": "maingi-afrodad",
+      "src": "/images/events/afrodad-2026/james-maingi-mutinda.jpeg",
+      "alt": "James Maingi Mutinda presenting at AFRODAD debt conference",
+      "caption": "James Maingi Mutinda · AFRODAD",
+      "programme": "connect",
+      "storyTitle": "Debt on the record",
+      "storyLine": "James Maingi Mutinda at AFRODAD — a continental forum, held for the brief."
+    },
+    {
+      "id": "wajackoyah-afrodad",
+      "src": "/images/events/afrodad-2026/george-wajackoyah.jpeg",
+      "alt": "Prof. George Wajackoyah speaking on a panel at an AFRODAD civic convening",
+      "caption": "Prof. George Wajackoyah · AFRODAD",
+      "programme": "connect",
+      "storyTitle": "Panel under the brief",
+      "storyLine": "Wajackoyah on the mic — Read. Understand. Change the outcome."
+    },
+    {
+      "id": "latif-launch",
+      "src": "/images/events/red-flags-book-launch/dr-lyla-latif.jpeg",
+      "alt": "Dr. Lyla Latif addressing partners at the Red Flags in Government Contracts launch",
+      "caption": "Dr. Lyla Latif · Red Flags",
+      "programme": "wanahabari-lab",
+      "storyTitle": "Red Flags in the room",
+      "storyLine": "Dr. Lyla Latif — AFRODAD week, Red Flags launch, mic still live."
+    },
+    {
+      "id": "floor-voice",
+      "src": "/images/stakeholders/129A4113.jpg",
+      "alt": "Young speaker gesturing with a microphone at a civic convening",
+      "caption": "Floor mic · Connect",
+      "programme": "connect",
+      "storyTitle": "A point on the floor",
+      "storyLine": "A speaker takes the mic under the Budget Ndio Story banner."
+    }
+  ]
 }

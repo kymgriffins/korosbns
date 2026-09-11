@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 import { ArrowRight, ExternalLink, Play } from "lucide-react";
+import { MediaEmbed } from "@/components/ui/media-embed";
+import { renderWysiwygProseHtml } from "@/components/admin/WysiwygProseEditor";
 import { PROJECT_TERRA_METADATA as meta } from "@/content/projects";
 
 const SECTION_COUNT = 5;
@@ -10,7 +12,27 @@ const SECTION_COUNT = 5;
  * Partner-facing Project TERRA dossier — ≤5 sections, media-led, no transcript dump.
  * Flow: hook → what it is → evidence media → outcomes/partners → CTA.
  */
-export function ProjectTerraEditorial() {
+export interface ProjectTerraEditorialProps {
+  project?: {
+    id?: string;
+    title?: string;
+    subtitle?: string;
+    prose?: string;
+    wysiwygProse?: string;
+    authorName?: string;
+    url?: string;
+    videoId?: string;
+    thumbnail?: string;
+    useYoutubeThumbnail?: boolean;
+    funder?: string;
+  };
+}
+
+export function ProjectTerraEditorial({ project }: ProjectTerraEditorialProps = {}) {
+  const displayTitle = project?.title || "Project TERRA: Technology, Equality, Regulatory Risk Assessment";
+  const displayLead = project?.authorName || meta.leadInvestigator.name;
+  const displayVideoUrl = project?.url || meta.video.watchUrl;
+  const displayProseHtml = project?.wysiwygProse ? renderWysiwygProseHtml(project.wysiwygProse) : null;
   return (
     <article
       className="min-h-screen bg-background text-foreground"
@@ -69,7 +91,7 @@ export function ProjectTerraEditorial() {
                 Lead
               </dt>
               <dd className="text-sm font-semibold text-foreground">
-                {meta.leadInvestigator.name}
+                {displayLead}
               </dd>
             </div>
             <div>

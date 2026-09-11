@@ -24,6 +24,8 @@ export type FeaturedProject = {
   href: string;
   publishedAt: string;
   channelHandle?: string;
+  useYoutubeThumbnail?: boolean;
+  wysiwygProse?: string;
 };
 
 type SeedRow = (typeof featuredFallback.results)[number];
@@ -43,6 +45,8 @@ function fromSeed(row: SeedRow): FeaturedProject {
     href: row.href,
     publishedAt: row.publishedAt,
     channelHandle: row.channelHandle,
+    useYoutubeThumbnail: (row as any).useYoutubeThumbnail ?? true,
+    wysiwygProse: (row as any).wysiwygProse || row.prose,
   };
 }
 
