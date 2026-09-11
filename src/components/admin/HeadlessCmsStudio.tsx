@@ -285,7 +285,7 @@ export function HeadlessCmsStudio() {
 
   return (
     <div className="space-y-6">
-      {/* Studio Mode Selector (Visual Page Studio vs Raw Datasets Studio) */}
+      {/* Studio Mode Selector (Visual Page Studio vs Advanced Datasets) */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-2 rounded-2xl border border-border bg-card shadow-xs">
         <div className="flex rounded-xl bg-muted/60 p-1">
           <button
@@ -299,29 +299,29 @@ export function HeadlessCmsStudio() {
           >
             <span>🎨 Visual Page Studio</span>
             <Badge variant="secondary" className="text-[10px] px-1.5 py-0 h-4">
-              Landing, /programmes &amp; Pages
+              Live Preview &amp; Forms
             </Badge>
           </button>
           <button
             type="button"
             onClick={() => setStudioMode("raw")}
-            className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold transition-all ${
+            className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-medium transition-all ${
               studioMode === "raw"
-                ? "bg-background text-foreground shadow-xs"
+                ? "bg-background text-foreground shadow-xs font-bold"
                 : "text-muted-foreground hover:text-foreground"
             }`}
           >
-            <span>💻 Raw JSON &amp; Datasets Studio</span>
-            <Badge variant="outline" className="text-[10px] px-1.5 py-0 h-4">
-              23 Collections
+            <span>🛠️ Advanced Datasets (Engineers)</span>
+            <Badge variant="outline" className="text-[10px] px-1.5 py-0 h-4 text-muted-foreground">
+              Optional
             </Badge>
           </button>
         </div>
 
         <div className="text-xs text-muted-foreground px-2">
           {studioMode === "pages"
-            ? "Visual form editor for pages, copy, buttons, and sections"
-            : "Direct raw JSON editing and bulk disk synchronization"}
+            ? "Visual content manager with real-time live preview — no code or JSON required."
+            : "Direct raw JSON datasets engine and bulk disk synchronization."}
         </div>
       </div>
 
