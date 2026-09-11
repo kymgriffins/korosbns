@@ -12,7 +12,7 @@ type EditorialCtaBandProps = {
   title: string;
   description?: string;
   ctaHref?: string;
-  ctaLabel: string;
+  ctaLabel?: string;
   onCtaClick?: () => void;
   secondaryHref?: string;
   secondaryLabel?: string;
@@ -30,7 +30,7 @@ export function EditorialCtaBand({
   title,
   description,
   ctaHref,
-  ctaLabel,
+  ctaLabel = "Get started",
   onCtaClick,
   secondaryHref,
   secondaryLabel,

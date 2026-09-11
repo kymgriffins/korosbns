@@ -1,6 +1,7 @@
 import React from "react";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import Link from "next/link";
 import { buildPageMetadata } from "@/utils/page-metadata";
 import { HERO_SECTION_PADDING, SECTION_SHELL_INNER } from "@/layouts/section-shell";
 import { LandingSection } from "@/layouts/landing-section";
@@ -10,25 +11,15 @@ import { cn } from "@/utils";
 import fs from "node:fs";
 import path from "node:path";
 import customPagesJson from "@/content/custom-pages.json";
+import { MediaEmbed } from "@/components/ui/media-embed";
+import {
+  type CustomPageItem,
+  type PageSection,
+  ensurePageSections,
+} from "@/lib/headless-page-cms";
+import { ArrowRight, CheckCircle2, ChevronRight } from "lucide-react";
 
 export const dynamicParams = true;
-
-export type CustomPageItem = {
-  slug: string;
-  title: string;
-  seoDescription?: string;
-  eyebrow?: string;
-  headline: string;
-  body: string;
-  content?: string;
-  ctaLabel?: string;
-  ctaHref?: string;
-  secondaryLabel?: string;
-  secondaryHref?: string;
-  stats?: Array<{ value: string; label: string }>;
-  published?: boolean;
-  createdAt?: string;
-};
 
 function getAllCustomPages(): CustomPageItem[] {
   try {
@@ -95,6 +86,7 @@ export default async function DynamicCustomPage({
   }
 
   const isDraft = page.published === false;
+  const sections = ensurePageSections(page).filter((s) => s.enabled !== false);
 
   return (
     <div className="w-full min-h-dvh bg-background text-foreground overflow-x-clip">
@@ -120,91 +112,266 @@ export default async function DynamicCustomPage({
           </span>
         </div>
       ) : null}
-      {/* Hero Section */}
-      <section
-        className={cn(HERO_SECTION_PADDING, "border-b border-border/50 bg-background")}
-        aria-labelledby="custom-page-hero-heading"
-      >
-        <div className={SECTION_SHELL_INNER}>
-          <div className="max-w-3xl space-y-5">
-            {page.eyebrow ? (
-              <EditorialPill dot pulse variant="default">
-                {page.eyebrow}
-              </EditorialPill>
-            ) : null}
 
-            <h1
-              id="custom-page-hero-heading"
-              className={cn(T.heroTitle, "text-balance text-foreground")}
-            >
-              {page.headline}
-            </h1>
+      {/* Render All Enabled Modular Sections */}
+      {sections.map((section) => {
+        switch (section.type) {
+          case "hero":
+            return (
+              <section
+                key={section.id}
+                className={cn(HERO_SECTION_PADDING, "border-b border-border/50 bg-background")}
+                aria-labelledby={`sec-${section.id}-heading`}
+              >
+                <div className={SECTION_SHELL_INNER}>
+                  <div className="grid items-center gap-10 lg:grid-cols-12">
+                    <div className={cn("space-y-5", section.media?.url ? "lg:col-span-7" : "max-w-3xl lg:col-span-12")}>
+                      {section.eyebrow ? (
+                        <EditorialPill dot pulse variant="default">
+                          {section.eyebrow}
+                        </EditorialPill>
+                      ) : null}
 
-            <p className={cn(T.lead, "text-foreground/75 leading-relaxed")}>
-              {page.body}
-            </p>
+                      <h1
+                        id={`sec-${section.id}-heading`}
+                        className={cn(T.heroTitle, "text-balance text-foreground")}
+                      >
+                        {section.headline}
+                      </h1>
 
-            {(page.ctaLabel || page.secondaryLabel) ? (
-              <div className="flex flex-wrap items-center gap-3 pt-3">
-                {page.ctaLabel ? (
-                  <PillButtonGroup
-                    href={page.ctaHref || "/contact"}
-                    label={page.ctaLabel}
-                    variant="primary"
-                  />
-                ) : null}
-                {page.secondaryLabel ? (
-                  <PillButtonGroup
-                    href={page.secondaryHref || "/programmes"}
-                    label={page.secondaryLabel}
-                    variant="outline"
-                  />
-                ) : null}
-              </div>
-            ) : null}
-          </div>
-        </div>
-      </section>
+                      {section.body ? (
+                        <p className={cn(T.lead, "text-foreground/75 leading-relaxed")}>
+                          {section.body}
+                        </p>
+                      ) : null}
 
-      {/* Scale / Key Metrics Stats if available */}
-      {page.stats && page.stats.length > 0 ? (
-        <LandingSection className="border-b border-border/50 py-10 bg-muted/20">
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
-            {page.stats.map((stat, idx) => (
-              <div key={idx} className="space-y-1">
-                <div className="font-mono text-3xl font-bold tracking-tight text-foreground md:text-4xl">
-                  {stat.value}
+                      {/* Active Buttons */}
+                      {section.buttons && section.buttons.filter((b) => b.enabled).length > 0 ? (
+                        <div className="flex flex-wrap items-center gap-3 pt-3">
+                          {section.buttons
+                            .filter((b) => b.enabled)
+                            .map((btn) => (
+                              <PillButtonGroup
+                                key={btn.id}
+                                href={btn.href}
+                                label={btn.label}
+                                variant={btn.variant === "primary" ? "primary" : "outline"}
+                              />
+                            ))}
+                        </div>
+                      ) : null}
+                    </div>
+
+                    {/* Featured Media in Hero */}
+                    {section.media?.url ? (
+                      <div className="lg:col-span-5">
+                        <div className="rounded-lg overflow-hidden border border-border/60 shadow-lg">
+                          <MediaEmbed
+                            src={section.media.url}
+                            type={section.media.type}
+                            title={section.media.title}
+                            caption={section.media.caption}
+                          />
+                        </div>
+                      </div>
+                    ) : null}
+                  </div>
                 </div>
-                <div className="text-xs text-muted-foreground uppercase tracking-wider font-semibold">
-                  {stat.label}
+              </section>
+            );
+
+          case "video_showcase":
+            return (
+              <LandingSection key={section.id} className="border-b border-border/50 py-16 bg-muted/10">
+                <div className="max-w-4xl mx-auto space-y-6">
+                  <div className="space-y-2 text-center">
+                    {section.eyebrow ? (
+                      <EditorialPill dot variant="default">
+                        {section.eyebrow}
+                      </EditorialPill>
+                    ) : null}
+                    <h2 className={cn(T.sectionTitle, "text-foreground")}>
+                      {section.headline}
+                    </h2>
+                    {section.body ? (
+                      <p className={cn(T.lead, "text-muted-foreground max-w-2xl mx-auto text-sm md:text-base")}>
+                        {section.body}
+                      </p>
+                    ) : null}
+                  </div>
+
+                  {section.media?.url ? (
+                    <div className="rounded-xl overflow-hidden border border-border/80 shadow-2xl bg-black">
+                      <MediaEmbed
+                        src={section.media.url}
+                        type={section.media.type}
+                        title={section.media.title}
+                        caption={section.media.caption}
+                        controls
+                      />
+                    </div>
+                  ) : null}
+
+                  {section.buttons && section.buttons.filter((b) => b.enabled).length > 0 ? (
+                    <div className="flex justify-center items-center gap-3 pt-2">
+                      {section.buttons
+                        .filter((b) => b.enabled)
+                        .map((btn) => (
+                          <PillButtonGroup
+                            key={btn.id}
+                            href={btn.href}
+                            label={btn.label}
+                            variant={btn.variant === "primary" ? "primary" : "outline"}
+                          />
+                        ))}
+                    </div>
+                  ) : null}
                 </div>
-              </div>
-            ))}
-          </div>
-        </LandingSection>
-      ) : null}
+              </LandingSection>
+            );
 
-      {/* Main Editorial Content Body */}
-      {page.content ? (
-        <LandingSection className="border-b border-border/50 py-16">
-          <article className="prose prose-neutral dark:prose-invert max-w-3xl space-y-6 text-foreground/80 leading-relaxed text-sm md:text-base">
-            {page.content.split("\n\n").map((para, i) => (
-              <p key={i}>{para}</p>
-            ))}
-          </article>
-        </LandingSection>
-      ) : null}
+          case "stats_grid":
+            return (
+              <LandingSection key={section.id} className="border-b border-border/50 py-12 bg-muted/20">
+                {section.headline ? (
+                  <div className="mb-6 space-y-1">
+                    <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                      {section.headline}
+                    </h3>
+                  </div>
+                ) : null}
+                <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
+                  {(section.items || []).filter((i) => i.enabled !== false).map((stat) => (
+                    <div key={stat.id} className="space-y-1 border-l-2 border-primary/40 pl-4">
+                      <div className="font-mono text-3xl font-bold tracking-tight text-foreground md:text-4xl">
+                        {stat.value || stat.title}
+                      </div>
+                      <div className="text-xs text-muted-foreground uppercase tracking-wider font-semibold">
+                        {stat.label || stat.description}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </LandingSection>
+            );
 
-      {/* Closing CTA */}
-      <EditorialCtaBand
-        eyebrow="Budget Ndio Story"
-        title="Partner with us on verified public finance intelligence."
-        description="Collaborate with our teams on national tracking, county accountability, and newsroom investigative training."
-        ctaLabel={page.ctaLabel || "Discuss Partnership"}
-        ctaHref={page.ctaHref || "/contact?intent=partner"}
-        secondaryLabel="Explore Programmes"
-        secondaryHref="/programmes"
-      />
+          case "feature_cards":
+            return (
+              <LandingSection key={section.id} className="border-b border-border/50 py-16">
+                <div className="space-y-4 mb-10">
+                  {section.eyebrow ? (
+                    <EditorialPill variant="default">{section.eyebrow}</EditorialPill>
+                  ) : null}
+                  <h2 className={cn(T.sectionTitle, "text-foreground")}>
+                    {section.headline}
+                  </h2>
+                  {section.body ? (
+                    <p className={cn(T.lead, "text-muted-foreground max-w-2xl")}>
+                      {section.body}
+                    </p>
+                  ) : null}
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  {(section.items || []).filter((i) => i.enabled !== false).map((card) => (
+                    <div
+                      key={card.id}
+                      className="border border-border/60 bg-background p-6 space-y-3 flex flex-col justify-between hover:border-primary/50 transition-colors"
+                    >
+                      <div className="space-y-2">
+                        {card.tag ? (
+                          <span className="inline-block font-mono text-[10px] font-bold uppercase tracking-wider text-primary px-2 py-0.5 rounded bg-primary/10">
+                            {card.tag}
+                          </span>
+                        ) : null}
+                        <h4 className="font-heading text-lg font-bold text-foreground">
+                          {card.title}
+                        </h4>
+                        <p className="text-xs leading-relaxed text-foreground/75 md:text-sm">
+                          {card.description}
+                        </p>
+                      </div>
+
+                      {card.link ? (
+                        <Link
+                          href={card.link}
+                          className="inline-flex items-center text-xs font-semibold text-primary hover:underline pt-2"
+                        >
+                          Learn more <ArrowRight className="ml-1 size-3" />
+                        </Link>
+                      ) : null}
+                    </div>
+                  ))}
+                </div>
+              </LandingSection>
+            );
+
+          case "narrative":
+            return (
+              <LandingSection key={section.id} className="border-b border-border/50 py-16">
+                <div className="max-w-3xl space-y-6">
+                  {section.headline ? (
+                    <h2 className="font-heading text-2xl font-bold tracking-tight text-foreground md:text-3xl">
+                      {section.headline}
+                    </h2>
+                  ) : null}
+                  <article className="prose prose-neutral dark:prose-invert space-y-5 text-foreground/80 leading-relaxed text-sm md:text-base">
+                    {(section.content || "").split("\n\n").map((para, i) => (
+                      <p key={i}>{para}</p>
+                    ))}
+                  </article>
+                </div>
+              </LandingSection>
+            );
+
+          case "faq":
+            return (
+              <LandingSection key={section.id} className="border-b border-border/50 py-16 bg-muted/10">
+                <div className="max-w-3xl space-y-8">
+                  <div className="space-y-2">
+                    <h2 className={cn(T.sectionTitle, "text-foreground")}>
+                      {section.headline || "Frequently Asked Questions"}
+                    </h2>
+                    {section.body ? (
+                      <p className="text-sm text-muted-foreground">{section.body}</p>
+                    ) : null}
+                  </div>
+
+                  <div className="divide-y divide-border/60 border-y border-border/60">
+                    {(section.items || []).filter((i) => i.enabled !== false).map((faq) => (
+                      <div key={faq.id} className="py-5 space-y-2">
+                        <h4 className="font-heading text-base font-bold text-foreground flex items-center gap-2">
+                          <CheckCircle2 className="size-4 text-primary shrink-0" />
+                          {faq.title}
+                        </h4>
+                        <p className="text-sm text-foreground/75 leading-relaxed pl-6">
+                          {faq.description}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </LandingSection>
+            );
+
+          case "cta_banner":
+            return (
+              <EditorialCtaBand
+                key={section.id}
+                eyebrow={section.eyebrow || "Budget Ndio Story"}
+                title={section.headline || "Partner with us on verified public finance intelligence."}
+                description={section.body || "Collaborate with our teams on national tracking, county accountability, and newsroom investigative training."}
+                ctaLabel={section.buttons?.[0]?.enabled ? (section.buttons[0].label || "Get started") : undefined}
+                ctaHref={section.buttons?.[0]?.enabled ? section.buttons[0].href : undefined}
+                secondaryLabel={section.buttons?.[1]?.enabled ? section.buttons[1].label : undefined}
+                secondaryHref={section.buttons?.[1]?.enabled ? section.buttons[1].href : undefined}
+              />
+            );
+
+          default:
+            return null;
+        }
+      })}
     </div>
   );
 }

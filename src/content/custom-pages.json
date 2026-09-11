@@ -12,13 +12,187 @@
       "ctaHref": "/contact?intent=partner",
       "secondaryLabel": "View All Programmes",
       "secondaryHref": "/programmes",
-      "stats": [
-        { "value": "11.2T", "label": "National Public Debt Tracked" },
-        { "value": "68%", "label": "Debt-to-GDP Baseline Ratio" },
-        { "value": "Year-round", "label": "Statutory Absorption Monitoring" }
-      ],
       "published": true,
-      "createdAt": "2026-09-11T12:00:00Z"
+      "createdAt": "2026-09-11T12:00:00Z",
+      "featuredMedia": {
+        "type": "video",
+        "url": "https://pub-96ce2eba58694b1da7f540033bdaa464.r2.dev/Calvina%20Praise%20Sovereign%20debt.mp4",
+        "title": "Sovereign Debt Forensic Investigation",
+        "caption": "Calvina Praise presents verified tracking of Kenya's external debt service obligations."
+      },
+      "sections": [
+        {
+          "id": "sec-hero-debt",
+          "type": "hero",
+          "enabled": true,
+          "eyebrow": "Special Brief · BNS Connect",
+          "headline": "Tracking Kenya's Sovereign Debt & Statutory Obligations",
+          "body": "Independent fiscal analysis tracking Treasury bond issuances, commercial external debt, and statutory debt service ratios across Kenya's public finance system.",
+          "buttons": [
+            {
+              "id": "btn-d1",
+              "label": "Discuss Co-Funding",
+              "href": "/contact?intent=partner",
+              "variant": "primary",
+              "enabled": true
+            },
+            {
+              "id": "btn-d2",
+              "label": "View All Programmes",
+              "href": "/programmes",
+              "variant": "outline",
+              "enabled": true
+            }
+          ]
+        },
+        {
+          "id": "sec-video-debt",
+          "type": "video_showcase",
+          "enabled": true,
+          "headline": "Watch: Sovereign Debt Breakdown & Citizen Impact",
+          "body": "A deep-dive investigation into debt service ratios, eurobond maturity schedules, and revenue absorption.",
+          "media": {
+            "type": "video",
+            "url": "https://pub-96ce2eba58694b1da7f540033bdaa464.r2.dev/Calvina%20Praise%20Sovereign%20debt.mp4",
+            "title": "Calvina Praise — Sovereign Debt Investigation",
+            "caption": "Produced by Budget Ndio Story · Direct R2 Cloudflare Stream"
+          },
+          "buttons": [
+            {
+              "id": "btn-vd1",
+              "label": "Download Forensic Debt Matrix",
+              "href": "/contact?intent=partner",
+              "variant": "primary",
+              "enabled": true
+            }
+          ]
+        },
+        {
+          "id": "sec-stats-debt",
+          "type": "stats_grid",
+          "enabled": true,
+          "headline": "Statutory Debt Baselines & Macro Indicators",
+          "items": [
+            {
+              "id": "st-d1",
+              "title": "Public Debt",
+              "value": "11.2T",
+              "label": "National Public Debt Tracked",
+              "enabled": true
+            },
+            {
+              "id": "st-d2",
+              "title": "Debt to GDP",
+              "value": "68%",
+              "label": "Debt-to-GDP Baseline Ratio",
+              "enabled": true
+            },
+            {
+              "id": "st-d3",
+              "title": "Absorption Monitoring",
+              "value": "Year-round",
+              "label": "Statutory Absorption Monitoring",
+              "enabled": true
+            }
+          ]
+        },
+        {
+          "id": "sec-cards-debt",
+          "type": "feature_cards",
+          "enabled": true,
+          "eyebrow": "Forensic Modules",
+          "headline": "Core Investigation Deliverables",
+          "body": "Open-source civic intelligence built for media newsrooms, legislative researchers, and community advocates.",
+          "items": [
+            {
+              "id": "fc-d1",
+              "title": "External Bond Maturity Radar",
+              "description": "Live tracking of commercial debt servicing schedules and dollar-denominated interest payments.",
+              "tag": "Macro Finance",
+              "enabled": true
+            },
+            {
+              "id": "fc-d2",
+              "title": "Consolidated Fund Service Audits",
+              "description": "Reconciling statutory debt deductions against essential services absorption across health and education.",
+              "tag": "Statutory Oversight",
+              "enabled": true
+            },
+            {
+              "id": "fc-d3",
+              "title": "Public Finance Policy Briefs",
+              "description": "Concise parliamentary committee briefings translating debt sustainability matrices into actionable policy options.",
+              "tag": "Legislative Evidence",
+              "enabled": true
+            }
+          ]
+        },
+        {
+          "id": "sec-content-debt",
+          "type": "narrative",
+          "enabled": true,
+          "headline": "Why Independent Debt Verification Matters",
+          "content": "Kenya's debt debate often narrows to sensational headlines during annual budget presentation. Behind the public discourse lies a complex web of multilateral agreements, bilateral loans, and domestic commercial paper.\n\nBudget Ndio Story provides verified tracking of these obligations to ensure civil society, institutional partners, and newsrooms have reliable empirical baselines that withstand parliamentary and judicial scrutiny."
+        },
+        {
+          "id": "sec-faq-debt",
+          "type": "faq",
+          "enabled": true,
+          "headline": "Debt Tracking Methodology FAQs",
+          "items": [
+            {
+              "id": "faq-d1",
+              "title": "Where do you source statutory debt data?",
+              "description": "All figures are cross-referenced directly from National Treasury quarterly economic reviews, Central Bank monthly bulletins, and Controller of Budget statutory reports.",
+              "enabled": true
+            },
+            {
+              "id": "faq-d2",
+              "title": "Can development partners sponsor a specialized sector audit?",
+              "description": "Yes, our team collaborates with institutional co-funders to develop forensic sub-analyses on health financing, climate bonds, and county devolved debts.",
+              "enabled": true
+            }
+          ]
+        },
+        {
+          "id": "sec-cta-debt",
+          "type": "cta_banner",
+          "enabled": true,
+          "eyebrow": "Budget Ndio Story",
+          "headline": "Partner with us on sovereign debt transparency.",
+          "body": "Join our network of institutional funders, economic researchers, and investigative journalists.",
+          "buttons": [
+            {
+              "id": "btn-cd1",
+              "label": "Discuss Co-Funding",
+              "href": "/contact?intent=partner",
+              "variant": "primary",
+              "enabled": true
+            },
+            {
+              "id": "btn-cd2",
+              "label": "View All Programmes",
+              "href": "/programmes",
+              "variant": "outline",
+              "enabled": true
+            }
+          ]
+        }
+      ],
+      "stats": [
+        {
+          "value": "11.2T",
+          "label": "National Public Debt Tracked"
+        },
+        {
+          "value": "68%",
+          "label": "Debt-to-GDP Baseline Ratio"
+        },
+        {
+          "value": "Year-round",
+          "label": "Statutory Absorption Monitoring"
+        }
+      ]
     },
     {
       "slug": "county-fiscal-transparency-initiative",
@@ -32,13 +206,136 @@
       "ctaHref": "/contact?intent=partner",
       "secondaryLabel": "Explore BNS Mashinani",
       "secondaryHref": "/programmes/mashinani",
-      "stats": [
-        { "value": "47", "label": "Counties Monitored" },
-        { "value": "KSh 385B", "label": "Equitable Share Tracked" },
-        { "value": "1,400+", "label": "Community Monitors" }
-      ],
       "published": true,
-      "createdAt": "2026-09-11T15:00:00Z"
+      "createdAt": "2026-09-11T15:00:00Z",
+      "featuredMedia": {
+        "type": "video",
+        "url": "https://pub-96ce2eba58694b1da7f540033bdaa464.r2.dev/county%20&amp;%20budget%20socials%20new.mp4",
+        "title": "County & Budget Socials Investigation",
+        "caption": "Grassroots citizen audits across 47 devolved county governments."
+      },
+      "sections": [
+        {
+          "id": "sec-hero-county",
+          "type": "hero",
+          "enabled": true,
+          "eyebrow": "Civic Field Investigation · BNS Mashinani",
+          "headline": "Citizen-Led County Budget Tracking & Devolution Oversight",
+          "body": "A nationwide civic monitoring initiative empowering grassroots communities, youth advocates, and local reporters with forensic budget analysis to verify public expenditure.",
+          "buttons": [
+            {
+              "id": "btn-c1",
+              "label": "Download County Brief",
+              "href": "/contact?intent=partner",
+              "variant": "primary",
+              "enabled": true
+            },
+            {
+              "id": "btn-c2",
+              "label": "Explore BNS Mashinani",
+              "href": "/programmes/mashinani",
+              "variant": "outline",
+              "enabled": true
+            }
+          ]
+        },
+        {
+          "id": "sec-video-county",
+          "type": "video_showcase",
+          "enabled": true,
+          "headline": "Watch the County Accountability In Action",
+          "body": "Field footage and community audits verifying devolved health disbursements and ward development funds.",
+          "media": {
+            "type": "video",
+            "url": "https://pub-96ce2eba58694b1da7f540033bdaa464.r2.dev/county%20&amp;%20budget%20socials%20new.mp4",
+            "title": "County & Budget Socials Investigation",
+            "caption": "Citizen monitors documenting clinic drug stock-outs and public works delivery."
+          },
+          "buttons": [
+            {
+              "id": "btn-vc1",
+              "label": "Join Grassroots Network",
+              "href": "/contact?intent=mashinani",
+              "variant": "primary",
+              "enabled": true
+            }
+          ]
+        },
+        {
+          "id": "sec-stats-county",
+          "type": "stats_grid",
+          "enabled": true,
+          "headline": "Grassroots Impact & Coverage",
+          "items": [
+            {
+              "id": "st-c1",
+              "title": "Counties Monitored",
+              "value": "47",
+              "label": "Counties Monitored",
+              "enabled": true
+            },
+            {
+              "id": "st-c2",
+              "title": "Equitable Share",
+              "value": "KSh 385B",
+              "label": "Equitable Share Tracked",
+              "enabled": true
+            },
+            {
+              "id": "st-c3",
+              "title": "Monitors",
+              "value": "1,400+",
+              "label": "Community Monitors",
+              "enabled": true
+            }
+          ]
+        },
+        {
+          "id": "sec-content-county",
+          "type": "narrative",
+          "enabled": true,
+          "headline": "Closing the Devolved Accountability Gap",
+          "content": "Devolution promised to bring resources closer to the people, yet county procurement bottlenecks, pending bills, and under-disbursement of equalization funds continue to impede community development.\n\nThe County Fiscal Transparency Initiative combines on-the-ground civic audits with real-time statutory disbursement records released by the Controller of Budget. By transforming dry fiscal reports into accessible community dashboards and local townhall briefings, we enable everyday citizens to ask the right questions about clinic supplies, rural access roads, and early childhood education funds."
+        },
+        {
+          "id": "sec-cta-county",
+          "type": "cta_banner",
+          "enabled": true,
+          "eyebrow": "BNS Mashinani",
+          "headline": "Strengthen devolution through civic expenditure tracking.",
+          "body": "Partner with our county teams on grassroots townhalls, radio civic roundtables, and ward budget clinics.",
+          "buttons": [
+            {
+              "id": "btn-ctac1",
+              "label": "Partner with Mashinani",
+              "href": "/contact?intent=partner",
+              "variant": "primary",
+              "enabled": true
+            },
+            {
+              "id": "btn-ctac2",
+              "label": "View Programme",
+              "href": "/programmes/mashinani",
+              "variant": "outline",
+              "enabled": true
+            }
+          ]
+        }
+      ],
+      "stats": [
+        {
+          "value": "47",
+          "label": "Counties Monitored"
+        },
+        {
+          "value": "KSh 385B",
+          "label": "Equitable Share Tracked"
+        },
+        {
+          "value": "1,400+",
+          "label": "Community Monitors"
+        }
+      ]
     }
   ]
 }

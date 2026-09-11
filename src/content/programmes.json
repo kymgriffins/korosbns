@@ -196,7 +196,13 @@
           }
         ]
       },
-      "id": "connect"
+      "id": "connect",
+      "featuredMedia": {
+        "type": "video",
+        "url": "https://pub-96ce2eba58694b1da7f540033bdaa464.r2.dev/Budget%20Day%202026%20%20National%20treasury.mp4",
+        "title": "National Treasury Budget Day Tracking",
+        "caption": "BNS Connect youth trackers monitoring Treasury allocations."
+      }
     },
     {
       "slug": "mashinani",
@@ -314,7 +320,13 @@
           }
         ]
       },
-      "id": "mashinani"
+      "id": "mashinani",
+      "featuredMedia": {
+        "type": "video",
+        "url": "https://pub-96ce2eba58694b1da7f540033bdaa464.r2.dev/county%20&amp;%20budget%20socials%20new.mp4",
+        "title": "Devolved County Budget Scrutiny",
+        "caption": "BNS Mashinani community budget monitors verifying county expenditures."
+      }
     },
     {
       "slug": "wanahabari-lab",
@@ -432,7 +444,13 @@
           }
         ]
       },
-      "id": "wanahabari-lab"
+      "id": "wanahabari-lab",
+      "featuredMedia": {
+        "type": "video",
+        "url": "https://pub-96ce2eba58694b1da7f540033bdaa464.r2.dev/uon%20cohort%20001%20.mp4",
+        "title": "Wanahabari Lab Cohort 001 Investigative Training",
+        "caption": "University of Nairobi & media newsroom journalists in training."
+      }
     },
     {
       "slug": "studios",
@@ -518,7 +536,13 @@
           }
         ]
       },
-      "id": "studios"
+      "id": "studios",
+      "featuredMedia": {
+        "type": "video",
+        "url": "https://pub-96ce2eba58694b1da7f540033bdaa464.r2.dev/BNS%20Studio%20%20MYTH%20or%20FACT%20%20game%20on%20budget.mp4",
+        "title": "BNS Studio: Myth or Fact Budget Edition",
+        "caption": "High-craft creative productions commissioned to cross-subsidize civic scrutiny."
+      }
     }
   ]
 }

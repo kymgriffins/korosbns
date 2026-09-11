@@ -77,6 +77,12 @@ export type ProgrammeBlock = {
   secondaryCta?: ProgrammeCta;
   href: string;
   visual: ProgrammeVisual;
+  featuredMedia?: {
+    type?: "video" | "youtube" | "image" | "auto";
+    url: string;
+    title?: string;
+    caption?: string;
+  };
   stats?: ProgrammeStat[];
   pillars?: ProgrammePillar[];
   process?: ProgrammeStep[];

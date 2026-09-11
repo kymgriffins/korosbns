@@ -25,6 +25,8 @@ import {
   Eye,
   UploadCloud,
   Columns,
+  Film,
+  Sliders,
 } from "lucide-react";
 import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
@@ -32,7 +34,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { MASTER_CMS_EMAIL } from "@/lib/headless-cms";
 import { LivePagePreview, type DeviceMode } from "./LivePagePreview";
-
+import { CustomPageStudioEditor } from "./CustomPageStudioEditor";
+import { MediaAssetPicker, type MediaSelection } from "./MediaAssetPicker";
+import { MediaEmbed } from "@/components/ui/media-embed";
 type PageKey =
   | "landing"
   | "programmes"
@@ -44,7 +48,7 @@ type PageKey =
   | "featured-blogs"
   | "custom-pages";
 
-type TabKey = "sections" | "hero" | "core" | "deliverables" | "buttons" | "faqs";
+type TabKey = "sections" | "hero" | "core" | "deliverables" | "buttons" | "faqs" | "media";
 
 interface PageMeta {
   key: PageKey;
@@ -135,6 +139,7 @@ export function HeadlessPageStudio() {
   const [activeTab, setActiveTab] = useState<TabKey>("sections");
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
+  const [mediaPickerOpen, setMediaPickerOpen] = useState(false);
   const [lastSaved, setLastSaved] = useState<string | null>(null);
 
   // Raw State Stores
@@ -426,6 +431,21 @@ export function HeadlessPageStudio() {
     setCustomPagesData({ pages: updatedPages });
     setSelectedCustomPageSlug(slug);
     toast.success("Created new draft page! Edit below and save to drafts or publish live.");
+  };
+
+  
+  const handleUpdateCustomPageWhole = (updatedPage: any) => {
+    const pages = customPagesData.pages || [];
+    const updated = pages.map((p: any) => {
+      if (p.slug === updatedPage.slug || (selectedCustomPageSlug && p.slug === selectedCustomPageSlug)) {
+        return updatedPage;
+      }
+      return p;
+    });
+    setCustomPagesData({ pages: updated });
+    if (updatedPage.slug && updatedPage.slug !== selectedCustomPageSlug) {
+      setSelectedCustomPageSlug(updatedPage.slug);
+    }
   };
 
   const handleDeleteCustomPage = (slug: string) => {
@@ -1124,249 +1144,10 @@ export function HeadlessPageStudio() {
           {/* Right Column: Active Custom Page Form */}
           <div className="space-y-6 lg:col-span-8">
             {selectedCustomPage ? (
-              <div className="space-y-6 rounded-2xl border border-border bg-card p-6 shadow-xs">
-                <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border/50 pb-4">
-                  <div>
-                    <h2 className="text-base font-bold text-foreground">
-                      Edit Page: {selectedCustomPage.title}
-                    </h2>
-                    <p className="text-xs text-muted-foreground">
-                      Live URL: <code className="font-mono font-bold text-primary">/pages/{selectedCustomPage.slug}</code>
-                    </p>
-                  </div>
-
-                  <div className="flex items-center gap-2">
-                    <Button
-                      asChild
-                      variant="outline"
-                      size="sm"
-                      className="gap-1.5 text-xs font-semibold"
-                    >
-                      <a
-                        href={`/pages/${selectedCustomPage.slug}?preview=true`}
-                        target="_blank"
-                        rel="noreferrer"
-                      >
-                        <span>Open Preview</span>
-                        <ExternalLink className="size-3.5" />
-                      </a>
-                    </Button>
-                    <div className="flex items-center rounded-xl bg-muted/80 p-0.5 border border-border/80 shadow-xs">
-                      <button
-                        type="button"
-                        onClick={() =>
-                          handleUpdateCustomPageField(selectedCustomPage.slug, "published", false)
-                        }
-                        className={`px-2.5 py-1 rounded-lg text-xs font-semibold transition-all ${
-                          selectedCustomPage.published === false
-                            ? "bg-amber-500 text-white font-bold shadow-xs"
-                            : "text-muted-foreground hover:text-foreground"
-                        }`}
-                        title="Save as draft (hidden from public live site)"
-                      >
-                        Draft
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() =>
-                          handleUpdateCustomPageField(selectedCustomPage.slug, "published", true)
-                        }
-                        className={`px-2.5 py-1 rounded-lg text-xs font-semibold transition-all ${
-                          selectedCustomPage.published !== false
-                            ? "bg-emerald-600 text-white font-bold shadow-xs"
-                            : "text-muted-foreground hover:text-foreground"
-                        }`}
-                        title="Publish live to public visitors at /pages/[slug]"
-                      >
-                        Published
-                      </button>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="space-y-4">
-                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                    <div>
-                      <label className="text-xs font-semibold text-foreground">Page Title</label>
-                      <Input
-                        value={selectedCustomPage.title ?? ""}
-                        onChange={(e) =>
-                          handleUpdateCustomPageField(selectedCustomPage.slug, "title", e.target.value)
-                        }
-                        className="mt-1 h-8 text-xs font-semibold"
-                        placeholder="e.g. Kenya Sovereign Debt Brief"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="text-xs font-semibold text-foreground">URL Slug</label>
-                      <Input
-                        value={selectedCustomPage.slug ?? ""}
-                        onChange={(e) =>
-                          handleUpdateCustomPageField(selectedCustomPage.slug, "slug", e.target.value.toLowerCase().replace(/\s+/g, "-"))
-                        }
-                        className="mt-1 h-8 text-xs font-mono"
-                        placeholder="e.g. kenya-sovereign-debt-brief"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                    <div>
-                      <label className="text-xs font-semibold text-foreground">Eyebrow Pill Tag</label>
-                      <Input
-                        value={selectedCustomPage.eyebrow ?? ""}
-                        onChange={(e) =>
-                          handleUpdateCustomPageField(selectedCustomPage.slug, "eyebrow", e.target.value)
-                        }
-                        className="mt-1 h-8 text-xs"
-                        placeholder="e.g. Special Brief · BNS Connect"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="text-xs font-semibold text-foreground">SEO Description (Meta Tag)</label>
-                      <Input
-                        value={selectedCustomPage.seoDescription ?? ""}
-                        onChange={(e) =>
-                          handleUpdateCustomPageField(selectedCustomPage.slug, "seoDescription", e.target.value)
-                        }
-                        className="mt-1 h-8 text-xs"
-                        placeholder="Concise description for Google search and WhatsApp previews"
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="text-xs font-semibold text-foreground">Hero Headline</label>
-                    <Input
-                      value={selectedCustomPage.headline ?? ""}
-                      onChange={(e) =>
-                        handleUpdateCustomPageField(selectedCustomPage.slug, "headline", e.target.value)
-                      }
-                      className="mt-1 text-sm font-bold"
-                      placeholder="e.g. Tracking Kenya's Sovereign Debt & Statutory Obligations"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="text-xs font-semibold text-foreground">Hero Lead Paragraph (Lede)</label>
-                    <textarea
-                      value={selectedCustomPage.body ?? ""}
-                      onChange={(e) =>
-                        handleUpdateCustomPageField(selectedCustomPage.slug, "body", e.target.value)
-                      }
-                      rows={3}
-                      className="mt-1 w-full rounded-md border border-input bg-background p-2.5 text-xs text-foreground focus-visible:outline-none leading-relaxed"
-                      placeholder="Core summary statement introducing the brief or campaign..."
-                    />
-                  </div>
-
-                  <div>
-                    <label className="text-xs font-semibold text-foreground">
-                      Full Editorial Longform Content (Markdown / Prose)
-                    </label>
-                    <textarea
-                      value={selectedCustomPage.content ?? ""}
-                      onChange={(e) =>
-                        handleUpdateCustomPageField(selectedCustomPage.slug, "content", e.target.value)
-                      }
-                      rows={6}
-                      className="mt-1 w-full rounded-md border border-input bg-background p-2.5 text-xs text-foreground font-sans focus-visible:outline-none leading-relaxed"
-                      placeholder="Write the full narrative or body text here. You can separate paragraphs with empty lines."
-                    />
-                  </div>
-
-                  {/* Primary & Secondary Action Buttons */}
-                  <div className="rounded-xl border border-border/60 bg-muted/20 p-4 space-y-3">
-                    <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
-                      Call-to-Action Buttons
-                    </h3>
-                    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                      <div>
-                        <label className="text-[11px] font-semibold text-foreground">Primary Button Label</label>
-                        <Input
-                          value={selectedCustomPage.ctaLabel ?? ""}
-                          onChange={(e) =>
-                            handleUpdateCustomPageField(selectedCustomPage.slug, "ctaLabel", e.target.value)
-                          }
-                          className="mt-1 h-8 text-xs"
-                          placeholder="Discuss Co-Funding"
-                        />
-                      </div>
-                      <div>
-                        <label className="text-[11px] font-semibold text-foreground">Primary Button Target URL</label>
-                        <Input
-                          value={selectedCustomPage.ctaHref ?? ""}
-                          onChange={(e) =>
-                            handleUpdateCustomPageField(selectedCustomPage.slug, "ctaHref", e.target.value)
-                          }
-                          className="mt-1 h-8 text-xs font-mono"
-                          placeholder="/contact?intent=partner"
-                        />
-                      </div>
-                    </div>
-
-                    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                      <div>
-                        <label className="text-[11px] font-semibold text-foreground">Secondary Button Label</label>
-                        <Input
-                          value={selectedCustomPage.secondaryLabel ?? ""}
-                          onChange={(e) =>
-                            handleUpdateCustomPageField(selectedCustomPage.slug, "secondaryLabel", e.target.value)
-                          }
-                          className="mt-1 h-8 text-xs"
-                          placeholder="View All Programmes"
-                        />
-                      </div>
-                      <div>
-                        <label className="text-[11px] font-semibold text-foreground">Secondary Button Target URL</label>
-                        <Input
-                          value={selectedCustomPage.secondaryHref ?? ""}
-                          onChange={(e) =>
-                            handleUpdateCustomPageField(selectedCustomPage.slug, "secondaryHref", e.target.value)
-                          }
-                          className="mt-1 h-8 text-xs font-mono"
-                          placeholder="/programmes"
-                        />
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Key Metrics / Scale Stats */}
-                  <div className="rounded-xl border border-border/60 bg-muted/20 p-4 space-y-3">
-                    <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
-                      Key Metrics Band (Up to 3 Metrics)
-                    </h3>
-                    <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-                      {[0, 1, 2].map((idx) => {
-                        const stat = (selectedCustomPage.stats && selectedCustomPage.stats[idx]) || { value: "", label: "" };
-                        return (
-                          <div key={idx} className="space-y-1.5 rounded-lg border border-border/40 bg-background/50 p-2.5">
-                            <label className="text-[10px] font-semibold text-muted-foreground uppercase">Metric {idx + 1}</label>
-                            <Input
-                              value={stat.value ?? ""}
-                              onChange={(e) =>
-                                handleUpdateCustomPageStat(selectedCustomPage.slug, idx, "value", e.target.value)
-                              }
-                              className="h-7 text-xs font-bold font-mono"
-                              placeholder="e.g. 11.2T"
-                            />
-                            <Input
-                              value={stat.label ?? ""}
-                              onChange={(e) =>
-                                handleUpdateCustomPageStat(selectedCustomPage.slug, idx, "label", e.target.value)
-                              }
-                              className="h-7 text-[11px]"
-                              placeholder="e.g. Public Debt"
-                            />
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <CustomPageStudioEditor
+                page={selectedCustomPage}
+                onChange={handleUpdateCustomPageWhole}
+              />
             ) : (
               <div className="p-12 text-center text-muted-foreground border border-dashed rounded-2xl">
                 Select a page from the left or click &ldquo;Create Page&rdquo;.
@@ -2188,6 +1969,86 @@ export function HeadlessPageStudio() {
             </div>
           )}
 
+
+          {/* TAB: FEATURED MEDIA & VIDEOS */}
+          {activeTab === "media" && (
+            <div className="space-y-5 rounded-2xl border border-border bg-card p-6 shadow-xs">
+              <div className="border-b border-border/50 pb-3">
+                <h2 className="text-base font-bold text-foreground">Featured Media, Videos &amp; Streams</h2>
+                <p className="text-xs text-muted-foreground">
+                  Connect Cloudflare R2 videos or YouTube links to this programme or page.
+                </p>
+              </div>
+
+              {currentProgramme ? (
+                <div className="space-y-4">
+                  <div className="rounded-xl border border-border/80 bg-muted/20 p-4 space-y-3">
+                    <div className="flex items-center justify-between">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
+                        <Film className="size-3.5 text-primary" />
+                        <span>Programme Hero Video / Media</span>
+                      </h4>
+                      <Button
+                        type="button"
+                        size="sm"
+                        variant="outline"
+                        onClick={() => setMediaPickerOpen(true)}
+                        className="h-7 text-xs gap-1.5 font-semibold"
+                      >
+                        <Sliders className="size-3.5" />
+                        <span>Select / Upload Media</span>
+                      </Button>
+                    </div>
+
+                    {currentProgramme.featuredMedia?.url ? (
+                      <div className="space-y-3">
+                        <div className="rounded-lg overflow-hidden border border-border bg-black max-w-md">
+                          <MediaEmbed
+                            src={currentProgramme.featuredMedia.url}
+                            type={currentProgramme.featuredMedia.type}
+                            title={currentProgramme.featuredMedia.title}
+                          />
+                        </div>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                          <div>
+                            <label className="text-[11px] font-semibold text-muted-foreground">Media Title</label>
+                            <Input
+                              value={currentProgramme.featuredMedia.title ?? ""}
+                              onChange={(e) => {
+                                const fm = { ...(currentProgramme.featuredMedia || {}), title: e.target.value };
+                                updateCurrentProgrammeField("featuredMedia", fm);
+                              }}
+                              className="h-7 text-xs mt-0.5"
+                            />
+                          </div>
+                          <div>
+                            <label className="text-[11px] font-semibold text-muted-foreground">Caption / Credit</label>
+                            <Input
+                              value={currentProgramme.featuredMedia.caption ?? ""}
+                              onChange={(e) => {
+                                const fm = { ...(currentProgramme.featuredMedia || {}), caption: e.target.value };
+                                updateCurrentProgrammeField("featuredMedia", fm);
+                              }}
+                              className="h-7 text-xs mt-0.5"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="text-center py-6 border border-dashed border-border rounded-lg text-xs text-muted-foreground">
+                        No video or custom media attached. Fallback to hero image: {currentProgramme.visual?.hero}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              ) : (
+                <div className="text-xs text-muted-foreground">
+                  Select a programme to manage its hero videos and stream assets.
+                </div>
+              )}
+            </div>
+          )}
+
           {/* TAB 5: BUTTONS & LINKS */}
           {activeTab === "buttons" && (
             <div className="space-y-5 rounded-2xl border border-border bg-card p-6 shadow-xs">
@@ -2859,230 +2720,10 @@ export function HeadlessPageStudio() {
           {/* Right Column: Active Custom Page Form */}
           <div className="space-y-6 lg:col-span-8">
             {selectedCustomPage ? (
-              <div className="space-y-6 rounded-2xl border border-border bg-card p-6 shadow-xs">
-                <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border/50 pb-4">
-                  <div>
-                    <h2 className="text-base font-bold text-foreground">
-                      Edit Page: {selectedCustomPage.title}
-                    </h2>
-                    <p className="text-xs text-muted-foreground">
-                      Live URL: <code className="font-mono font-bold text-primary">/pages/{selectedCustomPage.slug}</code>
-                    </p>
-                  </div>
-
-                  <div className="flex items-center gap-2">
-                    <Button
-                      asChild
-                      variant="outline"
-                      size="sm"
-                      className="gap-1.5 text-xs font-semibold"
-                    >
-                      <a
-                        href={`/pages/${selectedCustomPage.slug}`}
-                        target="_blank"
-                        rel="noreferrer"
-                      >
-                        <span>Preview Page</span>
-                        <ExternalLink className="size-3.5" />
-                      </a>
-                    </Button>
-                    <label className="flex items-center gap-2 text-xs font-medium text-foreground cursor-pointer">
-                      <input
-                        type="checkbox"
-                        checked={selectedCustomPage.published !== false}
-                        onChange={(e) =>
-                          handleUpdateCustomPageField(selectedCustomPage.slug, "published", e.target.checked)
-                        }
-                        className="rounded border-input text-emerald-600 focus:ring-emerald-500"
-                      />
-                      <span>Published (Live)</span>
-                    </label>
-                  </div>
-                </div>
-
-                <div className="space-y-4">
-                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                    <div>
-                      <label className="text-xs font-semibold text-foreground">Page Title</label>
-                      <Input
-                        value={selectedCustomPage.title ?? ""}
-                        onChange={(e) =>
-                          handleUpdateCustomPageField(selectedCustomPage.slug, "title", e.target.value)
-                        }
-                        className="mt-1 h-8 text-xs font-semibold"
-                        placeholder="e.g. Kenya Sovereign Debt Brief"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="text-xs font-semibold text-foreground">URL Slug</label>
-                      <Input
-                        value={selectedCustomPage.slug ?? ""}
-                        onChange={(e) =>
-                          handleUpdateCustomPageField(selectedCustomPage.slug, "slug", e.target.value.toLowerCase().replace(/\s+/g, "-"))
-                        }
-                        className="mt-1 h-8 text-xs font-mono"
-                        placeholder="e.g. kenya-sovereign-debt-brief"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                    <div>
-                      <label className="text-xs font-semibold text-foreground">Eyebrow Pill Tag</label>
-                      <Input
-                        value={selectedCustomPage.eyebrow ?? ""}
-                        onChange={(e) =>
-                          handleUpdateCustomPageField(selectedCustomPage.slug, "eyebrow", e.target.value)
-                        }
-                        className="mt-1 h-8 text-xs"
-                        placeholder="e.g. Special Brief · BNS Connect"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="text-xs font-semibold text-foreground">SEO Description (Meta Tag)</label>
-                      <Input
-                        value={selectedCustomPage.seoDescription ?? ""}
-                        onChange={(e) =>
-                          handleUpdateCustomPageField(selectedCustomPage.slug, "seoDescription", e.target.value)
-                        }
-                        className="mt-1 h-8 text-xs"
-                        placeholder="Concise description for Google search and WhatsApp previews"
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="text-xs font-semibold text-foreground">Hero Headline</label>
-                    <Input
-                      value={selectedCustomPage.headline ?? ""}
-                      onChange={(e) =>
-                        handleUpdateCustomPageField(selectedCustomPage.slug, "headline", e.target.value)
-                      }
-                      className="mt-1 text-sm font-bold"
-                      placeholder="e.g. Tracking Kenya's Sovereign Debt & Statutory Obligations"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="text-xs font-semibold text-foreground">Hero Lead Paragraph (Lede)</label>
-                    <textarea
-                      value={selectedCustomPage.body ?? ""}
-                      onChange={(e) =>
-                        handleUpdateCustomPageField(selectedCustomPage.slug, "body", e.target.value)
-                      }
-                      rows={3}
-                      className="mt-1 w-full rounded-md border border-input bg-background p-2.5 text-xs text-foreground focus-visible:outline-none leading-relaxed"
-                      placeholder="Core summary statement introducing the brief or campaign..."
-                    />
-                  </div>
-
-                  <div>
-                    <label className="text-xs font-semibold text-foreground">
-                      Full Editorial Longform Content (Markdown / Prose)
-                    </label>
-                    <textarea
-                      value={selectedCustomPage.content ?? ""}
-                      onChange={(e) =>
-                        handleUpdateCustomPageField(selectedCustomPage.slug, "content", e.target.value)
-                      }
-                      rows={6}
-                      className="mt-1 w-full rounded-md border border-input bg-background p-2.5 text-xs text-foreground font-sans focus-visible:outline-none leading-relaxed"
-                      placeholder="Write the full narrative or body text here. You can separate paragraphs with empty lines."
-                    />
-                  </div>
-
-                  {/* Primary & Secondary Action Buttons */}
-                  <div className="rounded-xl border border-border/60 bg-muted/20 p-4 space-y-3">
-                    <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
-                      Call-to-Action Buttons
-                    </h3>
-                    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                      <div>
-                        <label className="text-[11px] font-semibold text-foreground">Primary Button Label</label>
-                        <Input
-                          value={selectedCustomPage.ctaLabel ?? ""}
-                          onChange={(e) =>
-                            handleUpdateCustomPageField(selectedCustomPage.slug, "ctaLabel", e.target.value)
-                          }
-                          className="mt-1 h-8 text-xs"
-                          placeholder="Discuss Co-Funding"
-                        />
-                      </div>
-                      <div>
-                        <label className="text-[11px] font-semibold text-foreground">Primary Button Target URL</label>
-                        <Input
-                          value={selectedCustomPage.ctaHref ?? ""}
-                          onChange={(e) =>
-                            handleUpdateCustomPageField(selectedCustomPage.slug, "ctaHref", e.target.value)
-                          }
-                          className="mt-1 h-8 text-xs font-mono"
-                          placeholder="/contact?intent=partner"
-                        />
-                      </div>
-                    </div>
-
-                    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                      <div>
-                        <label className="text-[11px] font-semibold text-foreground">Secondary Button Label</label>
-                        <Input
-                          value={selectedCustomPage.secondaryLabel ?? ""}
-                          onChange={(e) =>
-                            handleUpdateCustomPageField(selectedCustomPage.slug, "secondaryLabel", e.target.value)
-                          }
-                          className="mt-1 h-8 text-xs"
-                          placeholder="View All Programmes"
-                        />
-                      </div>
-                      <div>
-                        <label className="text-[11px] font-semibold text-foreground">Secondary Button Target URL</label>
-                        <Input
-                          value={selectedCustomPage.secondaryHref ?? ""}
-                          onChange={(e) =>
-                            handleUpdateCustomPageField(selectedCustomPage.slug, "secondaryHref", e.target.value)
-                          }
-                          className="mt-1 h-8 text-xs font-mono"
-                          placeholder="/programmes"
-                        />
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Key Metrics / Scale Stats */}
-                  <div className="rounded-xl border border-border/60 bg-muted/20 p-4 space-y-3">
-                    <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
-                      Key Metrics Band (Up to 3 Metrics)
-                    </h3>
-                    <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-                      {[0, 1, 2].map((idx) => {
-                        const stat = (selectedCustomPage.stats && selectedCustomPage.stats[idx]) || { value: "", label: "" };
-                        return (
-                          <div key={idx} className="space-y-1.5 rounded-lg border border-border/40 bg-background/50 p-2.5">
-                            <label className="text-[10px] font-semibold text-muted-foreground uppercase">Metric {idx + 1}</label>
-                            <Input
-                              value={stat.value ?? ""}
-                              onChange={(e) =>
-                                handleUpdateCustomPageStat(selectedCustomPage.slug, idx, "value", e.target.value)
-                              }
-                              className="h-7 text-xs font-bold font-mono"
-                              placeholder="e.g. 11.2T"
-                            />
-                            <Input
-                              value={stat.label ?? ""}
-                              onChange={(e) =>
-                                handleUpdateCustomPageStat(selectedCustomPage.slug, idx, "label", e.target.value)
-                              }
-                              className="h-7 text-[11px]"
-                              placeholder="e.g. Public Debt"
-                            />
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <CustomPageStudioEditor
+                page={selectedCustomPage}
+                onChange={handleUpdateCustomPageWhole}
+              />
             ) : (
               <div className="p-12 text-center text-muted-foreground border border-dashed rounded-2xl">
                 Select a page from the left or click &ldquo;Create Page&rdquo;.

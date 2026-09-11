@@ -11,6 +11,7 @@ import { ProgrammeProjectGrid } from "@/components/programmes/programme-project-
 import {
   LandingSection,
 } from "@/layouts/landing-section";
+import { MediaEmbed } from "@/components/ui/media-embed";
 import {
   HERO_SECTION_PADDING,
   SECTION_SHELL_INNER,
@@ -99,18 +100,30 @@ export function ProgrammeLandingLayout({
               </div>
 
               <figure className="space-y-2.5 lg:col-span-7">
-                <div className="relative aspect-[4/3] w-full overflow-hidden bg-muted md:aspect-[16/10]">
-                  <Image
-                    src={programme.visual.hero}
-                    alt={programme.visual.heroAlt}
-                    fill
-                    priority
-                    className="object-cover object-center"
-                    sizes="(max-width: 1024px) 100vw, 55vw"
-                  />
-                </div>
+                {programme.featuredMedia?.url ? (
+                  <div className="overflow-hidden rounded-lg border border-border/60 shadow-lg">
+                    <MediaEmbed
+                      src={programme.featuredMedia.url}
+                      type={programme.featuredMedia.type}
+                      title={programme.featuredMedia.title}
+                      caption={programme.featuredMedia.caption}
+                      controls
+                    />
+                  </div>
+                ) : (
+                  <div className="relative aspect-[4/3] w-full overflow-hidden bg-muted md:aspect-[16/10]">
+                    <Image
+                      src={programme.visual.hero}
+                      alt={programme.visual.heroAlt}
+                      fill
+                      priority
+                      className="object-cover object-center"
+                      sizes="(max-width: 1024px) 100vw, 55vw"
+                    />
+                  </div>
+                )}
                 <figcaption className={cn(T.caption, "text-muted-foreground")}>
-                  {programme.visual.heroAlt}
+                  {programme.featuredMedia?.caption || programme.visual.heroAlt}
                 </figcaption>
               </figure>
             </div>
