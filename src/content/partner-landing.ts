@@ -19,6 +19,37 @@ export type PartnerLandingStill = {
   storyLine: string;
 };
 
+import landingJson from "@/content/landing.json";
+
+const rawLanding = landingJson as {
+  heroNarrative?: {
+    eyebrow: string;
+    title: string;
+    lede: string;
+  };
+  thesis?: {
+    eyebrow: string;
+    title: string;
+    body: string;
+    method: string;
+  };
+  featuredIntro?: {
+    eyebrow: string;
+    headline: string;
+    lede: string;
+  };
+  partnerCta?: {
+    eyebrow: string;
+    title: string;
+    description: string;
+    ctaLabel: string;
+    ctaHref?: string;
+    secondaryLabel: string;
+    secondaryHref?: string;
+  };
+  programmeExplains?: PartnerProgrammeExplain[];
+};
+
 /** Canonical programme noun phrases — hero, sections, and CTA must reuse these. */
 export const PARTNER_PROGRAMME_VOCAB = {
   connect: {
@@ -51,11 +82,12 @@ export const PARTNER_PROGRAMME_VOCAB = {
  * Programme names must match PARTNER_PROGRAMME_VOCAB; no vanity reach stats.
  */
 export const PARTNER_HERO_NARRATIVE = {
-  eyebrow: "After Budget Day",
-  title: "The books land. Then the silence.",
+  eyebrow: rawLanding.heroNarrative?.eyebrow ?? "After Budget Day",
+  title: rawLanding.heroNarrative?.title ?? "The books land. Then the silence.",
   lede:
+    rawLanding.heroNarrative?.lede ??
     "Every year the budget is read from the Treasury. Through BNS Connect we read, analyse, and interpret. In BNS Mashinani we verify in four counties. Wanahabari Lab delivers research-worthy reporting — all captured by BNS Studio.",
-} as const;
+};
 
 /**
  * Brand-level promise + who/how — first text band after the hero reel.
@@ -63,31 +95,36 @@ export const PARTNER_HERO_NARRATIVE = {
  * Expands the hero chain; does not invent a second method story.
  */
 export const PARTNER_LANDING_THESIS = {
-  eyebrow: "Who we are",
-  title: "Three bets. Year-round accountability.",
+  eyebrow: rawLanding.thesis?.eyebrow ?? "Who we are",
+  title: rawLanding.thesis?.title ?? "Three bets. Year-round accountability.",
   body:
+    rawLanding.thesis?.body ??
     "Budget Ndio Story verifies what Treasury and counties publish, embeds where delivery happens, and trains newsrooms to stay forensic after Budget Day — so partners fund accountability they can brief and cite.",
   /** Shared method whisper — verify → embed → train/co-produce */
-  method: "Verify → embed → train & co-produce",
-} as const;
+  method: rawLanding.thesis?.method ?? "Verify → embed → train & co-produce",
+};
 
 /** Featured-projects intro — stories behind the evidence (no vanity millions). */
 export const PARTNER_FEATURED_INTRO = {
-  eyebrow: "Stories behind the evidence",
-  headline: "Projects partners can brief against",
+  eyebrow: rawLanding.featuredIntro?.eyebrow ?? "Stories behind the evidence",
+  headline: rawLanding.featuredIntro?.headline ?? "Projects partners can brief against",
   lede:
+    rawLanding.featuredIntro?.lede ??
     "Published films and convenings — AFRODAD debt forums, Red Flags, and Project TERRA — with local event photography as cover art. Titles stay fresh from YouTube; reach claims stay off the page.",
-} as const;
+};
 
 /** Closing partnership band — invest against the three phrases. */
 export const PARTNER_LANDING_CTA = {
-  eyebrow: "Partner with us",
-  title: "Fund the bet that fits your mandate.",
+  eyebrow: rawLanding.partnerCta?.eyebrow ?? "Partner with us",
+  title: rawLanding.partnerCta?.title ?? "Fund the bet that fits your mandate.",
   description:
+    rawLanding.partnerCta?.description ??
     "Co-fund national budget intelligence, county delivery verification, or newsroom scrutiny — with production captured through BNS Studio.",
-  ctaLabel: "Discuss a partnership",
-  secondaryLabel: "View programmes",
-} as const;
+  ctaLabel: rawLanding.partnerCta?.ctaLabel ?? "Discuss a partnership",
+  ctaHref: rawLanding.partnerCta?.ctaHref ?? "/contact?intent=partner",
+  secondaryLabel: rawLanding.partnerCta?.secondaryLabel ?? "View programmes",
+  secondaryHref: rawLanding.partnerCta?.secondaryHref ?? "/programmes",
+};
 
 export const PARTNER_LANDING_STILLS: PartnerLandingStill[] = [
   {
@@ -203,7 +240,7 @@ export type PartnerProgrammeExplain = {
   stillIds: string[];
 };
 
-export const PARTNER_PROGRAMME_EXPLAINS: PartnerProgrammeExplain[] = [
+const DEFAULT_PROGRAMME_EXPLAINS: PartnerProgrammeExplain[] = [
   {
     slug: "connect",
     number: "01",
@@ -250,6 +287,11 @@ export const PARTNER_PROGRAMME_EXPLAINS: PartnerProgrammeExplain[] = [
     stillIds: ["hall-camera", "latif-launch"],
   },
 ];
+
+export const PARTNER_PROGRAMME_EXPLAINS: PartnerProgrammeExplain[] =
+  rawLanding.programmeExplains && rawLanding.programmeExplains.length > 0
+    ? (rawLanding.programmeExplains as PartnerProgrammeExplain[])
+    : DEFAULT_PROGRAMME_EXPLAINS;
 
 export function stillsForIds(ids: string[]): PartnerLandingStill[] {
   return ids

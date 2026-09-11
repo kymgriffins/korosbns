@@ -36,6 +36,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { HeadlessPageStudio } from "./HeadlessPageStudio";
 
 const CATEGORIES: ("All" | CmsCategory)[] = [
   "All",
@@ -61,6 +62,7 @@ export function HeadlessCmsStudio() {
   const [activeView, setActiveView] = useState<"json" | "tree" | "preview">("json");
   const [lastSavedTime, setLastSavedTime] = useState<string | null>(null);
   const [diskPersisted, setDiskPersisted] = useState(true);
+  const [studioMode, setStudioMode] = useState<"pages" | "raw">("pages");
 
   const collectionMeta = CMS_COLLECTIONS_CATALOG[selectedSlug] || allCollections[0];
 
@@ -283,8 +285,52 @@ export function HeadlessCmsStudio() {
 
   return (
     <div className="space-y-6">
-      {/* Studio Header Banner */}
-      <div className="rounded-2xl border border-border/80 bg-card shadow-sm p-6 relative overflow-hidden space-y-4">
+      {/* Studio Mode Selector (Visual Page Studio vs Raw Datasets Studio) */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-2 rounded-2xl border border-border bg-card shadow-xs">
+        <div className="flex rounded-xl bg-muted/60 p-1">
+          <button
+            type="button"
+            onClick={() => setStudioMode("pages")}
+            className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold transition-all ${
+              studioMode === "pages"
+                ? "bg-background text-foreground shadow-xs"
+                : "text-muted-foreground hover:text-foreground"
+            }`}
+          >
+            <span>🎨 Visual Page Studio</span>
+            <Badge variant="secondary" className="text-[10px] px-1.5 py-0 h-4">
+              Landing, /programmes &amp; Pages
+            </Badge>
+          </button>
+          <button
+            type="button"
+            onClick={() => setStudioMode("raw")}
+            className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold transition-all ${
+              studioMode === "raw"
+                ? "bg-background text-foreground shadow-xs"
+                : "text-muted-foreground hover:text-foreground"
+            }`}
+          >
+            <span>💻 Raw JSON &amp; Datasets Studio</span>
+            <Badge variant="outline" className="text-[10px] px-1.5 py-0 h-4">
+              23 Collections
+            </Badge>
+          </button>
+        </div>
+
+        <div className="text-xs text-muted-foreground px-2">
+          {studioMode === "pages"
+            ? "Visual form editor for pages, copy, buttons, and sections"
+            : "Direct raw JSON editing and bulk disk synchronization"}
+        </div>
+      </div>
+
+      {studioMode === "pages" ? (
+        <HeadlessPageStudio />
+      ) : (
+        <>
+          {/* Studio Header Banner */}
+          <div className="rounded-2xl border border-border/80 bg-card shadow-sm p-6 relative overflow-hidden space-y-4">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
           <div className="flex items-center gap-3.5">
             <div className="p-3 rounded-2xl bg-purple-500/10 text-purple-500 border border-purple-500/20 shrink-0">
@@ -640,6 +686,8 @@ export function HeadlessCmsStudio() {
           </div>
         </div>
       </div>
+      </>
+      )}
     </div>
   );
 }

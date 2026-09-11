@@ -74,6 +74,7 @@ export type ProgrammeBlock = {
   seoTitle: string;
   seoDescription: string;
   cta: ProgrammeCta;
+  secondaryCta?: ProgrammeCta;
   href: string;
   visual: ProgrammeVisual;
   stats?: ProgrammeStat[];

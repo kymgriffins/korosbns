@@ -1,4 +1,70 @@
 {
+  "heroNarrative": {
+    "eyebrow": "After Budget Day",
+    "title": "The books land. Then the silence.",
+    "lede": "Every year the budget is read from the Treasury. Through BNS Connect we read, analyse, and interpret. In BNS Mashinani we verify in four counties. Wanahabari Lab delivers research-worthy reporting — all captured by BNS Studio."
+  },
+  "thesis": {
+    "eyebrow": "Who we are",
+    "title": "Three bets. Year-round accountability.",
+    "body": "Budget Ndio Story verifies what Treasury and counties publish, embeds where delivery happens, and trains newsrooms to stay forensic after Budget Day — so partners fund accountability they can brief and cite.",
+    "method": "Verify → embed → train & co-produce"
+  },
+  "programmeExplains": [
+    {
+      "slug": "connect",
+      "number": "01",
+      "name": "BNS Connect",
+      "eyebrow": "Connect",
+      "title": "National budget intelligence",
+      "lede": "We verify what Treasury publishes and keep national debt and allocation questions alive after Budget Day.",
+      "success": "Success looks like a baseline partners can fund and cite — AFRODAD debt forums, continental panels, continuous scrutiny.",
+      "cycle": "Formulation → Budget Day → continuous scrutiny",
+      "href": "/programmes/connect",
+      "ctaLabel": "Read more",
+      "stillIds": ["maingi-afrodad", "wajackoyah-afrodad"]
+    },
+    {
+      "slug": "mashinani",
+      "number": "02",
+      "name": "BNS Mashinani",
+      "eyebrow": "Mashinani",
+      "title": "County delivery verification",
+      "lede": "Full-cycle embeds in Kakamega, Kilifi, Nakuru, and Wajir track whether equitable share reaches clinics, roads, and schools.",
+      "success": "Success looks like scorecards, town halls, and field briefings that show delivery — not estimates alone.",
+      "cycle": "Estimates → assembly → disbursement & delivery",
+      "href": "/programmes/mashinani",
+      "ctaLabel": "Read more",
+      "stillIds": ["townhall-room", "townhall-brief"]
+    },
+    {
+      "slug": "wanahabari-lab",
+      "number": "03",
+      "name": "Wanahabari Lab",
+      "eyebrow": "Wanahabari",
+      "title": "Newsroom scrutiny",
+      "lede": "Training and co-production keep journalists forensic after Budget Day — when the spending story actually begins.",
+      "success": "Success looks like investigations and launches partners can brief against — Red Flags, TERRA, newsroom-ready scrutiny.",
+      "cycle": "Post–Budget Day → investigations & public narrative",
+      "href": "/programmes/wanahabari-lab",
+      "ctaLabel": "Read more",
+      "stillIds": ["hall-camera", "latif-launch"]
+    }
+  ],
+  "featuredIntro": {
+    "eyebrow": "Stories behind the evidence",
+    "headline": "Projects partners can brief against",
+    "lede": "Published films and convenings — AFRODAD debt forums, Red Flags, and Project TERRA — with local event photography as cover art. Titles stay fresh from YouTube; reach claims stay off the page."
+  },
+  "partnerCta": {
+    "eyebrow": "Partner with us",
+    "title": "Fund the bet that fits your mandate.",
+    "description": "Co-fund national budget intelligence, county delivery verification, or newsroom scrutiny — with production captured through BNS Studio.",
+    "ctaLabel": "Discuss a partnership",
+    "ctaHref": "/contact?intent=partner",
+    "secondaryLabel": "View programmes",
+    "secondaryHref": "/programmes"
+  },
   "hero": {
     "brand": "Budget Ndio Story",
     "headlineBefore": "Follow the budget.",

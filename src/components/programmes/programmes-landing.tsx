@@ -73,14 +73,14 @@ export function ProgrammesLanding() {
                 ) : null}
                 <div className="flex w-full flex-col gap-3 pt-2 sm:w-auto sm:flex-row sm:items-center">
                   <PillButtonGroup
-                    href="#programmes-matrix"
+                    href={landing.exploreCta?.href ?? "#programmes-matrix"}
                     label={landing.exploreCta?.label ?? "Explore Programmes"}
                     variant="primary"
                     className="w-full justify-center sm:w-auto"
                   />
                   <PillButtonGroup
-                    href="/contact?intent=partner"
-                    label="Discuss Partnership"
+                    href={(landing as { partnerCta?: { label: string; href: string } }).partnerCta?.href ?? "/contact?intent=partner"}
+                    label={(landing as { partnerCta?: { label: string; href: string } }).partnerCta?.label ?? "Discuss Partnership"}
                     variant="outline"
                     className="w-full justify-center sm:w-auto"
                   />

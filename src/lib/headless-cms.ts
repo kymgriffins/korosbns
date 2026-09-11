@@ -19,6 +19,7 @@ import aboutContent from "@/content/about.json";
 import mediaContent from "@/content/media.json";
 import socialsContent from "@/content/socials.json";
 import timelineContent from "@/content/timeline.json";
+import partnerPageSectionsContent from "@/content/partner-page-sections.json";
 import orgContent from "@/data/org/org.json";
 import countiesAllocationsContent from "@/data/counties-allocations.json";
 import bnsConfigContent from "@/constants/bnsConfig.json";
@@ -68,6 +69,7 @@ export type CoreCmsCollectionSlug = (typeof CORE_CMS_SLUGS)[number];
 
 export type CmsCollectionSlug =
   | CoreCmsCollectionSlug
+  | "partner-page-sections"
   | "org"
   | "counties-allocations"
   | "bns-config"
@@ -166,6 +168,16 @@ export const CMS_COLLECTIONS_CATALOG: Record<CmsCollectionSlug, CmsCollectionMet
     itemCount: 14,
     lastUpdated: new Date().toISOString(),
     schemaKeys: ["milestones", "meetings"],
+  },
+  "partner-page-sections": {
+    slug: "partner-page-sections",
+    name: "Partner Page Sections & Policy",
+    description: "Section visibility toggles and Jan Kennis <=5 visible blocks policy enforcement.",
+    category: "Platform Config & Documents",
+    filePath: "src/content/partner-page-sections.json",
+    itemCount: Object.keys((partnerPageSectionsContent as { pages?: Record<string, unknown> }).pages ?? {}).length,
+    lastUpdated: new Date().toISOString(),
+    schemaKeys: ["policy", "pages"],
   },
   org: {
     slug: "org",
@@ -343,6 +355,7 @@ const _cmsDataCache: Record<CmsCollectionSlug, Record<string, unknown>> = {
   media: mediaContent as Record<string, unknown>,
   socials: socialsContent as Record<string, unknown>,
   timeline: timelineContent as Record<string, unknown>,
+  "partner-page-sections": partnerPageSectionsContent as Record<string, unknown>,
   org: orgContent as unknown as Record<string, unknown>,
   "counties-allocations": countiesAllocationsContent as unknown as Record<string, unknown>,
   "bns-config": bnsConfigContent as unknown as Record<string, unknown>,

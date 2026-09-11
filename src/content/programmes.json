@@ -7,7 +7,11 @@
     "subhead": "Three programmes — Connect, Mashinani, and Wanahabari — with evidence captured through BNS Studio.",
     "exploreCta": {
       "label": "Explore Programmes",
-      "href": "#programmes-map"
+      "href": "#programmes-matrix"
+    },
+    "partnerCta": {
+      "label": "Discuss Partnership",
+      "href": "/contact?intent=partner"
     }
   },
   "cardBlurbs": {
@@ -168,6 +172,11 @@
         "href": "/contact?intent=budget-tracker",
         "note": "Application route for youth Budget Trackers"
       },
+      "secondaryCta": {
+        "label": "Discuss Co-Funding",
+        "href": "/contact?intent=partner&programme=connect",
+        "note": "Co-funding enquiry for BNS Connect"
+      },
       "href": "/programmes/connect",
       "visual": {
         "hero": "/images/cohort1 groundworks/129A3964.jpg",
@@ -280,6 +289,11 @@
         "label": "See your county's scorecard",
         "href": "/reports",
         "note": "County scorecards for Kakamega, Kilifi, Nakuru, and Wajir"
+      },
+      "secondaryCta": {
+        "label": "Discuss Co-Funding",
+        "href": "/contact?intent=partner&programme=mashinani",
+        "note": "Co-funding enquiry for BNS Mashinani"
       },
       "href": "/programmes/mashinani",
       "visual": {
@@ -394,6 +408,11 @@
         "href": "/contact?intent=wanahabari-lab",
         "note": "Lab applications open with each quarterly cohort"
       },
+      "secondaryCta": {
+        "label": "Discuss Co-Funding",
+        "href": "/contact?intent=partner&programme=wanahabari-lab",
+        "note": "Co-funding enquiry for Wanahabari Lab"
+      },
       "href": "/programmes/wanahabari-lab",
       "visual": {
         "hero": "/images/stakeholders/129A4113.jpg",
@@ -474,6 +493,11 @@
         "label": "Commission BNS Studios",
         "href": "/bns-studio#booking",
         "note": "Commissioning enquiries via BNS Studios"
+      },
+      "secondaryCta": {
+        "label": "Browse Reel",
+        "href": "/bns-studio",
+        "note": "Browse current studio productions"
       },
       "href": "/bns-studio",
       "visual": {

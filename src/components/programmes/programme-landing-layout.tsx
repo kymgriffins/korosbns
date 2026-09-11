@@ -78,8 +78,8 @@ export function ProgrammeLandingLayout({
                 </p>
                 <div className="flex w-full flex-col gap-3 pt-2 sm:w-auto sm:flex-row sm:items-center">
                   <PillButtonGroup
-                    href={`/contact?intent=partner&programme=${programme.slug}`}
-                    label="Discuss Co-Funding"
+                    href={programme.secondaryCta?.href ?? `/contact?intent=partner&programme=${programme.slug}`}
+                    label={programme.secondaryCta?.label ?? "Discuss Co-Funding"}
                     variant="primary"
                     className="w-full justify-center sm:w-auto"
                   />
