@@ -214,16 +214,16 @@ export function HeadlessPageStudio() {
         const json = await resCustom.json();
         const pages = json.data?.pages || [];
         setCustomPagesData(json.data || { pages: [] });
-        if (pages.length > 0 && !selectedCustomPageSlug) {
-          setSelectedCustomPageSlug(pages[0].slug);
+        if (pages.length > 0) {
+          setSelectedCustomPageSlug((prev) => prev || pages[0].slug);
         }
       }
       if (resFeatured.ok) {
         const json = await resFeatured.json();
         const results = json.data?.results || [];
         setFeaturedData(json.data || { results: [] });
-        if (results.length > 0 && !selectedFeaturedId) {
-          setSelectedFeaturedId(results[0].id);
+        if (results.length > 0) {
+          setSelectedFeaturedId((prev) => prev || results[0].id);
         }
       }
       setLastSaved(new Date().toLocaleTimeString());
@@ -232,7 +232,7 @@ export function HeadlessPageStudio() {
     } finally {
       setIsLoading(false);
     }
-  }, [selectedCustomPageSlug, selectedFeaturedId]);
+  }, []);
 
   useEffect(() => {
     loadAllData();
@@ -400,31 +400,32 @@ export function HeadlessPageStudio() {
 
   // Custom Pages Handlers
   const handleAddCustomPage = () => {
-    const slug = `brief-${Date.now().toString(36)}`;
+    const randomSuffix = Math.random().toString(36).substring(2, 6);
+    const slug = `civic-campaign-${randomSuffix}`;
     const newPage = {
       slug,
-      title: "New Public Finance Brief",
-      seoDescription: "Independent fiscal intelligence and public expenditure tracking brief.",
-      eyebrow: "Special Brief · BNS Connect",
-      headline: "Tracking Public Expenditure & Policy Execution",
-      body: "Comprehensive analysis breaking down statutory budget allocations, county transfers, and policy implementation milestones.",
-      content: "Public budget debates require verified empirical baselines. This brief provides partners, civil society, and newsrooms with structured data tracking public allocations against actual statutory disbursements.\n\nAll figures are sourced directly from verified Controller of Budget reports and National Treasury releases.",
-      ctaLabel: "Discuss Co-Funding",
+      title: "New Civic Initiative Page",
+      seoDescription: "An evidence-based civic brief tracking public expenditures and devolution milestones.",
+      eyebrow: "Civic Initiative · BNS Special",
+      headline: "Empowering Citizen Scrutiny & Public Accountability",
+      body: "An independent analysis exploring budgetary efficiency, county spending patterns, and civic monitoring baselines across Kenya.",
+      content: "Public participation thrives when citizens have direct access to clear, uncompromised financial data.\n\nThis initiative bridges grassroots investigative reporting with fiscal data to ensure every shilling allocated to public interest projects is accounted for.",
+      ctaLabel: "Download Policy Brief",
       ctaHref: "/contact?intent=partner",
       secondaryLabel: "Explore All Programmes",
       secondaryHref: "/programmes",
       stats: [
-        { value: "100%", label: "Verified Statutory Data" },
         { value: "47", label: "Counties Monitored" },
-        { value: "Quarterly", label: "Reporting Frequency" },
+        { value: "100%", label: "Verified Data" },
+        { value: "Quarterly", label: "Audit Reports" },
       ],
-      published: true,
+      published: false,
       createdAt: new Date().toISOString(),
     };
     const updatedPages = [...(customPagesData.pages || []), newPage];
     setCustomPagesData({ pages: updatedPages });
     setSelectedCustomPageSlug(slug);
-    toast.success("Created new custom page draft!");
+    toast.success("Created new draft page! Edit below and save to drafts or publish live.");
   };
 
   const handleDeleteCustomPage = (slug: string) => {
@@ -608,7 +609,7 @@ export function HeadlessPageStudio() {
 
   const activePreviewRoute = useMemo(() => {
     if (selectedPageKey === "custom-pages") {
-      return selectedCustomPage?.slug ? `/pages/${selectedCustomPage.slug}` : "/pages";
+      return selectedCustomPage?.slug ? `/pages/${selectedCustomPage.slug}?preview=true` : "/pages";
     }
     if (selectedPageKey === "featured-blogs") {
       return "/#featured-projects";
@@ -1083,12 +1084,16 @@ export function HeadlessPageStudio() {
                       <div className="flex items-start justify-between gap-2">
                         <div className="space-y-1">
                           <div className="flex items-center gap-1.5">
-                            <span
-                              className={`h-2 w-2 rounded-full ${
-                                page.published !== false ? "bg-emerald-500" : "bg-amber-500"
-                              }`}
-                            />
-                            <span className="font-mono text-[10px] text-muted-foreground">
+                            {page.published !== false ? (
+                              <span className="rounded bg-emerald-500/20 px-1.5 py-0.5 font-mono text-[9px] font-bold text-emerald-600 dark:text-emerald-400">
+                                LIVE
+                              </span>
+                            ) : (
+                              <span className="rounded bg-amber-500/20 px-1.5 py-0.5 font-mono text-[9px] font-bold text-amber-600 dark:text-amber-400">
+                                DRAFT
+                              </span>
+                            )}
+                            <span className="font-mono text-[10px] text-muted-foreground truncate max-w-[140px]">
                               /pages/{page.slug}
                             </span>
                           </div>
@@ -1138,25 +1143,44 @@ export function HeadlessPageStudio() {
                       className="gap-1.5 text-xs font-semibold"
                     >
                       <a
-                        href={`/pages/${selectedCustomPage.slug}`}
+                        href={`/pages/${selectedCustomPage.slug}?preview=true`}
                         target="_blank"
                         rel="noreferrer"
                       >
-                        <span>Preview Page</span>
+                        <span>Open Preview</span>
                         <ExternalLink className="size-3.5" />
                       </a>
                     </Button>
-                    <label className="flex items-center gap-2 text-xs font-medium text-foreground cursor-pointer">
-                      <input
-                        type="checkbox"
-                        checked={selectedCustomPage.published !== false}
-                        onChange={(e) =>
-                          handleUpdateCustomPageField(selectedCustomPage.slug, "published", e.target.checked)
+                    <div className="flex items-center rounded-xl bg-muted/80 p-0.5 border border-border/80 shadow-xs">
+                      <button
+                        type="button"
+                        onClick={() =>
+                          handleUpdateCustomPageField(selectedCustomPage.slug, "published", false)
                         }
-                        className="rounded border-input text-emerald-600 focus:ring-emerald-500"
-                      />
-                      <span>Published (Live)</span>
-                    </label>
+                        className={`px-2.5 py-1 rounded-lg text-xs font-semibold transition-all ${
+                          selectedCustomPage.published === false
+                            ? "bg-amber-500 text-white font-bold shadow-xs"
+                            : "text-muted-foreground hover:text-foreground"
+                        }`}
+                        title="Save as draft (hidden from public live site)"
+                      >
+                        Draft
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() =>
+                          handleUpdateCustomPageField(selectedCustomPage.slug, "published", true)
+                        }
+                        className={`px-2.5 py-1 rounded-lg text-xs font-semibold transition-all ${
+                          selectedCustomPage.published !== false
+                            ? "bg-emerald-600 text-white font-bold shadow-xs"
+                            : "text-muted-foreground hover:text-foreground"
+                        }`}
+                        title="Publish live to public visitors at /pages/[slug]"
+                      >
+                        Published
+                      </button>
+                    </div>
                   </div>
                 </div>
 

@@ -19,6 +19,26 @@
       ],
       "published": true,
       "createdAt": "2026-09-11T12:00:00Z"
+    },
+    {
+      "slug": "county-fiscal-transparency-initiative",
+      "title": "County Fiscal Transparency Initiative 2026",
+      "seoDescription": "Citizen-led public expenditure tracking and devolution oversight across Kenya's 47 counties.",
+      "eyebrow": "Civic Field Investigation · BNS Mashinani",
+      "headline": "Citizen-Led County Budget Tracking & Devolution Oversight",
+      "body": "A nationwide civic monitoring initiative empowering grassroots communities, youth advocates, and local reporters with forensic budget analysis to verify public expenditure.",
+      "content": "Devolution promised to bring resources closer to the people, yet county procurement bottlenecks, pending bills, and under-disbursement of equalization funds continue to impede community development.\n\nThe County Fiscal Transparency Initiative combines on-the-ground civic audits with real-time statutory disbursement records released by the Controller of Budget. By transforming dry fiscal reports into accessible community dashboards and local townhall briefings, we enable everyday citizens to ask the right questions about clinic supplies, rural access roads, and early childhood education funds.",
+      "ctaLabel": "Download County Brief",
+      "ctaHref": "/contact?intent=partner",
+      "secondaryLabel": "Explore BNS Mashinani",
+      "secondaryHref": "/programmes/mashinani",
+      "stats": [
+        { "value": "47", "label": "Counties Monitored" },
+        { "value": "KSh 385B", "label": "Equitable Share Tracked" },
+        { "value": "1,400+", "label": "Community Monitors" }
+      ],
+      "published": true,
+      "createdAt": "2026-09-11T15:00:00Z"
     }
   ]
 }

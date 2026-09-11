@@ -7,7 +7,11 @@ import { LandingSection } from "@/layouts/landing-section";
 import { EditorialPill, PillButtonGroup, EditorialCtaBand } from "@/components/ui/editorial";
 import { LANDING_TYPOGRAPHY as T } from "@/constants/landing-typography";
 import { cn } from "@/utils";
+import fs from "node:fs";
+import path from "node:path";
 import customPagesJson from "@/content/custom-pages.json";
+
+export const dynamicParams = true;
 
 export type CustomPageItem = {
   slug: string;
@@ -26,13 +30,29 @@ export type CustomPageItem = {
   createdAt?: string;
 };
 
-function getCustomPage(slug: string): CustomPageItem | undefined {
-  const pages = (customPagesJson.pages || []) as CustomPageItem[];
-  return pages.find((p) => p.slug === slug && p.published !== false);
+function getAllCustomPages(): CustomPageItem[] {
+  try {
+    const filePath = path.resolve(process.cwd(), "src/content/custom-pages.json");
+    if (fs.existsSync(filePath)) {
+      const raw = fs.readFileSync(filePath, "utf-8");
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed?.pages)) {
+        return parsed.pages;
+      }
+    }
+  } catch {
+    // fallback
+  }
+  return (customPagesJson.pages || []) as CustomPageItem[];
+}
+
+function getCustomPage(slug: string, isPreview = false): CustomPageItem | undefined {
+  const pages = getAllCustomPages();
+  return pages.find((p) => p.slug === slug && (isPreview || p.published !== false));
 }
 
 export function generateStaticParams() {
-  const pages = (customPagesJson.pages || []) as CustomPageItem[];
+  const pages = getAllCustomPages();
   return pages.map((p) => ({ slug: p.slug }));
 }
 
@@ -42,7 +62,7 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const page = getCustomPage(slug);
+  const page = getCustomPage(slug, true);
   if (!page) {
     return buildPageMetadata({
       title: "Page Not Found | Budget Ndio Story",
@@ -60,18 +80,46 @@ export async function generateMetadata({
 
 export default async function DynamicCustomPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ slug: string }>;
+  searchParams?: Promise<{ preview?: string }>;
 }) {
   const { slug } = await params;
-  const page = getCustomPage(slug);
+  const search = searchParams ? await searchParams : {};
+  const isPreview = search?.preview === "true";
+  const page = getCustomPage(slug, isPreview);
 
   if (!page) {
     notFound();
   }
 
+  const isDraft = page.published === false;
+
   return (
     <div className="w-full min-h-dvh bg-background text-foreground overflow-x-clip">
+      {/* Draft or Preview Banner */}
+      {isDraft ? (
+        <div className="w-full bg-amber-500/15 border-b border-amber-500/30 px-4 sm:px-6 py-3 flex items-center justify-between gap-4 text-amber-900 dark:text-amber-200">
+          <div className="flex items-center gap-2 text-xs font-semibold">
+            <span className="flex size-2 rounded-full bg-amber-500 animate-pulse" />
+            <span>🟡 DRAFT PREVIEW MODE — This page is saved in Drafts and is NOT visible to public live visitors.</span>
+          </div>
+          <span className="text-[10px] uppercase font-mono px-2 py-0.5 rounded bg-amber-500/20 text-amber-900 dark:text-amber-100 font-bold">
+            Draft
+          </span>
+        </div>
+      ) : isPreview ? (
+        <div className="w-full bg-emerald-500/15 border-b border-emerald-500/30 px-4 sm:px-6 py-3 flex items-center justify-between gap-4 text-emerald-900 dark:text-emerald-200">
+          <div className="flex items-center gap-2 text-xs font-semibold">
+            <span className="flex size-2 rounded-full bg-emerald-500" />
+            <span>🟢 LIVE PUBLISHED PAGE — This page is live for all public visitors at /pages/{page.slug}</span>
+          </div>
+          <span className="text-[10px] uppercase font-mono px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-900 dark:text-emerald-100 font-bold">
+            Live
+          </span>
+        </div>
+      ) : null}
       {/* Hero Section */}
       <section
         className={cn(HERO_SECTION_PADDING, "border-b border-border/50 bg-background")}

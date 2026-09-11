@@ -34,7 +34,7 @@ describe("Headless Pages CMS Core Engine & Validation", () => {
 
   it("verifies live preview route resolution for standard and dynamic pages", () => {
     const resolvePreviewRoute = (key: string, customSlug?: string) => {
-      if (key === "custom-pages") return customSlug ? `/pages/${customSlug}` : "/pages";
+      if (key === "custom-pages") return customSlug ? `/pages/${customSlug}?preview=true` : "/pages";
       if (key === "featured-blogs") return "/#featured-projects";
       const match = PAGES.find((p) => p.key === key);
       return match ? match.route : "/";
@@ -48,7 +48,7 @@ describe("Headless Pages CMS Core Engine & Validation", () => {
     expect(resolvePreviewRoute("studios")).toBe("/bns-studio");
     expect(resolvePreviewRoute("about")).toBe("/about");
     expect(resolvePreviewRoute("featured-blogs")).toBe("/#featured-projects");
-    expect(resolvePreviewRoute("custom-pages", "test-brief")).toBe("/pages/test-brief");
+    expect(resolvePreviewRoute("custom-pages", "test-brief")).toBe("/pages/test-brief?preview=true");
     expect(resolvePreviewRoute("custom-pages")).toBe("/pages");
   });
 
@@ -183,5 +183,15 @@ describe("Headless Pages CMS Core Engine & Validation", () => {
       results: reloadedAdd.results.filter((s: any) => s.id !== testStoryId),
     };
     headlessCmsApi.updateCollectionData("featured-projects", cleanedFeatured, MASTER_CMS_EMAIL);
+  });
+
+  it("verifies the published dummy page county-fiscal-transparency-initiative exists in custom-pages catalog", () => {
+    const customPages = headlessCmsApi.getCollectionData("custom-pages") as any;
+    expect(customPages).toBeDefined();
+    const dummyPage = (customPages.pages || []).find((p: any) => p.slug === "county-fiscal-transparency-initiative");
+    expect(dummyPage).toBeDefined();
+    expect(dummyPage.title).toBe("County Fiscal Transparency Initiative 2026");
+    expect(dummyPage.published).toBe(true);
+    expect(dummyPage.stats.length).toBeGreaterThanOrEqual(3);
   });
 });

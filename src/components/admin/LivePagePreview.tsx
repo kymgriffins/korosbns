@@ -129,9 +129,15 @@ export function LivePagePreview({
             <span className="text-xs font-bold text-foreground truncate max-w-[140px]">
               {pageTitle}
             </span>
-            <Badge variant="outline" className="text-[10px] px-1.5 py-0 font-medium text-emerald-600 bg-emerald-500/10 border-emerald-500/20">
-              Live Preview
-            </Badge>
+            {url.includes("preview=true") ? (
+              <Badge variant="outline" className="text-[10px] px-1.5 py-0 font-medium text-amber-600 dark:text-amber-400 bg-amber-500/10 border-amber-500/20">
+                Draft Preview
+              </Badge>
+            ) : (
+              <Badge variant="outline" className="text-[10px] px-1.5 py-0 font-medium text-emerald-600 bg-emerald-500/10 border-emerald-500/20">
+                Live Preview
+              </Badge>
+            )}
           </div>
         </div>
 
