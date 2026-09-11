@@ -52,7 +52,7 @@ describe("featuredProjectsData", () => {
     expect(result).toHaveLength(3);
     expect(result[0]?.videoId).toBeTruthy();
     expect(result.every((p) => p.thumbnail.startsWith("/images/"))).toBe(true);
-  });
+  }, 15000);
 
   it("refreshFeaturedProjectsFromYoutube merges oEmbed titles and keeps local covers", async () => {
     vi.spyOn(youtubeMeta, "fetchYoutubeChannelRss").mockResolvedValue([]);

@@ -1,0 +1,24 @@
+{
+  "pages": [
+    {
+      "slug": "kenya-sovereign-debt-brief",
+      "title": "Kenya Sovereign Debt Brief",
+      "seoDescription": "Independent forensic brief on Kenya's public debt portfolio, statutory debt service ratios, and external bond obligations.",
+      "eyebrow": "Special Brief · BNS Connect",
+      "headline": "Tracking Kenya's Sovereign Debt & Statutory Obligations",
+      "body": "Independent fiscal analysis tracking Treasury bond issuances, commercial external debt, and statutory debt service ratios across Kenya's public finance system.",
+      "content": "Kenya's debt debate often narrows to sensational headlines during annual budget presentation. Behind the public discourse lies a complex web of multilateral agreements, bilateral loans, and domestic commercial paper. Budget Ndio Story provides verified tracking of these obligations to ensure civil society, institutional partners, and newsrooms have reliable empirical baselines.",
+      "ctaLabel": "Discuss Co-Funding",
+      "ctaHref": "/contact?intent=partner",
+      "secondaryLabel": "View All Programmes",
+      "secondaryHref": "/programmes",
+      "stats": [
+        { "value": "11.2T", "label": "National Public Debt Tracked" },
+        { "value": "68%", "label": "Debt-to-GDP Baseline Ratio" },
+        { "value": "Year-round", "label": "Statutory Absorption Monitoring" }
+      ],
+      "published": true,
+      "createdAt": "2026-09-11T12:00:00Z"
+    }
+  ]
+}

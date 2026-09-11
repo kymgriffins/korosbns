@@ -20,6 +20,8 @@ import mediaContent from "@/content/media.json";
 import socialsContent from "@/content/socials.json";
 import timelineContent from "@/content/timeline.json";
 import partnerPageSectionsContent from "@/content/partner-page-sections.json";
+import customPagesContent from "@/content/custom-pages.json";
+import featuredProjectsContent from "@/data/fallbacks/featured-projects.json";
 import orgContent from "@/data/org/org.json";
 import countiesAllocationsContent from "@/data/counties-allocations.json";
 import bnsConfigContent from "@/constants/bnsConfig.json";
@@ -70,6 +72,8 @@ export type CoreCmsCollectionSlug = (typeof CORE_CMS_SLUGS)[number];
 export type CmsCollectionSlug =
   | CoreCmsCollectionSlug
   | "partner-page-sections"
+  | "custom-pages"
+  | "featured-projects"
   | "org"
   | "counties-allocations"
   | "bns-config"
@@ -178,6 +182,30 @@ export const CMS_COLLECTIONS_CATALOG: Record<CmsCollectionSlug, CmsCollectionMet
     itemCount: Object.keys((partnerPageSectionsContent as { pages?: Record<string, unknown> }).pages ?? {}).length,
     lastUpdated: new Date().toISOString(),
     schemaKeys: ["policy", "pages"],
+  },
+  "custom-pages": {
+    slug: "custom-pages",
+    name: "Custom Pages Engine",
+    description: "Company-created dynamic pages with bespoke layouts, headlines, copy, metrics, and CTAs.",
+    category: "Marketing & Site Copy",
+    filePath: "src/content/custom-pages.json",
+    itemCount: Array.isArray((customPagesContent as { pages?: unknown[] }).pages)
+      ? (customPagesContent as { pages: unknown[] }).pages.length
+      : 1,
+    lastUpdated: new Date().toISOString(),
+    schemaKeys: ["pages"],
+  },
+  "featured-projects": {
+    slug: "featured-projects",
+    name: "Featured Evidence & Blogs",
+    description: "Featured projects, case studies, and blog stories showcased on the Landing and Programmes pages.",
+    category: "Marketing & Site Copy",
+    filePath: "src/data/fallbacks/featured-projects.json",
+    itemCount: Array.isArray((featuredProjectsContent as { results?: unknown[] }).results)
+      ? (featuredProjectsContent as { results: unknown[] }).results.length
+      : 3,
+    lastUpdated: new Date().toISOString(),
+    schemaKeys: ["provenance", "count", "results"],
   },
   org: {
     slug: "org",
@@ -356,6 +384,8 @@ const _cmsDataCache: Record<CmsCollectionSlug, Record<string, unknown>> = {
   socials: socialsContent as Record<string, unknown>,
   timeline: timelineContent as Record<string, unknown>,
   "partner-page-sections": partnerPageSectionsContent as Record<string, unknown>,
+  "custom-pages": customPagesContent as Record<string, unknown>,
+  "featured-projects": featuredProjectsContent as Record<string, unknown>,
   org: orgContent as unknown as Record<string, unknown>,
   "counties-allocations": countiesAllocationsContent as unknown as Record<string, unknown>,
   "bns-config": bnsConfigContent as unknown as Record<string, unknown>,

@@ -21,6 +21,8 @@ import {
   ChevronRight,
   ShieldCheck,
   Info,
+  Play,
+  Eye,
 } from "lucide-react";
 import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
@@ -28,7 +30,16 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { MASTER_CMS_EMAIL } from "@/lib/headless-cms";
 
-type PageKey = "landing" | "programmes" | "connect" | "mashinani" | "wanahabari-lab" | "studios";
+type PageKey =
+  | "landing"
+  | "programmes"
+  | "connect"
+  | "mashinani"
+  | "wanahabari-lab"
+  | "studios"
+  | "about"
+  | "featured-blogs"
+  | "custom-pages";
 
 type TabKey = "sections" | "hero" | "core" | "deliverables" | "buttons" | "faqs";
 
@@ -90,6 +101,30 @@ const PAGES: PageMeta[] = [
     sectionPageId: "studio",
     icon: "🎬",
   },
+  {
+    key: "about",
+    label: "About Us",
+    tag: "Organization & Team",
+    route: "/about",
+    sectionPageId: "about",
+    icon: "🏢",
+  },
+  {
+    key: "featured-blogs",
+    label: "Featured Blogs & Evidence",
+    tag: "Editorial Stories",
+    route: "/#featured-projects",
+    sectionPageId: "featured-blogs",
+    icon: "📰",
+  },
+  {
+    key: "custom-pages",
+    label: "Custom Pages Builder",
+    tag: "Create New Pages",
+    route: "/pages",
+    sectionPageId: "custom-pages",
+    icon: "📄",
+  },
 ];
 
 export function HeadlessPageStudio() {
@@ -103,15 +138,25 @@ export function HeadlessPageStudio() {
   const [landingData, setLandingData] = useState<Record<string, any>>({});
   const [programmesData, setProgrammesData] = useState<Record<string, any>>({});
   const [sectionsData, setSectionsData] = useState<Record<string, any>>({});
+  const [aboutData, setAboutData] = useState<Record<string, any>>({});
+  const [customPagesData, setCustomPagesData] = useState<{ pages?: any[] }>({ pages: [] });
+  const [featuredData, setFeaturedData] = useState<{ count?: number; provenance?: any; results?: any[] }>({ results: [] });
 
-  // Fetch all 3 authoritative data stores
+  // Selections for sub-studios
+  const [selectedCustomPageSlug, setSelectedCustomPageSlug] = useState<string>("");
+  const [selectedFeaturedId, setSelectedFeaturedId] = useState<string>("");
+
+  // Fetch all authoritative data stores
   const loadAllData = useCallback(async () => {
     setIsLoading(true);
     try {
-      const [resLanding, resProg, resSec] = await Promise.all([
+      const [resLanding, resProg, resSec, resAbout, resCustom, resFeatured] = await Promise.all([
         fetch("/api/cms/landing"),
         fetch("/api/cms/programmes"),
         fetch("/api/cms/partner-page-sections"),
+        fetch("/api/cms/about"),
+        fetch("/api/cms/custom-pages"),
+        fetch("/api/cms/featured-projects"),
       ]);
 
       if (resLanding.ok) {
@@ -126,13 +171,33 @@ export function HeadlessPageStudio() {
         const json = await resSec.json();
         setSectionsData(json.data || {});
       }
+      if (resAbout.ok) {
+        const json = await resAbout.json();
+        setAboutData(json.data || {});
+      }
+      if (resCustom.ok) {
+        const json = await resCustom.json();
+        const pages = json.data?.pages || [];
+        setCustomPagesData(json.data || { pages: [] });
+        if (pages.length > 0 && !selectedCustomPageSlug) {
+          setSelectedCustomPageSlug(pages[0].slug);
+        }
+      }
+      if (resFeatured.ok) {
+        const json = await resFeatured.json();
+        const results = json.data?.results || [];
+        setFeaturedData(json.data || { results: [] });
+        if (results.length > 0 && !selectedFeaturedId) {
+          setSelectedFeaturedId(results[0].id);
+        }
+      }
       setLastSaved(new Date().toLocaleTimeString());
     } catch {
       toast.error("Failed to load CMS datasets from server");
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [selectedCustomPageSlug, selectedFeaturedId]);
 
   useEffect(() => {
     loadAllData();
@@ -235,90 +300,195 @@ export function HeadlessPageStudio() {
     setProgrammesData(updated);
   };
 
-  const updateCardBlurb = (slug: string, value: string) => {
-    const updated = { ...programmesData };
-    if (!updated.cardBlurbs) updated.cardBlurbs = {};
-    updated.cardBlurbs[slug] = value;
-    setProgrammesData(updated);
+  const updateAboutField = (path: string[], value: any) => {
+    const updated = { ...aboutData };
+    let curr: any = updated;
+    for (let i = 0; i < path.length - 1; i++) {
+      if (!curr[path[i]]) curr[path[i]] = {};
+      curr = curr[path[i]];
+    }
+    curr[path[path.length - 1]] = value;
+    setAboutData(updated);
   };
 
-  // FAQ Handlers
-  const handleAddFaq = () => {
-    if (!currentProgramme) return;
-    const faqs = [...(currentProgramme.faqs || [])];
-    faqs.push({ q: "New Question", a: "Answer details go here." });
-    updateCurrentProgrammeField("faqs", faqs);
+  // Custom Pages Handlers
+  const handleAddCustomPage = () => {
+    const slug = `brief-${Date.now().toString(36)}`;
+    const newPage = {
+      slug,
+      title: "New Public Finance Brief",
+      seoDescription: "Independent fiscal intelligence and public expenditure tracking brief.",
+      eyebrow: "Special Brief · BNS Connect",
+      headline: "Tracking Public Expenditure & Policy Execution",
+      body: "Comprehensive analysis breaking down statutory budget allocations, county transfers, and policy implementation milestones.",
+      content: "Public budget debates require verified empirical baselines. This brief provides partners, civil society, and newsrooms with structured data tracking public allocations against actual statutory disbursements.\n\nAll figures are sourced directly from verified Controller of Budget reports and National Treasury releases.",
+      ctaLabel: "Discuss Co-Funding",
+      ctaHref: "/contact?intent=partner",
+      secondaryLabel: "Explore All Programmes",
+      secondaryHref: "/programmes",
+      stats: [
+        { value: "100%", label: "Verified Statutory Data" },
+        { value: "47", label: "Counties Monitored" },
+        { value: "Quarterly", label: "Reporting Frequency" },
+      ],
+      published: true,
+      createdAt: new Date().toISOString(),
+    };
+    const updatedPages = [...(customPagesData.pages || []), newPage];
+    setCustomPagesData({ pages: updatedPages });
+    setSelectedCustomPageSlug(slug);
+    toast.success("Created new custom page draft!");
   };
 
-  const handleUpdateFaq = (index: number, field: "q" | "a", value: string) => {
-    if (!currentProgramme) return;
-    const faqs = [...(currentProgramme.faqs || [])];
-    faqs[index] = { ...faqs[index], [field]: value };
-    updateCurrentProgrammeField("faqs", faqs);
+  const handleDeleteCustomPage = (slug: string) => {
+    const pages = customPagesData.pages || [];
+    if (pages.length <= 1) {
+      toast.error("Cannot delete the only remaining page.");
+      return;
+    }
+    const filtered = pages.filter((p) => p.slug !== slug);
+    setCustomPagesData({ pages: filtered });
+    if (selectedCustomPageSlug === slug) {
+      setSelectedCustomPageSlug(filtered[0]?.slug || "");
+    }
+    toast.success(`Deleted custom page /pages/${slug}`);
   };
 
-  const handleDeleteFaq = (index: number) => {
-    if (!currentProgramme) return;
-    const faqs = (currentProgramme.faqs || []).filter((_: any, i: number) => i !== index);
-    updateCurrentProgrammeField("faqs", faqs);
+  const handleUpdateCustomPageField = (slug: string, field: string, value: any) => {
+    const pages = customPagesData.pages || [];
+    const updated = pages.map((p) => {
+      if (p.slug === slug) {
+        return { ...p, [field]: value };
+      }
+      return p;
+    });
+    setCustomPagesData({ pages: updated });
   };
 
-  // Deliverables Handlers
-  const handleUpdateDeliverable = (index: number, field: "title" | "description", value: string) => {
-    if (!currentProgramme) return;
-    const deliverables = [...(currentProgramme.deliverables || [])];
-    deliverables[index] = { ...deliverables[index], [field]: value };
-    updateCurrentProgrammeField("deliverables", deliverables);
+  const handleUpdateCustomPageStat = (slug: string, index: number, field: "value" | "label", value: string) => {
+    const pages = customPagesData.pages || [];
+    const updated = pages.map((p) => {
+      if (p.slug === slug) {
+        const stats = [...(p.stats || [])];
+        stats[index] = { ...stats[index], [field]: value };
+        return { ...p, stats };
+      }
+      return p;
+    });
+    setCustomPagesData({ pages: updated });
   };
 
-  // Process Handlers
-  const handleUpdateProcess = (index: number, field: "title" | "body", value: string) => {
-    if (!currentProgramme) return;
-    const process = [...(currentProgramme.process || [])];
-    process[index] = { ...process[index], [field]: value };
-    updateCurrentProgrammeField("process", process);
+  // Featured Evidence & Blogs Handlers
+  const handleAddFeaturedStory = () => {
+    const id = `story-${Date.now().toString(36)}`;
+    const newStory = {
+      id,
+      slug: id,
+      videoId: "kWpY4K1uI20",
+      url: "https://www.youtube.com/watch?v=kWpY4K1uI20",
+      title: "New Public Finance Impact Investigation",
+      prose: "Walks partners and newsrooms through forensic tracking of public revenue systems and statutory expenditure.",
+      thumbnail: "/images/events/red-flags-book-launch/dr-lyla-latif.jpeg",
+      authorName: "Budget Ndio Story Team",
+      programmeSlug: "wanahabari-lab",
+      programmeLabel: "Wanahabari",
+      href: `/bns-studio/${id}`,
+      publishedAt: new Date().toISOString(),
+      channelHandle: "@BudgetNdioStory",
+    };
+    const updated = [newStory, ...(featuredData.results || [])];
+    setFeaturedData({
+      ...featuredData,
+      count: updated.length,
+      results: updated,
+    });
+    setSelectedFeaturedId(id);
+    toast.success("Added new featured impact story!");
   };
 
-  // Stats Handlers
-  const handleUpdateStat = (index: number, field: "value" | "label", value: string) => {
-    if (!currentProgramme) return;
-    const stats = [...(currentProgramme.stats || [])];
-    stats[index] = { ...stats[index], [field]: value };
-    updateCurrentProgrammeField("stats", stats);
+  const handleDeleteFeaturedStory = (id: string) => {
+    const results = featuredData.results || [];
+    if (results.length <= 1) {
+      toast.error("At least one featured story must remain.");
+      return;
+    }
+    const updated = results.filter((s) => s.id !== id);
+    setFeaturedData({
+      ...featuredData,
+      count: updated.length,
+      results: updated,
+    });
+    if (selectedFeaturedId === id) {
+      setSelectedFeaturedId(updated[0]?.id || "");
+    }
+    toast.success("Deleted featured impact story");
+  };
+
+  const handleUpdateFeaturedStory = (id: string, field: string, value: any) => {
+    const results = featuredData.results || [];
+    const updated = results.map((s) => {
+      if (s.id === id) {
+        const item = { ...s, [field]: value };
+        if (field === "url") {
+          const match = value.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([\w-]{11})/);
+          if (match && match[1]) {
+            item.videoId = match[1];
+          }
+        }
+        if (field === "programmeSlug") {
+          const labelMap: Record<string, string> = {
+            "wanahabari-lab": "Wanahabari",
+            studios: "BNS Studio",
+            connect: "BNS Connect",
+            mashinani: "BNS Mashinani",
+          };
+          if (labelMap[value]) {
+            item.programmeLabel = labelMap[value];
+          }
+        }
+        return item;
+      }
+      return s;
+    });
+    setFeaturedData({ ...featuredData, results: updated });
   };
 
   // Save All Changes to Disk via Persistent APIs
   const handleSaveAll = async () => {
     setIsSaving(true);
     try {
-      const payloadPromises = [];
-
-      // Save Landing
-      payloadPromises.push(
+      const payloadPromises = [
         fetch("/api/cms/landing", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ data: landingData, editorEmail: MASTER_CMS_EMAIL }),
         }),
-      );
-
-      // Save Programmes
-      payloadPromises.push(
         fetch("/api/cms/programmes", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ data: programmesData, editorEmail: MASTER_CMS_EMAIL }),
         }),
-      );
-
-      // Save Sections
-      payloadPromises.push(
         fetch("/api/cms/partner-page-sections", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ data: sectionsData, editorEmail: MASTER_CMS_EMAIL }),
         }),
-      );
+        fetch("/api/cms/about", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ data: aboutData, editorEmail: MASTER_CMS_EMAIL }),
+        }),
+        fetch("/api/cms/custom-pages", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ data: customPagesData, editorEmail: MASTER_CMS_EMAIL }),
+        }),
+        fetch("/api/cms/featured-projects", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ data: featuredData, editorEmail: MASTER_CMS_EMAIL }),
+        }),
+      ];
 
       const responses = await Promise.all(payloadPromises);
       const allOk = responses.every((r) => r.ok);
@@ -326,7 +496,7 @@ export function HeadlessPageStudio() {
       if (allOk) {
         setLastSaved(new Date().toLocaleTimeString());
         toast.success(`Successfully saved and persisted changes to disk!`, {
-          description: `Updated landing.json, programmes.json, and partner-page-sections.json`,
+          description: `Updated landing, programmes, sections, custom pages, featured blogs, and about schemas.`,
         });
       } else {
         throw new Error("One or more collections failed to persist");
@@ -337,6 +507,16 @@ export function HeadlessPageStudio() {
       setIsSaving(false);
     }
   };
+
+  const selectedCustomPage = useMemo(() => {
+    const pages = customPagesData.pages || [];
+    return pages.find((p) => p.slug === selectedCustomPageSlug) || pages[0] || null;
+  }, [customPagesData, selectedCustomPageSlug]);
+
+  const selectedFeaturedStory = useMemo(() => {
+    const results = featuredData.results || [];
+    return results.find((s) => s.id === selectedFeaturedId) || results[0] || null;
+  }, [featuredData, selectedFeaturedId]);
 
   if (isLoading) {
     return (
@@ -441,7 +621,682 @@ export function HeadlessPageStudio() {
         </div>
       </div>
 
-      {/* Main Workspace Layout */}
+      {/* SPECIAL DESK 1: FEATURED EVIDENCE & BLOGS */}
+      {selectedPageKey === "featured-blogs" && (
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
+          {/* Left Column: Story Roster & Add Button */}
+          <div className="space-y-4 lg:col-span-4">
+            <div className="rounded-xl border border-border bg-card p-4 shadow-xs space-y-3">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h2 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                    Featured Stories ({featuredData.results?.length || 0})
+                  </h2>
+                  <p className="text-[11px] text-muted-foreground">
+                    Featured impact projects on homepage &amp; hub.
+                  </p>
+                </div>
+                <Button
+                  type="button"
+                  onClick={handleAddFeaturedStory}
+                  size="sm"
+                  variant="outline"
+                  className="gap-1 text-xs"
+                >
+                  <Plus className="size-3.5" />
+                  <span>Add Story</span>
+                </Button>
+              </div>
+
+              <div className="space-y-2">
+                {(featuredData.results || []).map((story: any) => {
+                  const isSelected = (selectedFeaturedStory?.id === story.id);
+                  return (
+                    <div
+                      key={story.id}
+                      onClick={() => setSelectedFeaturedId(story.id)}
+                      className={`cursor-pointer rounded-xl border p-3 transition-all ${
+                        isSelected
+                          ? "border-primary bg-primary/10 shadow-xs"
+                          : "border-border/60 bg-muted/20 hover:bg-muted/50"
+                      }`}
+                    >
+                      <div className="flex items-start justify-between gap-2">
+                        <div className="space-y-1">
+                          <span className="rounded bg-primary/20 px-1.5 py-0.5 font-mono text-[9px] font-bold text-primary uppercase">
+                            {story.programmeLabel || story.programmeSlug}
+                          </span>
+                          <h3 className="line-clamp-2 text-xs font-bold text-foreground">
+                            {story.title}
+                          </h3>
+                          <div className="flex items-center gap-2 text-[10px] text-muted-foreground">
+                            <span>{story.authorName}</span>
+                            {story.videoId && <span>• Video ID: {story.videoId}</span>}
+                          </div>
+                        </div>
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleDeleteFeaturedStory(story.id);
+                          }}
+                          className="h-7 w-7 p-0 text-muted-foreground hover:text-rose-500"
+                        >
+                          <Trash2 className="size-3.5" />
+                        </Button>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+
+          {/* Right Column: Active Story Editor & Live Preview */}
+          <div className="space-y-6 lg:col-span-8">
+            {selectedFeaturedStory ? (
+              <div className="space-y-6 rounded-2xl border border-border bg-card p-6 shadow-xs">
+                <div className="flex items-center justify-between border-b border-border/50 pb-4">
+                  <div>
+                    <h2 className="text-base font-bold text-foreground">
+                      Edit Featured Story / Blog
+                    </h2>
+                    <p className="text-xs text-muted-foreground">
+                      Edits persist directly to <code className="font-mono">src/data/fallbacks/featured-projects.json</code>.
+                    </p>
+                  </div>
+                  <Badge variant="secondary" className="font-mono text-xs">
+                    id: {selectedFeaturedStory.id}
+                  </Badge>
+                </div>
+
+                <div className="space-y-4">
+                  <div>
+                    <label className="text-xs font-semibold text-foreground">Story Title</label>
+                    <Input
+                      value={selectedFeaturedStory.title ?? ""}
+                      onChange={(e) => handleUpdateFeaturedStory(selectedFeaturedStory.id, "title", e.target.value)}
+                      className="mt-1 text-sm font-semibold"
+                      placeholder="e.g. Learn about illicit financial flows in Benin and Cabo Verde"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="text-xs font-semibold text-foreground">
+                      Editorial Description / Prose (Summary for Investors &amp; Public)
+                    </label>
+                    <textarea
+                      value={selectedFeaturedStory.prose ?? ""}
+                      onChange={(e) => handleUpdateFeaturedStory(selectedFeaturedStory.id, "prose", e.target.value)}
+                      rows={4}
+                      className="mt-1 w-full rounded-md border border-input bg-background p-2.5 text-xs text-foreground focus-visible:outline-none"
+                      placeholder="Concise overview explaining who leads this, what was investigated, and the civic impact..."
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                    <div>
+                      <label className="text-xs font-semibold text-foreground">Author / Storyteller Name</label>
+                      <Input
+                        value={selectedFeaturedStory.authorName ?? ""}
+                        onChange={(e) => handleUpdateFeaturedStory(selectedFeaturedStory.id, "authorName", e.target.value)}
+                        className="mt-1 h-8 text-xs"
+                        placeholder="e.g. Dr. Lyla Latif"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="text-xs font-semibold text-foreground">Programme Category</label>
+                      <select
+                        value={selectedFeaturedStory.programmeSlug ?? "wanahabari-lab"}
+                        onChange={(e) => handleUpdateFeaturedStory(selectedFeaturedStory.id, "programmeSlug", e.target.value)}
+                        className="mt-1 flex h-8 w-full rounded-md border border-input bg-background px-2 text-xs text-foreground"
+                      >
+                        <option value="wanahabari-lab">Wanahabari Lab</option>
+                        <option value="studios">BNS Studio</option>
+                        <option value="connect">BNS Connect</option>
+                        <option value="mashinani">BNS Mashinani</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                    <div>
+                      <label className="text-xs font-semibold text-foreground">YouTube Video URL</label>
+                      <Input
+                        value={selectedFeaturedStory.url ?? ""}
+                        onChange={(e) => handleUpdateFeaturedStory(selectedFeaturedStory.id, "url", e.target.value)}
+                        className="mt-1 h-8 text-xs font-mono"
+                        placeholder="https://www.youtube.com/watch?v=..."
+                      />
+                    </div>
+
+                    <div>
+                      <label className="text-xs font-semibold text-foreground">YouTube Video ID</label>
+                      <Input
+                        value={selectedFeaturedStory.videoId ?? ""}
+                        onChange={(e) => handleUpdateFeaturedStory(selectedFeaturedStory.id, "videoId", e.target.value)}
+                        className="mt-1 h-8 text-xs font-mono"
+                        placeholder="e.g. G5ddu4I6mNs"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                    <div>
+                      <label className="text-xs font-semibold text-foreground">Thumbnail Image URL / Asset Path</label>
+                      <Input
+                        value={selectedFeaturedStory.thumbnail ?? ""}
+                        onChange={(e) => handleUpdateFeaturedStory(selectedFeaturedStory.id, "thumbnail", e.target.value)}
+                        className="mt-1 h-8 text-xs font-mono"
+                        placeholder="/images/events/... or Cloudflare R2 URL"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="text-xs font-semibold text-foreground">Internal Link / Target URL</label>
+                      <Input
+                        value={selectedFeaturedStory.href ?? ""}
+                        onChange={(e) => handleUpdateFeaturedStory(selectedFeaturedStory.id, "href", e.target.value)}
+                        className="mt-1 h-8 text-xs font-mono"
+                        placeholder="/bns-studio/..."
+                      />
+                    </div>
+                  </div>
+
+                  {/* Visual Card Preview */}
+                  <div className="rounded-xl border border-border/80 bg-muted/20 p-4 space-y-3">
+                    <div className="flex items-center gap-1.5 text-xs font-bold text-foreground">
+                      <Eye className="size-4 text-primary" />
+                      <span>Live Website Card Preview</span>
+                    </div>
+
+                    <div className="overflow-hidden rounded-xl border border-border bg-card shadow-sm max-w-md">
+                      <div className="relative aspect-video bg-neutral-900">
+                        {selectedFeaturedStory.thumbnail ? (
+                          <img
+                            src={selectedFeaturedStory.thumbnail}
+                            alt={selectedFeaturedStory.title}
+                            className="h-full w-full object-cover"
+                          />
+                        ) : (
+                          <div className="flex h-full items-center justify-center text-muted-foreground text-xs">
+                            No thumbnail image
+                          </div>
+                        )}
+                        <div className="absolute top-2 left-2">
+                          <Badge variant="secondary" className="bg-black/70 text-white text-[10px]">
+                            {selectedFeaturedStory.programmeLabel || selectedFeaturedStory.programmeSlug}
+                          </Badge>
+                        </div>
+                        <div className="absolute inset-0 flex items-center justify-center">
+                          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/90 text-primary-foreground shadow-lg">
+                            <Play className="size-4 fill-current ml-0.5" />
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="p-4 space-y-2">
+                        <div className="text-[11px] font-medium text-muted-foreground">
+                          By {selectedFeaturedStory.authorName}
+                        </div>
+                        <h4 className="font-heading text-sm font-bold text-foreground line-clamp-2">
+                          {selectedFeaturedStory.title}
+                        </h4>
+                        <p className="text-xs text-muted-foreground line-clamp-3 leading-relaxed">
+                          {selectedFeaturedStory.prose}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div className="p-12 text-center text-muted-foreground border border-dashed rounded-2xl">
+                Select a featured story from the left or click &ldquo;Add Story&rdquo;.
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* SPECIAL DESK 2: CUSTOM PAGES BUILDER */}
+      {selectedPageKey === "custom-pages" && (
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
+          {/* Left Column: List of Custom Pages */}
+          <div className="space-y-4 lg:col-span-4">
+            <div className="rounded-xl border border-border bg-card p-4 shadow-xs space-y-3">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h2 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                    Custom Pages ({customPagesData.pages?.length || 0})
+                  </h2>
+                  <p className="text-[11px] text-muted-foreground">
+                    Dynamic routes rendered at <code className="font-mono">/pages/[slug]</code>.
+                  </p>
+                </div>
+                <Button
+                  type="button"
+                  onClick={handleAddCustomPage}
+                  size="sm"
+                  variant="outline"
+                  className="gap-1 text-xs"
+                >
+                  <Plus className="size-3.5" />
+                  <span>Create Page</span>
+                </Button>
+              </div>
+
+              <div className="space-y-2">
+                {(customPagesData.pages || []).map((page: any) => {
+                  const isSelected = (selectedCustomPage?.slug === page.slug);
+                  return (
+                    <div
+                      key={page.slug}
+                      onClick={() => setSelectedCustomPageSlug(page.slug)}
+                      className={`cursor-pointer rounded-xl border p-3 transition-all ${
+                        isSelected
+                          ? "border-primary bg-primary/10 shadow-xs"
+                          : "border-border/60 bg-muted/20 hover:bg-muted/50"
+                      }`}
+                    >
+                      <div className="flex items-start justify-between gap-2">
+                        <div className="space-y-1">
+                          <div className="flex items-center gap-1.5">
+                            <span
+                              className={`h-2 w-2 rounded-full ${
+                                page.published !== false ? "bg-emerald-500" : "bg-amber-500"
+                              }`}
+                            />
+                            <span className="font-mono text-[10px] text-muted-foreground">
+                              /pages/{page.slug}
+                            </span>
+                          </div>
+                          <h3 className="line-clamp-1 text-xs font-bold text-foreground">
+                            {page.title}
+                          </h3>
+                        </div>
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleDeleteCustomPage(page.slug);
+                          }}
+                          className="h-7 w-7 p-0 text-muted-foreground hover:text-rose-500"
+                        >
+                          <Trash2 className="size-3.5" />
+                        </Button>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+
+          {/* Right Column: Active Custom Page Form */}
+          <div className="space-y-6 lg:col-span-8">
+            {selectedCustomPage ? (
+              <div className="space-y-6 rounded-2xl border border-border bg-card p-6 shadow-xs">
+                <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border/50 pb-4">
+                  <div>
+                    <h2 className="text-base font-bold text-foreground">
+                      Edit Page: {selectedCustomPage.title}
+                    </h2>
+                    <p className="text-xs text-muted-foreground">
+                      Live URL: <code className="font-mono font-bold text-primary">/pages/{selectedCustomPage.slug}</code>
+                    </p>
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <Button
+                      asChild
+                      variant="outline"
+                      size="sm"
+                      className="gap-1.5 text-xs font-semibold"
+                    >
+                      <a
+                        href={`/pages/${selectedCustomPage.slug}`}
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        <span>Preview Page</span>
+                        <ExternalLink className="size-3.5" />
+                      </a>
+                    </Button>
+                    <label className="flex items-center gap-2 text-xs font-medium text-foreground cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={selectedCustomPage.published !== false}
+                        onChange={(e) =>
+                          handleUpdateCustomPageField(selectedCustomPage.slug, "published", e.target.checked)
+                        }
+                        className="rounded border-input text-emerald-600 focus:ring-emerald-500"
+                      />
+                      <span>Published (Live)</span>
+                    </label>
+                  </div>
+                </div>
+
+                <div className="space-y-4">
+                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                    <div>
+                      <label className="text-xs font-semibold text-foreground">Page Title</label>
+                      <Input
+                        value={selectedCustomPage.title ?? ""}
+                        onChange={(e) =>
+                          handleUpdateCustomPageField(selectedCustomPage.slug, "title", e.target.value)
+                        }
+                        className="mt-1 h-8 text-xs font-semibold"
+                        placeholder="e.g. Kenya Sovereign Debt Brief"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="text-xs font-semibold text-foreground">URL Slug</label>
+                      <Input
+                        value={selectedCustomPage.slug ?? ""}
+                        onChange={(e) =>
+                          handleUpdateCustomPageField(selectedCustomPage.slug, "slug", e.target.value.toLowerCase().replace(/\s+/g, "-"))
+                        }
+                        className="mt-1 h-8 text-xs font-mono"
+                        placeholder="e.g. kenya-sovereign-debt-brief"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                    <div>
+                      <label className="text-xs font-semibold text-foreground">Eyebrow Pill Tag</label>
+                      <Input
+                        value={selectedCustomPage.eyebrow ?? ""}
+                        onChange={(e) =>
+                          handleUpdateCustomPageField(selectedCustomPage.slug, "eyebrow", e.target.value)
+                        }
+                        className="mt-1 h-8 text-xs"
+                        placeholder="e.g. Special Brief · BNS Connect"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="text-xs font-semibold text-foreground">SEO Description (Meta Tag)</label>
+                      <Input
+                        value={selectedCustomPage.seoDescription ?? ""}
+                        onChange={(e) =>
+                          handleUpdateCustomPageField(selectedCustomPage.slug, "seoDescription", e.target.value)
+                        }
+                        className="mt-1 h-8 text-xs"
+                        placeholder="Concise description for Google search and WhatsApp previews"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="text-xs font-semibold text-foreground">Hero Headline</label>
+                    <Input
+                      value={selectedCustomPage.headline ?? ""}
+                      onChange={(e) =>
+                        handleUpdateCustomPageField(selectedCustomPage.slug, "headline", e.target.value)
+                      }
+                      className="mt-1 text-sm font-bold"
+                      placeholder="e.g. Tracking Kenya's Sovereign Debt & Statutory Obligations"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="text-xs font-semibold text-foreground">Hero Lead Paragraph (Lede)</label>
+                    <textarea
+                      value={selectedCustomPage.body ?? ""}
+                      onChange={(e) =>
+                        handleUpdateCustomPageField(selectedCustomPage.slug, "body", e.target.value)
+                      }
+                      rows={3}
+                      className="mt-1 w-full rounded-md border border-input bg-background p-2.5 text-xs text-foreground focus-visible:outline-none leading-relaxed"
+                      placeholder="Core summary statement introducing the brief or campaign..."
+                    />
+                  </div>
+
+                  <div>
+                    <label className="text-xs font-semibold text-foreground">
+                      Full Editorial Longform Content (Markdown / Prose)
+                    </label>
+                    <textarea
+                      value={selectedCustomPage.content ?? ""}
+                      onChange={(e) =>
+                        handleUpdateCustomPageField(selectedCustomPage.slug, "content", e.target.value)
+                      }
+                      rows={6}
+                      className="mt-1 w-full rounded-md border border-input bg-background p-2.5 text-xs text-foreground font-sans focus-visible:outline-none leading-relaxed"
+                      placeholder="Write the full narrative or body text here. You can separate paragraphs with empty lines."
+                    />
+                  </div>
+
+                  {/* Primary & Secondary Action Buttons */}
+                  <div className="rounded-xl border border-border/60 bg-muted/20 p-4 space-y-3">
+                    <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                      Call-to-Action Buttons
+                    </h3>
+                    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                      <div>
+                        <label className="text-[11px] font-semibold text-foreground">Primary Button Label</label>
+                        <Input
+                          value={selectedCustomPage.ctaLabel ?? ""}
+                          onChange={(e) =>
+                            handleUpdateCustomPageField(selectedCustomPage.slug, "ctaLabel", e.target.value)
+                          }
+                          className="mt-1 h-8 text-xs"
+                          placeholder="Discuss Co-Funding"
+                        />
+                      </div>
+                      <div>
+                        <label className="text-[11px] font-semibold text-foreground">Primary Button Target URL</label>
+                        <Input
+                          value={selectedCustomPage.ctaHref ?? ""}
+                          onChange={(e) =>
+                            handleUpdateCustomPageField(selectedCustomPage.slug, "ctaHref", e.target.value)
+                          }
+                          className="mt-1 h-8 text-xs font-mono"
+                          placeholder="/contact?intent=partner"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                      <div>
+                        <label className="text-[11px] font-semibold text-foreground">Secondary Button Label</label>
+                        <Input
+                          value={selectedCustomPage.secondaryLabel ?? ""}
+                          onChange={(e) =>
+                            handleUpdateCustomPageField(selectedCustomPage.slug, "secondaryLabel", e.target.value)
+                          }
+                          className="mt-1 h-8 text-xs"
+                          placeholder="View All Programmes"
+                        />
+                      </div>
+                      <div>
+                        <label className="text-[11px] font-semibold text-foreground">Secondary Button Target URL</label>
+                        <Input
+                          value={selectedCustomPage.secondaryHref ?? ""}
+                          onChange={(e) =>
+                            handleUpdateCustomPageField(selectedCustomPage.slug, "secondaryHref", e.target.value)
+                          }
+                          className="mt-1 h-8 text-xs font-mono"
+                          placeholder="/programmes"
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Key Metrics / Scale Stats */}
+                  <div className="rounded-xl border border-border/60 bg-muted/20 p-4 space-y-3">
+                    <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                      Key Metrics Band (Up to 3 Metrics)
+                    </h3>
+                    <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+                      {[0, 1, 2].map((idx) => {
+                        const stat = (selectedCustomPage.stats && selectedCustomPage.stats[idx]) || { value: "", label: "" };
+                        return (
+                          <div key={idx} className="space-y-1.5 rounded-lg border border-border/40 bg-background/50 p-2.5">
+                            <label className="text-[10px] font-semibold text-muted-foreground uppercase">Metric {idx + 1}</label>
+                            <Input
+                              value={stat.value ?? ""}
+                              onChange={(e) =>
+                                handleUpdateCustomPageStat(selectedCustomPage.slug, idx, "value", e.target.value)
+                              }
+                              className="h-7 text-xs font-bold font-mono"
+                              placeholder="e.g. 11.2T"
+                            />
+                            <Input
+                              value={stat.label ?? ""}
+                              onChange={(e) =>
+                                handleUpdateCustomPageStat(selectedCustomPage.slug, idx, "label", e.target.value)
+                              }
+                              className="h-7 text-[11px]"
+                              placeholder="e.g. Public Debt"
+                            />
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div className="p-12 text-center text-muted-foreground border border-dashed rounded-2xl">
+                Select a page from the left or click &ldquo;Create Page&rdquo;.
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* SPECIAL DESK 3: ABOUT US EDITING */}
+      {selectedPageKey === "about" && (
+        <div className="space-y-6">
+          {/* About Hero Section */}
+          <div className="rounded-2xl border border-border bg-card p-6 shadow-xs space-y-4">
+            <div className="border-b border-border/50 pb-3">
+              <h2 className="text-base font-bold text-foreground">About Us — Hero &amp; Positioning</h2>
+              <p className="text-xs text-muted-foreground">
+                Consortium story and main youth-led transparency mandate. Saved to <code className="font-mono">src/content/about.json</code>.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              <div>
+                <label className="text-xs font-semibold text-foreground">Eyebrow Tag</label>
+                <Input
+                  value={aboutData.hero?.eyebrow ?? ""}
+                  onChange={(e) => updateAboutField(["hero", "eyebrow"], e.target.value)}
+                  className="mt-1 h-8 text-xs"
+                />
+              </div>
+              <div>
+                <label className="text-xs font-semibold text-foreground">Hero Title</label>
+                <Input
+                  value={aboutData.hero?.title ?? ""}
+                  onChange={(e) => updateAboutField(["hero", "title"], e.target.value)}
+                  className="mt-1 h-8 text-xs font-bold"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="text-xs font-semibold text-foreground">Lead Body Paragraph</label>
+              <textarea
+                value={aboutData.hero?.body ?? ""}
+                onChange={(e) => updateAboutField(["hero", "body"], e.target.value)}
+                rows={3}
+                className="mt-1 w-full rounded-md border border-input bg-background p-2.5 text-xs text-foreground focus-visible:outline-none leading-relaxed"
+              />
+            </div>
+          </div>
+
+          {/* About Mission Section */}
+          <div className="rounded-2xl border border-border bg-card p-6 shadow-xs space-y-4">
+            <div className="border-b border-border/50 pb-3">
+              <h2 className="text-base font-bold text-foreground">Our Mission</h2>
+              <p className="text-xs text-muted-foreground">
+                Core mission statement presented across public and partner channels.
+              </p>
+            </div>
+
+            <div>
+              <label className="text-xs font-semibold text-foreground">Mission Section Title</label>
+              <Input
+                value={aboutData.mission?.title ?? ""}
+                onChange={(e) => updateAboutField(["mission", "title"], e.target.value)}
+                className="mt-1 h-8 text-xs font-bold"
+              />
+            </div>
+
+            <div>
+              <label className="text-xs font-semibold text-foreground">Mission Narrative Statement</label>
+              <textarea
+                value={aboutData.mission?.body ?? ""}
+                onChange={(e) => updateAboutField(["mission", "body"], e.target.value)}
+                rows={3}
+                className="mt-1 w-full rounded-md border border-input bg-background p-2.5 text-xs text-foreground focus-visible:outline-none leading-relaxed"
+              />
+            </div>
+          </div>
+
+          {/* Open Creative Call Band */}
+          <div className="rounded-2xl border border-border bg-card p-6 shadow-xs space-y-4">
+            <div className="border-b border-border/50 pb-3">
+              <h2 className="text-base font-bold text-foreground">Open Creative Call &amp; Talent Network</h2>
+              <p className="text-xs text-muted-foreground">
+                Recruitment strip for young animators, storytellers, researchers, and podcast hosts.
+              </p>
+            </div>
+
+            <div>
+              <label className="text-xs font-semibold text-foreground">Section Title</label>
+              <Input
+                value={aboutData.openCall?.title ?? ""}
+                onChange={(e) => updateAboutField(["openCall", "title"], e.target.value)}
+                className="mt-1 h-8 text-xs font-bold"
+              />
+            </div>
+
+            <div>
+              <label className="text-xs font-semibold text-foreground">Section Body Copy</label>
+              <textarea
+                value={aboutData.openCall?.body ?? ""}
+                onChange={(e) => updateAboutField(["openCall", "body"], e.target.value)}
+                rows={2}
+                className="mt-1 w-full rounded-md border border-input bg-background p-2.5 text-xs text-foreground focus-visible:outline-none leading-relaxed"
+              />
+            </div>
+
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              <div>
+                <label className="text-xs font-semibold text-foreground">Primary Action Button Label</label>
+                <Input
+                  value={aboutData.openCall?.primaryCta?.label ?? ""}
+                  onChange={(e) => updateAboutField(["openCall", "primaryCta", "label"], e.target.value)}
+                  className="mt-1 h-8 text-xs"
+                />
+              </div>
+              <div>
+                <label className="text-xs font-semibold text-foreground">Primary Button URL</label>
+                <Input
+                  value={aboutData.openCall?.primaryCta?.href ?? ""}
+                  onChange={(e) => updateAboutField(["openCall", "primaryCta", "href"], e.target.value)}
+                  className="mt-1 h-8 text-xs font-mono"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* STANDARD MULTI-TAB WORKSPACE (LANDING, PROGRAMMES, & PROGRAMME DETAIL PAGES) */}
+      {selectedPageKey !== "featured-blogs" && selectedPageKey !== "custom-pages" && selectedPageKey !== "about" && (
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
         {/* Left Nav: Section Tabs for Selected Page */}
         <div className="space-y-3 lg:col-span-3">
@@ -1447,6 +2302,7 @@ export function HeadlessPageStudio() {
           )}
         </div>
       </div>
+      )}
     </div>
   );
 }
