@@ -330,6 +330,58 @@ export function HeadlessPageStudio() {
     setProgrammesData(updated);
   };
 
+  const updateCardBlurb = (slug: string, value: string) => {
+    const updated = { ...programmesData };
+    if (!updated.cardBlurbs) updated.cardBlurbs = {};
+    updated.cardBlurbs[slug] = value;
+    setProgrammesData(updated);
+  };
+
+  // FAQ Handlers
+  const handleAddFaq = () => {
+    if (!currentProgramme) return;
+    const faqs = [...(currentProgramme.faqs || [])];
+    faqs.push({ q: "New Question", a: "Answer details go here." });
+    updateCurrentProgrammeField("faqs", faqs);
+  };
+
+  const handleUpdateFaq = (index: number, field: "q" | "a", value: string) => {
+    if (!currentProgramme) return;
+    const faqs = [...(currentProgramme.faqs || [])];
+    faqs[index] = { ...faqs[index], [field]: value };
+    updateCurrentProgrammeField("faqs", faqs);
+  };
+
+  const handleDeleteFaq = (index: number) => {
+    if (!currentProgramme) return;
+    const faqs = (currentProgramme.faqs || []).filter((_: any, i: number) => i !== index);
+    updateCurrentProgrammeField("faqs", faqs);
+  };
+
+  // Deliverables Handlers
+  const handleUpdateDeliverable = (index: number, field: "title" | "description", value: string) => {
+    if (!currentProgramme) return;
+    const deliverables = [...(currentProgramme.deliverables || [])];
+    deliverables[index] = { ...deliverables[index], [field]: value };
+    updateCurrentProgrammeField("deliverables", deliverables);
+  };
+
+  // Process Handlers
+  const handleUpdateProcess = (index: number, field: "title" | "body", value: string) => {
+    if (!currentProgramme) return;
+    const process = [...(currentProgramme.process || [])];
+    process[index] = { ...process[index], [field]: value };
+    updateCurrentProgrammeField("process", process);
+  };
+
+  // Stats Handlers
+  const handleUpdateStat = (index: number, field: "value" | "label", value: string) => {
+    if (!currentProgramme) return;
+    const stats = [...(currentProgramme.stats || [])];
+    stats[index] = { ...stats[index], [field]: value };
+    updateCurrentProgrammeField("stats", stats);
+  };
+
   const updateAboutField = (path: string[], value: any) => {
     const updated = { ...aboutData };
     let curr: any = updated;
