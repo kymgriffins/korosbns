@@ -61,11 +61,25 @@ export function LivePagePreview({
     onRefresh?.();
   };
 
+  const [currentOrigin, setCurrentOrigin] = useState<string>("https://budgetndiostory.org");
+  const [hasTimedOut, setHasTimedOut] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== "undefined" && window.location?.origin) {
+      setCurrentOrigin(window.location.origin);
+    }
+  }, []);
+
   useEffect(() => {
     setIsIframeLoading(true);
+    setHasTimedOut(false);
+    const timer = setTimeout(() => {
+      setHasTimedOut(true);
+    }, 7000);
+    return () => clearTimeout(timer);
   }, [url, refreshKey]);
 
-  const displayUrl = "https://budgetndiostory.org" + (url.startsWith("/") ? url : "/" + url);
+  const displayUrl = currentOrigin + (url.startsWith("/") ? url : "/" + url);
 
   const getDeviceStyles = () => {
     switch (currentDevice) {
@@ -240,9 +254,46 @@ export function LivePagePreview({
       {/* Iframe Viewport Container */}
       <div className="relative border border-t-0 border-border rounded-b-2xl bg-neutral-950/5 dark:bg-neutral-950/40 p-2 sm:p-4 overflow-auto flex items-start justify-center min-h-[500px]">
         {isIframeLoading && (
-          <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-2 bg-background/70 backdrop-blur-xs rounded-b-2xl">
-            <RotateCw className="size-6 animate-spin text-primary" />
-            <p className="text-xs font-semibold text-foreground">Rendering live preview...</p>
+          <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-3 bg-background/85 backdrop-blur-xs rounded-b-2xl p-6 text-center">
+            {!hasTimedOut ? (
+              <>
+                <RotateCw className="size-6 animate-spin text-primary" />
+                <p className="text-xs font-semibold text-foreground">Rendering live preview...</p>
+              </>
+            ) : (
+              <div className="max-w-xs space-y-3">
+                <div className="p-3 rounded-full bg-primary/10 text-primary w-fit mx-auto">
+                  <ExternalLink className="size-5" />
+                </div>
+                <p className="text-xs font-medium text-foreground">
+                  Preview taking longer than usual or blocked by browser settings?
+                </p>
+                <div className="flex items-center justify-center gap-2">
+                  <Button
+                    type="button"
+                    variant="default"
+                    size="sm"
+                    className="text-xs gap-1.5"
+                    asChild
+                  >
+                    <a href={url} target="_blank" rel="noreferrer">
+                      <span>Open Page in Tab</span>
+                      <ExternalLink className="size-3.5" />
+                    </a>
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    className="text-xs gap-1.5"
+                    onClick={handleManualReload}
+                  >
+                    <RotateCw className="size-3.5" />
+                    <span>Retry</span>
+                  </Button>
+                </div>
+              </div>
+            )}
           </div>
         )}
 

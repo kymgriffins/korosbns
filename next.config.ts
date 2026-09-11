@@ -24,7 +24,7 @@ function contentSecurityPolicy(): string {
     `connect-src 'self' https://bnske.budgetndiostory.org https://*.budgetndiostory.org https://app.posthog.com https://us.i.posthog.com https://vitals.vercel-insights.com https://*.vercel-analytics.com${localApiConnect}`,
     "media-src 'self' https://res.cloudinary.com blob: data:",
     "frame-src 'self' https://www.youtube.com https://www.youtube-nocookie.com https://youtube.com https://youtube-nocookie.com",
-    "frame-ancestors 'none'",
+    "frame-ancestors 'self' https://budgetndiostory.org https://*.budgetndiostory.org https://*.vercel.app http://localhost:* http://127.0.0.1:*",
     "base-uri 'self'",
     "form-action 'self'",
   ].join("; ");
@@ -105,7 +105,7 @@ const nextConfig: NextConfig = {
           },
           {
             key: 'X-Frame-Options',
-            value: 'DENY',
+            value: 'SAMEORIGIN',
           },
           {
             key: 'X-XSS-Protection',

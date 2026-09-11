@@ -14,7 +14,7 @@ describe("LivePagePreview Component", () => {
 
     expect(screen.getByText("BNS Connect")).toBeInTheDocument();
     expect(screen.getByText("Live Preview")).toBeInTheDocument();
-    expect(screen.getByText("https://budgetndiostory.org/programmes/connect")).toBeInTheDocument();
+    expect(screen.getByText(/\/programmes\/connect/)).toBeInTheDocument();
   });
 
   it("renders the preview iframe with expected src and accessible title", () => {
