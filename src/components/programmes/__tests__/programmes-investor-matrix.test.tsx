@@ -16,7 +16,7 @@ beforeEach(() => {
 });
 
 describe("ProgrammesInvestorMatrix & EcosystemFlywheel", () => {
-  it("renders the 3 Big Bets with investor deliverables and BNS Studio", () => {
+  it("renders the 3 Big Bets with investor deliverables", () => {
     render(<ProgrammesInvestorMatrix />);
 
     // Section title
@@ -38,10 +38,6 @@ describe("ProgrammesInvestorMatrix & EcosystemFlywheel", () => {
     expect(screen.getByText(/Triangulate & Verify/i)).toBeInTheDocument();
     expect(screen.getByText(/Frame & Publish/i)).toBeInTheDocument();
     expect(screen.getByText(/Convene & Hold Pressure/i)).toBeInTheDocument();
-
-    // BNS Studio Sustainable Engine
-    expect(screen.getByText(/The Sustainable Engine/i)).toBeInTheDocument();
-    expect(screen.getByText(/2× Impact/i)).toBeInTheDocument();
   });
 
   it("renders the Closed-Loop Ecosystem Flywheel", () => {

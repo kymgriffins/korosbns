@@ -78,7 +78,7 @@ export function ProgrammesMethodologySection({
               <div>
                 <div className="flex items-center justify-between border-b border-border/40 pb-4">
                   <span className="font-mono text-sm font-bold text-primary">
-                    Stage {item.step}
+                    
                   </span>
                   <div className="flex size-8 items-center justify-center bg-muted/40">
                     <Icon className="size-4 text-foreground/80" aria-hidden="true" />

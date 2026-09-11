@@ -1,14 +1,14 @@
 "use client";
 
+import { ProgrammesMethodologySection } from "@/components/programmes/programmes-methodology-section";
+import { EditorialPill } from "@/components/ui/editorial";
+import { LANDING_TYPOGRAPHY as T } from "@/constants/landing-typography";
+import { CIVIC_PROGRAMMES, getProgramme, programmeHref } from "@/content";
+import { LandingSection } from "@/layouts/landing-section";
+import { cn } from "@/utils";
+import { ArrowRight, CheckCircle2, Shield } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, CheckCircle2, Shield } from "lucide-react";
-import { LandingSection } from "@/layouts/landing-section";
-import { EditorialPill } from "@/components/ui/editorial";
-import { ProgrammesMethodologySection } from "@/components/programmes/programmes-methodology-section";
-import { CIVIC_PROGRAMMES, getProgramme, programmeHref } from "@/content";
-import { LANDING_TYPOGRAPHY as T } from "@/constants/landing-typography";
-import { cn } from "@/utils";
 
 export function ProgrammesInvestorMatrix() {
   const studios = getProgramme("studios");
@@ -29,7 +29,8 @@ export function ProgrammesInvestorMatrix() {
           </h2>
         </div>
         <p className={cn(T.lead, "max-w-md md:text-right")}>
-          Three distinct, non-overlapping interventions spanning national macro-policy, county delivery, and investigative newsrooms.
+          Three distinct, non-overlapping interventions spanning national
+          macro-policy, county delivery, and investigative newsrooms.
         </p>
       </div>
 
@@ -57,7 +58,7 @@ export function ProgrammesInvestorMatrix() {
                     {/* Header: Number & Mandate */}
                     <div className="flex flex-wrap items-center gap-2">
                       <span className="font-mono text-xs font-bold text-primary">
-                        Bet {number}
+                        {number}
                       </span>
                       <span aria-hidden className="text-border">
                         ·
@@ -91,7 +92,7 @@ export function ProgrammesInvestorMatrix() {
                     <div className="space-y-3 rounded-none border-l-2 border-primary/60 bg-muted/20 p-4">
                       <div>
                         <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                          The Problem (Why):
+                          The Conundrum:
                         </span>
                         <p className="mt-0.5 text-sm leading-relaxed text-foreground/85">
                           {programme.investorThesis || programme.highlight}
@@ -99,7 +100,7 @@ export function ProgrammesInvestorMatrix() {
                       </div>
                       <div className="pt-2">
                         <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                          The Intervention (What):
+                          The Intervention :
                         </span>
                         <p className="mt-0.5 text-sm leading-relaxed text-foreground/85">
                           {programme.whatWeDo || programme.body}
@@ -108,7 +109,8 @@ export function ProgrammesInvestorMatrix() {
                     </div>
 
                     {/* Deliverables Partners Can Fund & Cite */}
-                    {programme.deliverables && programme.deliverables.length > 0 ? (
+                    {programme.deliverables &&
+                    programme.deliverables.length > 0 ? (
                       <div className="space-y-2.5 pt-1">
                         <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                           Outputs Partners Fund & Cite:
@@ -146,7 +148,10 @@ export function ProgrammesInvestorMatrix() {
                         className="inline-flex items-center text-sm font-semibold text-foreground transition-colors hover:text-primary"
                       >
                         Read programme dossier
-                        <ArrowRight className="ml-1 size-4" aria-hidden="true" />
+                        <ArrowRight
+                          className="ml-1 size-4"
+                          aria-hidden="true"
+                        />
                       </Link>
                       <span aria-hidden className="text-border">
                         |
@@ -196,47 +201,7 @@ export function ProgrammesInvestorMatrix() {
       <ProgrammesMethodologySection asSubSection />
 
       {/* The Engine: BNS Studio */}
-      {studios ? (
-        <div className="mt-12 border border-border/60 bg-muted/20 p-6 sm:p-10">
-          <div className="grid items-start gap-8 lg:grid-cols-12">
-            <div className="space-y-4 lg:col-span-8">
-              <div className="flex items-center gap-2">
-                <Shield className="size-4 text-primary" aria-hidden="true" />
-                <span className="font-mono text-xs uppercase tracking-wider text-muted-foreground">
-                  The Sustainable Engine
-                </span>
-              </div>
-              <h3 className="font-heading text-2xl font-bold text-foreground">
-                {studios.name}: {studios.headline}
-              </h3>
-              <p className="text-sm leading-relaxed text-foreground/80 md:text-base">
-                {studios.whatWeDo || studios.body}
-              </p>
-              <div className="pt-2">
-                <Link
-                  href="/bns-studio"
-                  className="inline-flex items-center text-sm font-semibold text-foreground transition-colors hover:text-primary"
-                >
-                  Commission BNS Studios & view reel
-                  <ArrowRight className="ml-1 size-4" aria-hidden="true" />
-                </Link>
-              </div>
-            </div>
 
-            <div className="flex flex-col justify-center border-t border-border/40 pt-6 lg:col-span-4 lg:border-t-0 lg:border-l lg:pl-8 lg:pt-0">
-              <p className="font-mono text-xs uppercase tracking-wider text-muted-foreground">
-                Dual-Impact Model
-              </p>
-              <p className="mt-2 font-heading text-3xl font-bold text-foreground">
-                2× Impact
-              </p>
-              <p className="mt-1 text-xs text-muted-foreground">
-                High-craft production for your mandate + commercial surplus directly cross-subsidizes independent public finance scrutiny.
-              </p>
-            </div>
-          </div>
-        </div>
-      ) : null}
     </LandingSection>
   );
 }

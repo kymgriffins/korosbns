@@ -1,35 +1,28 @@
 "use client";
 
-import React, { useMemo } from "react";
+import { EditorialPill } from "@/components/ui/editorial/editorial-pill";
+import { PROGRAMMES, programmeHref, type ProgrammeSlug } from "@/content";
+import {
+    studiosEvidenceData,
+    type StudioContentType
+} from "@/data/studios-evidence";
+import { SECTION_SHELL_INNER } from "@/layouts/section-shell";
+import { resolveProjectId } from "@/lib/programme-project-ids";
+import {
+    ArrowRight,
+    ArrowUpRight,
+    Clapperboard,
+    FileSearch,
+    Layers,
+    Play,
+    Radio,
+    ShieldCheck,
+    Sparkles,
+    Users2
+} from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import {
-  ArrowRight,
-  ArrowUpRight,
-  Layers,
-  Play,
-  Radio,
-  FileSearch,
-  Users2,
-  Clapperboard,
-  Sparkles,
-  ShieldCheck,
-  FolderGit2,
-} from "lucide-react";
-import {
-  PROGRAMMES,
-  programmeHref,
-  type ProgrammeSlug,
-} from "@/content";
-import { SECTION_SHELL_INNER } from "@/layouts/section-shell";
-import {
-  studiosEvidenceData,
-  type StudioProjectEvidence,
-  type StudioContentType,
-} from "@/data/studios-evidence";
-import { resolveProjectId } from "@/lib/programme-project-ids";
-import { EditorialPill } from "@/components/ui/editorial/editorial-pill";
-import { cn } from "@/utils";
+import { useMemo } from "react";
 
 interface NextChapterMeta {
   nextSlug: ProgrammeSlug;
@@ -46,7 +39,8 @@ const CHAPTER_FLOW: Record<ProgrammeSlug, NextChapterMeta> = {
     nextSlug: "mashinani",
     chapterNumber: "Next · Mashinani",
     leadEyebrow: "From the national feed to four counties",
-    hookHeadline: "Kakamega. Kilifi. Nakuru. Wajir. Stay long enough to matter.",
+    hookHeadline:
+      "Kakamega. Kilifi. Nakuru. Wajir.  Agents bridging gap between Treasury data and Grassroots projects.",
     narrativeBridge:
       "National tables only tell half the story. Mashinani embeds in four counties for the full budget cycle — matching gazette lines to boreholes, maternity wings, and feeder roads people can walk to.",
     tagline: "County desk · Full-cycle embeds · Public scorecards",
@@ -147,8 +141,9 @@ export function ProgrammeChapterBridge({
                 </h2>
 
                 <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
-                  Concrete investigative briefs, field scorecards, and media productions produced
-                  under {currentProgramme?.name || "this programme"}.
+                  Concrete investigative briefs, field scorecards, and media
+                  productions produced under{" "}
+                  {currentProgramme?.name || "this programme"}.
                 </p>
               </div>
 
@@ -220,7 +215,9 @@ export function ProgrammeChapterBridge({
                         {project.impactEvidence?.primaryMetric ? (
                           <span className="inline-flex items-center gap-1 rounded-md bg-primary/10 px-2 py-0.5 text-[11px] font-mono font-semibold text-primary truncate max-w-[190px]">
                             <ShieldCheck className="size-3 shrink-0" />
-                            <span className="truncate">{project.impactEvidence.primaryMetric}</span>
+                            <span className="truncate">
+                              {project.impactEvidence.primaryMetric}
+                            </span>
                           </span>
                         ) : (
                           <span className="text-[11px] font-mono text-muted-foreground">
@@ -289,7 +286,9 @@ export function ProgrammeChapterBridge({
                 Continue the arc
               </span>
               <span className="text-foreground/40">·</span>
-              <span className="text-muted-foreground">{chapter.leadEyebrow}</span>
+              <span className="text-muted-foreground">
+                {chapter.leadEyebrow}
+              </span>
             </div>
 
             <h2 className="font-heading text-2xl sm:text-4xl lg:text-5xl font-black text-foreground leading-[1.08] tracking-tight">
