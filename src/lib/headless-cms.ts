@@ -51,6 +51,7 @@ import landingHeroContent from "@/content/landing-hero.json";
 import landingSectionsContent from "@/content/landing-sections.json";
 import programmeReelsContent from "@/content/programme-reels.json";
 import studiosEvidenceContent from "@/data/fallbacks/studios-evidence.json";
+import bnsStudioContent from "@/content/bns-studio.json";
 
 // Optional imports for budgethub datasets
 let budgetFyEpisodesContent: unknown = {};
@@ -121,7 +122,8 @@ export type CmsCollectionSlug =
   | "landing-hero"
   | "landing-sections"
   | "programme-reels"
-  | "studios-evidence";
+  | "studios-evidence"
+  | "bns-studio";
 
 export type CmsCategory =
   | "Marketing & Site Copy"
@@ -585,6 +587,16 @@ export const CMS_COLLECTIONS_CATALOG: Record<CmsCollectionSlug, CmsCollectionMet
     lastUpdated: new Date().toISOString(),
     schemaKeys: ["organizations", "projects", "id", "slug", "title", "contentType", "programmeSlug", "media"],
   },
+  "bns-studio": {
+    slug: "bns-studio",
+    name: "BNS Studio Page",
+    description: "Studio page sections, hero, screening theatre, production spectrum, commission CTA, and images.",
+    category: "Marketing & Site Copy",
+    filePath: "src/content/bns-studio.json",
+    itemCount: 1,
+    lastUpdated: new Date().toISOString(),
+    schemaKeys: ["hero", "screening", "productionSpectrum", "commission", "about", "images", "featuredWork", "seo"],
+  },
 };
 
 // In-memory collection storage cache
@@ -630,6 +642,7 @@ const _cmsDataCache: Record<CmsCollectionSlug, Record<string, unknown>> = {
   "landing-sections": landingSectionsContent as Record<string, unknown>,
   "programme-reels": programmeReelsContent as Record<string, unknown>,
   "studios-evidence": studiosEvidenceContent as unknown as Record<string, unknown>,
+  "bns-studio": bnsStudioContent as Record<string, unknown>,
 };
 
 function getFormattedDate() {

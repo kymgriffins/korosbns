@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Play } from "lucide-react";
+import { ReelPlayer } from "@/components/programmes/reel-player";
 import {
   EditorialCtaBand,
   EditorialPill,
@@ -413,36 +414,7 @@ function ProgrammeReelsSection({ programmeSlug }: { programmeSlug: ProgrammeSlug
 
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
         {reels.map((reel) => (
-          <a
-            key={reel.id}
-            href={reel.videoUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="group relative aspect-[9/16] overflow-hidden rounded-xl bg-muted"
-          >
-            <Image
-              src={reel.posterUrl}
-              alt={reel.title}
-              fill
-              className="object-cover transition-transform duration-500 group-hover:scale-105"
-              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-            <div className="absolute bottom-3 inset-x-3 space-y-1 z-10">
-              <p className="text-[10px] font-mono text-white/70 uppercase tracking-wider">
-                {reel.category} · {reel.duration}
-              </p>
-              <h3 className="text-sm font-bold text-white leading-snug line-clamp-2">
-                {reel.title}
-              </h3>
-            </div>
-            <div className="absolute top-2 right-2 z-10">
-              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-mono bg-black/60 text-white/90 backdrop-blur-md border border-white/10">
-                <Play className="size-2.5 fill-current" />
-                {(reel.plays / 1000).toFixed(0)}K
-              </span>
-            </div>
-          </a>
+          <ReelPlayer key={reel.id} reel={reel} size="sm" showControls={false} />
         ))}
       </div>
     </LandingSection>

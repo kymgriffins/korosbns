@@ -5,6 +5,7 @@ import {
   type StudioContentType,
 } from "@/constants/bns-studio-content";
 import { studiosEvidenceData } from "@/data/studios-evidence";
+import { PROGRAMME_REELS } from "@/content";
 
 export type StudioReelSlide = {
   contentType: StudioContentType;
@@ -32,6 +33,7 @@ function layoutFor(contentType: StudioContentType): StudioReelSlide["layout"] {
 /**
  * Landing reel curation — formats showcased in the BNS Studio hero theatre.
  * Features live vertical social media reels, podcasts, and cinematic formats.
+ * Video URLs pulled from CMS-managed programme-reels collection.
  */
 export const STUDIO_REEL_FEATURED_TYPES: StudioContentType[] = [
   "Social Media Series",
@@ -52,15 +54,20 @@ export function getStudioReelSlides(): StudioReelSlide[] {
 
     const isSocialReel = type.id === "Social Media Series";
     const isExplainer = type.id === "Explainer Videos";
+
+    // Pull video URLs from CMS-managed programme-reels
+    const socialReel = PROGRAMME_REELS.find((r) => r.category === "National Debt");
+    const explainerReel = PROGRAMME_REELS.find((r) => r.category === "Devolution");
+
     const videoUrl = isSocialReel
-      ? "https://pub-96ce2eba58694b1da7f540033bdaa464.r2.dev/Calvina%20Praise%20Sovereign%20debt.mp4"
+      ? socialReel?.videoUrl
       : isExplainer
-      ? "https://pub-96ce2eba58694b1da7f540033bdaa464.r2.dev/county%20%26%20budget%20socials%20new.mp4"
+      ? explainerReel?.videoUrl
       : undefined;
     const image = isSocialReel
-      ? "/images/reels/reel-01-poster.jpg"
+      ? (socialReel?.posterUrl ?? "/images/reels/reel-01-poster.jpg")
       : isExplainer
-      ? "/images/reels/reel-02-poster.jpg"
+      ? (explainerReel?.posterUrl ?? "/images/reels/reel-02-poster.jpg")
       : (lead?.media.posterUrl ?? service?.image ?? BNS_STUDIO_HERO_IMAGE);
 
     return {

@@ -20,6 +20,7 @@ import teamInitiativesJson from "@/content/team-initiatives.json";
 import landingHeroJson from "@/content/landing-hero.json";
 import landingSectionsJson from "@/content/landing-sections.json";
 import programmeReelsJson from "@/content/programme-reels.json";
+import bnsStudioJson from "@/content/bns-studio.json";
 
 export const mediaContent = mediaJson;
 export const programmesContent = programmesJson;
@@ -38,6 +39,7 @@ export const teamInitiativesContent = teamInitiativesJson;
 export const landingHeroContent = landingHeroJson;
 export const landingSectionsContent = landingSectionsJson;
 export const programmeReelsContent = programmeReelsJson;
+export const bnsStudioContent = bnsStudioJson;
 
 export type ProgrammeSlug = "connect" | "mashinani" | "wanahabari-lab" | "studios";
 
