@@ -31,17 +31,21 @@ export function PartnerProgrammeExplainSections({
   return (
     <>
       {items.map((item, index) => {
-        const stills = (item.images && item.images.length > 0)
-          ? item.images.map((img: any, i: number) => ({
-              id: `${item.slug}-custom-${i}`,
-              src: img.src,
-              alt: img.alt || item.title,
-              caption: img.caption || item.eyebrow,
-              programme: item.slug as any,
-              storyTitle: img.caption || item.name,
-              storyLine: item.lede,
-            }))
-          : stillsForIds(item.stillIds);
+        const validCustomImages = (item.images || []).filter(
+          (img: any) => Boolean(img?.src && img.src.trim() !== "")
+        );
+        const stills =
+          validCustomImages.length > 0
+            ? validCustomImages.map((img: any, i: number) => ({
+                id: `${item.slug}-custom-${i}`,
+                src: img.src,
+                alt: img.alt || item.title || "Programme evidence",
+                caption: img.caption || item.eyebrow,
+                programme: item.slug as any,
+                storyTitle: img.caption || item.name,
+                storyLine: item.lede,
+              }))
+            : stillsForIds(item.stillIds);
         const reverse = index % 2 === 1;
 
         return (

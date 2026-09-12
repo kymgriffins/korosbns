@@ -69,14 +69,14 @@ export function resolveMediaThumbnail(params: {
   const ytId = parseYouTubeId(targetUrl);
   const fallback = params.fallback || DEFAULT_MEDIA_FALLBACK_THUMBNAIL;
 
-  // 1. If explicit YouTube thumbnail requested and ID found
-  if (params.useYoutubeThumbnail && ytId) {
-    return `https://img.youtube.com/vi/${ytId}/hqdefault.jpg`;
-  }
-
-  // 2. Custom provided thumbnail
+  // 1. Custom provided thumbnail takes first priority
   if (params.thumbnail && params.thumbnail.trim() !== "") {
     return params.thumbnail;
+  }
+
+  // 2. If explicit YouTube thumbnail requested and ID found
+  if (params.useYoutubeThumbnail && ytId) {
+    return `https://img.youtube.com/vi/${ytId}/hqdefault.jpg`;
   }
 
   // 3. If it's a YouTube URL and no custom thumbnail given, default to YouTube thumbnail

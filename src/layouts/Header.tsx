@@ -30,6 +30,8 @@ import { socialIconComponents } from "@/components/ui/social-icons";
 import { MegaMenu } from "@/components/marketing/mega-menu";
 import { ScrollMotionProgress } from "@/motion/scroll-motion-progress";
 import { SHOW_MARKETING_SIGN_IN } from "@/lib/marketing-chrome";
+import { Button } from "@/components/ui/button";
+import defaultNavigation from "@/content/navigation.json";
 
 const DESKTOP_NAV =
   landingContent.navigation.desktop ??
@@ -83,10 +85,22 @@ export function Header() {
   const { isLoggedIn, loading: authLoading, user } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [navConfig, setNavConfig] = useState(defaultNavigation);
   const pathname = usePathname();
   const ref = useClickOutside(() => setIsOpen(false));
   const reduced = useReducedMotion();
   const { scrollY } = useScroll();
+
+  useEffect(() => {
+    fetch("/api/cms/navigation")
+      .then((res) => (res.ok ? res.json() : null))
+      .then((json) => {
+        if (json?.data) {
+          setNavConfig(json.data);
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   useMotionValueEvent(scrollY, "change", (latest) => {
     setScrolled(latest > 20);
@@ -149,11 +163,11 @@ export function Header() {
             >
               <span className="relative flex size-8 shrink-0 items-center justify-center overflow-hidden drop-shadow-[0_1px_10px_hsl(0_0%_0%/0.35)]">
                 <Image
-                  src="/logo.svg"
-                  alt=""
+                  src={navConfig.logo?.src || "/logo.svg"}
+                  alt={navConfig.logo?.alt || "Budget Ndio Story"}
                   width={28}
                   height={28}
-                  className="size-7"
+                  className="size-7 object-contain"
                   priority
                 />
               </span>
@@ -192,54 +206,79 @@ export function Header() {
               })}
             </div>
 
-            <Link
-              href={Routes.Contact}
-              className="hidden px-3 py-1.5 text-sm font-medium text-foreground/80 outline-none transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring sm:inline"
-            >
-              Contact
-            </Link>
-
-            {(SHOW_MARKETING_SIGN_IN || isLoggedIn) &&
-              (!authLoading ? (
-                <motion.div
-                  whileHover={reduced ? undefined : { scale: 1.02 }}
-                  whileTap={reduced ? undefined : { scale: 0.97 }}
-                  transition={{ duration: 0.18, ease: [0.25, 0.4, 0, 1] }}
-                  className="hidden sm:block"
+            {(() => {
+              const contactItem = (navConfig.navLinks || []).find((l: any) =>
+                (l.id || "").toLowerCase().includes("contact") ||
+                (l.href || "").toLowerCase().includes("contact")
+              );
+              const label = contactItem?.label || "Contact";
+              const href = contactItem?.href || Routes.Contact;
+              return (
+                <Link
+                  href={href}
+                  className="hidden px-3 py-1.5 text-sm font-medium text-foreground/80 outline-none transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring sm:inline"
                 >
-                  <Link
-                    href={joinHref}
-                    className={cn(
-                      "inline-flex h-9 max-w-[12rem] items-center justify-center gap-1.5 truncate rounded-full bg-primary px-4 text-sm font-medium text-primary-foreground outline-none transition-colors duration-200",
-                      "hover:bg-primary/90",
-                      "focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
-                    )}
-                  >
-                    {isLoggedIn ? (
-                      <>
-                        <span className="flex size-5 shrink-0 items-center justify-center rounded-full bg-primary-foreground/20 text-[10px] font-bold text-primary-foreground">
-                          {user?.email?.charAt(0).toUpperCase() ?? "?"}
-                        </span>
-                        <span className="truncate">{joinLabel}</span>
-                      </>
-                    ) : (
-                      <>
-                        {joinLabel}
-                        <ArrowUpRight className="size-3.5 shrink-0" aria-hidden />
-                      </>
-                    )}
-                  </Link>
-                </motion.div>
-              ) : (
-                <span
+                  {label}
+                </Link>
+              );
+            })()}
+
+            {navConfig.actions?.cta?.show !== false && !isLoggedIn && (
+              <Link
+                href={navConfig.actions?.cta?.href || "/contact?intent=partner"}
+                className="hidden sm:inline-flex"
+              >
+                <Button
+                  variant={navConfig.actions?.cta?.variant === "primary" ? "default" : "white"}
+                  size="sm"
+                  className="h-9 px-4 rounded-full font-medium"
+                >
+                  {navConfig.actions?.cta?.label || "Discuss Partnership"}
+                </Button>
+              </Link>
+            )}
+
+            {isLoggedIn ? (
+              <motion.div
+                whileHover={reduced ? undefined : { scale: 1.02 }}
+                whileTap={reduced ? undefined : { scale: 0.97 }}
+                transition={{ duration: 0.18, ease: [0.25, 0.4, 0, 1] }}
+                className="hidden sm:block"
+              >
+                <Link
+                  href={joinHref}
                   className={cn(
-                    "hidden sm:inline-flex",
-                    NAV_CONTROL_SIZE,
-                    "bg-muted/40",
+                    "inline-flex h-9 max-w-[12rem] items-center justify-center gap-1.5 truncate rounded-full bg-primary px-4 text-sm font-medium text-primary-foreground outline-none transition-colors duration-200",
+                    "hover:bg-primary/90",
+                    "focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
                   )}
-                  aria-hidden
-                />
-              ))}
+                >
+                  <span className="flex size-5 shrink-0 items-center justify-center rounded-full bg-primary-foreground/20 text-[10px] font-bold text-primary-foreground">
+                    {user?.email?.charAt(0).toUpperCase() ?? "?"}
+                  </span>
+                  <span className="truncate">{joinLabel}</span>
+                </Link>
+              </motion.div>
+            ) : navConfig.actions?.showSignIn ? (
+              <motion.div
+                whileHover={reduced ? undefined : { scale: 1.02 }}
+                whileTap={reduced ? undefined : { scale: 0.97 }}
+                transition={{ duration: 0.18, ease: [0.25, 0.4, 0, 1] }}
+                className="hidden sm:block"
+              >
+                <Link
+                  href={navConfig.actions?.signInHref || Routes.Login}
+                  className={cn(
+                    "inline-flex h-9 items-center justify-center gap-1.5 rounded-full border border-border/60 bg-card px-4 text-sm font-medium text-foreground outline-none transition-colors duration-200",
+                    "hover:bg-muted/60",
+                    "focus-visible:ring-2 focus-visible:ring-ring",
+                  )}
+                >
+                  {navConfig.actions?.signInLabel || "Sign in"}
+                  <ArrowUpRight className="size-3.5 shrink-0" aria-hidden />
+                </Link>
+              </motion.div>
+            ) : null}
 
             <ThemeToggle className="border-transparent bg-transparent text-foreground hover:bg-muted" />
 
@@ -287,7 +326,7 @@ export function Header() {
         <ScrollMotionProgress />
       </motion.header>
 
-      <MobileMenu isOpen={isOpen} setIsOpen={setIsOpen} />
+      <MobileMenu isOpen={isOpen} setIsOpen={setIsOpen} navConfig={navConfig} />
     </div>
   );
 }

@@ -1,0 +1,43 @@
+{
+  "hero": {
+    "eyebrow": "Contact",
+    "title": "Let's talk budget stories",
+    "description": "Have a question or want to collaborate? We read every message and typically reply within 48 hours."
+  },
+  "directContact": {
+    "email": "info@budgetndiostory.org",
+    "phone": "+254 790 631 623",
+    "whatsapp": "https://wa.me/254790631623",
+    "prompt": "Ready to collaborate?"
+  },
+  "socials": [
+    {
+      "name": "X",
+      "url": "https://x.com/budgetndiostory"
+    },
+    {
+      "name": "YouTube",
+      "url": "https://youtube.com/@budgetndiostory"
+    },
+    {
+      "name": "Instagram",
+      "url": "https://instagram.com/budgetndiostory"
+    },
+    {
+      "name": "LinkedIn",
+      "url": "https://www.linkedin.com/company/budget-ndio-story/"
+    },
+    {
+      "name": "WhatsApp",
+      "url": "https://wa.me/254790631623"
+    },
+    {
+      "name": "TikTok",
+      "url": "https://www.tiktok.com/@budget.ndio.story"
+    },
+    {
+      "name": "Facebook",
+      "url": "https://www.facebook.com/share/1CPg2LgfVJ/"
+    }
+  ]
+}

@@ -8,15 +8,8 @@ import { socialLinks as defaultSocialLinks } from "@/constants/links";
 import { socialIconComponents } from "@/components/ui/social-icons";
 import { SECTION_SHELL_INNER } from "@/layouts/section-shell";
 import { cn } from "@/utils";
-
-const navLinks = [
-  { label: "Home", href: "/" },
-  { label: "Programmes", href: "/programmes" },
-  { label: "Budget Glossary", href: "/glossary" },
-  { label: "Help & FAQ", href: "/help" },
-  { label: "About", href: "/about" },
-  { label: "Contact", href: "/contact" },
-];
+import defaultNavigation from "@/content/navigation.json";
+import { useState, useEffect } from "react";
 
 
 type FooterLogo = {
@@ -58,8 +51,35 @@ function normalizeSocialIcon(platform: string): string {
 
 export default function Footer() {
   const { config } = useOrg();
+  const [navConfig, setNavConfig] = useState(defaultNavigation);
+
+  useEffect(() => {
+    fetch("/api/cms/navigation")
+      .then((res) => (res.ok ? res.json() : null))
+      .then((json) => {
+        if (json?.data) {
+          setNavConfig(json.data);
+        }
+      })
+      .catch(() => {});
+  }, []);
+
+  const dynamicNavLinks = useMemo(() => {
+    if (navConfig?.navLinks && Array.isArray(navConfig.navLinks) && navConfig.navLinks.length > 0) {
+      return navConfig.navLinks;
+    }
+    return [
+      { label: "Home", href: "/" },
+      { label: "Programmes", href: "/programmes" },
+      { label: "Budget Glossary", href: "/glossary" },
+      { label: "Help & FAQ", href: "/help" },
+      { label: "About", href: "/about" },
+      { label: "Contact", href: "/contact" },
+    ];
+  }, [navConfig]);
 
   const footerBlurb =
+    navConfig?.footer?.blurb ||
     config.layout?.footer_note ||
     config.tagline ||
     "Discover Kenya's budget through journeys that stay in your stories — civic literacy that lives beyond the headlines.";
@@ -164,8 +184,8 @@ export default function Footer() {
                 Navigation
               </h3>
               <ul className="space-y-3">
-                {navLinks.map((link) => (
-                  <li key={link.href}>
+                {dynamicNavLinks.map((link: any) => (
+                  <li key={link.id || link.href}>
                     <Link
                       href={link.href}
                       className="text-sm text-surface-invert-foreground/60 transition-colors hover:text-surface-invert-foreground"

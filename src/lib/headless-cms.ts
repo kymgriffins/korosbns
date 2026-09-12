@@ -23,6 +23,7 @@ import partnerPageSectionsContent from "@/content/partner-page-sections.json";
 import customPagesContent from "@/content/custom-pages.json";
 import navigationContent from "@/content/navigation.json";
 import designTokensContent from "@/content/design-tokens.json";
+import contactContent from "@/content/contact.json";
 import teamContent from "@/data/team.json";
 import partnersContent from "@/data/partners.json";
 import featuredProjectsContent from "@/data/fallbacks/featured-projects.json";
@@ -79,6 +80,7 @@ export type CmsCollectionSlug =
   | "custom-pages"
   | "navigation"
   | "design-tokens"
+  | "contact"
   | "team"
   | "partners"
   | "featured-projects"
@@ -261,6 +263,16 @@ export const CMS_COLLECTIONS_CATALOG: Record<CmsCollectionSlug, CmsCollectionMet
     lastUpdated: new Date().toISOString(),
     schemaKeys: ["badges", "buttons", "typography"],
   },
+  contact: {
+    slug: "contact",
+    name: "Contact Page & Inquiries",
+    description: "Hero title, lede, direct email, phone number, and official inquiry channels.",
+    category: "Marketing & Site Copy",
+    filePath: "src/content/contact.json",
+    itemCount: 3,
+    lastUpdated: new Date().toISOString(),
+    schemaKeys: ["hero", "directContact", "socials"],
+  },
   org: {
     slug: "org",
     name: "Organization & Team Roster",
@@ -441,6 +453,7 @@ const _cmsDataCache: Record<CmsCollectionSlug, Record<string, unknown>> = {
   "custom-pages": customPagesContent as Record<string, unknown>,
   navigation: navigationContent as Record<string, unknown>,
   "design-tokens": designTokensContent as Record<string, unknown>,
+  contact: contactContent as Record<string, unknown>,
   team: teamContent as unknown as Record<string, unknown>,
   partners: partnersContent as unknown as Record<string, unknown>,
   "featured-projects": featuredProjectsContent as Record<string, unknown>,

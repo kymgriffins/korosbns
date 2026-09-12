@@ -1,7 +1,10 @@
 import type { Metadata } from "next";
+import { redirect } from "next/navigation";
 import { metaDescription, canonicalUrl } from "@/utils/metadata";
 import type { TriviaSetApi } from "@/lib/api-client";
 import { contentData } from "@/data/content";
+import featuredFallback from "@/data/fallbacks/featured-projects.json";
+import civicModulesFallback from "@/data/fallbacks/civic-modules.json";
 import UnifiedReaderClientPage from "./client-page";
 
 interface StoryData {
@@ -137,6 +140,23 @@ export default async function UnifiedReaderPage(
   props: { params: Promise<{ slug: string }> }
 ) {
   const { slug } = await props.params;
+
+  const norm = slug.toLowerCase().trim();
+  const isProject =
+    (featuredFallback.results || []).some(
+      (p) =>
+        (p.id || "").toLowerCase() === norm ||
+        (p.slug || "").toLowerCase() === norm,
+    ) ||
+    (civicModulesFallback.results || []).some(
+      (m) =>
+        (m.id || "").toLowerCase() === norm ||
+        (m.slug || "").toLowerCase() === norm,
+    );
+
+  if (isProject) {
+    redirect(`/bns-project/${slug}`);
+  }
 
   let initialMode: "loading" | "error" | "article" | "story" | "trivia" = "loading";
   let initialArticle: Record<string, unknown> | null = null;

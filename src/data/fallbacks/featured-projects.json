@@ -1,12 +1,32 @@
 {
   "provenance": {
-    "source": "YouTube oEmbed JSON + channel RSS match for partner project URLs; cover art is local event stills (not hqdefault)",
-    "note": "Featured evidence projects for partner landing — separate from Learn Hub content-videos.json series catalogue.",
-    "level": "fallback",
+    "source": "seeds/youtube_series_modules.json + CMS Editorial Projects",
+    "note": "All learning courses and investigative projects consolidated into unified featured projects catalog.",
+    "level": "authoritative",
     "shape": "featured_project_youtube"
   },
-  "count": 3,
+  "count": 7,
   "results": [
+    {
+      "id": "story-mty40jp1",
+      "slug": "story-mty40jp1",
+      "videoId": "kWpY4K1uI20",
+      "url": "https://www.youtube.com/watch?v=kWpY4K1uI20",
+      "title": "UON Cohort ",
+      "prose": "A one of a kind event meetup for the youths at The University of Nairobi",
+      "thumbnail": "https://pub-96ce2eba58694b1da7f540033bdaa464.r2.dev/images/1789208759012-129A3923.jpg",
+      "authorName": "Budget Ndio Story Team",
+      "programmeSlug": "connect",
+      "programmeLabel": "BNS Connect",
+      "href": "/bns-project/story-mty40jp1",
+      "isProject": false,
+      "useYoutubeThumbnail": false,
+      "hostInstitution": "House of Fiscal Wisdom",
+      "funder": "Supported by Consortium Partners",
+      "wysiwygProse": "## Executive Overview\nForensic policy analysis and empirical revenue tracking produced by Budget Ndio Story.\n\n### 1. Statutory Framework & Fiscal Background\nEvaluating revenue allocations against the Public Finance Management (PFM) Act.\n\n- Primary expenditure ceilings and statutory compliance\n- Sub-national devolution shares and disbursement pacing\n\n### 2. Civic Impact & Monograph Evidence\nField testimonies and investigative datasets documenting public resource governance.",
+      "publishedAt": "2026-09-12T08:14:51.829Z",
+      "channelHandle": "@BudgetNdioStory"
+    },
     {
       "id": "illicit-financial-flows-benin-cabo-verde",
       "slug": "illicit-financial-flows-benin-cabo-verde",
@@ -53,6 +73,87 @@
       "href": "/bns-project/terra",
       "publishedAt": "2026-07-25T00:00:00Z",
       "channelHandle": "@lyla-latif"
+    },
+    {
+      "id": "budget-policy-statement",
+      "slug": "budget-policy-statement",
+      "videoId": "Ed9lP0-komE",
+      "url": "https://www.youtube.com/watch?v=Ed9lP0-komE",
+      "title": "Before Budget Day: The Budget Policy Statement (BPS)",
+      "prose": "95% of Kenya's national budget is decided before the June briefcase photo-op. Learn how to audit the KSh 4 Trillion envelope, spot sector cuts, and submit a parliamentary memorandum under PFM Act Section 25 before line-item estimates freeze.",
+      "wysiwygProse": "### Executive Overview: The Before Budget Day Series\n\nThis article serves as the comprehensive written companion to the **Budget Ndio Story 3-Part YouTube Series**: *\"Before Budget Day: This Is Where It Starts\"*.\n\n- **Part 1: The Blueprint** — Introduces the Budget Policy Statement (BPS), why it precedes the June Budget Day speech, and how fiscal policy sets national priorities.\n- **Part 2: The Ceilings** — Examines how sector spending limits (Education, Health, Security, Infrastructure) are established and locked into law.\n- **Part 3: Everyday Stakes** — Connects high-level fiscal targets directly to citizen lives: job creation, tax burdens, county allocations, and public service quality.\n\n---\n\n### 1. Constitutional Principles & Statutory Mandate\n\nPublic finance in Kenya is governed by **Article 201 of the Constitution of Kenya 2010**, which establishes the core values of financial governance:\n> *\"(a) There shall be openness and accountability, including public participation in financial matters;*\n> *(b) The public finance system shall promote an equitable society, and in particular, the burden of taxation shall be shared fairly;*\n> *(c) The expenditure of public money shall be guided by clear fiscal responsibility.\"*\n\nTo operationalize Article 201, **Section 25(1) of the Public Finance Management (PFM) Act, 2012** mandates that:\n> *\"The National Treasury shall submit the Budget Policy Statement to Parliament by the 15th February in each year.\"*\n\n---\n\n### 2. Anatomy of the Budget Policy Statement\n\nThe Budget Policy Statement (BPS) is the annual economic blueprint prepared by the National Treasury. It sets out the framework for the upcoming financial year and the Medium-Term Expenditure Framework (MTEF). It contains four essential pillars:\n\n1. **Macroeconomic Outlook & Growth Framework**: Domestic real GDP projections, global economic trends, interest rate assumptions, exchange rate stability, and target inflation bands (5% ± 2.5%).\n2. **Total Fiscal Envelope**: Total national revenue targets (ordinary tax revenue collected by the Kenya Revenue Authority plus non-tax revenues) versus total national expenditure ceilings.\n3. **Sector Allocations & Ceilings**: Sectoral division of public funds among Education, Health, Agriculture, Infrastructure, Energy, Governance & Justice, and Public Administration.\n4. **Division of Revenue**: Proposed horizontal and vertical revenue split between National Government, County Governments (Equitable Share), the Judiciary, and Parliament.\n\n---\n\n### 3. Why February Is More Important Than June\n\nMost headline news covers the **June Budget Speech** when the CS Treasury carries the leather briefcase into Parliament. However, by June, the budget is already 95% finalized.\n\n**The Budget Policy Statement tabled in February is where the real decisions occur.** Under **Section 25(7) of the PFM Act**:\n> *\"Parliament shall review and adopt the Budget Policy Statement with or without amendments within fourteen days after its submission.\"*\n\nOnce Parliament adopts the BPS and approves the sector ceilings in March, no ministry or government department can exceed those approved spending ceilings in the detailed budget estimates presented in April. Therefore, citizen advocacy during February delivers maximum leverage.\n\n---\n\n### 4. Step-by-Step Citizen Advocacy Framework\n\n1. **Download Official Documents**: Access the BPS directly from `treasury.go.ke` or `parliament.go.ke`.\n2. **Verify Sector Allocations**: Compare current proposed sector ceilings against historical spending to evaluate real growth or cuts.\n3. **Audit Fiscal Deficit & Debt Service**: Inspect how much revenue goes toward Consolidated Fund Services (debt service) versus direct public services.\n4. **Submit Public Memorandum**: Write a formal submission to the Clerk of the National Assembly during parliamentary public participation hearings.\n\n> *\"If you want to influence where public money goes, do not wait for June. The real fiscal choices are framed and decided in February inside the Budget Policy Statement.\"*",
+      "thumbnail": "https://i.ytimg.com/vi/Ed9lP0-komE/hqdefault.jpg",
+      "authorName": "Budget Ndio Story Editorial & Research Team",
+      "programmeSlug": "connect",
+      "programmeLabel": "BNS Connect",
+      "href": "/bns-project/budget-policy-statement",
+      "publishedAt": "2026-02-15T00:00:00Z",
+      "channelHandle": "@budgetndiostory",
+      "isProject": true,
+      "useYoutubeThumbnail": false,
+      "hostInstitution": "House of Fiscal Wisdom",
+      "funder": "Supported by Consortium Partners",
+      "expectations": [
+        "Audit sector spending ceilings (Education, Health, Security) under Section 25 of the PFM Act.",
+        "Master the 3-part Before Budget Day video masterclass in sequential order.",
+        "Understand why the February 15th statutory deadline gives citizens 10x more leverage than June Budget Day.",
+        "Inspect macroeconomic targets: GDP growth, inflation bands, and Consolidated Fund Services debt servicing.",
+        "Draft and submit a formal public memorandum to the Clerk of the National Assembly before line items freeze."
+      ]
+    },
+    {
+      "id": "county-budget",
+      "slug": "county-budget",
+      "videoId": "3wfk09c_xNQ",
+      "url": "https://www.youtube.com/watch?v=3wfk09c_xNQ",
+      "title": "County Budgets: Where Does the Money Come From?",
+      "prose": "When your governor claims 'the county has no money,' do you know how to audit the claim? Learn how KSh 420B in national equitable share splits across 47 counties, where local revenue leaks, and how to use Controller of Budget (CoB) reports to hold local leadership accountable.",
+      "wysiwygProse": "### Executive Overview: The County Budget Series\n\nThis article serves as the written companion to the **Budget Ndio Story 3-Part YouTube Series**: *\"County Budget: Where Does the Money Come From?\"*.\n\n- **Part 1: The Devolution Promise** — Explores why county finance affects local healthcare, early childhood education, local roads, and water services.\n- **Part 2: The Revenue Pillars** — Breaks down how National Government transfers work versus local county revenue generation.\n- **Part 3: Accountability & Execution** — Examines what happens when counties face disbursement delays or fail to hit local tax targets.\n\n---\n\n### 1. Constitutional Foundations of Devolved Finance\n\nDevolution in Kenya is anchored in **Article 202(1) of the Constitution**:\n> *\"Revenue raised nationally shall be shared equitably among the national and county governments.\"*\n\nTo safeguard county financial autonomy, **Article 203(2)** sets a mandatory constitutional minimum:\n> *\"The equitable share of revenue raised nationally allocated to county governments shall be not less than fifteen per cent of all revenue collected by the national government, calculated on the basis of the most recent audited accounts of revenue approved by the National Assembly.\"*\n\n---\n\n### 2. The Three Revenue Streams Funding Counties\n\n1. **Equitable Share**: Unconditional financial transfer from the National Treasury. Divided among 47 counties using the Commission on Revenue Allocation (CRA) formula based on population, health index, agriculture, land area, poverty levels, and fiscal effort.\n2. **Own-Source Revenue (OSR)**: Revenue collected directly by the County Government under Article 209(3). Includes land rates, single business permits, parking fees, market fees, agricultural cess, and liquor licenses.\n3. **Conditional Grants**: Restricted transfers provided by the National Government or international development partners (World Bank, DANIDA) dedicated to specific projects like health facilities or urban infrastructure.\n\n---\n\n### 3. Statutory Revenue Bills: DoRA and CARA\n\n- **Division of Revenue Act (DoRA)**: Enacted annually by Parliament to divide total nationally raised revenue between National Government and County Level.\n- **County Allocation of Revenue Act (CARA)**: Enacted by the Senate to distribute the total county equitable share among each of the 47 counties.\n\n---\n\n### 4. Controller of Budget (CoB) Oversight & Red Flags\n\nThe **Office of the Controller of Budget (CoB)** monitors budget implementation under Article 228. Key red flags to audit in CoB reports include:\n- **Wage Bill Spikes**: Section 25(1)(b) of PFM County Regulations caps county personnel costs at **35% of total county revenue**.\n- **Low Development Absorption**: When a county spends over 80% on salaries and recurrent costs, leaving less than 20% for capital development.\n- **Accumulating Pending Bills**: Unpaid contractor invoices resulting from realistic revenue shortfalls or cashflow bottlenecks.\n\n> *\"When a county claims 'there is no money,' read the Controller of Budget quarterly report to determine whether the issue is national delay, uncollected local revenue, or an inflated wage bill.\"*",
+      "thumbnail": "https://i.ytimg.com/vi/3wfk09c_xNQ/hqdefault.jpg",
+      "authorName": "Budget Ndio Story Editorial & Research Team",
+      "programmeSlug": "mashinani",
+      "programmeLabel": "BNS Mashinani",
+      "href": "/bns-project/county-budget",
+      "publishedAt": "2026-02-15T00:00:00Z",
+      "channelHandle": "@budgetndiostory",
+      "isProject": true,
+      "useYoutubeThumbnail": false,
+      "hostInstitution": "House of Fiscal Wisdom",
+      "funder": "Supported by Consortium Partners",
+      "expectations": [
+        "Decode the 3 money streams: Equitable Share (Art. 203), Own-Source Revenue, and Conditional Grants.",
+        "Audit county spending using official Controller of Budget (CoB) quarterly implementation reports.",
+        "Identify illegal wage bill spikes (exceeding the 35% statutory cap) starving local development.",
+        "Engage in County Fiscal Strategy Paper (CFSP) hearings at ward level armed with verified data.",
+        "Track pending bills to prevent ghost contractor claims on unbuilt local dispensaries."
+      ]
+    },
+    {
+      "id": "kenya-national-infrastructure-fund",
+      "slug": "kenya-national-infrastructure-fund",
+      "videoId": "A_EXLueEMlk",
+      "url": "https://www.youtube.com/watch?v=A_EXLueEMlk",
+      "title": "Inside Kenya's National Infrastructure Fund",
+      "prose": "Annual budgets expire on June 30th, but expressways, ports, and power grids take decades to repay. Unpack how Special Public Funds under PFM Act Section 24, Public-Private Partnerships (PPPs), and sovereign debt under Article 211 work — and how to protect citizen taxes from corporate liabilities.",
+      "wysiwygProse": "### Executive Overview: The Infrastructure Fund Series\n\nThis article serves as the written companion to the **Budget Ndio Story 4-Part YouTube Series**: *\"Inside Kenya's National Infrastructure Fund\"*.\n\n- **Part 1: The Infrastructure Challenge** — Explores why major capital assets require specialized financing beyond ordinary annual budgets.\n- **Part 2: The Fund Architecture** — Details how special public funds are created under Section 24 of the PFM Act.\n- **Part 3: Public Debt & Sovereign Risk** — Analyzes borrowing limits under Article 211 and Eurobond debt service obligations.\n- **Part 4: Public-Private Partnerships & Accountability** — Scrutinizes PPP concessions, user tolling, and contingent liability safeguards.\n\n---\n\n### 1. Dedicated Public Funds vs. Annual Budgets\n\nMajor capital infrastructure — national expressways, power grids, deep-water ports, and water reservoirs — requires multi-year patient capital. Annual budget allocations expire on June 30th at the end of each financial year.\n\nTo overcome this limitation, Parliament establishes **Special Public Funds** under **Section 24 of the PFM Act, 2012**. The National Infrastructure Fund acts as a specialized vehicle to ring-fence capital, attract institutional investors, and de-risk public project execution.\n\n---\n\n### 2. Sovereign Debt & Constitutional Governance\n\nPublic borrowing for infrastructure is governed by **Article 211(1) of the Constitution**:\n> *\"Parliament may, by law, set terms on which the national government may borrow money and impose reporting requirements on public borrowing.\"*\n\nKey metrics for sovereign debt evaluation:\n1. **Debt-to-GDP Ratio**: Total accumulated debt stock as a percentage of nominal GDP.\n2. **Consolidated Fund Services (CFS)**: The budget line item covering mandatory debt service payments (principal and interest).\n3. **Concessional vs. Commercial Borrowing**: Concessional loans carry low interest rates and long repayment periods, while commercial debt involves higher interest rates and refinancing risk.\n\n---\n\n### 3. Public-Private Partnerships (PPPs) & Contingent Liabilities\n\nUnder the **Public Private Partnerships Act, 2021**, private companies finance and construct public assets in exchange for long-term concession fees or user tolls.\n\n**Citizens must watch for Contingent Liabilities**: Implicit financial guarantees where the Treasury agrees to compensate a private investor if traffic volume or revenues fall below agreed baselines. Public oversight ensures that private profits do not become public liabilities.\n\n> *\"Debt spent on viable, high-yield infrastructure creates economic assets for future generations. Debt spent on non-productive projects burdens future taxpayers without generating return.\"*",
+      "thumbnail": "https://i.ytimg.com/vi/A_EXLueEMlk/hqdefault.jpg",
+      "authorName": "Budget Ndio Story Editorial & Research Team",
+      "programmeSlug": "connect",
+      "programmeLabel": "BNS Connect",
+      "href": "/bns-project/kenya-national-infrastructure-fund",
+      "publishedAt": "2026-02-15T00:00:00Z",
+      "channelHandle": "@budgetndiostory",
+      "isProject": true,
+      "useYoutubeThumbnail": false,
+      "hostInstitution": "House of Fiscal Wisdom",
+      "funder": "Supported by Consortium Partners",
+      "expectations": [
+        "Learn why mega-projects need special public funds outside annual budget cycles (PFM Act Section 24).",
+        "Inspect Consolidated Fund Services (CFS): Tracking debt service vs asset creation.",
+        "Spot hidden contingent liabilities and user toll clauses in PPP concessions under Art. 211.",
+        "Evaluate whether infrastructure borrowing creates national wealth or unsustainable debt.",
+        "Audit public infrastructure project selection criteria for transparency and value for money."
+      ]
     }
   ]
 }

@@ -31,6 +31,8 @@ import {
 import { LANDING_TYPOGRAPHY as T } from "@/constants/landing-typography";
 import { GsapReveal } from "@/motion/gsap";
 import { cn } from "@/utils";
+import defaultContact from "@/content/contact.json";
+import { useEffect } from "react";
 
 const socials = [
   { name: "X", icon: IconBrandX, href: "https://x.com/budgetndiostory" },
@@ -44,10 +46,32 @@ const socials = [
 
 export default function ContactPage() {
   const { config } = useOrg();
+  const [contactData, setContactData] = useState(defaultContact);
   const searchParams = useSearchParams();
   const intentKey = searchParams.get("intent")?.trim().toLowerCase() ?? "";
   const intent = CONTACT_INTENT_COPY[intentKey];
-  const contactEmail = config?.contact?.email || "info@budgetndiostory.org";
+
+  useEffect(() => {
+    fetch("/api/cms/contact")
+      .then((res) => (res.ok ? res.json() : null))
+      .then((json) => {
+        if (json?.data) {
+          setContactData(json.data);
+        }
+      })
+      .catch(() => {});
+  }, []);
+
+  const contactEmail =
+    contactData?.directContact?.email ||
+    config?.contact?.email ||
+    "info@budgetndiostory.org";
+  const contactPhone =
+    contactData?.directContact?.phone ||
+    "+254 790 631 623";
+  const contactPrompt =
+    contactData?.directContact?.prompt ||
+    "Ready to collaborate?";
   const [isSending, setIsSending] = useState(false);
   const [formExpanded, setFormExpanded] = useState(Boolean(intent));
   const [formData, setFormData] = useState({
@@ -88,18 +112,23 @@ export default function ContactPage() {
     intent.title
   ) : (
     <>
-      Let&apos;s talk <span className={T.highlight}>budget stories</span>
+      {contactData?.hero?.title || (
+        <>
+          Let&apos;s talk <span className={T.highlight}>budget stories</span>
+        </>
+      )}
     </>
   );
 
   return (
     <MarketingPageShell>
       <MarketingPageHero
-        eyebrow={intent ? "Get in touch" : "Contact"}
+        eyebrow={intent ? "Get in touch" : (contactData?.hero?.eyebrow || "Contact")}
         title={heroTitle}
         description={
           intent?.blurb ??
-          "Have a question or want to collaborate? We read every message and typically reply within 48 hours."
+          (contactData?.hero?.description ||
+            "Have a question or want to collaborate? We read every message and typically reply within 48 hours.")
         }
         align="center"
       />
@@ -123,16 +152,34 @@ export default function ContactPage() {
           </ul>
 
           <div className="space-y-4 text-center">
-            <h2 className={T.sectionTitle}>Ready to collaborate?</h2>
-            <p className={cn(T.lead, "text-sm text-foreground/75")}>
-              Or email us at{" "}
-              <a
-                href={`mailto:${contactEmail}`}
-                className="font-semibold text-primary underline-offset-4 hover:underline"
-              >
-                {contactEmail}
-              </a>
-            </p>
+            <h2 className={T.sectionTitle}>{contactPrompt}</h2>
+            <div className="flex flex-wrap justify-center items-center gap-4 text-sm text-foreground/75">
+              <p>
+                Email:{" "}
+                <a
+                  href={`mailto:${contactEmail}`}
+                  className="font-semibold text-primary underline-offset-4 hover:underline"
+                >
+                  {contactEmail}
+                </a>
+              </p>
+              {contactPhone && (
+                <>
+                  <span aria-hidden className="text-border">·</span>
+                  <p>
+                    Direct / WhatsApp:{" "}
+                    <a
+                      href={`https://wa.me/${contactPhone.replace(/[^0-9]/g, "")}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="font-semibold text-primary underline-offset-4 hover:underline"
+                    >
+                      {contactPhone}
+                    </a>
+                  </p>
+                </>
+              )}
+            </div>
           </div>
 
           {!formExpanded ? (

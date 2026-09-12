@@ -47,6 +47,7 @@ import { MediaEmbed } from "@/components/ui/media-embed";
 import { NavigationStudioEditor } from "./NavigationStudioEditor";
 import { DesignTokensStudioEditor } from "./DesignTokensStudioEditor";
 import { CoursesStudioEditor } from "./CoursesStudioEditor";
+import { ContactStudioEditor } from "./ContactStudioEditor";
 
 type PageKey =
   | "landing"
@@ -60,7 +61,8 @@ type PageKey =
   | "custom-pages"
   | "navigation"
   | "tokens"
-  | "courses";
+  | "courses"
+  | "contact";
 
 type TabKey = "sections" | "hero" | "carousel" | "bets" | "core" | "deliverables" | "buttons" | "faqs" | "media";
 
@@ -170,6 +172,14 @@ const PAGES: PageMeta[] = [
     sectionPageId: "courses",
     icon: "🎓",
   },
+  {
+    key: "contact",
+    label: "Contact Page",
+    tag: "Direct Inquiries & Channels",
+    route: "/contact",
+    sectionPageId: "contact",
+    icon: "📬",
+  },
 ];
 
 export function HeadlessPageStudio() {
@@ -195,6 +205,7 @@ export function HeadlessPageStudio() {
   const [navigationData, setNavigationData] = useState<Record<string, any>>({});
   const [designTokensData, setDesignTokensData] = useState<Record<string, any>>({});
   const [coursesData, setCoursesData] = useState<Record<string, any>>({ results: [] });
+  const [contactData, setContactData] = useState<Record<string, any>>({});
 
   // Selections for sub-studios
   const [selectedCustomPageSlug, setSelectedCustomPageSlug] = useState<string>("");
@@ -236,7 +247,7 @@ export function HeadlessPageStudio() {
   const loadAllData = useCallback(async () => {
     setIsLoading(true);
     try {
-      const [resLanding, resProg, resSec, resAbout, resCustom, resFeatured, resNav, resTokens, resCourses] = await Promise.all([
+      const [resLanding, resProg, resSec, resAbout, resCustom, resFeatured, resNav, resTokens, resCourses, resContact] = await Promise.all([
         fetch("/api/cms/landing"),
         fetch("/api/cms/programmes"),
         fetch("/api/cms/partner-page-sections"),
@@ -246,6 +257,7 @@ export function HeadlessPageStudio() {
         fetch("/api/cms/navigation"),
         fetch("/api/cms/design-tokens"),
         fetch("/api/cms/civic-modules"),
+        fetch("/api/cms/contact"),
       ]);
 
       if (resLanding.ok) {
@@ -291,6 +303,10 @@ export function HeadlessPageStudio() {
       if (resCourses.ok) {
         const json = await resCourses.json();
         setCoursesData(json.data || { results: [] });
+      }
+      if (resContact.ok) {
+        const json = await resContact.json();
+        setContactData(json.data || {});
       }
       setLastSaved(new Date().toLocaleTimeString());
     } catch {
@@ -819,6 +835,16 @@ export function HeadlessPageStudio() {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ data: designTokensData, editorEmail: MASTER_CMS_EMAIL }),
         }),
+        fetch("/api/cms/civic-modules", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ data: coursesData, editorEmail: MASTER_CMS_EMAIL }),
+        }),
+        fetch("/api/cms/contact", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ data: contactData, editorEmail: MASTER_CMS_EMAIL }),
+        }),
       ];
 
       const responses = await Promise.all(payloadPromises);
@@ -828,7 +854,7 @@ export function HeadlessPageStudio() {
         setLastSaved(new Date().toLocaleTimeString());
         setPreviewRefreshKey((k) => k + 1);
         toast.success(`Successfully saved and published live!`, {
-          description: `Updated landing, programmes, sections, custom pages, featured blogs, navigation, tokens, and about schemas.`,
+          description: `Updated landing, programmes, sections, custom pages, featured blogs, navigation, tokens, courses, contact, and about schemas.`,
         });
       } else {
         throw new Error("One or more collections failed to persist");
@@ -856,6 +882,9 @@ export function HeadlessPageStudio() {
     }
     if (selectedPageKey === "featured-blogs") {
       return "/#featured-projects";
+    }
+    if (selectedPageKey === "contact") {
+      return "/contact";
     }
     return currentPage.route;
   }, [selectedPageKey, selectedCustomPage, currentPage]);
@@ -1722,8 +1751,16 @@ export function HeadlessPageStudio() {
         />
       )}
 
+      {/* SPECIAL DESK 7: CONTACT PAGE */}
+      {selectedPageKey === "contact" && (
+        <ContactStudioEditor
+          data={contactData}
+          onChange={setContactData}
+        />
+      )}
+
       {/* STANDARD MULTI-TAB WORKSPACE (LANDING, PROGRAMMES, & PROGRAMME DETAIL PAGES) */}
-      {selectedPageKey !== "featured-blogs" && selectedPageKey !== "custom-pages" && selectedPageKey !== "about" && selectedPageKey !== "navigation" && selectedPageKey !== "tokens" && selectedPageKey !== "courses" && (
+      {selectedPageKey !== "featured-blogs" && selectedPageKey !== "custom-pages" && selectedPageKey !== "about" && selectedPageKey !== "navigation" && selectedPageKey !== "tokens" && selectedPageKey !== "courses" && selectedPageKey !== "contact" && (
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
         {/* Left Nav: Section Tabs for Selected Page */}
         <div className="space-y-3 lg:col-span-3">

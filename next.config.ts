@@ -22,7 +22,7 @@ function contentSecurityPolicy(): string {
     "img-src 'self' data: blob: https:",
     "font-src 'self' data: https:",
     `connect-src 'self' https://bnske.budgetndiostory.org https://*.budgetndiostory.org https://app.posthog.com https://us.i.posthog.com https://vitals.vercel-insights.com https://*.vercel-analytics.com${localApiConnect}`,
-    "media-src 'self' https://res.cloudinary.com blob: data:",
+    "media-src 'self' https://pub-96ce2eba58694b1da7f540033bdaa464.r2.dev https://*.r2.dev https://res.cloudinary.com blob: data:",
     "frame-src 'self' https://www.youtube.com https://www.youtube-nocookie.com https://youtube.com https://youtube-nocookie.com",
     "frame-ancestors 'self' https://budgetndiostory.org https://*.budgetndiostory.org https://*.vercel.app http://localhost:* http://127.0.0.1:*",
     "base-uri 'self'",
@@ -55,6 +55,18 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
+        hostname: 'pub-96ce2eba58694b1da7f540033bdaa464.r2.dev',
+      },
+      {
+        protocol: 'https',
+        hostname: '**.r2.dev',
+      },
+      {
+        protocol: 'https',
+        hostname: '**.r2.cloudflarestorage.com',
+      },
+      {
+        protocol: 'https',
         hostname: '**.budgetndiostory.org',
       },
       {
@@ -68,6 +80,10 @@ const nextConfig: NextConfig = {
       {
         protocol: 'https',
         hostname: 'img.youtube.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'i.ytimg.com',
       },
       {
         protocol: 'https',

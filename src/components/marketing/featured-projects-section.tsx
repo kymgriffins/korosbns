@@ -104,6 +104,15 @@ export function FeaturedProjectsSection({
       <ul className="divide-y divide-border/50 border-y border-border/50">
         {projects.map((project, index) => {
           const reverse = index % 2 === 1;
+          const thumbnailSrc =
+            project.thumbnail ||
+            (project as any).thumbnailUrl ||
+            (project as any).image ||
+            (project as any).image_url ||
+            (project.videoId ? `https://i.ytimg.com/vi/${project.videoId}/hqdefault.jpg` : "/images/hall/129A4248.jpg");
+          const projectHref = project.href || `/bns-project/${project.slug || project.id}`;
+          const programmeLabel = project.programmeLabel || project.programmeSlug || "Investigation";
+
           return (
             <li
               key={project.id}
@@ -114,12 +123,12 @@ export function FeaturedProjectsSection({
             >
               <figure className="space-y-2.5 md:col-span-6">
                 <Link
-                  href={project.href}
+                  href={projectHref}
                   className="relative block aspect-video w-full overflow-hidden bg-muted outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 >
                   <Image
-                    src={project.thumbnail}
-                    alt=""
+                    src={thumbnailSrc}
+                    alt={project.title || "Project thumbnail"}
                     fill
                     className="object-cover object-center"
                     sizes="(max-width: 768px) 100vw, 50vw"
@@ -127,7 +136,7 @@ export function FeaturedProjectsSection({
                   <span className="sr-only">Open {project.title}</span>
                 </Link>
                 <figcaption className={cn(T.caption, "text-muted-foreground")}>
-                  {project.authorName}
+                  {project.authorName || "Budget Ndio Story Team"}
                   <span aria-hidden className="mx-1.5 text-border">
                     ·
                   </span>
@@ -137,11 +146,11 @@ export function FeaturedProjectsSection({
 
               <div className="space-y-4 md:col-span-6">
                 <p className={cn(T.caption, "text-muted-foreground")}>
-                  {project.programmeLabel}
+                  {programmeLabel}
                 </p>
                 <h3 className="font-heading text-xl font-bold leading-snug text-balance text-foreground md:text-2xl">
                   <Link
-                    href={project.href}
+                    href={projectHref}
                     className="outline-none transition-colors hover:text-primary focus-visible:ring-2 focus-visible:ring-ring"
                   >
                     {project.title}
@@ -153,7 +162,7 @@ export function FeaturedProjectsSection({
                   </p>
                 </LandingContent>
                 <Link
-                  href={project.href}
+                  href={projectHref}
                   className="inline-flex items-center pt-1 text-sm font-medium text-foreground outline-none transition-colors hover:text-primary focus-visible:ring-2 focus-visible:ring-ring"
                 >
                   Open project

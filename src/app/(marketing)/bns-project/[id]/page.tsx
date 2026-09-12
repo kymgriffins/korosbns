@@ -12,17 +12,21 @@ type PageProps = {
   params: Promise<{ id: string }>;
 };
 
+import { getLiveFeaturedProjects } from "@/lib/cms-live-data";
+import civicModulesFallback from "@/data/fallbacks/civic-modules.json";
+
 function isTerraProject(id: string): boolean {
   return resolveProjectId(id) === "project-terra";
 }
 
-function findCmsProject(idOrSlug: string): ProjectEditorialData | null {
+async function findCmsProject(idOrSlug: string): Promise<ProjectEditorialData | null> {
   const norm = idOrSlug.toLowerCase().trim();
   let results: any[] = [];
   try {
-    const cmsData = headlessCmsApi.getCollectionData("featured-projects") as { results?: any[] };
-    if (Array.isArray(cmsData?.results) && cmsData.results.length > 0) {
-      results = cmsData.results;
+    const live = await getLiveFeaturedProjects();
+    const liveResults = (live as any)?.results || (live as any)?.projects;
+    if (Array.isArray(liveResults) && liveResults.length > 0) {
+      results = liveResults;
     } else {
       results = (featuredFallback.results || []) as any[];
     }
@@ -30,7 +34,7 @@ function findCmsProject(idOrSlug: string): ProjectEditorialData | null {
     results = (featuredFallback.results || []) as any[];
   }
 
-  const found = results.find((p) => {
+  let found = results.find((p) => {
     const pId = (p.id || "").toLowerCase();
     const pSlug = (p.slug || "").toLowerCase();
     const pHref = (p.href || "").toLowerCase();
@@ -42,12 +46,48 @@ function findCmsProject(idOrSlug: string): ProjectEditorialData | null {
     );
   });
 
+  if (!found) {
+    try {
+      const civicModules = (civicModulesFallback.results || []) as any[];
+      const mod = civicModules.find(
+        (m) =>
+          (m.id || "").toLowerCase() === norm ||
+          (m.slug || "").toLowerCase() === norm,
+      );
+      if (mod) {
+        const firstStep = mod.steps?.[0] || {};
+        found = {
+          id: mod.id,
+          slug: mod.slug || mod.id,
+          title: mod.title,
+          subtitle: mod.badgeName || mod.badge,
+          prose: mod.description,
+          wysiwygProse: firstStep.text || mod.description,
+          authorName: mod.credits || "Budget Ndio Story Editorial & Research Team",
+          programmeSlug: mod.id === "county-budget" ? "mashinani" : "connect",
+          programmeLabel: mod.id === "county-budget" ? "BNS Mashinani" : "BNS Connect",
+          url: firstStep.youtube_url || "",
+          videoId: firstStep.youtube_url
+            ? firstStep.youtube_url.match(/v=([\w-]{11})/)?.[1] || ""
+            : "",
+          thumbnail: mod.image_url || firstStep.image_urls?.[0] || "/images/hall/129A4248.jpg",
+          publishedAt: "2026-02-15T00:00:00Z",
+          channelHandle: "@budgetndiostory",
+          isProject: true,
+          useYoutubeThumbnail: false,
+          hostInstitution: "House of Fiscal Wisdom",
+          funder: "Supported by Consortium Partners",
+        };
+      }
+    } catch {}
+  }
+
   return found || null;
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { id } = await params;
-  const project = findCmsProject(id);
+  const project = await findCmsProject(id);
 
   if (project) {
     return buildPageMetadata({
@@ -86,7 +126,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function ProjectDetailPage({ params }: PageProps) {
   const { id } = await params;
-  const cmsProject = findCmsProject(id);
+  const cmsProject = await findCmsProject(id);
 
   if (isTerraProject(id)) {
     return <ProjectTerraEditorial project={cmsProject || undefined} />;
