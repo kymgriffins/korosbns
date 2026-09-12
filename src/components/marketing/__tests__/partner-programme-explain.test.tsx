@@ -38,11 +38,11 @@ describe("PartnerProgrammeExplainSections", () => {
     ).toBeGreaterThanOrEqual(3);
     expect(screen.getAllByRole("link", { name: /Read more/i })).toHaveLength(3);
 
-    expect(screen.getAllByText(/James Maingi Mutinda · AFRODAD/i).length).toBeGreaterThanOrEqual(1);
-    expect(screen.getAllByText(/Prof\. George Wajackoyah · AFRODAD/i).length).toBeGreaterThanOrEqual(1);
-    expect(screen.getAllByText(/Town hall · Mashinani/i).length).toBeGreaterThanOrEqual(1);
-    expect(screen.getAllByText(/Floor briefing · Mashinani/i).length).toBeGreaterThanOrEqual(1);
-    expect(screen.getAllByText(/Field capture · Wanahabari/i).length).toBeGreaterThanOrEqual(1);
-    expect(screen.getAllByText(/Dr\. Lyla Latif · Red Flags/i).length).toBeGreaterThanOrEqual(1);
+    expect(screen.getAllByText(/National Debt Forum/i).length).toBeGreaterThanOrEqual(1);
+    expect(screen.getAllByText(/Policy Scrutiny Panel/i).length).toBeGreaterThanOrEqual(1);
+    expect(screen.getAllByText(/County Budget Scrutiny/i).length).toBeGreaterThanOrEqual(1);
+    expect(screen.getAllByText(/Disbursement Verification/i).length).toBeGreaterThanOrEqual(1);
+    expect(screen.getAllByText(/Investigative Capture/i).length).toBeGreaterThanOrEqual(1);
+    expect(screen.getAllByText(/Red Flags Investigation/i).length).toBeGreaterThanOrEqual(1);
   });
 });

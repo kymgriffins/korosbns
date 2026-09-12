@@ -8,7 +8,7 @@ import { landingSectionsContent } from "@/content";
 
 export default function LandingFooter() {
   return (
-    <footer className="bg-card text-card-foreground pt-24 md:pt-36 pb-12 md:pb-20 overflow-hidden border-t border-border">
+    <footer className="bg-card text-card-foreground pt-24 md:pt-36 pb-12 md:pb-20 overflow-hidden border-t border-border rounded-none">
       <div className="max-w-[1400px] mx-auto px-6 md:px-16">
         <motion.div
           variants={staggerContainer}

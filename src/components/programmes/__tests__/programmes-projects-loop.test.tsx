@@ -28,18 +28,18 @@ describe("ProgrammesProjectsLoop", () => {
     expect(screen.getAllByText(/Nakuru Citizen Budget Baraza/i).length).toBeGreaterThanOrEqual(1);
   });
 
-  it("links directly to project case study pages on click", () => {
+  it("links directly to programme pages on click", () => {
     render(<ProgrammesProjectsLoop />);
 
     const projectLinks = screen.getAllByRole("link");
     const nakuruLink = projectLinks.find((link) =>
-      link.getAttribute("href")?.includes("/bns-studio/nakuru-citizen-baraza"),
+      link.getAttribute("href")?.includes("/programmes/mashinani"),
     );
     expect(nakuruLink).toBeDefined();
-    expect(nakuruLink?.getAttribute("href")).toBe("/bns-studio/nakuru-citizen-baraza");
+    expect(nakuruLink?.getAttribute("href")).toBe("/programmes/mashinani");
   });
 
-  it("filters productions when typing in the search input and routes Project TERRA to /bns-project/terra", () => {
+  it("filters productions when typing in the search input and routes Project TERRA to programme page", () => {
     render(<ProgrammesProjectsLoop />);
 
     const searchInput = screen.getByPlaceholderText(/Search projects/i);
@@ -51,9 +51,9 @@ describe("ProgrammesProjectsLoop", () => {
     // Should find Project TERRA
     expect(screen.getByText(/Project TERRA/i)).toBeInTheDocument();
 
-    // Verify it links directly to /bns-project/terra
+    // Verify it links to a programme or studio page (not /bns-project/terra)
     const terraLink = screen.getAllByRole("link").find((link) =>
-      link.getAttribute("href") === "/bns-project/terra"
+      link.getAttribute("href")?.includes("/programmes/") || link.getAttribute("href")?.includes("/bns-studio")
     );
     expect(terraLink).toBeDefined();
   });

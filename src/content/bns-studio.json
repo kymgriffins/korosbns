@@ -1,119 +1,153 @@
 {
   "provenance": {
     "source": "BNS Studio page content (seed)",
-    "note": "CMS-managed page sections, images, and configuration for the BNS Studio page.",
+    "note": "CMS-managed page sections, images, and configuration for the BNS Studio page. Add/remove sections in the 'sections' array.",
     "level": "seed",
     "lastUpdated": "2026-09-12"
   },
   "hero": {
     "badge": "National Treasury Explainer Series · 480K+ Views",
     "swipeHint": "Swipe formats · Scroll for master theatre",
-    "formatsLabel": "formats"
-  },
-  "screening": {
-    "eyebrow": "The Screening Room",
-    "title": "Screening the flagship Treasury explainer reel.",
-    "description": "Presenter-led broadcast intercutting town hall recordings with forensic motion graphics built directly from National Treasury published tables.",
-    "videoUrl": "https://www.youtube.com/embed/Ed9lP0-komE?autoplay=1&rel=0&modestbranding=1",
-    "videoTitle": "Budget Sasa Ni Delivery",
-    "playButtonLabel": "Screen Master Film (12 min)",
-    "credit": "BNS Studios Production · Co-Produced with National Treasury"
-  },
-  "productionSpectrum": {
-    "eyebrow": "Production Disciplines",
-    "title": "Three creative disciplines. Engineered for civic impact.",
-    "description": "We do not produce 200-page donor PDFs. We build civic media that moves policy.",
-    "disciplines": [
+    "formatsLabel": "formats",
+    "reelImages": [
       {
-        "badge": "Motion",
-        "title": "2D Animation & Motion Graphics",
-        "subtitle": "Forensic visual storytelling",
-        "description": "High-engagement explainers that demystify complex legislation and budget cycles.",
-        "capabilities": ["Policy explainer animations", "Budget cycle breakdowns", "Infographic motion graphics", "Legislative process visuals", "Data visualization films", "Social media clips"]
+        "src": "/images/reels/reel-01-poster.jpg",
+        "alt": "Social Media Reel - Budget Explainer",
+        "caption": "Social media format"
       },
       {
-        "badge": "Cinema",
-        "title": "Documentary & Film",
-        "subtitle": "Character-driven civic narratives",
-        "description": "Cinematic storytelling capturing grassroots community realities and institutional accountability.",
-        "capabilities": ["Feature documentaries", "Short-form films", "Investigative series", "Community portraits", "Institutional profiles", "Festival-ready productions"]
+        "src": "/images/reels/reel-02-poster.jpg",
+        "alt": "Documentary Reel - County Tracker",
+        "caption": "Documentary format"
       },
       {
-        "badge": "Audio",
-        "title": "Podcast & Audio",
-        "subtitle": "Bilingual fiscal deep-dives",
-        "description": "Field soundscapes, expert debate series, and bilingual fiscal analysis.",
-        "capabilities": ["Investigative podcast series", "Bilingual fiscal explainers", "Field recordings", "Expert interview series", "Community voice collections", "Audio documentaries"]
+        "src": "/images/reels/reel-03-poster.jpg",
+        "alt": "Animation Reel - Policy Breakdown",
+        "caption": "Animation format"
+      },
+      {
+        "src": "/images/reels/reel-04-poster.jpg",
+        "alt": "Podcast Reel - Fiscal Deep Dive",
+        "caption": "Podcast format"
       }
     ]
   },
-  "commission": {
-    "eyebrow": "Commission the Studio",
-    "title": "Commission forensic civic media that moves policy.",
-    "description": "Bilingual podcasts, multi-camera town halls, 2D animations, or nationwide street takeovers — verified scope and production crew within 24 hours.",
-    "ctaLabel": "Commission BNS Studio"
-  },
-  "about": {
-    "headline": "Audio & visuals, done properly.",
-    "subheadline": "Shot on location. Cut in studio.",
-    "tagline": "Mission-aligned. Editorially independent. Built for reach.",
-    "ctaPrompt": "Tell us what you need to move.",
-    "stats": [
-      { "value": "04", "label": "Core formats" },
-      { "value": "08", "label": "Full production formats" },
-      { "value": "2x", "label": "Double impact" }
-    ],
-    "body": "We work with governments, CSOs, ESG innovators, and development partners who need high-impact civic media. From county treasury tracking to pan-African policy documentaries, our production crew delivers verified, editorially independent content."
-  },
-  "images": [
+  "sections": [
     {
-      "src": "/images/media/129A3905.jpg",
-      "alt": "BNS Studio production team on location",
-      "caption": "Studio production floor"
+      "id": "screening",
+      "type": "hero-image",
+      "eyebrow": "The Screening Room",
+      "title": "Screening the flagship Treasury explainer reel.",
+      "description": "Presenter-led broadcast intercutting town hall recordings with forensic motion graphics built directly from National Treasury published tables.",
+      "videoUrl": "https://www.youtube.com/embed/Ed9lP0-komE?autoplay=1&rel=0&modestbranding=1",
+      "videoTitle": "Budget Sasa Ni Delivery",
+      "playButtonLabel": "Screen Master Film (12 min)",
+      "credit": "BNS Studios Production · Co-Produced with National Treasury",
+      "image": "/images/media/129A3905.jpg",
+      "imageAlt": "BNS Studio production team on location"
     },
     {
-      "src": "/images/media/main media image.jpg",
-      "alt": "Audio recording session",
-      "caption": "Podcast recording"
+      "id": "production-spectrum",
+      "type": "feature-grid",
+      "eyebrow": "Production Disciplines",
+      "title": "Three creative disciplines. Engineered for civic impact.",
+      "description": "We do not produce 200-page donor PDFs. We build civic media that moves policy.",
+      "items": [
+        {
+          "badge": "Motion",
+          "title": "2D Animation & Motion Graphics",
+          "subtitle": "Forensic visual storytelling",
+          "description": "High-engagement explainers that demystify complex legislation and budget cycles.",
+          "icon": "Film",
+          "capabilities": ["Policy explainer animations", "Budget cycle breakdowns", "Infographic motion graphics", "Legislative process visuals", "Data visualization films", "Social media clips"]
+        },
+        {
+          "badge": "Cinema",
+          "title": "Documentary & Film",
+          "subtitle": "Character-driven civic narratives",
+          "description": "Cinematic storytelling capturing grassroots community realities and institutional accountability.",
+          "icon": "Clapperboard",
+          "capabilities": ["Feature documentaries", "Short-form films", "Investigative series", "Community portraits", "Institutional profiles", "Festival-ready productions"]
+        },
+        {
+          "badge": "Audio",
+          "title": "Podcast & Audio",
+          "subtitle": "Bilingual fiscal deep-dives",
+          "description": "Field soundscapes, expert debate series, and bilingual fiscal analysis.",
+          "icon": "Headphones",
+          "capabilities": ["Investigative podcast series", "Bilingual fiscal explainers", "Field recordings", "Expert interview series", "Community voice collections", "Audio documentaries"]
+        }
+      ]
     },
     {
-      "src": "/images/media/129A3923.jpg",
-      "alt": "Town hall facilitation",
-      "caption": "Community convening"
+      "id": "gallery",
+      "type": "image-marquee",
+      "eyebrow": "Studio Gallery",
+      "title": "From field to frame.",
+      "description": "Every production captures the real moments that drive Kenya's civic story.",
+      "images": [
+        { "src": "/images/media/129A3905.jpg", "alt": "BNS Studio production team on location", "caption": "Studio production floor" },
+        { "src": "/images/media/main media image.jpg", "alt": "Audio recording session", "caption": "Podcast recording" },
+        { "src": "/images/media/129A3923.jpg", "alt": "Town hall facilitation", "caption": "Community convening" },
+        { "src": "/images/marketing newsletter subcribe/Nelly with The Mic.jpg", "alt": "Field reporting with microphone", "caption": "Field documentation" },
+        { "src": "/images/cohort1 groundworks/129A3964.jpg", "alt": "Youth cohort workshop", "caption": "Civic fellowship" },
+        { "src": "/images/towwnhallmay/129A3863.jpg", "alt": "Multi-stakeholder forum", "caption": "Stakeholder convening" },
+        { "src": "/images/towwnhallmay/theman.jpg", "alt": "Presenter in studio", "caption": "Studio presentation" },
+        { "src": "/images/media/129A3905.jpg", "alt": "Production crew at work", "caption": "Behind the scenes" }
+      ],
+      "speed": "normal",
+      "direction": "left"
     },
     {
-      "src": "/images/marketing newsletter subcribe/Nelly with The Mic.jpg",
-      "alt": "Field reporting with microphone",
-      "caption": "Field documentation"
+      "id": "about",
+      "type": "text-with-stats",
+      "eyebrow": "About the Studio",
+      "title": "Audio & visuals, done properly.",
+      "subtitle": "Shot on location. Cut in studio.",
+      "description": "We work with governments, CSOs, ESG innovators, and development partners who need high-impact civic media. From county treasury tracking to pan-African policy documentaries, our production crew delivers verified, editorially independent content.",
+      "tagline": "Mission-aligned. Editorially independent. Built for reach.",
+      "ctaPrompt": "Tell us what you need to move.",
+      "stats": [
+        { "value": "04", "label": "Core formats" },
+        { "value": "08", "label": "Full production formats" },
+        { "value": "2x", "label": "Double impact" }
+      ],
+      "image": "/images/media/129A3905.jpg",
+      "imageAlt": "BNS Studio team"
     },
     {
-      "src": "/images/cohort1 groundworks/129A3964.jpg",
-      "alt": "Youth cohort workshop",
-      "caption": "Civic fellowship"
+      "id": "partner-cta",
+      "type": "partner-with-us",
+      "variant": "split-image",
+      "eyebrow": "Partner With Us",
+      "title": "Build civic media that moves policy.",
+      "description": "Whether you are a development partner, newsroom, or citizen — there is a place for you in Kenya's accountability story.",
+      "primaryCta": { "label": "Start a Partnership", "href": "/contact" },
+      "secondaryCta": { "label": "View Our Work", "href": "/bns-studio" },
+      "image": "/images/media/129A3905.jpg",
+      "imageAlt": "BNS Studio production team",
+      "partnerLogos": [
+        { "src": "/images/senmedia.png", "alt": "Sen Media & Events" },
+        { "src": "/images/The-Continental-Pot-Vertical-removebg-preview.png", "alt": "The Continental Pot" },
+        { "src": "/images/colortwist.png", "alt": "Colour Twist Media" }
+      ],
+      "features": [
+        { "icon": "Megaphone", "title": "Amplify Your Message", "description": "Reach 480K+ young Kenyans through our verified civic media channels." },
+        { "icon": "Shield", "title": "Editorial Independence", "description": "All partnerships maintain full editorial independence and fact-checking standards." },
+        { "icon": "TrendingUp", "title": "Measurable Impact", "description": "Track engagement, policy changes, and civic outcomes from your partnership." }
+      ]
     },
     {
-      "src": "/images/towwnhallmay/129A3863.jpg",
-      "alt": "Multi-stakeholder forum",
-      "caption": "Stakeholder convening"
-    },
-    {
-      "src": "/images/towwnhallmay/theman.jpg",
-      "alt": "Presenter in studio",
-      "caption": "Studio presentation"
-    },
-    {
-      "src": "/images/media/129A3905.jpg",
-      "alt": "Production crew at work",
-      "caption": "Behind the scenes"
+      "id": "commission",
+      "type": "cta-banner",
+      "eyebrow": "Commission the Studio",
+      "title": "Commission forensic civic media that moves policy.",
+      "description": "Bilingual podcasts, multi-camera town halls, 2D animations, or nationwide street takeovers — verified scope and production crew within 24 hours.",
+      "ctaLabel": "Commission BNS Studio",
+      "ctaHref": "/contact",
+      "theme": "contrast"
     }
   ],
-  "featuredWork": {
-    "eyebrow": "Civic Evidence & Production Archive",
-    "title": "All work & evidence across four programmes",
-    "description": "Three programmes — Connect, Mashinani, Wanahabari Lab — plus BNS Studio. Every production is verified, published, and tagged to its programme.",
-    "pill": "Three programmes · evidence via BNS Studio",
-    "badge": "Verifiable Civic Data"
-  },
   "seo": {
     "title": "BNS Studio — Forensic Civic Media Production",
     "description": "Documentaries, podcasts, animations, town halls, and social reels — verified civic media production from Budget Ndio Story.",

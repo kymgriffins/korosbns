@@ -10,24 +10,34 @@ import {
 } from "lucide-react";
 import { StudioReelHero } from "@/components/studio/theatre/studio-reel-hero";
 import { StudioBookingForm } from "@/components/studio/StudioBookingForm";
-import { StudioProductionSpectrum } from "@/components/studio/StudioProductionSpectrum";
-import { EditorialPill, PillButtonGroup, PillButton } from "@/components/ui/editorial";
-import { EditorialCtaBand } from "@/components/ui/editorial/editorial-cta-band";
-import { studiosEvidenceData } from "@/data/studios-evidence";
+import { DynamicSectionRenderer } from "@/components/studio/dynamic-section-renderer";
 import { bnsStudioContent } from "@/content";
-import { SECTION_SHELL_INNER } from "@/layouts/section-shell";
 
-const studioPage = bnsStudioContent as {
-  hero: { badge: string; swipeHint: string };
-  screening: { eyebrow: string; title: string; description: string; videoUrl: string; videoTitle: string; playButtonLabel: string; credit: string };
-  commission: { eyebrow: string; title: string; description: string; ctaLabel: string };
+type StudioSection = {
+  id: string;
+  type: string;
+  [key: string]: unknown;
 };
+
+type StudioPageData = {
+  hero: {
+    badge: string;
+    swipeHint: string;
+    reelImages?: Array<{ src: string; alt: string; caption?: string }>;
+  };
+  sections: StudioSection[];
+  seo: {
+    title: string;
+    description: string;
+    ogImage: string;
+  };
+};
+
+const studioPage = bnsStudioContent as StudioPageData;
 
 export function BNSStudioPageClient() {
   const [bookingOpen, setBookingOpen] = useState(false);
   const [isPlayingVideo, setIsPlayingVideo] = useState(false);
-  const featuredProjects = studiosEvidenceData.getFeaturedProjects();
-  const flagshipFilm = featuredProjects[0] || studiosEvidenceData.getAllProjects()[0];
 
   return (
     <article className="w-full bg-background text-foreground selection:bg-primary/30">
@@ -42,82 +52,15 @@ export function BNSStudioPageClient() {
         </div>
       </div>
 
-      {/* 02 — 21:9 CINEMATIC SCREENING THEATRE */}
-      <section className="w-full bg-zinc-950 text-white py-24 md:py-36 border-y border-zinc-800/80 relative overflow-hidden">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[70vw] h-[350px] bg-primary/20 blur-[130px] rounded-full pointer-events-none select-none" />
-
-        <div className={SECTION_SHELL_INNER}>
-          <div className="max-w-4xl space-y-4 mb-12">
-            <span className="font-mono text-xs text-primary uppercase tracking-widest font-bold">
-              · {studioPage.screening.eyebrow}
-            </span>
-            <h2 className="font-heading text-3xl sm:text-5xl font-black text-white leading-tight">
-              {studioPage.screening.title}
-            </h2>
-            <p className="text-base sm:text-lg text-zinc-400 leading-relaxed max-w-2xl">
-              {studioPage.screening.description}
-            </p>
-          </div>
-
-          <div className="relative aspect-[16/9] sm:aspect-[21/9] w-full overflow-hidden rounded-3xl border border-zinc-800 bg-black shadow-2xl">
-            {isPlayingVideo ? (
-              <iframe
-                src={studioPage.screening.videoUrl}
-                title={studioPage.screening.videoTitle}
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-                className="h-full w-full"
-              />
-            ) : (
-              <div className="relative h-full w-full group cursor-pointer" onClick={() => setIsPlayingVideo(true)}>
-                <Image
-                  src={flagshipFilm?.media.posterUrl || "/images/media/129A3905.jpg"}
-                  alt={studioPage.screening.videoTitle}
-                  fill
-                  priority
-                  className="object-cover transition-transform duration-700 group-hover:scale-105"
-                  sizes="(max-width: 1280px) 100vw, 1280px"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent" />
-
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="flex items-center gap-3 px-6 py-3.5 rounded-full bg-primary text-primary-foreground shadow-2xl transition-all duration-300 group-hover:scale-110 group-hover:shadow-primary/50">
-                    <Play className="size-5 fill-current" />
-                    <span className="font-heading font-bold text-sm tracking-wide">
-                      {studioPage.screening.playButtonLabel}
-                    </span>
-                  </div>
-                </div>
-
-                <div className="absolute bottom-6 left-6 right-6 flex flex-col sm:flex-row sm:items-end justify-between gap-4 text-white">
-                  <div className="space-y-1">
-                    <span className="font-mono text-[10px] uppercase tracking-wider text-primary font-bold">
-                      {studioPage.hero.badge}
-                    </span>
-                    <h3 className="font-heading text-xl sm:text-2xl font-bold">
-                      {flagshipFilm?.title || studioPage.screening.videoTitle}
-                    </h3>
-                  </div>
-                  <p className="font-mono text-xs text-zinc-400">
-                    {studioPage.screening.credit}
-                  </p>
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
-      </section>
-
-      {/* 03 — GROUPED PRODUCTION SPECTRUM */}
-      <StudioProductionSpectrum />
-
-      {/* 04 — Full-bleed commission CTA */}
-      <EditorialCtaBand
-        eyebrow={studioPage.commission.eyebrow}
-        title={studioPage.commission.title}
-        description={studioPage.commission.description}
-        onCtaClick={() => setBookingOpen(true)}
-        ctaLabel={studioPage.commission.ctaLabel}
+      {/* 02 — CMS-DRIVEN DYNAMIC SECTIONS */}
+      <DynamicSectionRenderer
+        sections={studioPage.sections}
+        extraProps={{
+          screening: {
+            isPlaying: isPlayingVideo,
+            onPlay: () => setIsPlayingVideo(true),
+          },
+        }}
       />
 
       <StudioBookingForm open={bookingOpen} onOpenChange={setBookingOpen} />
