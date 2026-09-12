@@ -12,13 +12,9 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight, Zap, PlaySquare } from "lucide-react";
 import Balancer from "react-wrap-balancer";
 import { ease } from "@/motion/variants";
+import { landingHeroContent } from "@/content";
 
-const badges = [
-  { text: "Budget Stories 🎭", top: "15%", left: "5%" },
-  { text: "County Spending 📊", top: "25%", right: "8%" },
-  { text: "Data Visuals 📉", top: "60%", left: "10%" },
-  { text: "Action Steps 📲", top: "70%", right: "12%" },
-];
+const badges = landingHeroContent.badges;
 
 const FloatingBadge = ({
   text,
@@ -150,25 +146,23 @@ export default function Hero() {
           <motion.div variants={heroItem} className="flex justify-center">
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-primary/25 bg-primary/8 text-primary text-xs font-bold">
               <Zap className="size-3.5 fill-current" />
-              <span>Bridging Youth Energy & Fiscal Policy</span>
+              <span>{landingHeroContent.missionBadge}</span>
             </div>
           </motion.div>
 
           {/* Headline */}
           <motion.div variants={heroItem} className="space-y-4">
             <h1 className="text-4xl sm:text-6xl md:text-7xl font-black text-foreground leading-[1.05] tracking-tight">
-              Translating{" "}
+              {landingHeroContent.headline.prefix}{" "}
               <span className="text-primary italic font-normal">
-                numbers
+                {landingHeroContent.headline.highlight}
               </span>{" "}
               <br />
-              into civic narratives.
+              {landingHeroContent.headline.suffix}
             </h1>
             <p className="text-sm sm:text-base md:text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
               <Balancer>
-                Budget Ndio Story is a youth-led initiative turning complex
-                Kenyan budgets into clear, actionable stories for civic
-                engagement and democratic audit.
+                {landingHeroContent.description}
               </Balancer>
             </p>
           </motion.div>
@@ -183,7 +177,7 @@ export default function Hero() {
                 size="default"
                 className="w-full sm:w-auto rounded-xl px-6 py-3 text-sm font-bold gap-2"
               >
-                Start Learning Path <ArrowRight className="size-4" />
+                {landingHeroContent.primaryCta.label} <ArrowRight className="size-4" />
               </Button>
             </Link>
             <Link href="/learn/stories" className="w-full sm:w-auto">
@@ -193,7 +187,7 @@ export default function Hero() {
                 className="w-full sm:w-auto rounded-xl px-6 py-3 text-sm font-bold border-border text-foreground/80 hover:bg-foreground/5 gap-2"
               >
                 <PlaySquare className="size-4 text-rose-500" />
-                60s Stories &amp; Reels
+                {landingHeroContent.secondaryCta.label}
               </Button>
             </Link>
           </motion.div>
@@ -209,8 +203,8 @@ export default function Hero() {
 
               <div className="rounded-xl md:rounded-[24px] border border-border/40 bg-background overflow-hidden relative aspect-[16/10]">
                 <iframe
-                  src="https://www.youtube-nocookie.com/embed/Ed9lP0-komE?rel=0&modestbranding=1"
-                  title="Budget Ndio Story overview"
+                  src={landingHeroContent.videoEmbed}
+                  title={landingHeroContent.videoTitle}
                   className="absolute inset-0 w-full h-full border-0"
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                   allowFullScreen

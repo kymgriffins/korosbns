@@ -4,30 +4,11 @@ import Wrapper from '@/components/global/wrapper';
 import SectionBadge from '@/components/ui/section-badge';
 import { motion } from 'motion/react';
 import React from 'react';
+import { landingSectionsContent } from "@/content";
 
-const debtVsBudget = [
-    { year: "2010", budget: 1.1, debt: 1.3 },
-    { year: "2013", budget: 1.6, debt: 2.0 },
-    { year: "2016", budget: 2.2, debt: 3.4 },
-    { year: "2019", budget: 2.9, debt: 5.6 },
-    { year: "2022", budget: 3.3, debt: 8.7 },
-    { year: "2024", budget: 3.9, debt: 10.8 },
-];
-
-const debtServiceShare = [
-    { label: "2012", value: 14 },
-    { label: "2016", value: 22 },
-    { label: "2020", value: 33 },
-    { label: "2024", value: 38 },
-];
-
-const countyTransfers = [
-    { year: "2013", value: 210 },
-    { year: "2016", value: 280 },
-    { year: "2019", value: 316 },
-    { year: "2022", value: 370 },
-    { year: "2024", value: 400 },
-];
+const debtVsBudget = landingSectionsContent.wallOfLove.debtVsBudget as Array<{ year: string; budget: number; debt: number }>;
+const debtServiceShare = landingSectionsContent.wallOfLove.debtServiceShare as Array<{ label: string; value: number }>;
+const countyTransfers = landingSectionsContent.wallOfLove.countyTransfers as Array<{ year: string; value: number }>;
 
 const chartMax = 11.5;
 const shareMax = 40;
@@ -66,12 +47,12 @@ const WallOfLove = () => {
                     transition={{ duration: 0.5 }}
                     className="text-center max-w-3xl mx-auto"
                 >
-                    <SectionBadge title="Budget Charts" />
+                    <SectionBadge title={landingSectionsContent.wallOfLove.badge} />
                     <h2 className="title mt-5 text-3xl md:text-5xl font-bold tracking-tight">
-                        Data stories that replace static member images
+                        {landingSectionsContent.wallOfLove.title}
                     </h2>
                     <p className="desc mt-4 text-muted-foreground">
-                        New chart cards show Kenya&apos;s debt vs budget growth since 2010, debt service pressure, and county transfer trends in a more meaningful visual format.
+                        {landingSectionsContent.wallOfLove.description}
                     </p>
                 </motion.div>
 

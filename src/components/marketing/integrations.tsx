@@ -10,27 +10,9 @@ import Link from 'next/link';
 import Container from "@/components/global/container";
 import { Button } from "@/components/ui/button";
 import { Particles } from "@/components/ui/particles";
+import { landingSectionsContent } from "@/content";
 
-const partnerMap = {
-    SenMedia: {
-        label: "SME",
-        name: "Sen Media & Events",
-        href: "https://senmedia-events.co.ke/",
-        logoSrc: "/images/senmedia.png",
-    },
-    ContinentalPot: {
-        label: "TCP",
-        name: "The Continental Pot",
-        href: "https://continentalpot.africa/",
-        logoSrc: "/images/The-Continental-Pot-Vertical-removebg-preview.png",
-    },
-    ColourTwist: {
-        label: "CTM",
-        name: "Colour Twist Media",
-        href: "https://colortwistmedia.com/",
-        logoSrc: "/images/colortwist.png",
-    },
-};
+const partnerMap = landingSectionsContent.integrations.partnerMap as Record<string, { label: string; name: string; href: string; logoSrc: string }>;
 
 const IntegrationCard = ({
     className,
@@ -200,7 +182,7 @@ const Integrations = () => {
                         viewport={{ once: true }}
                         transition={{ duration: 0.4, delay: 0.4 }}
                     >
-                        Consortium-led storytelling
+                        {landingSectionsContent.integrations.title}
                     </motion.h2>
 
                     <motion.p
@@ -210,7 +192,7 @@ const Integrations = () => {
                         viewport={{ once: true }}
                         transition={{ duration: 0.4, delay: 0.5 }}
                     >
-                        Led by The Continental Pot, Colour Twist Media, and Sen Media & Events to make budget information clear, useful, and actionable for young Kenyans.
+                        {landingSectionsContent.integrations.description}
                     </motion.p>
 
                     <motion.div
@@ -225,7 +207,7 @@ const Integrations = () => {
                             rel="noopener noreferrer"
                         >
                             <Button variant="white">
-                                Explore Consortium
+                                {landingSectionsContent.integrations.ctaLabel}
                             </Button>
                         </Link>
                     </motion.div>

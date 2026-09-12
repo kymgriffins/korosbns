@@ -6,30 +6,11 @@ import Wrapper from "../global/wrapper";
 import SectionBadge from "@/components/ui/section-badge";
 import { TrendingUp, ShieldCheck, Database, Landmark } from "lucide-react";
 import { cn } from "@/utils";
+import { landingSectionsContent } from "@/content";
 
-const roiItems = [
-    {
-        title: "Democratic Stability",
-        description: "Channeling youth frustration away from chaotic protests into constructive, policy-based dialogue and sustainable civic engagement.",
-        icon: ShieldCheck,
-        color: "text-emerald-500",
-        bg: "bg-emerald-500/10",
-    },
-    {
-        title: "Data Intelligence",
-        description: "Access to civic education insights and priority mapping from youth across Kenya — coverage grows as county data is verified.",
-        icon: Database,
-        color: "text-blue-500",
-        bg: "bg-blue-500/10",
-    },
-    {
-        title: "Institutional Legacy",
-        description: "Positioning your organization as the primary architect of Kenya's next generation of informed and responsible civic leadership.",
-        icon: Landmark,
-        color: "text-amber-500",
-        bg: "bg-amber-500/10",
-    }
-];
+const roiIconMap: Record<string, React.ComponentType<{ className?: string }>> = { ShieldCheck, Database, Landmark, TrendingUp };
+
+const roiItems = landingSectionsContent.roi.items as Array<{ title: string; description: string; icon: string; color: string; bg: string }>;
 
 const ROI = () => {
     return (
@@ -37,15 +18,14 @@ const ROI = () => {
             <Wrapper>
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
                     <div>
-                        <SectionBadge title="Strategic Value" />
+                        <SectionBadge title={landingSectionsContent.roi.badge} />
                         <motion.h2
                             initial={{ opacity: 0, y: 20 }}
                             whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true }}
                             className="text-3xl md:text-5xl font-bold tracking-tight mt-6"
                         >
-                            The Return on <br />
-                            <span className="text-primary">Investment</span>
+                            {landingSectionsContent.roi.title}
                         </motion.h2>
                         <motion.p
                             initial={{ opacity: 0, y: 20 }}
@@ -54,7 +34,7 @@ const ROI = () => {
                             transition={{ delay: 0.1 }}
                             className="text-lg text-muted-foreground mt-6 leading-relaxed"
                         >
-                            Beyond social impact, Budget Ndio Story provides strategic value for partners looking to build a stable, data-driven democratic future.
+                            {landingSectionsContent.roi.description}
                         </motion.p>
 
                         <div className="mt-8">
@@ -63,7 +43,7 @@ const ROI = () => {
                                     <TrendingUp className="size-5 text-white" />
                                 </div>
                                 <p className="text-sm font-medium">
-                                    Join the movement and write the story of Kenya&apos;s fiscal future together.
+                                    {landingSectionsContent.roi.ctaText}
                                 </p>
                             </div>
                         </div>
@@ -85,7 +65,7 @@ const ROI = () => {
                                         item.bg,
                                         item.color
                                     )}>
-                                        <item.icon className="size-6" />
+                                        {(() => { const Icon = roiIconMap[item.icon as string] || TrendingUp; return <Icon className="size-6" />; })()}
                                     </div>
                                     <div>
                                         <h3 className="text-lg font-bold group-hover:text-primary transition-colors">{item.title}</h3>

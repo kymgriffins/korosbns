@@ -21,68 +21,12 @@ import {
 import { LANDING_TYPOGRAPHY as T } from "@/constants/landing-typography";
 import { GsapReveal, GsapStaggerReveal } from "@/motion/gsap";
 import { cn } from "@/utils";
+import { faqContent } from "@/content";
 
-const faqCategories = [
-  { id: "all", label: "All Questions", icon: HelpCircle, count: 10 },
-  { id: "basics", label: "Budget Basics", icon: FileText, count: 3 },
-  { id: "eta", label: "BETA Agenda", icon: TrendingUp, count: 1 },
-  { id: "debt", label: "Debt & Borrowing", icon: Wallet, count: 2 },
-  { id: "counties", label: "Counties", icon: Building2, count: 1 },
-  { id: "risks", label: "Fiscal Risks", icon: AlertTriangle, count: 2 },
-];
+const faqIconMap: Record<string, React.ComponentType<{ className?: string }>> = { HelpCircle, FileText, TrendingUp, Wallet, Building2, AlertTriangle };
 
-const faqItems = [
-  {
-    q: "What is the Budget Policy Statement (BPS)?",
-    a: "The BPS is a yearly government document that sets out Kenya's spending priorities. It's like a preview of the national budget - showing where money will come from and where it'll go.",
-    category: "basics",
-  },
-  {
-    q: "When is the BPS released?",
-    a: "By law (PFM Act), the BPS must be submitted to Parliament by February 15th every year. The final budget comes later on April 30th.",
-    category: "basics",
-  },
-  {
-    q: "What's the difference between BPS and the national budget?",
-    a: "Think of BPS as the blueprint or trailer, and the national budget as the full movie. BPS sets the priorities and direction, while the budget is the actual detailed spending plan.",
-    category: "basics",
-  },
-  {
-    q: "What is BETA?",
-    a: "BETA = Bottom-Up Economic Transformation Agenda. It's Kenya's plan to grow the economy by focusing on agriculture, small businesses, healthcare, housing, and digital transformation.",
-    category: "eta",
-  },
-  {
-    q: "Why does Kenya borrow so much?",
-    a: "Kenya spends more than it collects in taxes (fiscal deficit). The gap is filled through borrowing - both from foreign sources and domestic (like treasury bonds). This helps fund development but also increases debt costs.",
-    category: "debt",
-  },
-  {
-    q: "What is the fiscal deficit?",
-    a: "When government spending exceeds revenue, that's a fiscal deficit. Kenya's FY2026/27 deficit is KES 1,146.2 billion (5.5% of GDP) — up from KES 933.3 billion in FY2025/26 — financed through borrowing.",
-    category: "debt",
-  },
-  {
-    q: "How much goes to county governments?",
-    a: "In FY2026/27, Parliament approved KES 428 billion equitable share to counties (KES 415B in FY2025/26). Total county allocation is KES 502 billion including conditional grants. This funds local services like roads, health, water, and markets in all 47 counties.",
-    category: "counties",
-  },
-  {
-    q: "What are the main fiscal risks?",
-    a: "The BPS warns about: rising debt payments, state corporations needing bailouts, economic slowdowns, climate change (droughts/floods), and increased county demands.",
-    category: "risks",
-  },
-  {
-    q: "How does the budget affect me?",
-    a: "Every shilling in the budget affects public services you use: roads, schools, hospitals, security, and more. Understanding the budget helps you hold leaders accountable.",
-    category: "basics",
-  },
-  {
-    q: "Are there climate risks in the budget?",
-    a: "Yes! The BPS identifies climate change as a major fiscal risk. Droughts can reduce agricultural output and hydroelectric power, while floods can damage infrastructure. These affect tax revenue and increase emergency spending.",
-    category: "risks",
-  },
-];
+const faqCategories = faqContent.categories;
+const faqItems = faqContent.items;
 
 export default function FAQ() {
   const [activeCategory, setActiveCategory] = useState("all");
@@ -96,7 +40,7 @@ export default function FAQ() {
   return (
     <MarketingPageShell>
       <MarketingPageHero
-        eyebrow="Budget literacy"
+        eyebrow={faqContent.hero.eyebrow}
         title={
           <>
             Frequently asked <span className={T.highlight}>questions</span>
@@ -114,7 +58,7 @@ export default function FAQ() {
               </p>
               <div className="hidden space-y-1 lg:block">
                 {faqCategories.map((cat) => {
-                  const Icon = cat.icon;
+                  const Icon = faqIconMap[cat.icon as string] || HelpCircle;
                   const active = activeCategory === cat.id;
                   return (
                     <button
@@ -201,13 +145,13 @@ export default function FAQ() {
             </GsapStaggerReveal>
 
             <GsapReveal className="rounded-3xl border border-border/60 bg-card p-8 text-center sm:p-10">
-              <h2 className={T.sectionTitle}>Still have questions?</h2>
+              <h2 className={T.sectionTitle}>{faqContent.hero.ctaHeading}</h2>
               <p className={cn(T.lead, "mx-auto mt-3 max-w-md text-sm text-foreground/75")}>
-                Dive deeper with free civic modules on Kenya&apos;s budget cycle.
+                {faqContent.hero.ctaDescription}
               </p>
               <Button asChild size="lg" className={cn(T.btnPrimary, "mt-6 rounded-full px-8")}>
                 <Link href="/learn">
-                  Start learning
+                  {faqContent.hero.ctaLabel}
                   <ArrowRight className="ml-2 size-4" />
                 </Link>
               </Button>

@@ -23,6 +23,7 @@ import { metaDescription } from "@/utils/metadata";
 import { TeamAvatar } from "@/components/marketing/team-avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { teamInitiativesContent } from "@/content";
 
 type TeamMemberParams = { username: string };
 
@@ -73,55 +74,8 @@ function getInitials(name: string): string {
  * Domain-specific contextual links & initiatives tailored for each leader
  */
 function getMemberInitiatives(name: string) {
-  switch (name) {
-    case "Movine Omondi":
-      return [
-        { title: "National Youth Budget Literacy Campaign", link: "/reports", type: "Civic Policy Initiative", badge: "1.2M+ Reach" },
-        { title: "County Budget Tracking Network (47 Counties)", link: "/learn", type: "Grassroots Governance", badge: "Nationwide" },
-        { title: "Parliamentary Finance Bill Submissions", link: "/reports", type: "Legislative Oversight", badge: "Policy" },
-      ];
-    case "Shem Odhiambo Ojunga":
-      return [
-        { title: "BNS High-Capacity Multimedia Studio", link: "/bns-studio", type: "Media Production", badge: "Production Studio" },
-        { title: "Finance Bill Viral Explainer Series", link: "/learn/videos", type: "Short-Form Video", badge: "1.2M+ Organic Views" },
-        { title: "Youth Visual Storytelling Lab", link: "/careers", type: "Creative Direction", badge: "Open Network" },
-      ];
-    case "Peculiar Koros":
-      return [
-        { title: "Interactive Fiscal Explorer & Data Engine", link: "/budgethub", type: "Platform Architecture", badge: "Civic-Tech" },
-        { title: "Headless CMS & Verification Pipeline", link: "/admin/dashboard/cms", type: "Open Data Systems", badge: "100% Audit Score" },
-        { title: "National Treasury & Appropriation API Sync", link: "/reports", type: "Backend Engineering", badge: "Live Ingestion" },
-      ];
-    case "Nelly Maina":
-      return [
-        { title: "'Budget Mtaani' Audio Broadcast", link: "/bns-studio", type: "Podcast Series", badge: "Top 5 Civic Podcast" },
-        { title: "Sheng & Grassroots Civic Translation", link: "/learn/stories", type: "Community Dialogue", badge: "50+ Episodes" },
-        { title: "Townhall & Youth Voice Open Mic", link: "/events", type: "Live Engagement", badge: "Citizen Forum" },
-      ];
-    case "Calvina Praise":
-      return [
-        { title: "TikTok & Reels Fiscal Explainers", link: "/bns-studio", type: "Digital Content", badge: "Viral Series" },
-        { title: "Public Finance Educational Carousels", link: "/careers", type: "Interactive Design", badge: "Youth-Centric" },
-        { title: "Youth Civic Engagement Polls & Campaigns", link: "/surveys", type: "Audience Growth", badge: "Community" },
-      ];
-    case "James Maingi Mutinda":
-      return [
-        { title: "Founding Consortium Alliances", link: "/about", type: "Coalition Building", badge: "Founding Lead" },
-        { title: "Campus Fiscal Literacy Roadshows", link: "/programmes", type: "Institutional Growth", badge: "25+ Universities" },
-        { title: "Strategic Terms of Reference (ToR) Dialogues", link: "/contact?intent=partner", type: "Partner Diplomacy", badge: "National" },
-      ];
-    case "Millicent Makina":
-      return [
-        { title: "5-Year Strategic Governance Framework", link: "/about", type: "Board Stewardship", badge: "Governance" },
-        { title: "Civic-Tech Consortium Transition", link: "/about", type: "Institutional Oversight", badge: "Multi-Entity" },
-        { title: "Public Interest Reporting Ethics Standards", link: "/reports", type: "Compliance & Ethics", badge: "Standard Setting" },
-      ];
-    default:
-      return [
-        { title: "Youth Civic Education Series", link: "/learn", type: "Public Literacy", badge: "Core" },
-        { title: "BNS National Engagement Hub", link: "/about", type: "Strategy", badge: "Initiative" },
-      ];
-  }
+  const members = teamInitiativesContent.members as Record<string, Array<{ title: string; link: string; type: string; badge: string }>>;
+  return members[name] || teamInitiativesContent.default;
 }
 
 function TeamMemberProfile({ member }: { member: OrgTeamMember }) {

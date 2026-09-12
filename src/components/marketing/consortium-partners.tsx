@@ -6,61 +6,13 @@ import { motion } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
 import { Play, Users, Target, CheckCircle, ArrowUpRight } from "lucide-react";
+import { consortiumContent } from "@/content";
 
-const partners = [
-    {
-        name: "Sen Media & Events",
-        href: "https://senmedia-events.co.ke/",
-        image: "/images/senmedia.png",
-        role: "Events production and audience engagement",
-        description: "Specializing in high-impact media events and civic storytelling that bridges the gap between policy and the public.",
-    },
-    {
-        name: "The Continental Pot",
-        href: "https://continentalpot.africa/",
-        image: "/images/The-Continental-Pot-Vertical-removebg-preview.png",
-        role: "Pan-African civic storytelling and media",
-        description: "A leading platform for Pan-African narratives, focusing on governance, equity, and sustainable development across the continent.",
-    },
-    {
-        name: "Colour Twist Media",
-        href: "https://colortwistmedia.com/",
-        image: "/images/colortwist.png",
-        role: "Creative production and digital campaigns",
-        description: "Experts in digital creativity, producing compelling visual content that mobilizes youth and simplifies complex fiscal data.",
-    },
-];
+const activityIconMap: Record<string, React.ComponentType<{ className?: string }>> = { Play, Users, Target, CheckCircle };
 
-const activities = [
-    {
-        title: "Simplified Storytelling",
-        description: "Translating technical budgets into relatable TikToks, Reels, and Podcasts for mass consumption.",
-        icon: Play,
-        color: "text-blue-500",
-        bg: "bg-blue-500/10",
-    },
-    {
-        title: "Grassroots Organizing",
-        description: "Establishing university and community chapters to build a nationwide network of budget trackers.",
-        icon: Users,
-        color: "text-primary",
-        bg: "bg-primary/10",
-    },
-    {
-        title: "Impact Monitoring",
-        description: "Generating real-time snapshots that compare fiscal promises with actual community delivery.",
-        icon: Target,
-        color: "text-emerald-500",
-        bg: "bg-emerald-500/10",
-    },
-    {
-        title: "Verification Hub",
-        description: "A shared evidence desk for journalists and youth to fact-check budget claims with data.",
-        icon: CheckCircle,
-        color: "text-amber-500",
-        bg: "bg-amber-500/10",
-    },
-];
+const partners = consortiumContent.partners;
+
+const activities = consortiumContent.activities;
 
 const ConsortiumPartners = () => {
     return (
@@ -78,12 +30,12 @@ const ConsortiumPartners = () => {
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
                     >
-                        <SectionBadge title="Consortium of Partners" />
+                        <SectionBadge title={consortiumContent.hero.badge} />
                         <h2 className="text-4xl md:text-6xl font-bold tracking-tight mt-6 text-foreground">
-                            A Kenya-wide <span className="text-primary">youth-led</span> consortium
+                            {consortiumContent.hero.title}
                         </h2>
                         <p className="mt-6 text-lg md:text-xl text-muted-foreground leading-relaxed max-w-3xl mx-auto">
-                            BNS is a collaborative force of media, policy, and creative experts turning public finance into a national conversation.
+                            {consortiumContent.hero.description}
                         </p>
                     </motion.div>
                 </div>
@@ -97,9 +49,9 @@ const ConsortiumPartners = () => {
                         className="md:col-span-12 lg:col-span-8 rounded-[2.5rem] border border-foreground/10 bg-card p-8 md:p-12 relative overflow-hidden group"
                     >
                         <div className="relative z-10">
-                            <h3 className="text-2xl font-bold mb-4">The BNS Mission</h3>
+                            <h3 className="text-2xl font-bold mb-4">{consortiumContent.mission.heading}</h3>
                             <p className="text-muted-foreground text-lg leading-relaxed mb-8 max-w-2xl">
-                                We help young people understand how budgets shape jobs, healthcare, education, and the cost of living. By combining fiscal analysis with creator-led storytelling, we increase literacy and demand accountability.
+                                {consortiumContent.mission.description}
                             </p>
                             
                             <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
@@ -142,16 +94,16 @@ const ConsortiumPartners = () => {
                             <div className="size-12 rounded-2xl bg-background/20 flex items-center justify-center mb-6">
                                 <ArrowUpRight className="size-6" />
                             </div>
-                            <h3 className="text-2xl font-bold mb-4 leading-tight">National Scale Participation</h3>
+                            <h3 className="text-2xl font-bold mb-4 leading-tight">{consortiumContent.impactCard.heading}</h3>
                             <p className="text-primary-foreground/80 leading-relaxed">
-                                Our consortium reach extends into digital economy governance and equity, scaling through Project TERRA to reach 20k+ youth.
+                                {consortiumContent.impactCard.description}
                             </p>
                         </div>
                         <Link 
                             href="/about" 
                             className="mt-8 inline-flex items-center gap-2 font-bold hover:gap-3 transition-all"
                         >
-                            Explore Impact Story
+                            {consortiumContent.impactCard.ctaLabel}
                             <ArrowUpRight className="size-5" />
                         </Link>
                     </motion.div>
@@ -167,7 +119,7 @@ const ConsortiumPartners = () => {
                             className="md:col-span-6 lg:col-span-3 rounded-[2rem] border border-foreground/10 bg-cardbox/40 p-8 hover:bg-cardbox/60 transition-colors"
                         >
                             <div className={`size-12 rounded-xl ${activity.bg} ${activity.color} flex items-center justify-center mb-6`}>
-                                <activity.icon className="size-6" />
+                                {(() => { const Icon = activityIconMap[activity.icon as string] || Play; return <Icon className="size-6" />; })()}
                             </div>
                             <h4 className="text-lg font-bold mb-3">{activity.title}</h4>
                             <p className="text-sm text-muted-foreground leading-relaxed">

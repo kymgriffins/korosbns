@@ -36,6 +36,7 @@ import { EditorialPill } from "@/components/ui/editorial/editorial-pill";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/utils";
+import { landingSectionsContent } from "@/content";
 
 const topicIconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   Compass,
@@ -76,14 +77,7 @@ export default function HelpCenterClient() {
     });
   }, [searchQuery, selectedTopic]);
 
-  const quickTags = [
-    { label: "BNS Mashinani", query: "mashinani" },
-    { label: "Wanahabari Lab", query: "wanahabari" },
-    { label: "BPS Calendar", query: "bps" },
-    { label: "Equitable Share", query: "equitable share" },
-    { label: "Learn Hub", query: "learn hub" },
-    { label: "Data Sources", query: "data sources" },
-  ];
+  const quickTags = landingSectionsContent.helpCenter.quickTags as Array<{ label: string; query: string }>;
 
   return (
     <div className="w-full">
@@ -98,20 +92,19 @@ export default function HelpCenterClient() {
         <div className="relative mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 text-center space-y-5">
           <div className="flex items-center justify-center gap-2">
             <EditorialPill variant="primary" size="xs" dot>
-              HELP & ADVISORY DESK
+              {landingSectionsContent.helpCenter.badge}
             </EditorialPill>
             <span className="font-mono text-xs text-muted-foreground uppercase tracking-wider">
-              help.budgetndiostory.org
+              {landingSectionsContent.helpCenter.domain}
             </span>
           </div>
 
           <h1 className="font-heading text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight text-foreground leading-[1.05]">
-            How can we help you <span className="text-primary italic">today</span>?
+            {landingSectionsContent.helpCenter.title}
           </h1>
 
           <p className="mx-auto max-w-2xl text-base sm:text-lg text-muted-foreground leading-relaxed">
-            Search answers on BNS Programmes, Kenya&apos;s budget cycles, county scorecards, Learn Hub
-            modules, and media commissions.
+            {landingSectionsContent.helpCenter.description}
           </p>
 
           {/* Search Box */}
@@ -395,7 +388,7 @@ export default function HelpCenterClient() {
 
             <div className="lg:col-span-5 grid grid-cols-1 sm:grid-cols-2 gap-3">
               <a
-                href="https://wa.me/254790631623"
+                href={landingSectionsContent.helpCenter.contactSection.whatsapp.href}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-3 rounded-2xl border border-border/80 bg-background/80 p-4 hover:border-primary/50 hover:bg-card transition-all"
@@ -405,7 +398,7 @@ export default function HelpCenterClient() {
                 </div>
                 <div className="text-left">
                   <p className="text-xs font-bold text-foreground">WhatsApp</p>
-                  <p className="text-[11px] text-muted-foreground">+254 790 631 623</p>
+                  <p className="text-[11px] text-muted-foreground">{landingSectionsContent.helpCenter.contactSection.whatsapp.number}</p>
                 </div>
               </a>
 
@@ -418,7 +411,7 @@ export default function HelpCenterClient() {
                 </div>
                 <div className="text-left">
                   <p className="text-xs font-bold text-foreground">Email Inquiries</p>
-                  <p className="text-[11px] text-muted-foreground">info@budgetndiostory.org</p>
+                  <p className="text-[11px] text-muted-foreground">{landingSectionsContent.helpCenter.contactSection.email.address}</p>
                 </div>
               </Link>
 
@@ -432,7 +425,7 @@ export default function HelpCenterClient() {
                 <div className="text-left flex-1">
                   <p className="text-xs font-bold text-foreground">Budget Glossary</p>
                   <p className="text-[11px] text-muted-foreground">
-                    Looking for a specific term? Explore our 35+ verified definitions
+                    {landingSectionsContent.helpCenter.contactSection.glossary.description}
                   </p>
                 </div>
                 <ArrowRight className="size-4 text-muted-foreground" />

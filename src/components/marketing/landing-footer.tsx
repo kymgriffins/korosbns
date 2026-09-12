@@ -4,6 +4,7 @@ import { EmailObfuscator } from "@/components/global/email-obfuscator";
 import { fadeInUp, staggerContainer } from "@/motion/variants";
 import { motion } from "motion/react";
 import Link from "next/link";
+import { landingSectionsContent } from "@/content";
 
 export default function LandingFooter() {
   return (
@@ -18,19 +19,15 @@ export default function LandingFooter() {
         >
           <motion.div variants={fadeInUp}>
             <h2 className="gusto-heading mb-12">
-              Let's write the <br />
-              <span className="text-primary italic font-heading">
-                next chapter
-              </span>{" "}
-              together.
+              {landingSectionsContent.footer.heading}
             </h2>
             <div className="flex flex-col gap-4">
               <EmailObfuscator
-                email="info@budgetndiostory.org"
+                email={landingSectionsContent.footer.email}
                 className="text-2xl md:text-4xl font-black hover:text-primary transition-colors tracking-tight"
               />
               <p className="text-muted-foreground tracking-[0.2em] uppercase text-xs">
-                Join the movement
+                {landingSectionsContent.footer.emailPrompt}
               </p>
             </div>
           </motion.div>
@@ -39,108 +36,36 @@ export default function LandingFooter() {
             variants={fadeInUp}
             className="grid grid-cols-2 gap-8 md:gap-12"
           >
-            <div className="space-y-6">
-              <h4 className="text-muted-foreground text-xs font-semibold">
-                Explore
-              </h4>
-              <ul className="space-y-4">
-                <li>
-                  <Link
-                    href="/learn"
-                    className="text-base md:text-lg hover:text-primary transition-colors inline-block"
-                  >
-                    Stories
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/learn"
-                    className="text-base md:text-lg hover:text-primary transition-colors inline-block"
-                  >
-                    Learn
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/glossary"
-                    className="text-base md:text-lg hover:text-primary transition-colors inline-block"
-                  >
-                    Budget Glossary
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/help"
-                    className="text-base md:text-lg hover:text-primary transition-colors inline-block"
-                  >
-                    Help & FAQ
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/about"
-                    className="text-base md:text-lg hover:text-primary transition-colors inline-block"
-                  >
-                    About
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/contact"
-                    className="text-base md:text-lg hover:text-primary transition-colors inline-block"
-                  >
-                    Contact
-                  </Link>
-                </li>
-              </ul>
-            </div>
-            <div className="space-y-6">
-              <h4 className="text-muted-foreground text-xs font-semibold">
-                Social
-              </h4>
-              <ul className="space-y-4">
-                <li>
-                  <a
-                    href="https://instagram.com/budgetndiostory"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-base md:text-lg hover:text-primary transition-colors inline-block"
-                  >
-                    Instagram
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="https://twitter.com/budgetndiostory"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-base md:text-lg hover:text-primary transition-colors inline-block"
-                  >
-                    Twitter / X
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="https://youtube.com/@budgetndiostory"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-base md:text-lg hover:text-primary transition-colors inline-block"
-                  >
-                    YouTube
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="https://linkedin.com/company/budgetndiostory"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-base md:text-lg hover:text-primary transition-colors inline-block"
-                  >
-                    LinkedIn
-                  </a>
-                </li>
-              </ul>
-            </div>
+            {landingSectionsContent.footer.navSections.map((section) => (
+              <div key={section.title} className="space-y-6">
+                <h4 className="text-muted-foreground text-xs font-semibold">
+                  {section.title}
+                </h4>
+                <ul className="space-y-4">
+                  {section.links.map((link) => (
+                    <li key={link.label}>
+                      {link.href.startsWith('http') ? (
+                        <a
+                          href={link.href}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-base md:text-lg hover:text-primary transition-colors inline-block"
+                        >
+                          {link.label}
+                        </a>
+                      ) : (
+                        <Link
+                          href={link.href}
+                          className="text-base md:text-lg hover:text-primary transition-colors inline-block"
+                        >
+                          {link.label}
+                        </Link>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
           </motion.div>
         </motion.div>
 
@@ -156,34 +81,19 @@ export default function LandingFooter() {
               BNS.
             </span>
             <span className="text-muted-foreground/50 text-xs">
-              © 2026 Budget Ndio Story
+              {landingSectionsContent.footer.copyright}
             </span>
           </div>
           <div className="flex flex-wrap gap-6 text-muted-foreground text-xs font-semibold">
-            <Link
-              href="/glossary"
-              className="hover:text-card-foreground transition-colors"
-            >
-              Budget Glossary
-            </Link>
-            <Link
-              href="/help"
-              className="hover:text-card-foreground transition-colors"
-            >
-              Help & FAQ
-            </Link>
-            <Link
-              href="/privacy"
-              className="hover:text-card-foreground transition-colors"
-            >
-              Privacy Policy
-            </Link>
-            <Link
-              href="/terms"
-              className="hover:text-card-foreground transition-colors"
-            >
-              Terms of Service
-            </Link>
+            {landingSectionsContent.footer.bottomLinks.map((link) => (
+              <Link
+                key={link.label}
+                href={link.href}
+                className="hover:text-card-foreground transition-colors"
+              >
+                {link.label}
+              </Link>
+            ))}
           </div>
         </motion.div>
       </div>

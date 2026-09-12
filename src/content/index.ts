@@ -10,6 +10,15 @@ import aboutJson from "@/content/about.json";
 import timelineJson from "@/content/timeline.json";
 import socialsJson from "@/content/socials.json";
 import partnerPageSectionsJson from "@/content/partner-page-sections.json";
+import faqJson from "@/content/faq.json";
+import storiesJson from "@/content/stories.json";
+import impactJson from "@/content/impact.json";
+import consortiumJson from "@/content/consortium.json";
+import careersJson from "@/content/careers.json";
+import legalJson from "@/content/legal.json";
+import teamInitiativesJson from "@/content/team-initiatives.json";
+import landingHeroJson from "@/content/landing-hero.json";
+import landingSectionsJson from "@/content/landing-sections.json";
 
 export const mediaContent = mediaJson;
 export const programmesContent = programmesJson;
@@ -18,6 +27,15 @@ export const aboutContent = aboutJson;
 export const timelineContent = timelineJson;
 export const socialsContent = socialsJson;
 export const partnerPageSectionsContent = partnerPageSectionsJson;
+export const faqContent = faqJson;
+export const storiesContent = storiesJson;
+export const impactContent = impactJson;
+export const consortiumContent = consortiumJson;
+export const careersContent = careersJson;
+export const legalContent = legalJson;
+export const teamInitiativesContent = teamInitiativesJson;
+export const landingHeroContent = landingHeroJson;
+export const landingSectionsContent = landingSectionsJson;
 
 export type ProgrammeSlug = "connect" | "mashinani" | "wanahabari-lab" | "studios";
 

@@ -10,6 +10,7 @@ import { AnimatedTooltip } from '@/components/ui/animated-tooltip';
 import { cn } from '@/utils';
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
+import { landingSectionsContent } from "@/content";
 
 const Capibilities = () => {
     return (
@@ -18,7 +19,7 @@ const Capibilities = () => {
 
             <Wrapper>
                 <div className="flex flex-col items-center text-center">
-                    <SectionBadge title="Content Engine" />
+                    <SectionBadge title={landingSectionsContent.capabilities.badge} />
 
                     <motion.h2
                         className="title mt-6"
@@ -27,9 +28,7 @@ const Capibilities = () => {
                         viewport={{ once: true }}
                         transition={{ duration: 0.3, delay: 0.2 }}
                     >
-                        High-quality production
-                        <br />
-                        Meeting youth where they are
+                        {landingSectionsContent.capabilities.title}
                     </motion.h2>
 
                     <motion.p
@@ -39,7 +38,7 @@ const Capibilities = () => {
                         viewport={{ once: true }}
                         transition={{ duration: 0.3, delay: 0.3 }}
                     >
-                        Translating Numbers into Narratives
+                        {landingSectionsContent.capabilities.description}
                     </motion.p>
                 </div>
 

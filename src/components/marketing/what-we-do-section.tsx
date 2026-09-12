@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import { fadeInUp, staggerFast } from "@/motion/variants";
 import { SectionHeader, SectionShell } from "@/layouts/section-shell";
+import { landingSectionsContent } from "@/content";
 
 const WhatWeDoSection = () => {
   return (
@@ -15,16 +16,13 @@ const WhatWeDoSection = () => {
 
       <div className="relative z-10">
         <SectionHeader
-          eyebrow="What We Do"
+          eyebrow={landingSectionsContent.whatWeDo.eyebrow}
           title={
             <>
-              We turn{" "}
-              <span className="font-heading italic text-primary">complex budgets</span>{" "}
-              into{" "}
-              <span className="font-heading italic text-primary">civic action</span>.
+              {landingSectionsContent.whatWeDo.title}
             </>
           }
-          description="Decode national and county fiscal documents, create spaces for participation, and equip citizens to track execution and demand accountability."
+          description={landingSectionsContent.whatWeDo.description}
         />
 
         <motion.div
@@ -34,29 +32,12 @@ const WhatWeDoSection = () => {
           viewport={{ once: true, margin: "-60px" }}
           className="mb-12 grid gap-10 md:mb-14 md:grid-cols-3 md:gap-14"
         >
-          <motion.div variants={fadeInUp}>
-            <h3 className="mb-4 text-xl font-bold text-primary md:text-2xl">01. Decode</h3>
-            <p className="leading-relaxed text-muted-foreground">
-              We break down the Budget Policy Statement, County Fiscal Strategy Papers,
-              and appropriations bills into clear, accessible narratives.
-            </p>
-          </motion.div>
-
-          <motion.div variants={fadeInUp}>
-            <h3 className="mb-4 text-xl font-bold text-primary md:text-2xl">02. Engage</h3>
-            <p className="leading-relaxed text-muted-foreground">
-              Through campus forums, barazas, and digital platforms, we create spaces
-              for citizens to participate in budget-making processes.
-            </p>
-          </motion.div>
-
-          <motion.div variants={fadeInUp}>
-            <h3 className="mb-4 text-xl font-bold text-primary md:text-2xl">03. Track</h3>
-            <p className="leading-relaxed text-muted-foreground">
-              We monitor budget execution, flag discrepancies, and equip citizens
-              with tools to demand accountability from their representatives.
-            </p>
-          </motion.div>
+          {(landingSectionsContent.whatWeDo.steps as Array<{ number: string; title: string; description: string }>).map((step) => (
+            <motion.div key={step.number} variants={fadeInUp}>
+              <h3 className="mb-4 text-xl font-bold text-primary md:text-2xl">{step.number}. {step.title}</h3>
+              <p className="leading-relaxed text-muted-foreground">{step.description}</p>
+            </motion.div>
+          ))}
         </motion.div>
 
         <motion.div
@@ -72,7 +53,7 @@ const WhatWeDoSection = () => {
               variant="white"
               className="gap-2 rounded-full px-10 py-7 text-lg font-bold"
             >
-              Start Your Journey
+              {landingSectionsContent.whatWeDo.primaryCta.label}
               <ArrowRight className="h-5 w-5" />
             </Button>
           </Link>
@@ -82,7 +63,7 @@ const WhatWeDoSection = () => {
               variant="outline"
               className="gap-2 rounded-full px-10 py-7 text-lg font-bold"
             >
-              View All Events
+              {landingSectionsContent.whatWeDo.secondaryCta.label}
               <ArrowRight className="h-5 w-5" />
             </Button>
           </Link>

@@ -6,44 +6,25 @@ import Wrapper from "../global/wrapper";
 import SectionBadge from "@/components/ui/section-badge";
 import { AlertCircle, BookOpen, MessageSquareX, ShieldAlert } from "lucide-react";
 import { cn } from "@/utils";
+import { landingSectionsContent } from "@/content";
 
-const cards = [
-    {
-        title: "Technical Barrier",
-        description: "Complex treasury jargon makes the budget inaccessible to over 80% of the population, creating a wall between citizens and their money.",
-        icon: BookOpen,
-        color: "text-blue-500",
-        bg: "bg-blue-500/10",
-    },
-    {
-        title: "Digital Misinformation",
-        description: "In the absence of clear data, misinformation spreads faster than facts on social media, leading to confusion and misguided outrage.",
-        icon: MessageSquareX,
-        color: "text-amber-500",
-        bg: "bg-amber-500/10",
-    },
-    {
-        title: "The Resulting Crisis",
-        description: "Political passion without fiscal literacy leads to protests without policy proposals—anger that lacks the answers for real change.",
-        icon: ShieldAlert,
-        color: "text-rose-500",
-        bg: "bg-rose-500/10",
-    }
-];
+const disconnectIconMap: Record<string, React.ComponentType<{ className?: string }>> = { BookOpen, MessageSquareX, ShieldAlert, AlertCircle };
+
+const cards = landingSectionsContent.disconnect.cards as Array<{ title: string; description: string; icon: string; color: string; bg: string }>;
 
 const Disconnect = () => {
     return (
         <section id="disconnect" className="w-full py-12 lg:py-16 relative overflow-hidden">
             <Wrapper>
                 <div className="flex flex-col items-center text-center max-w-3xl mx-auto">
-                    <SectionBadge title="The Challenge" />
+                    <SectionBadge title={landingSectionsContent.disconnect.badge} />
                     <motion.h2
                         initial={{ opacity: 0, y: 20 }}
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
                         className="text-3xl md:text-5xl font-bold tracking-tight mt-4"
                     >
-                        Kenya&apos;s youth are politically active but <span className="text-primary">fiscally excluded.</span>
+                        {landingSectionsContent.disconnect.title}
                     </motion.h2>
                     <motion.p
                         initial={{ opacity: 0, y: 20 }}
@@ -52,7 +33,7 @@ const Disconnect = () => {
                         transition={{ delay: 0.1 }}
                         className="text-lg text-muted-foreground mt-4 leading-relaxed"
                     >
-                        The energy is there, but the literacy is missing. We are closing the gap between noise and impact.
+                        {landingSectionsContent.disconnect.description}
                     </motion.p>
                 </div>
 
@@ -74,7 +55,7 @@ const Disconnect = () => {
                                         card.color
                                     )}
                                 >
-                                    <card.icon className="size-4" />
+                                    {(() => { const Icon = disconnectIconMap[card.icon as string] || BookOpen; return <Icon className="size-4" />; })()}
                                 </div>
                                 <h3 className="text-lg font-bold leading-tight">{card.title}</h3>
                             </div>

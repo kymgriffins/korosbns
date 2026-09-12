@@ -40,6 +40,15 @@ import learnStoriesContent from "@/data/fallbacks/learn-stories.json";
 import learnSummaryContent from "@/data/fallbacks/learn-summary.json";
 import learnTriviaContent from "@/data/fallbacks/learn-trivia.json";
 import videoTranscriptsContent from "@/data/fallbacks/video-transcripts.json";
+import faqContent from "@/content/faq.json";
+import storiesContent from "@/content/stories.json";
+import impactContent from "@/content/impact.json";
+import consortiumContent from "@/content/consortium.json";
+import careersContent from "@/content/careers.json";
+import legalContent from "@/content/legal.json";
+import teamInitiativesContent from "@/content/team-initiatives.json";
+import landingHeroContent from "@/content/landing-hero.json";
+import landingSectionsContent from "@/content/landing-sections.json";
 
 // Optional imports for budgethub datasets
 let budgetFyEpisodesContent: unknown = {};
@@ -99,7 +108,16 @@ export type CmsCollectionSlug =
   | "learn-stories"
   | "learn-summary"
   | "learn-trivia"
-  | "video-transcripts";
+  | "video-transcripts"
+  | "faq"
+  | "stories"
+  | "impact"
+  | "consortium"
+  | "careers"
+  | "legal"
+  | "team-initiatives"
+  | "landing-hero"
+  | "landing-sections";
 
 export type CmsCategory =
   | "Marketing & Site Copy"
@@ -439,6 +457,106 @@ export const CMS_COLLECTIONS_CATALOG: Record<CmsCollectionSlug, CmsCollectionMet
     lastUpdated: new Date().toISOString(),
     schemaKeys: ["videoId", "timestamps", "segments"],
   },
+  faq: {
+    slug: "faq",
+    name: "FAQ & Help Center",
+    description: "Frequently asked questions, categories, and help center content.",
+    category: "Marketing & Site Copy",
+    filePath: "src/content/faq.json",
+    itemCount: Array.isArray((faqContent as { items?: unknown[] }).items)
+      ? (faqContent as { items: unknown[] }).items.length
+      : 10,
+    lastUpdated: new Date().toISOString(),
+    schemaKeys: ["categories", "items", "hero"],
+  },
+  stories: {
+    slug: "stories",
+    name: "Budget Stories",
+    description: "Budget explainer stories, articles, and deep dives.",
+    category: "Marketing & Site Copy",
+    filePath: "src/content/stories.json",
+    itemCount: Array.isArray((storiesContent as { items?: unknown[] }).items)
+      ? (storiesContent as { items: unknown[] }).items.length
+      : 6,
+    lastUpdated: new Date().toISOString(),
+    schemaKeys: ["hero", "items"],
+  },
+  impact: {
+    slug: "impact",
+    name: "Impact Metrics & Testimonials",
+    description: "Impact metrics, testimonials, and CTA content.",
+    category: "Marketing & Site Copy",
+    filePath: "src/content/impact.json",
+    itemCount: Array.isArray((impactContent as { metrics?: unknown[] }).metrics)
+      ? (impactContent as { metrics: unknown[] }).metrics.length
+      : 6,
+    lastUpdated: new Date().toISOString(),
+    schemaKeys: ["hero", "metrics", "testimonial", "cta"],
+  },
+  consortium: {
+    slug: "consortium",
+    name: "Consortium Partners",
+    description: "Consortium partner profiles, activities, and mission content.",
+    category: "Marketing & Site Copy",
+    filePath: "src/content/consortium.json",
+    itemCount: Array.isArray((consortiumContent as { partners?: unknown[] }).partners)
+      ? (consortiumContent as { partners: unknown[] }).partners.length
+      : 3,
+    lastUpdated: new Date().toISOString(),
+    schemaKeys: ["hero", "mission", "impactCard", "partners", "activities"],
+  },
+  careers: {
+    slug: "careers",
+    name: "Careers & Open Roles",
+    description: "Job listings, culture pillars, application process, and open call content.",
+    category: "Marketing & Site Copy",
+    filePath: "src/content/careers.json",
+    itemCount: Array.isArray((careersContent as { openRoles?: unknown[] }).openRoles)
+      ? (careersContent as { openRoles: unknown[] }).openRoles.length
+      : 6,
+    lastUpdated: new Date().toISOString(),
+    schemaKeys: ["hero", "culturePillars", "openRoles", "process", "openCall"],
+  },
+  legal: {
+    slug: "legal",
+    name: "Legal Pages",
+    description: "Security, privacy policy, and terms of service content.",
+    category: "Marketing & Site Copy",
+    filePath: "src/content/legal.json",
+    itemCount: 3,
+    lastUpdated: new Date().toISOString(),
+    schemaKeys: ["security", "privacy", "terms"],
+  },
+  "team-initiatives": {
+    slug: "team-initiatives",
+    name: "Team Member Initiatives",
+    description: "Per-team-member initiative links and badges.",
+    category: "Organization & Team",
+    filePath: "src/content/team-initiatives.json",
+    itemCount: Object.keys((teamInitiativesContent as { members?: Record<string, unknown> }).members ?? {}).length,
+    lastUpdated: new Date().toISOString(),
+    schemaKeys: ["members", "default"],
+  },
+  "landing-hero": {
+    slug: "landing-hero",
+    name: "Landing Hero Section",
+    description: "Homepage hero badges, headline, CTAs, and video embed.",
+    category: "Marketing & Site Copy",
+    filePath: "src/content/landing-hero.json",
+    itemCount: 1,
+    lastUpdated: new Date().toISOString(),
+    schemaKeys: ["badges", "missionBadge", "headline", "description", "primaryCta", "secondaryCta", "videoEmbed"],
+  },
+  "landing-sections": {
+    slug: "landing-sections",
+    name: "Landing Page Sections",
+    description: "About hero, charter, narrative, disconnect, ROI, projects, charts, capabilities, integrations, footer, and more.",
+    category: "Marketing & Site Copy",
+    filePath: "src/content/landing-sections.json",
+    itemCount: Object.keys(landingSectionsContent as Record<string, unknown>).length,
+    lastUpdated: new Date().toISOString(),
+    schemaKeys: ["aboutHero", "aboutCharter", "disconnect", "roi", "upcomingProjects", "whatWeDo", "wallOfLove", "capabilities", "integrations", "governmentPartnerships", "newsletter", "helpCenter", "cta", "footer"],
+  },
 };
 
 // In-memory collection storage cache
@@ -473,6 +591,15 @@ const _cmsDataCache: Record<CmsCollectionSlug, Record<string, unknown>> = {
   "learn-summary": learnSummaryContent as unknown as Record<string, unknown>,
   "learn-trivia": learnTriviaContent as unknown as Record<string, unknown>,
   "video-transcripts": videoTranscriptsContent as unknown as Record<string, unknown>,
+  faq: faqContent as Record<string, unknown>,
+  stories: storiesContent as Record<string, unknown>,
+  impact: impactContent as Record<string, unknown>,
+  consortium: consortiumContent as Record<string, unknown>,
+  careers: careersContent as Record<string, unknown>,
+  legal: legalContent as Record<string, unknown>,
+  "team-initiatives": teamInitiativesContent as unknown as Record<string, unknown>,
+  "landing-hero": landingHeroContent as Record<string, unknown>,
+  "landing-sections": landingSectionsContent as Record<string, unknown>,
 };
 
 function getFormattedDate() {

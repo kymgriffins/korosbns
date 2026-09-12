@@ -9,6 +9,7 @@ import { ArrowRight } from "lucide-react";
 import { slideInLeft, slideInRight } from "@/motion/variants";
 import { CLOUDINARY_PARTNERSHIPS } from "@/constants/cloudinary";
 import { SectionShell } from "@/layouts/section-shell";
+import { landingSectionsContent } from "@/content";
 
 const GovernmentPartnerships = () => {
   return (
@@ -22,21 +23,16 @@ const GovernmentPartnerships = () => {
             viewport={{ once: true }}
           >
             <span className="mb-4 block text-xs font-semibold text-primary">
-              National Partnership
+              {landingSectionsContent.governmentPartnerships.eyebrow}
             </span>
             <h2 className="mb-4 text-2xl font-black text-foreground md:text-4xl">
-              Decoding the{" "}
-              <span className="font-heading italic text-primary">Budget Policy Statement</span>
+              {landingSectionsContent.governmentPartnerships.title}
             </h2>
             <p className="mb-4 text-base leading-relaxed text-muted-foreground">
-              Working directly with the National Treasury and Parliament&apos;s Budget &
-              Appropriations Committee, we translate the annual Budget Policy Statement into
-              accessible narratives for citizens.
+              {landingSectionsContent.governmentPartnerships.paragraph1}
             </p>
             <p className="mb-6 text-base leading-relaxed text-muted-foreground">
-              Our workshops and explainer series break down fiscal frameworks, revenue
-              projections, and spending priorities — empowering Kenyans to understand where
-              their taxes go.
+              {landingSectionsContent.governmentPartnerships.paragraph2}
             </p>
           </motion.div>
 

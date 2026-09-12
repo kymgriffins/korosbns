@@ -6,33 +6,9 @@ import { motion } from "motion/react";
 import { ArrowRight, CalendarDays, Rocket, Users2 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
+import { landingSectionsContent } from "@/content";
 
-const projects = [
-    {
-        title: "Town Halls",
-        timeline: "47 Counties",
-        summary: "Physical forums in every county where youth interrogate local budget estimates with MPs and MCAs.",
-        tags: ["Direct dialogue", "Duty bearers", "Budget estimates"],
-        href: "/learn",
-        cta: "Open civic brief",
-    },
-    {
-        title: "Campus Hubs",
-        timeline: "20 Universities",
-        summary: "Permanent student chapters dedicated to fiscal analysis, debate, and peer-to-peer education.",
-        tags: ["Student leaders", "Fiscal analysis", "Peer education"],
-        href: "/learn",
-        cta: "Start leadership story",
-    },
-    {
-        title: "Budget Verification Hub",
-        timeline: "National Scale",
-        summary: "A shared desk connecting youth, journalists, and experts to verify fiscal claims with evidence.",
-        tags: ["Fact-checking", "Open civic data", "Evidence-based"],
-        href: "/learn/quests",
-        cta: "Join challenge loop",
-    },
-];
+const projects = landingSectionsContent.upcomingProjects.projects as Array<{ title: string; timeline: string; summary: string; tags: string[]; href: string; cta: string }>;
 
 const UpcomingProjects = () => {
     return (
@@ -40,11 +16,11 @@ const UpcomingProjects = () => {
             <div className="max-w-[1400px] mx-auto px-8 md:px-16">
                 <div className="flex flex-col md:flex-row justify-between items-end mb-24 gap-8">
                     <div className="max-w-4xl">
-                        <span className="text-primary font-bold uppercase tracking-widest text-sm mb-6 block">The Engagement</span>
-                        <h2 className="gusto-heading">From Online Outrage to <span className="italic font-heading text-primary">Offline Action</span>.</h2>
+                        <span className="text-primary font-bold uppercase tracking-widest text-sm mb-6 block">{landingSectionsContent.upcomingProjects.eyebrow}</span>
+                        <h2 className="gusto-heading">{landingSectionsContent.upcomingProjects.title}</h2>
                     </div>
                     <p className="gusto-text max-w-sm mb-4">
-                        Building permanent spaces for direct dialogue and peer-to-peer education across the country.
+                        {landingSectionsContent.upcomingProjects.description}
                     </p>
                 </div>
 
@@ -156,13 +132,13 @@ const UpcomingProjects = () => {
                         href="/learn"
                         className="px-5 py-2.5 rounded-full border border-foreground/10 bg-background text-sm font-bold text-foreground/80 transition-all hover:bg-foreground/5 hover:scale-105 active:scale-95"
                     >
-                        Start Learning
+                        {(landingSectionsContent.upcomingProjects.bottomCtas as Array<{ label: string; href: string }>)[0].label}
                     </Link>
                     <Link
                         href="/learn?story=budget-trivia"
                         className="px-5 py-2.5 rounded-full border border-foreground/10 bg-background text-sm font-bold text-foreground/80 transition-all hover:bg-foreground/5 hover:scale-105 active:scale-95"
                     >
-                        Play Trivia
+                        {(landingSectionsContent.upcomingProjects.bottomCtas as Array<{ label: string; href: string }>)[1].label}
                     </Link>
                 </div>
             </div>

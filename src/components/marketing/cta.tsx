@@ -7,6 +7,7 @@ import { motion } from 'motion/react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { ease } from '@/motion/variants';
+import { landingSectionsContent } from "@/content";
 
 const Cta = () => {
     return (
@@ -68,9 +69,7 @@ const Cta = () => {
                                 transition={{ duration: 0.6, delay: 0.25, ease: ease.expo }}
                                 className="text-3xl md:text-4xl lg:text-5xl font-medium text-foreground leading-[1.2] mt-8 max-w-3xl"
                             >
-                                The clearest way to
-                                <br />
-                                watch the budget
+                                {landingSectionsContent.cta.heading}
                             </motion.h2>
 
                             <motion.p
@@ -80,7 +79,7 @@ const Cta = () => {
                                 transition={{ duration: 0.6, delay: 0.35, ease: ease.expo }}
                                 className="text-base md:text-lg text-muted-foreground mt-6 max-w-2xl"
                             >
-                                Join thousands of young Kenyans tracking spending <br /> and demanding accountability today
+                                {landingSectionsContent.cta.description}
                             </motion.p>
 
                             <motion.div
@@ -94,7 +93,7 @@ const Cta = () => {
                             >
                                 <Link href="/learn">
                                     <Button size="lg" className="text-base">
-                                        Start Learning
+                                        {landingSectionsContent.cta.label}
                                     </Button>
                                 </Link>
                             </motion.div>

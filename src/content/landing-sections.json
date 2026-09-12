@@ -1,0 +1,214 @@
+{
+  "aboutHero": {
+    "pill": "Kenya's Sovereign Youth Budget Watchdog",
+    "title": "We follow Kenya's public money so it cannot move in the dark.",
+    "description": "Budget Ndio Story was founded by young Kenyans to dismantle the culture of budget secrecy. We track KSh 4.82 Trillion in national and county spending, transforming opaque fiscal policy into forensic investigations, viral media, and citizen accountability.",
+    "stats": [
+      { "value": "100%", "label": "Youth-Led & Managed" },
+      { "value": "47", "label": "Counties Tracked" },
+      { "value": "20k+", "label": "Citizens in Ground Forums" }
+    ],
+    "imageCaption": "Youth Budget Assembly",
+    "imageLocation": "Nairobi, Kenya",
+    "ctaLabel": "Explore Programmes",
+    "ctaHref": "/programmes",
+    "originStoryLabel": "Our Origin Story",
+    "teamLabel": "Meet the team"
+  },
+  "aboutCharter": {
+    "eyebrow": "Governance & Ethics",
+    "title": "Our Charter of Integrity.",
+    "description": "When challenging power and tracking public billions, accuracy is our armor. We hold ourselves to forensic journalistic standards.",
+    "anchorLabel": "Constitutional Anchor",
+    "anchorDescription": "Rooted in Article 201 (Principles of Public Finance) and Article 35 (Access to Information) of the Constitution of Kenya, 2010.",
+    "principles": [
+      { "title": "Zero Partisan Bias", "description": "We follow the public money, not political factions. Our loyalty is strictly to Article 201 of the Constitution of Kenya and the Kenyan taxpayer." },
+      { "title": "Primary Source Verification", "description": "Every data point is cross-verified against official documents from the National Treasury, OCOB, CRA, Auditor General, and parliamentary Hansards." },
+      { "title": "Open-Source Civic Intelligence", "description": "All simplified data models, scorecards, and learning modules are published free of charge. No paywalls between citizens and public information." },
+      { "title": "Double-Impact Commercial Ethics", "description": "BNS Studios charges fair market rates to external institutions for creative productions, reinvesting operating surplus into grassroots watchdog operations." }
+    ]
+  },
+  "aboutNarrative": [
+    {
+      "id": "awakening",
+      "eyebrow": "The Awakening",
+      "title": "From street protests to 365-day institutional oversight.",
+      "paragraphs": ["In June 2024, millions of young Kenyans took to the streets to reject punitive tax proposals in the Finance Bill. It was an unprecedented turning point in East African civic history.", "As the teargas cleared, a deeper realization took hold among our founders: protesting after an appropriation bill is gazetted is 12 months too late. Once a budget line is passed by Parliament, the public money is already committed to contractor accounts.", "Budget Ndio Story was founded to dismantle the culture of budget secrecy: intervening upstream from the first drafting sprint in August to final disbursement in June."],
+      "quote": { "text": "Protesting after a bill is gazetted is too late. Citizens must master the budget cycle 12 months in advance — before the money is stolen or misallocated.", "author": "BNS Founding Assembly", "role": "Nairobi" },
+      "metric": { "value": "KSh 4.82T", "label": "National Budget Tracked Upstream" },
+      "imageAlt": "Town hall community forum of young Kenyans interrogating budget figures",
+      "imageCaption": "Community budget hearing in Nairobi interrogating the Medium-Term Debt Strategy.",
+      "imageBadge": "THE JUNE AWAKENING"
+    }
+  ],
+  "aboutPartnerCta": {
+    "pill": "Civic Collaboration",
+    "heading": "Partner with Kenya's leading budget watchdog.",
+    "description": "Whether you are a development partner seeking to fund county accountability, a newsroom looking to co-publish an investigation, or a citizen wanting to bring BNS to your ward — there is a place for you.",
+    "primaryCta": { "label": "Partner With Us", "href": "/contact" },
+    "secondaryCta": { "label": "Join Creative Network", "href": "/careers" }
+  },
+  "disconnect": {
+    "badge": "The Challenge",
+    "title": "Kenya's youth are politically active but fiscally excluded.",
+    "description": "The energy is there, but the literacy is missing. We are closing the gap between noise and impact.",
+    "cards": [
+      { "title": "Technical Barrier", "description": "Complex treasury jargon makes the budget inaccessible to over 80% of the population, creating a wall between citizens and their money.", "icon": "BookOpen", "color": "text-blue-500", "bg": "bg-blue-500/10" },
+      { "title": "Digital Misinformation", "description": "In the absence of clear data, misinformation spreads faster than facts on social media, leading to confusion and misguided outrage.", "icon": "MessageSquareX", "color": "text-amber-500", "bg": "bg-amber-500/10" },
+      { "title": "The Resulting Crisis", "description": "Political passion without fiscal literacy leads to protests without policy proposals—anger that lacks the answers for real change.", "icon": "ShieldAlert", "color": "text-rose-500", "bg": "bg-rose-500/10" }
+    ]
+  },
+  "roi": {
+    "badge": "Strategic Value",
+    "title": "The Return on Investment",
+    "description": "Beyond social impact, Budget Ndio Story provides strategic value for partners looking to build a stable, data-driven democratic future.",
+    "ctaText": "Join the movement and write the story of Kenya's fiscal future together.",
+    "items": [
+      { "title": "Democratic Stability", "description": "Channeling youth frustration away from chaotic protests into constructive, policy-based dialogue and sustainable civic engagement.", "icon": "ShieldCheck", "color": "text-emerald-500", "bg": "bg-emerald-500/10" },
+      { "title": "Data Intelligence", "description": "Access to civic education insights and priority mapping from youth across Kenya — coverage grows as county data is verified.", "icon": "Database", "color": "text-blue-500", "bg": "bg-blue-500/10" },
+      { "title": "Institutional Legacy", "description": "Positioning your organization as the primary architect of Kenya's next generation of informed and responsible civic leadership.", "icon": "Landmark", "color": "text-amber-500", "bg": "bg-amber-500/10" }
+    ]
+  },
+  "upcomingProjects": {
+    "eyebrow": "The Engagement",
+    "title": "From Online Outrage to Offline Action.",
+    "description": "Building permanent spaces for direct dialogue and peer-to-peer education across the country.",
+    "projects": [
+      { "title": "Town Halls", "timeline": "47 Counties", "summary": "Physical forums in every county where youth interrogate local budget estimates with MPs and MCAs.", "tags": ["Direct dialogue", "Duty bearers", "Budget estimates"], "href": "/learn", "cta": "Open civic brief" },
+      { "title": "Campus Hubs", "timeline": "20 Universities", "summary": "Permanent student chapters dedicated to fiscal analysis, debate, and peer-to-peer education.", "tags": ["Student leaders", "Fiscal analysis", "Peer education"], "href": "/learn", "cta": "Start leadership story" },
+      { "title": "Budget Verification Hub", "timeline": "National Scale", "summary": "A shared desk connecting youth, journalists, and experts to verify fiscal claims with evidence.", "tags": ["Fact-checking", "Open civic data", "Evidence-based"], "href": "/learn/quests", "cta": "Join challenge loop" }
+    ],
+    "bottomCtas": [
+      { "label": "Start Learning", "href": "/learn" },
+      { "label": "Play Trivia", "href": "/learn?story=budget-trivia" }
+    ]
+  },
+  "whatWeDo": {
+    "eyebrow": "What We Do",
+    "title": "We turn complex budgets into civic action.",
+    "description": "Decode national and county fiscal documents, create spaces for participation, and equip citizens to track execution and demand accountability.",
+    "steps": [
+      { "number": "01", "title": "Decode", "description": "We break down the Budget Policy Statement, County Fiscal Strategy Papers, and appropriations bills into clear, accessible narratives." },
+      { "number": "02", "title": "Engage", "description": "Through campus forums, barazas, and digital platforms, we create spaces for citizens to participate in budget-making processes." },
+      { "number": "03", "title": "Track", "description": "We monitor budget execution, flag discrepancies, and equip citizens with tools to demand accountability from their representatives." }
+    ],
+    "primaryCta": { "label": "Start Your Journey", "href": "/about" },
+    "secondaryCta": { "label": "View All Events", "href": "/events" }
+  },
+  "wallOfLove": {
+    "badge": "Budget Charts",
+    "title": "Data stories that replace static member images",
+    "description": "New chart cards show Kenya's debt vs budget growth since 2010, debt service pressure, and county transfer trends in a more meaningful visual format.",
+    "debtVsBudget": [
+      { "year": "2010", "budget": 1.1, "debt": 1.3 },
+      { "year": "2013", "budget": 1.6, "debt": 2.0 },
+      { "year": "2016", "budget": 2.2, "debt": 3.4 },
+      { "year": "2019", "budget": 2.9, "debt": 5.6 },
+      { "year": "2022", "budget": 3.3, "debt": 8.7 },
+      { "year": "2024", "budget": 3.9, "debt": 10.8 }
+    ],
+    "debtServiceShare": [
+      { "label": "2012", "value": 14 },
+      { "label": "2016", "value": 22 },
+      { "label": "2020", "value": 33 },
+      { "label": "2024", "value": 38 }
+    ],
+    "countyTransfers": [
+      { "year": "2013", "value": 210 },
+      { "year": "2016", "value": 280 },
+      { "year": "2019", "value": 316 },
+      { "year": "2022", "value": 370 },
+      { "year": "2024", "value": 400 }
+    ]
+  },
+  "capabilities": {
+    "badge": "Content Engine",
+    "title": "High-quality production Meeting youth where they are",
+    "description": "Translating Numbers into Narratives"
+  },
+  "integrations": {
+    "title": "Consortium-led storytelling",
+    "description": "Led by The Continental Pot, Colour Twist Media, and Sen Media & Events to make budget information clear, useful, and actionable for young Kenyans.",
+    "ctaLabel": "Explore Consortium",
+    "ctaHref": "https://continentalpot.africa/",
+    "partnerMap": {
+      "SenMedia": { "label": "SME", "name": "Sen Media & Events", "href": "https://senmedia-events.co.ke/", "logoSrc": "/images/senmedia.png" },
+      "ContinentalPot": { "label": "TCP", "name": "The Continental Pot", "href": "https://continentalpot.africa/", "logoSrc": "/images/The-Continental-Pot-Vertical-removebg-preview.png" },
+      "ColourTwist": { "label": "CTM", "name": "Colour Twist Media", "href": "https://colortwistmedia.com/", "logoSrc": "/images/colortwist.png" }
+    }
+  },
+  "governmentPartnerships": {
+    "eyebrow": "National Partnership",
+    "title": "Decoding the Budget Policy Statement",
+    "paragraph1": "Working directly with the National Treasury and Parliament's Budget & Appropriations Committee, we translate the annual Budget Policy Statement into accessible narratives for citizens.",
+    "paragraph2": "Our workshops and explainer series break down fiscal frameworks, revenue projections, and spending priorities — empowering Kenyans to understand where their taxes go."
+  },
+  "newsletter": {
+    "title": "Get budget updates in your inbox",
+    "description": "Subscribe for explainers, stories, and policy highlights from Budget Ndio Story.",
+    "consentLabel": "I agree to receive email updates",
+    "image": "/images/towwnhallmay/129A4056.jpg"
+  },
+  "helpCenter": {
+    "badge": "HELP & ADVISORY DESK",
+    "domain": "help.budgetndiostory.org",
+    "title": "How can we help you today?",
+    "description": "Search answers on BNS Programmes, Kenya's budget cycles, county scorecards, Learn Hub modules, and media commissions.",
+    "quickTags": [
+      { "label": "BNS Mashinani", "query": "mashinani" },
+      { "label": "Wanahabari Lab", "query": "wanahabari" },
+      { "label": "BPS Calendar", "query": "bps" },
+      { "label": "Equitable Share", "query": "equitable share" },
+      { "label": "Learn Hub", "query": "learn hub" },
+      { "label": "Data Sources", "query": "data sources" }
+    ],
+    "contactSection": {
+      "badge": "DIRECT CITIZEN ASSISTANCE",
+      "title": "Still have an unanswered question?",
+      "description": "Whether you need specialized county financial datasets, want to propose a Wanahabari investigation, or wish to commission BNS Studios, our desks are ready to assist.",
+      "whatsapp": { "label": "WhatsApp", "number": "+254 790 631 623", "href": "https://wa.me/254790631623" },
+      "email": { "label": "Email Inquiries", "address": "info@budgetndiostory.org" },
+      "glossary": { "label": "Budget Glossary", "description": "Looking for a specific term? Explore our 35+ verified definitions", "href": "/glossary" }
+    }
+  },
+  "cta": {
+    "heading": "The clearest way to watch the budget",
+    "description": "Join thousands of young Kenyans tracking spending and demanding accountability today",
+    "label": "Start Learning",
+    "href": "/learn"
+  },
+  "footer": {
+    "heading": "Let's write the next chapter together.",
+    "email": "info@budgetndiostory.org",
+    "emailPrompt": "Join the movement",
+    "navSections": [
+      {
+        "title": "Explore",
+        "links": [
+          { "label": "Stories", "href": "/learn" },
+          { "label": "Learn", "href": "/learn" },
+          { "label": "Budget Glossary", "href": "/glossary" },
+          { "label": "Help & FAQ", "href": "/help" },
+          { "label": "About", "href": "/about" },
+          { "label": "Contact", "href": "/contact" }
+        ]
+      },
+      {
+        "title": "Social",
+        "links": [
+          { "label": "Instagram", "href": "https://instagram.com/budgetndiostory" },
+          { "label": "Twitter / X", "href": "https://twitter.com/budgetndiostory" },
+          { "label": "YouTube", "href": "https://youtube.com/@budgetndiostory" },
+          { "label": "LinkedIn", "href": "https://linkedin.com/company/budgetndiostory" }
+        ]
+      }
+    ],
+    "bottomLinks": [
+      { "label": "Budget Glossary", "href": "/glossary" },
+      { "label": "Help & FAQ", "href": "/help" },
+      { "label": "Privacy Policy", "href": "/privacy" },
+      { "label": "Terms of Service", "href": "/terms" }
+    ],
+    "copyright": "© 2026 Budget Ndio Story"
+  }
+}

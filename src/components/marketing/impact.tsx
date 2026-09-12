@@ -3,46 +3,19 @@
 import { motion } from 'motion/react';
 import Wrapper from '@/components/global/wrapper';
 import SectionBadge from '@/components/ui/section-badge';
-import { Users, Eye, Map, Calendar, Heart, Share2 } from 'lucide-react';
+import { Users, Eye, Map, Calendar, Heart, Share2, type LucideIcon } from 'lucide-react';
+import { impactContent } from "@/content";
 
-const impactMetrics = [
-    {
-        icon: Users,
-        value: "5M+",
-        label: "Youth to be Reached",
-        description: "Through digital platforms, broadcast partnerships, and social media syndication."
-    },
-    {
-        icon: Map,
-        value: "47",
-        label: "Counties Covered",
-        description: "Full national coverage with Town Halls interrogation local budget estimates."
-    },
-    {
-        icon: Calendar,
-        value: "5000",
-        label: "Budget Champions",
-        description: "Trained budget analysts and civic leaders on the ground across the country."
-    },
-    {
-        icon: Eye,
-        value: "20+",
-        label: "Campus Hubs",
-        description: "Permanent student chapters dedicated to fiscal analysis, debate, and education."
-    },
-    {
-        icon: Heart,
-        value: "1.2M+",
-        label: "Engaged Citizens",
-        description: "Young Kenyans actively following and participating in budget deep-dives."
-    },
-    {
-        icon: Share2,
-        value: "100%",
-        label: "Clean Audit",
-        description: "Maintaining a standard of rigorous data integrity and policy-based accountability."
-    }
-];
+const iconMap: Record<string, LucideIcon> = {
+    Users,
+    Map,
+    Calendar,
+    Eye,
+    Heart,
+    Share2,
+};
+
+const impactMetrics = impactContent.metrics;
 
 const Impact = () => {
     return (
@@ -63,7 +36,7 @@ const Impact = () => {
             <Wrapper className="relative z-10 py-12 lg:py-20">
                 {/* Header */}
                 <div className="text-center max-w-3xl mx-auto mb-16">
-                    <SectionBadge title="Our Impact" />
+                    <SectionBadge title={impactContent.hero.badge} />
                     <motion.h1
                         initial={{ opacity: 0, y: 20 }}
                         whileInView={{ opacity: 1, y: 0 }}
@@ -71,7 +44,7 @@ const Impact = () => {
                         transition={{ duration: 0.5, delay: 0.2 }}
                         className="text-3xl md:text-5xl lg:text-6xl font-bold font-heading tracking-tight mt-6"
                     >
-                        Making budget transparency count
+                        {impactContent.hero.title}
                     </motion.h1>
                     <motion.p
                         initial={{ opacity: 0, y: 20 }}
@@ -80,14 +53,14 @@ const Impact = () => {
                         transition={{ duration: 0.5, delay: 0.3 }}
                         className="text-base md:text-lg text-muted-foreground mt-6 leading-relaxed"
                     >
-                        From viral explainers to classroom resources, here&apos;s how we&apos;re changing how Kenyans engage with public finances.
+                        {impactContent.hero.description}
                     </motion.p>
                 </div>
 
                 {/* Metrics Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto mb-20">
                     {impactMetrics.map((metric, index) => {
-                        const Icon = metric.icon;
+                        const Icon = iconMap[metric.icon as string] ?? Users;
                         return (
                             <motion.div
                                 key={metric.label}
@@ -125,11 +98,11 @@ const Impact = () => {
                     className="max-w-3xl mx-auto text-center mb-20"
                 >
                     <blockquote className="text-xl md:text-2xl font-medium leading-relaxed text-foreground/90">
-                        &ldquo;Budget Ndio Story made the BPS actually understandable. I used their explainer video in my civics class and the students finally got it.&rdquo;
+                        {impactContent.testimonial.quote}
                     </blockquote>
                     <div className="mt-6">
-                        <div className="font-semibold">Civics Teacher, Nairobi County</div>
-                        <div className="text-sm text-muted-foreground">via our feedback form</div>
+                        <div className="font-semibold">{impactContent.testimonial.author}</div>
+                        <div className="text-sm text-muted-foreground">{impactContent.testimonial.source}</div>
                     </div>
                 </motion.div>
 
@@ -142,16 +115,16 @@ const Impact = () => {
                     className="text-center"
                 >
                     <div className="rounded-2xl p-8 lg:p-12 bg-foreground/5 border border-foreground/10 max-w-3xl mx-auto">
-                        <h2 className="text-2xl lg:text-3xl font-bold mb-4">Want to join the movement?</h2>
+                        <h2 className="text-2xl lg:text-3xl font-bold mb-4">{impactContent.cta.heading}</h2>
                         <p className="text-muted-foreground mb-6">
-                            Subscribe to our newsletter for monthly budget updates, or follow us on social media for daily explainers.
+                            {impactContent.cta.description}
                         </p>
                         <div className="flex flex-col sm:flex-row gap-4 justify-center">
                             <a href="/learn" className="inline-flex items-center justify-center px-6 py-3 bg-primary text-white rounded-xl font-medium hover:bg-primary/90 transition-colors">
-                                Start Learning
+                                {impactContent.cta.primaryLabel}
                             </a>
                             <a href="https://instagram.com/budgetndiostory" target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center px-6 py-3 bg-foreground/5 border border-foreground/10 rounded-xl font-medium hover:bg-foreground/10 transition-colors">
-                                Follow on Instagram
+                                {impactContent.cta.secondaryLabel}
                             </a>
                         </div>
                     </div>

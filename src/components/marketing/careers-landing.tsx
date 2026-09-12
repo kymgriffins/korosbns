@@ -29,6 +29,9 @@ import { HERO_SECTION_PADDING, SECTION_SHELL_INNER, SECTION_SHELL_PADDING } from
 import { GsapHeroChoreography } from "@/motion/gsap";
 import { cn } from "@/utils";
 import SectionBadge from "@/components/ui/section-badge";
+import { careersContent } from "@/content";
+
+const cultureIconMap: Record<string, React.ComponentType<{ className?: string }>> = { Globe, Zap, Users, Award };
 
 type Department = "All" | "Media & Audio" | "Visual & Video" | "Research & Editorial" | "Creative Tech" | "Grassroots Outreach";
 
@@ -45,154 +48,9 @@ interface JobRole {
   isFeatured?: boolean;
 }
 
-const OPEN_ROLES: JobRole[] = [
-  {
-    id: "podcast-host-budget-mtaani",
-    title: "Lead Podcast Host — 'Budget Mtaani'",
-    department: "Media & Audio",
-    location: "Nairobi / Studio",
-    type: "Open Call / Retainer",
-    isFeatured: true,
-    tagline: "Be the charismatic voice translating national fiscal debates into relatable street talk.",
-    description:
-      "Host weekly episodes of 'Budget Mtaani', interviewing policymakers, market vendors, and student leaders to break down tax legislation, public debt, and county allocations.",
-    responsibilities: [
-      "Host, co-produce, and moderate weekly podcast recordings in both Sheng and English.",
-      "Conduct field vox-pops and interactive street interviews across Nairobi.",
-      "Collaborate with research teams to craft engaging interview discussion guides.",
-      "Engage with listeners via live call-ins and social media Q&As.",
-    ],
-    requirements: [
-      "Dynamic on-mic presence, audio charisma, and deep familiarity with youth culture & Sheng.",
-      "Passion for public finance, citizen rights, and community empowerment.",
-      "Prior experience in audio broadcasting, radio, podcasting, or spoken word is an asset.",
-    ],
-  },
-  {
-    id: "short-form-video-creator",
-    title: "Short-Form Video Creator (TikTok & Reels)",
-    department: "Visual & Video",
-    location: "Nairobi / Hybrid",
-    type: "Open Call / Contract",
-    isFeatured: true,
-    tagline: "Make complex public budgets go viral with witty, educational short videos.",
-    description:
-      "Design, shoot, and edit high-impact short-form videos (TikTok, Instagram Reels, YouTube Shorts) transforming budget line items into must-watch civic content.",
-    responsibilities: [
-      "Script and produce 3–5 short-form videos weekly breaking down Kenya's budget trends.",
-      "Experiment with trends, audio memes, hooks, and kinetic captions to maximize engagement.",
-      "Track analytics, viewer retention, and comment trends to refine storytelling formats.",
-    ],
-    requirements: [
-      "Proven track record creating engaging short-form video on TikTok or Instagram.",
-      "Proficiency with mobile video editing apps (CapCut, Premiere Pro, DaVinci).",
-      "Ability to distill dense government documents into 60-second punchy narratives.",
-    ],
-  },
-  {
-    id: "motion-graphics-animator",
-    title: "2D Motion Graphics Animator",
-    department: "Visual & Video",
-    location: "Remote / Kenya",
-    type: "Project Fellowship",
-    tagline: "Bring economic indicators to life with compelling 2D animations and visual metaphors.",
-    description:
-      "Turn budgetary charts, tax breakdowns, and county revenue metrics into beautiful, easy-to-understand motion graphics and infographic explainer videos.",
-    responsibilities: [
-      "Create 2D vector animations, character motion, and data visualizations for explainer series.",
-      "Collaborate with scriptwriters and audio engineers to match visuals with voiceovers.",
-      "Maintain consistent BNS visual style, color palettes, and typographic identity.",
-    ],
-    requirements: [
-      "Strong portfolio demonstrating 2D animation, kinetic typography, and data visualization.",
-      "Expertise in Adobe After Effects, Illustrator, and Premiere Pro.",
-      "Speed, creativity, and keen eye for pacing and storytelling.",
-    ],
-  },
-  {
-    id: "fiscal-scriptwriter-editor",
-    title: "Fiscal Policy Scriptwriter & Fact-Checker",
-    department: "Research & Editorial",
-    location: "Remote / Hybrid",
-    type: "Part-time / Fellowship",
-    tagline: "Turn complex government bills into compelling, fact-checked scripts for our studios.",
-    description:
-      "Analyze Finance Bills, Appropriation Acts, and Auditor General reports, translating technical legislative text into accurate, engaging scripts for video and audio production.",
-    responsibilities: [
-      "Read, verify, and summarize national and county fiscal documents.",
-      "Draft concise, narrative-driven scripts for YouTube documentaries, podcasts, and carousels.",
-      "Fact-check claims, data tables, and graphics against primary Treasury publications.",
-    ],
-    requirements: [
-      "Background in economics, law, journalism, public policy, or political science.",
-      "Flawless written English and ability to write in natural, conversational speaking tone.",
-      "Uncompromising attention to accuracy, citations, and data integrity.",
-    ],
-  },
-  {
-    id: "civic-tech-engineer",
-    title: "Civic-Tech Frontend / Full-Stack Engineer",
-    department: "Creative Tech",
-    location: "Remote / Hybrid (Kenya)",
-    type: "Fellowship / Contract",
-    tagline: "Build open data platforms, interactive budget trackers, and civic learning tools.",
-    description:
-      "Work with the technology team to expand the BNS Headless CMS, interactive county budget explorers, quizzes, and community participation tools.",
-    responsibilities: [
-      "Develop responsive, accessible web interfaces in Next.js, React, Tailwind, and TypeScript.",
-      "Integrate open data APIs, automated verification pipelines, and offline-first capabilities.",
-      "Collaborate on UX design to ensure data tools are intuitive for youth on mobile devices.",
-    ],
-    requirements: [
-      "Strong knowledge of Next.js / React, TypeScript, Tailwind CSS, and REST/GraphQL APIs.",
-      "Passion for open source, open data, and civic technology.",
-      "Experience with data visualization libraries (Recharts, D3, Chart.js) is a big plus.",
-    ],
-  },
-  {
-    id: "youth-campus-facilitator",
-    title: "Youth Campus & Community Facilitator",
-    department: "Grassroots Outreach",
-    location: "Nationwide (47 Counties)",
-    type: "Network Partner / Stipend",
-    tagline: "Lead budget literacy dialogues and townhalls on university campuses and community halls.",
-    description:
-      "Coordinate local BNS budget clubs, facilitate youth civic dialogues, organize campus screenings of BNS documentaries, and gather grassroots feedback on local budget priorities.",
-    responsibilities: [
-      "Organize and facilitate on-ground fiscal literacy workshops and debate circles.",
-      "Distribute BNS educational guides, infographics, and toolkits to youth networks.",
-      "Collect citizen feedback and budget questions for the 'Budget Mtaani' broadcast team.",
-    ],
-    requirements: [
-      "Energetic community organizer, student leader, or youth activist.",
-      "Excellent public speaking and group facilitation skills.",
-      "Deep ties to local university student unions or grassroots community groups.",
-    ],
-  },
-];
+const OPEN_ROLES = careersContent.openRoles as JobRole[];
 
-const CULTURE_PILLARS = [
-  {
-    icon: Globe,
-    title: "National Civic Impact",
-    description: "Every story, video, and data tool you create helps millions of Kenyans hold their public institutions accountable.",
-  },
-  {
-    icon: Zap,
-    title: "Creative Autonomy",
-    description: "High-energy multimedia studios, cutting-edge formats, and the freedom to experiment with bold storytelling.",
-  },
-  {
-    icon: Users,
-    title: "Youth-Led & Collaborative",
-    description: "Work alongside passionate peers aged 18–34, supported by seasoned economists, legal mentors, and media pioneers.",
-  },
-  {
-    icon: Award,
-    title: "Fellowship & Growth",
-    description: "Build a standout civic-tech & media portfolio, with competitive project stipends and national visibility.",
-  },
-];
+const CULTURE_PILLARS = careersContent.culturePillars;
 
 export function CareersLanding() {
   const [selectedDept, setSelectedDept] = useState<Department>("All");
@@ -223,18 +81,18 @@ export function CareersLanding() {
               className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-4 py-1.5 text-xs font-bold text-primary"
             >
               <Zap className="size-3.5" />
-              Careers and creative open call (ages 18–34)
+              {careersContent.hero.badge}
             </span>
 
             <h1
               data-gsap-hero-content
               className={cn(T.heroTitle, "text-balance text-foreground")}
             >
-              Shape how Kenya talks about the national budget
+              {careersContent.hero.title}
             </h1>
 
             <p data-gsap-hero-content className={cn(T.lead, "text-foreground/75")}>
-              Budget Ndio Story is expanding its youth-led creator network. We are looking for fearless storytellers, animators, podcast hosts, civic researchers, and technologists to make fiscal governance transparent, relatable, and impossible to ignore.
+              {careersContent.hero.description}
             </p>
 
             <div data-gsap-hero-content className="flex flex-wrap items-center justify-center gap-3 pt-4">
@@ -260,16 +118,16 @@ export function CareersLanding() {
           <div className="max-w-3xl mx-auto text-center mb-12 lg:mb-16 space-y-3">
             <SectionBadge title="Why Join BNS" />
             <h2 className="text-3xl md:text-4xl font-bold font-heading text-foreground tracking-tight">
-              A Platform Built For Young Change-Makers
+              {careersContent.whyJoinSection.title}
             </h2>
             <p className="text-muted-foreground text-sm md:text-base leading-relaxed">
-              We provide the mentorship, creative freedom, and digital distribution power you need to produce work that matters.
+              {careersContent.whyJoinSection.description}
             </p>
           </div>
 
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
             {CULTURE_PILLARS.map((pillar, idx) => {
-              const Icon = pillar.icon;
+              const Icon = cultureIconMap[pillar.icon as string] || Globe;
               return (
                 <div
                   key={idx}
@@ -293,10 +151,10 @@ export function CareersLanding() {
           <div className="max-w-3xl mx-auto text-center mb-10 space-y-3">
             <SectionBadge title="Open Positions" />
             <h2 className="text-3xl md:text-4xl font-bold font-heading text-foreground tracking-tight">
-              Find Your Place In The Story
+              {careersContent.openRolesSection.title}
             </h2>
             <p className="text-muted-foreground text-sm md:text-base">
-              Choose your creative or technical domain below to view current fellowship, contract, and open-call tracks.
+              {careersContent.openRolesSection.description}
             </p>
           </div>
 
@@ -403,36 +261,15 @@ export function CareersLanding() {
           <div className="max-w-3xl mx-auto text-center mb-12 space-y-3">
             <SectionBadge title="How It Works" />
             <h2 className="text-3xl md:text-4xl font-bold font-heading text-foreground tracking-tight">
-              Our 4-Step Creative Selection Process
+              {careersContent.process.title}
             </h2>
             <p className="text-muted-foreground text-sm md:text-base">
-              We care more about your portfolio, voice, and passion for civic storytelling than formal credentials.
+              {careersContent.process.description}
             </p>
           </div>
 
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {[
-              {
-                step: "01",
-                title: "Apply Online",
-                desc: "Send your portfolio, links (TikTok, YouTube, GitHub, articles), and why you want to work with BNS.",
-              },
-              {
-                step: "02",
-                title: "Creative Brief",
-                desc: "Selected candidates receive a short, fun sample brief (e.g. 60-second budget script or mock infograph).",
-              },
-              {
-                step: "03",
-                title: "Alignment Chat",
-                desc: "A casual chat with team leads to discuss vision, creative styles, and stipend/collaboration terms.",
-              },
-              {
-                step: "04",
-                title: "Production Kickoff",
-                desc: "Get plugged into the BNS Studio workflow, shoots, podcasts, or data research pipelines!",
-              },
-            ].map((st) => (
+            {careersContent.process.steps.map((st) => (
               <div key={st.step} className="p-6 rounded-2xl border border-border/60 bg-card space-y-2">
                 <span className="text-2xl font-bold font-mono text-primary/70">{st.step}</span>
                 <h3 className="text-base font-bold text-foreground">{st.title}</h3>
@@ -449,15 +286,15 @@ export function CareersLanding() {
           <div className="p-8 sm:p-12 rounded-3xl border border-border/80 bg-card text-center max-w-4xl mx-auto space-y-6 shadow-xs">
             <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-3.5 py-1 text-xs font-bold text-primary mx-auto">
               <Send className="size-3.5" />
-              <span>Spontaneous Applications Welcome</span>
+              <span>{careersContent.openCall.badge}</span>
             </div>
 
             <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold font-heading text-foreground tracking-tight">
-              Don&apos;t see your specific role?
+              {careersContent.openCall.title}
             </h2>
 
             <p className="text-sm sm:text-base text-muted-foreground max-w-xl mx-auto leading-relaxed">
-              If you have a unique skill in investigative research, Sheng translation, sound design, or grassroots mobilization, we want to hear from you.
+              {careersContent.openCall.description}
             </p>
 
             <div className="flex flex-wrap items-center justify-center gap-3 pt-2">

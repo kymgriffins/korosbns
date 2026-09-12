@@ -22,6 +22,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { landingSectionsContent } from "@/content";
 
 const NEWSLETTER_SEEN_KEY = "hasSeenNewsletterPopup";
 const NEWSLETTER_TIME_ON_PAGE_MS = 45_000;
@@ -111,7 +112,7 @@ export default function NewsletterPopup() {
         <div className="flex md:flex-row flex-col">
           <div className="md:max-w-md w-full">
             <img
-              src="/images/towwnhallmay/129A4056.jpg"
+              src={landingSectionsContent.newsletter.image}
               alt="Budget Ndio Story"
               className="w-full object-cover sm:h-full h-40"
             />
@@ -144,10 +145,10 @@ export default function NewsletterPopup() {
               <div className="flex flex-col gap-6">
                 <div className="flex flex-col gap-4">
                   <h2 className={T.subheading}>
-                    Get budget updates in your inbox
+                    {landingSectionsContent.newsletter.title}
                   </h2>
                   <p className={T.lead}>
-                    Subscribe for explainers, stories, and policy highlights from Budget Ndio Story.
+                    {landingSectionsContent.newsletter.description}
                   </p>
                 </div>
                 <form onSubmit={handleSubscribe} className="flex flex-col gap-4">
@@ -177,7 +178,7 @@ export default function NewsletterPopup() {
                       htmlFor="newsletter"
                       className="text-sm text-muted-foreground font-normal cursor-pointer"
                     >
-                      I agree to receive email updates
+                      {landingSectionsContent.newsletter.consentLabel}
                     </Label>
                   </div>
                   <Button

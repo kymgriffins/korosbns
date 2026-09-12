@@ -7,6 +7,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Clock, Eye } from 'lucide-react';
+import { storiesContent } from "@/content";
 
 type StoryItem = {
     id: number;
@@ -20,68 +21,7 @@ type StoryItem = {
     visual?: "budget-vs-debt";
 };
 
-const stories: StoryItem[] = [
-    {
-        id: 1,
-        title: "Education Budget: Where the Money Goes",
-        excerpt: "Breaking down the KES 630B allocated to education and how it impacts classrooms across Kenya.",
-        category: "Education",
-        readTime: "5 min read",
-        views: "45.2k",
-        image: "/images/project.svg",
-        href: "/learn"
-    },
-    {
-        id: 2,
-        title: "Healthcare Funding in the 2026 Budget",
-        excerpt: "Understanding the SHA rollout and what KES 47B means for universal health coverage.",
-        category: "Healthcare",
-        readTime: "7 min read",
-        views: "38.7k",
-        image: "/images/client.svg",
-        href: "/learn"
-    },
-    {
-        id: 3,
-        title: "County Budgets: Your Local spending Guide",
-        excerpt: "How the KES 420B equitable share is distributed across all 47 counties.",
-        category: "Devolution",
-        readTime: "6 min read",
-        views: "29.1k",
-        image: "/images/invoices.svg",
-        href: "/learn"
-    },
-    {
-        id: 4,
-        title: "Debt & Deficits: The Big Picture",
-        excerpt: "Explaining Kenya's KES 1.15T fiscal deficit and what it means for future generations.",
-        category: "Economics",
-        readTime: "8 min read",
-        views: "52.3k",
-        visual: "budget-vs-debt",
-        href: "/learn"
-    },
-    {
-        id: 5,
-        title: "BETA Pillars Explained in Plain English",
-        excerpt: "Agriculture, MSMEs, Healthcare, Housing, Digital - what do they actually mean?",
-        category: "Policy",
-        readTime: "6 min read",
-        views: "41.8k",
-        image: "/images/blob.svg",
-        href: "/learn"
-    },
-    {
-        id: 6,
-        title: "Fiscal Risks You Should Know About",
-        excerpt: "The five major risks identified in the BPS 2026 and why they matter to you.",
-        category: "Risk Analysis",
-        readTime: "5 min read",
-        views: "33.4k",
-        image: "/images/project.svg",
-        href: "/learn"
-    }
-];
+const stories: StoryItem[] = storiesContent.items as StoryItem[];
 
 const BudgetDebtVisual = () => {
     const debtBars = [54, 64, 72, 86, 94];
@@ -212,7 +152,7 @@ const Stories = () => {
             <Wrapper className="relative z-10 py-12 lg:py-20">
                 {/* Header */}
                 <div className="text-center max-w-3xl mx-auto mb-12 lg:mb-16">
-                    <SectionBadge title="Budget Stories" />
+                    <SectionBadge title={storiesContent.hero.badge} />
                     <motion.h1
                         initial={{ opacity: 0, y: 20 }}
                         whileInView={{ opacity: 1, y: 0 }}
@@ -220,7 +160,7 @@ const Stories = () => {
                         transition={{ duration: 0.5, delay: 0.2 }}
                         className="text-3xl md:text-5xl lg:text-6xl font-bold font-heading tracking-tight mt-6"
                     >
-                        Understanding Kenya&apos;s budget, one story at a time
+                        {storiesContent.hero.title}
                     </motion.h1>
                     <motion.p
                         initial={{ opacity: 0, y: 20 }}
@@ -229,7 +169,7 @@ const Stories = () => {
                         transition={{ duration: 0.5, delay: 0.3 }}
                         className="text-base md:text-lg text-muted-foreground mt-6 leading-relaxed"
                     >
-                        Explore our collection of explainers, analyses, and deep dives into Kenya&apos;s fiscal policy. From education to healthcare, we break down where your taxes go.
+                        {storiesContent.hero.description}
                     </motion.p>
                 </div>
 
@@ -250,7 +190,7 @@ const Stories = () => {
                 >
                     <Link href="/learn">
                         <Button size="lg" className="text-base">
-                            View Full Learning Module
+                            {storiesContent.hero.ctaLabel}
                             <ArrowRight className="ml-2 size-4" />
                         </Button>
                     </Link>
