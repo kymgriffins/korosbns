@@ -40,6 +40,7 @@ import { LivePagePreview, type DeviceMode } from "./LivePagePreview";
 import { CustomPageStudioEditor } from "./CustomPageStudioEditor";
 import { WysiwygProseEditor } from "./WysiwygProseEditor";
 import { MediaAssetPicker, type MediaSelection } from "./MediaAssetPicker";
+import { ImageFieldControl } from "./ImageFieldControl";
 import { MediaEmbed } from "@/components/ui/media-embed";
 type PageKey =
   | "landing"
@@ -143,7 +144,12 @@ export function HeadlessPageStudio() {
   const [activeTab, setActiveTab] = useState<TabKey>("sections");
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
-  const [mediaPickerOpen, setMediaPickerOpen] = useState(false);
+  const [activeImagePicker, setActiveImagePicker] = useState<{
+    isOpen: boolean;
+    title: string;
+    currentUrl?: string;
+    onSelect: (url: string) => void;
+  } | null>(null);
   const [lastSaved, setLastSaved] = useState<string | null>(null);
 
   // Raw State Stores
@@ -812,6 +818,28 @@ export function HeadlessPageStudio() {
             </div>
 
             <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() =>
+                setActiveImagePicker({
+                  isOpen: true,
+                  title: "Cloudflare R2 Media Bucket Explorer",
+                  currentUrl: "",
+                  onSelect: (url) => {
+                    if (typeof navigator !== "undefined" && navigator.clipboard) {
+                      navigator.clipboard.writeText(url);
+                      toast.success("Copied R2 image URL to clipboard!", { description: url });
+                    }
+                  },
+                })
+              }
+              className="gap-1.5 text-xs font-semibold bg-primary/5 hover:bg-primary/10 text-foreground"
+            >
+              <ImageIcon className="size-3.5 text-primary" />
+              <span>Media Bucket</span>
+            </Button>
+            <Button
               asChild
               variant="outline"
               size="sm"
@@ -888,9 +916,9 @@ export function HeadlessPageStudio() {
             fullHeight
           />
         </div>
-      ) : viewMode === "split" ? (
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-          <div className="lg:col-span-7 xl:col-span-7 space-y-6">
+      ) : (
+        <div className={viewMode === "split" ? "grid grid-cols-1 lg:grid-cols-12 gap-6 items-start" : "w-full"}>
+          <div className={viewMode === "split" ? "lg:col-span-7 xl:col-span-7 space-y-6" : "w-full space-y-6"}>
       {/* SPECIAL DESK 1: FEATURED EVIDENCE & BLOGS */}
       {selectedPageKey === "featured-blogs" && (
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
@@ -1094,32 +1122,19 @@ export function HeadlessPageStudio() {
 
                   <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                     <div>
-                      <div className="flex items-center justify-between">
-                        <label className="text-xs font-semibold text-foreground">Thumbnail Image URL / Asset Path</label>
-                        <label className="flex items-center gap-1 cursor-pointer text-[10px] font-bold text-primary hover:underline">
-                          <UploadCloud className="size-3" />
-                          <span>{isUploading ? "Uploading..." : "Upload to R2"}</span>
-                          <input
-                            type="file"
-                            accept="image/*"
-                            className="hidden"
-                            disabled={isUploading}
-                            onChange={(e) => {
-                              const file = e.target.files?.[0];
-                              if (file) {
-                                handleFileUploadToR2(file, (url) => {
-                                  handleUpdateFeaturedStory(selectedFeaturedStory.id, "thumbnail", url);
-                                });
-                              }
-                            }}
-                          />
-                        </label>
-                      </div>
-                      <Input
+                      <ImageFieldControl
+                        label="Thumbnail Image (Cloudflare R2)"
                         value={selectedFeaturedStory.thumbnail ?? ""}
-                        onChange={(e) => handleUpdateFeaturedStory(selectedFeaturedStory.id, "thumbnail", e.target.value)}
-                        className="mt-1 h-8 text-xs font-mono"
-                        placeholder="/images/events/... or Cloudflare R2 URL"
+                        onChange={(url) => handleUpdateFeaturedStory(selectedFeaturedStory.id, "thumbnail", url)}
+                        onOpenBucket={() => {
+                          setActiveImagePicker({
+                            isOpen: true,
+                            title: `Thumbnail for "${selectedFeaturedStory.title || "Story"}"`,
+                            currentUrl: selectedFeaturedStory.thumbnail,
+                            onSelect: (url) => handleUpdateFeaturedStory(selectedFeaturedStory.id, "thumbnail", url),
+                          });
+                        }}
+                        description="Select an existing image from Cloudflare R2 or upload directly."
                       />
                     </div>
 
@@ -1607,19 +1622,49 @@ export function HeadlessPageStudio() {
                 <span>Buttons &amp; Links</span>
               </button>
 
-              {selectedPageKey !== "landing" && selectedPageKey !== "programmes" && (
+              {selectedPageKey === "landing" && (
                 <button
                   type="button"
-                  onClick={() => setActiveTab("faqs")}
+                  onClick={() => setActiveTab("carousel")}
                   className={`flex w-full items-center gap-2 rounded-lg px-3 py-2 text-xs font-medium transition-colors ${
-                    activeTab === "faqs"
+                    activeTab === "carousel"
                       ? "bg-primary text-primary-foreground font-semibold"
                       : "text-muted-foreground hover:bg-muted hover:text-foreground"
                   }`}
                 >
-                  <HelpCircle className="size-3.5" />
-                  <span>Frequently Asked Questions</span>
+                  <ImageIcon className="size-3.5" />
+                  <span>Hero Reel Images</span>
                 </button>
+              )}
+
+              {selectedPageKey !== "landing" && selectedPageKey !== "programmes" && (
+                <>
+                  <button
+                    type="button"
+                    onClick={() => setActiveTab("media")}
+                    className={`flex w-full items-center gap-2 rounded-lg px-3 py-2 text-xs font-medium transition-colors ${
+                      activeTab === "media"
+                        ? "bg-primary text-primary-foreground font-semibold"
+                        : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                    }`}
+                  >
+                    <Film className="size-3.5" />
+                    <span>Hero Media &amp; Videos</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setActiveTab("faqs")}
+                    className={`flex w-full items-center gap-2 rounded-lg px-3 py-2 text-xs font-medium transition-colors ${
+                      activeTab === "faqs"
+                        ? "bg-primary text-primary-foreground font-semibold"
+                        : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                    }`}
+                  >
+                    <HelpCircle className="size-3.5" />
+                    <span>Frequently Asked Questions</span>
+                  </button>
+                </>
               )}
             </div>
           </div>
@@ -1791,39 +1836,27 @@ export function HeadlessPageStudio() {
                       </div>
 
                       {/* Slide Content Grid */}
-                      <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-start">
-                        {/* Thumbnail & Media Picker */}
-                        <div className="md:col-span-4 space-y-2">
-                          <div className="relative aspect-[16/10] overflow-hidden rounded-lg border border-border bg-neutral-900">
-                            {slide.src ? (
-                              <img
-                                src={slide.src}
-                                alt={slide.alt || ""}
-                                className="size-full object-cover"
-                              />
-                            ) : (
-                              <div className="flex size-full items-center justify-center text-xs text-muted-foreground">
-                                No image selected
-                              </div>
-                            )}
-                          </div>
-
-                          <div className="flex items-center gap-2">
-                            <Button
-                              type="button"
-                              variant="outline"
-                              size="sm"
-                              onClick={() => setMediaPickerOpen(true)}
-                              className="h-7 w-full text-[11px] font-semibold gap-1 text-primary"
-                            >
-                              <UploadCloud className="size-3" />
-                              <span>Select from R2 / Media</span>
-                            </Button>
-                          </div>
+                      <div className="grid grid-cols-1 md:grid-cols-12 gap-5 items-start">
+                        {/* Thumbnail & Image Bucket Control */}
+                        <div className="md:col-span-5 space-y-2">
+                          <ImageFieldControl
+                            label={`Slide #${idx + 1} Image`}
+                            value={slide.src ?? ""}
+                            onChange={(url) => handleUpdateCarouselStill(idx, "src", url)}
+                            onOpenBucket={() => {
+                              setActiveImagePicker({
+                                isOpen: true,
+                                title: `Hero Reel Slide #${idx + 1}: "${slide.storyTitle || "Slide"}"`,
+                                currentUrl: slide.src,
+                                onSelect: (url) => handleUpdateCarouselStill(idx, "src", url),
+                              });
+                            }}
+                            description="Select from R2 bucket, upload new, or remove."
+                          />
                         </div>
 
                         {/* Editable Text Fields */}
-                        <div className="md:col-span-8 space-y-3">
+                        <div className="md:col-span-7 space-y-3">
                           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                             <div>
                               <label className="text-[11px] font-semibold text-foreground">
@@ -1832,7 +1865,7 @@ export function HeadlessPageStudio() {
                               <Input
                                 value={slide.storyTitle ?? ""}
                                 onChange={(e) => handleUpdateCarouselStill(idx, "storyTitle", e.target.value)}
-                                className="mt-1 h-7 text-xs font-semibold"
+                                className="mt-1 h-8 text-xs font-semibold"
                                 placeholder="e.g. Hall full of questions"
                               />
                             </div>
@@ -1843,7 +1876,7 @@ export function HeadlessPageStudio() {
                               <select
                                 value={slide.programme ?? "connect"}
                                 onChange={(e) => handleUpdateCarouselStill(idx, "programme", e.target.value)}
-                                className="mt-1 flex h-7 w-full rounded-md border border-input bg-background px-2 text-xs text-foreground"
+                                className="mt-1 flex h-8 w-full rounded-md border border-input bg-background px-2 text-xs text-foreground"
                               >
                                 <option value="connect">Connect</option>
                                 <option value="mashinani">Mashinani</option>
@@ -1860,7 +1893,7 @@ export function HeadlessPageStudio() {
                             <Input
                               value={slide.storyLine ?? ""}
                               onChange={(e) => handleUpdateCarouselStill(idx, "storyLine", e.target.value)}
-                              className="mt-1 h-7 text-xs"
+                              className="mt-1 h-8 text-xs"
                               placeholder="e.g. Desks filled, camera rolling — a May town hall listens from the back row."
                             />
                           </div>
@@ -1868,24 +1901,24 @@ export function HeadlessPageStudio() {
                           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                             <div>
                               <label className="text-[11px] font-semibold text-foreground">
-                                Image URL / Path
-                              </label>
-                              <Input
-                                value={slide.src ?? ""}
-                                onChange={(e) => handleUpdateCarouselStill(idx, "src", e.target.value)}
-                                className="mt-1 h-7 text-xs font-mono"
-                                placeholder="/images/... or R2 URL"
-                              />
-                            </div>
-                            <div>
-                              <label className="text-[11px] font-semibold text-foreground">
                                 Bottom Tag / Caption
                               </label>
                               <Input
                                 value={slide.caption ?? ""}
                                 onChange={(e) => handleUpdateCarouselStill(idx, "caption", e.target.value)}
-                                className="mt-1 h-7 text-xs"
+                                className="mt-1 h-8 text-xs"
                                 placeholder="e.g. Town hall · Mashinani"
+                              />
+                            </div>
+                            <div>
+                              <label className="text-[11px] font-semibold text-foreground">
+                                Image Alt Text
+                              </label>
+                              <Input
+                                value={slide.alt ?? ""}
+                                onChange={(e) => handleUpdateCarouselStill(idx, "alt", e.target.value)}
+                                className="mt-1 h-8 text-xs"
+                                placeholder="e.g. Photo from Eldoret town hall"
                               />
                             </div>
                           </div>
@@ -2434,16 +2467,43 @@ export function HeadlessPageStudio() {
                         <Film className="size-3.5 text-primary" />
                         <span>Programme Hero Video / Media</span>
                       </h4>
-                      <Button
-                        type="button"
-                        size="sm"
-                        variant="outline"
-                        onClick={() => setMediaPickerOpen(true)}
-                        className="h-7 text-xs gap-1.5 font-semibold"
-                      >
-                        <Sliders className="size-3.5" />
-                        <span>Select / Upload Media</span>
-                      </Button>
+                      <div className="flex items-center gap-2">
+                        {currentProgramme.featuredMedia?.url && (
+                          <Button
+                            type="button"
+                            size="sm"
+                            variant="ghost"
+                            onClick={() => updateCurrentProgrammeField("featuredMedia", undefined)}
+                            className="h-7 text-xs text-rose-500 hover:text-rose-600 hover:bg-rose-500/10 gap-1"
+                          >
+                            <Trash2 className="size-3" />
+                            <span>Remove Video</span>
+                          </Button>
+                        )}
+                        <Button
+                          type="button"
+                          size="sm"
+                          variant="outline"
+                          onClick={() => {
+                            setActiveImagePicker({
+                              isOpen: true,
+                              title: `Featured Media for ${currentProgramme.title || "Programme"}`,
+                              currentUrl: currentProgramme.featuredMedia?.url,
+                              onSelect: (url) => {
+                                updateCurrentProgrammeField("featuredMedia", {
+                                  ...(currentProgramme.featuredMedia || {}),
+                                  url,
+                                  type: url.includes("youtube.com") || url.includes("youtu.be") ? "youtube" : "video",
+                                });
+                              },
+                            });
+                          }}
+                          className="h-7 text-xs gap-1.5 font-semibold"
+                        >
+                          <Sliders className="size-3.5" />
+                          <span>Select / Upload Media</span>
+                        </Button>
+                      </div>
                     </div>
 
                     {currentProgramme.featuredMedia?.url ? (
@@ -2481,10 +2541,42 @@ export function HeadlessPageStudio() {
                         </div>
                       </div>
                     ) : (
-                      <div className="text-center py-6 border border-dashed border-border rounded-lg text-xs text-muted-foreground">
-                        No video or custom media attached. Fallback to hero image: {currentProgramme.visual?.hero}
+                      <div className="text-center py-5 border border-dashed border-border rounded-lg text-xs text-muted-foreground">
+                        No video or stream attached. The page will display the hero poster image below.
                       </div>
                     )}
+                  </div>
+
+                  {/* Programme Hero Poster / Fallback Visual */}
+                  <div className="rounded-xl border border-border/80 bg-muted/20 p-4 space-y-3">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
+                      <ImageIcon className="size-3.5 text-primary" />
+                      <span>Programme Hero Poster Image</span>
+                    </h4>
+                    <ImageFieldControl
+                      label="Hero Poster Image"
+                      value={currentProgramme.visual?.hero ?? ""}
+                      onChange={(url) => {
+                        updateCurrentProgrammeField("visual", {
+                          ...(currentProgramme.visual || {}),
+                          hero: url,
+                        });
+                      }}
+                      onOpenBucket={() => {
+                        setActiveImagePicker({
+                          isOpen: true,
+                          title: `Hero Poster for ${currentProgramme.title || "Programme"}`,
+                          currentUrl: currentProgramme.visual?.hero,
+                          onSelect: (url) => {
+                            updateCurrentProgrammeField("visual", {
+                              ...(currentProgramme.visual || {}),
+                              hero: url,
+                            });
+                          },
+                        });
+                      }}
+                      description="Displayed as the primary visual on programme cards and hero header."
+                    />
                   </div>
                 </div>
               ) : (
@@ -2848,1504 +2940,39 @@ export function HeadlessPageStudio() {
       </div>
       )}
           </div>
-          <div className="lg:col-span-5 xl:col-span-5 sticky top-4">
-            <LivePagePreview
-              url={activePreviewRoute}
-              pageTitle={currentPage.label}
-              refreshKey={previewRefreshKey}
-              onRefresh={() => setPreviewRefreshKey((k) => k + 1)}
-              device={previewDevice}
-              onDeviceChange={setPreviewDevice}
+          {viewMode === "split" && (
+            <div className="lg:col-span-5 xl:col-span-5 sticky top-4">
+              <LivePagePreview
+                url={activePreviewRoute}
+                pageTitle={currentPage.label}
+                refreshKey={previewRefreshKey}
+                onRefresh={() => setPreviewRefreshKey((k) => k + 1)}
+                device={previewDevice}
+                onDeviceChange={setPreviewDevice}
+              />
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Cloudflare R2 Media Asset Picker Modal */}
+      {activeImagePicker?.isOpen ? (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 backdrop-blur-xs">
+          <div className="w-full max-w-4xl max-h-[88vh] shadow-2xl rounded-2xl overflow-hidden border border-border bg-card">
+            <MediaAssetPicker
+              title={activeImagePicker.title}
+              currentUrl={activeImagePicker.currentUrl}
+              currentType="image"
+              onClose={() => setActiveImagePicker(null)}
+              onSelect={(media) => {
+                activeImagePicker.onSelect(media.url);
+                setActiveImagePicker(null);
+                toast.success("Image selected from Cloudflare R2 bucket!");
+              }}
             />
           </div>
         </div>
-      ) : (
-        <div className="w-full space-y-6">
-      {/* SPECIAL DESK 1: FEATURED EVIDENCE & BLOGS */}
-      {selectedPageKey === "featured-blogs" && (
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
-          {/* Left Column: Story Roster & Add Button */}
-          <div className="space-y-4 lg:col-span-4">
-            <div className="rounded-xl border border-border bg-card p-4 shadow-xs space-y-3">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h2 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
-                    Featured Stories ({featuredData.results?.length || 0})
-                  </h2>
-                  <p className="text-[11px] text-muted-foreground">
-                    Featured impact projects on homepage &amp; hub.
-                  </p>
-                </div>
-                <Button
-                  type="button"
-                  onClick={handleAddFeaturedStory}
-                  size="sm"
-                  variant="outline"
-                  className="gap-1 text-xs"
-                >
-                  <Plus className="size-3.5" />
-                  <span>Add Story</span>
-                </Button>
-              </div>
-
-              <div className="space-y-2">
-                {(featuredData.results || []).map((story: any) => {
-                  const isSelected = (selectedFeaturedStory?.id === story.id);
-                  return (
-                    <div
-                      key={story.id}
-                      onClick={() => setSelectedFeaturedId(story.id)}
-                      className={`cursor-pointer rounded-xl border p-3 transition-all ${
-                        isSelected
-                          ? "border-primary bg-primary/10 shadow-xs"
-                          : "border-border/60 bg-muted/20 hover:bg-muted/50"
-                      }`}
-                    >
-                      <div className="flex items-start justify-between gap-2">
-                        <div className="space-y-1">
-                          <span className="rounded bg-primary/20 px-1.5 py-0.5 font-mono text-[9px] font-bold text-primary uppercase">
-                            {story.programmeLabel || story.programmeSlug}
-                          </span>
-                          <h3 className="line-clamp-2 text-xs font-bold text-foreground">
-                            {story.title}
-                          </h3>
-                          <div className="flex items-center gap-2 text-[10px] text-muted-foreground">
-                            <span>{story.authorName}</span>
-                            {story.videoId && <span>• Video ID: {story.videoId}</span>}
-                          </div>
-                        </div>
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="sm"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleDeleteFeaturedStory(story.id);
-                          }}
-                          className="h-7 w-7 p-0 text-muted-foreground hover:text-rose-500"
-                        >
-                          <Trash2 className="size-3.5" />
-                        </Button>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          </div>
-
-          {/* Right Column: Active Story Editor & Live Preview */}
-          <div className="space-y-6 lg:col-span-8">
-            {selectedFeaturedStory ? (
-              <div className="space-y-6 rounded-2xl border border-border bg-card p-6 shadow-xs">
-                <div className="flex items-center justify-between border-b border-border/50 pb-4">
-                  <div>
-                    <h2 className="text-base font-bold text-foreground">
-                      Edit Featured Story / Blog
-                    </h2>
-                    <p className="text-xs text-muted-foreground">
-                      Stories publish directly to the live homepage, hub, and video carousels.
-                    </p>
-                  </div>
-                  <Badge variant="secondary" className="font-mono text-xs">
-                    id: {selectedFeaturedStory.id}
-                  </Badge>
-                </div>
-
-                <div className="space-y-4">
-                  <div>
-                    <label className="text-xs font-semibold text-foreground">Story Title</label>
-                    <Input
-                      value={selectedFeaturedStory.title ?? ""}
-                      onChange={(e) => handleUpdateFeaturedStory(selectedFeaturedStory.id, "title", e.target.value)}
-                      className="mt-1 text-sm font-semibold"
-                      placeholder="e.g. Learn about illicit financial flows in Benin and Cabo Verde"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="text-xs font-semibold text-foreground">
-                      Editorial Description / Prose (Summary for Investors &amp; Public)
-                    </label>
-                    <textarea
-                      value={selectedFeaturedStory.prose ?? ""}
-                      onChange={(e) => handleUpdateFeaturedStory(selectedFeaturedStory.id, "prose", e.target.value)}
-                      rows={4}
-                      className="mt-1 w-full rounded-md border border-input bg-background p-2.5 text-xs text-foreground focus-visible:outline-none"
-                      placeholder="Concise overview explaining who leads this, what was investigated, and the civic impact..."
-                    />
-                  </div>
-
-                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                    <div>
-                      <label className="text-xs font-semibold text-foreground">Author / Storyteller Name</label>
-                      <Input
-                        value={selectedFeaturedStory.authorName ?? ""}
-                        onChange={(e) => handleUpdateFeaturedStory(selectedFeaturedStory.id, "authorName", e.target.value)}
-                        className="mt-1 h-8 text-xs"
-                        placeholder="e.g. Dr. Lyla Latif"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="text-xs font-semibold text-foreground">Programme Category</label>
-                      <select
-                        value={selectedFeaturedStory.programmeSlug ?? "wanahabari-lab"}
-                        onChange={(e) => handleUpdateFeaturedStory(selectedFeaturedStory.id, "programmeSlug", e.target.value)}
-                        className="mt-1 flex h-8 w-full rounded-md border border-input bg-background px-2 text-xs text-foreground"
-                      >
-                        <option value="wanahabari-lab">Wanahabari Lab</option>
-                        <option value="studios">BNS Studio</option>
-                        <option value="connect">BNS Connect</option>
-                        <option value="mashinani">BNS Mashinani</option>
-                      </select>
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                    <div>
-                      <label className="text-xs font-semibold text-foreground">YouTube Video URL</label>
-                      <Input
-                        value={selectedFeaturedStory.url ?? ""}
-                        onChange={(e) => handleUpdateFeaturedStory(selectedFeaturedStory.id, "url", e.target.value)}
-                        className="mt-1 h-8 text-xs font-mono"
-                        placeholder="https://www.youtube.com/watch?v=..."
-                      />
-                    </div>
-
-                    <div>
-                      <label className="text-xs font-semibold text-foreground">YouTube Video ID</label>
-                      <Input
-                        value={selectedFeaturedStory.videoId ?? ""}
-                        onChange={(e) => handleUpdateFeaturedStory(selectedFeaturedStory.id, "videoId", e.target.value)}
-                        className="mt-1 h-8 text-xs font-mono"
-                        placeholder="e.g. G5ddu4I6mNs"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                    <div>
-                      <div className="flex items-center justify-between">
-                        <label className="text-xs font-semibold text-foreground">Thumbnail Image URL / Asset Path</label>
-                        <label className="flex items-center gap-1 cursor-pointer text-[10px] font-bold text-primary hover:underline">
-                          <UploadCloud className="size-3" />
-                          <span>{isUploading ? "Uploading..." : "Upload to R2"}</span>
-                          <input
-                            type="file"
-                            accept="image/*"
-                            className="hidden"
-                            disabled={isUploading}
-                            onChange={(e) => {
-                              const file = e.target.files?.[0];
-                              if (file) {
-                                handleFileUploadToR2(file, (url) => {
-                                  handleUpdateFeaturedStory(selectedFeaturedStory.id, "thumbnail", url);
-                                });
-                              }
-                            }}
-                          />
-                        </label>
-                      </div>
-                      <Input
-                        value={selectedFeaturedStory.thumbnail ?? ""}
-                        onChange={(e) => handleUpdateFeaturedStory(selectedFeaturedStory.id, "thumbnail", e.target.value)}
-                        className="mt-1 h-8 text-xs font-mono"
-                        placeholder="/images/events/... or Cloudflare R2 URL"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="text-xs font-semibold text-foreground">Internal Link / Target URL</label>
-                      <Input
-                        value={selectedFeaturedStory.href ?? ""}
-                        onChange={(e) => handleUpdateFeaturedStory(selectedFeaturedStory.id, "href", e.target.value)}
-                        className="mt-1 h-8 text-xs font-mono"
-                        placeholder="/bns-studio/..."
-                      />
-                    </div>
-                  </div>
-
-                  {/* Visual Card Preview */}
-                  <div className="rounded-xl border border-border/80 bg-muted/20 p-4 space-y-3">
-                    <div className="flex items-center gap-1.5 text-xs font-bold text-foreground">
-                      <Eye className="size-4 text-primary" />
-                      <span>Live Website Card Preview</span>
-                    </div>
-
-                    <div className="overflow-hidden rounded-xl border border-border bg-card shadow-sm max-w-md">
-                      <div className="relative aspect-video bg-neutral-900">
-                        {selectedFeaturedStory.thumbnail ? (
-                          <img
-                            src={selectedFeaturedStory.thumbnail}
-                            alt={selectedFeaturedStory.title}
-                            className="h-full w-full object-cover"
-                          />
-                        ) : (
-                          <div className="flex h-full items-center justify-center text-muted-foreground text-xs">
-                            No thumbnail image
-                          </div>
-                        )}
-                        <div className="absolute top-2 left-2">
-                          <Badge variant="secondary" className="bg-black/70 text-white text-[10px]">
-                            {selectedFeaturedStory.programmeLabel || selectedFeaturedStory.programmeSlug}
-                          </Badge>
-                        </div>
-                        <div className="absolute inset-0 flex items-center justify-center">
-                          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/90 text-primary-foreground shadow-lg">
-                            <Play className="size-4 fill-current ml-0.5" />
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="p-4 space-y-2">
-                        <div className="text-[11px] font-medium text-muted-foreground">
-                          By {selectedFeaturedStory.authorName}
-                        </div>
-                        <h4 className="font-heading text-sm font-bold text-foreground line-clamp-2">
-                          {selectedFeaturedStory.title}
-                        </h4>
-                        <p className="text-xs text-muted-foreground line-clamp-3 leading-relaxed">
-                          {selectedFeaturedStory.prose}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ) : (
-              <div className="p-12 text-center text-muted-foreground border border-dashed rounded-2xl">
-                Select a featured story from the left or click &ldquo;Add Story&rdquo;.
-              </div>
-            )}
-          </div>
-        </div>
-      )}
-
-      {/* SPECIAL DESK 2: CUSTOM PAGES BUILDER */}
-      {selectedPageKey === "custom-pages" && (
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
-          {/* Left Column: List of Custom Pages */}
-          <div className="space-y-4 lg:col-span-4">
-            <div className="rounded-xl border border-border bg-card p-4 shadow-xs space-y-3">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h2 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
-                    Custom Pages ({customPagesData.pages?.length || 0})
-                  </h2>
-                  <p className="text-[11px] text-muted-foreground">
-                    Dynamic routes rendered at <code className="font-mono">/pages/[slug]</code>.
-                  </p>
-                </div>
-                <Button
-                  type="button"
-                  onClick={handleAddCustomPage}
-                  size="sm"
-                  variant="outline"
-                  className="gap-1 text-xs"
-                >
-                  <Plus className="size-3.5" />
-                  <span>Create Page</span>
-                </Button>
-              </div>
-
-              <div className="space-y-2">
-                {(customPagesData.pages || []).map((page: any) => {
-                  const isSelected = (selectedCustomPage?.slug === page.slug);
-                  return (
-                    <div
-                      key={page.slug}
-                      onClick={() => setSelectedCustomPageSlug(page.slug)}
-                      className={`cursor-pointer rounded-xl border p-3 transition-all ${
-                        isSelected
-                          ? "border-primary bg-primary/10 shadow-xs"
-                          : "border-border/60 bg-muted/20 hover:bg-muted/50"
-                      }`}
-                    >
-                      <div className="flex items-start justify-between gap-2">
-                        <div className="space-y-1">
-                          <div className="flex items-center gap-1.5">
-                            <span
-                              className={`h-2 w-2 rounded-full ${
-                                page.published !== false ? "bg-emerald-500" : "bg-amber-500"
-                              }`}
-                            />
-                            <span className="font-mono text-[10px] text-muted-foreground">
-                              /pages/{page.slug}
-                            </span>
-                          </div>
-                          <h3 className="line-clamp-1 text-xs font-bold text-foreground">
-                            {page.title}
-                          </h3>
-                        </div>
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="sm"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleDeleteCustomPage(page.slug);
-                          }}
-                          className="h-7 w-7 p-0 text-muted-foreground hover:text-rose-500"
-                        >
-                          <Trash2 className="size-3.5" />
-                        </Button>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          </div>
-
-          {/* Right Column: Active Custom Page Form */}
-          <div className="space-y-6 lg:col-span-8">
-            {selectedCustomPage ? (
-              <CustomPageStudioEditor
-                page={selectedCustomPage}
-                onChange={handleUpdateCustomPageWhole}
-              />
-            ) : (
-              <div className="p-12 text-center text-muted-foreground border border-dashed rounded-2xl">
-                Select a page from the left or click &ldquo;Create Page&rdquo;.
-              </div>
-            )}
-          </div>
-        </div>
-      )}
-
-      {/* SPECIAL DESK 3: ABOUT US EDITING */}
-      {selectedPageKey === "about" && (
-        <div className="space-y-6">
-          {/* About Hero Section */}
-          <div className="rounded-2xl border border-border bg-card p-6 shadow-xs space-y-4">
-            <div className="border-b border-border/50 pb-3">
-              <h2 className="text-base font-bold text-foreground">About Us — Hero &amp; Positioning</h2>
-              <p className="text-xs text-muted-foreground">
-                Consortium story and main youth-led transparency mandate. Saved to <code className="font-mono">src/content/about.json</code>.
-              </p>
-            </div>
-
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-              <div>
-                <label className="text-xs font-semibold text-foreground">Eyebrow Tag</label>
-                <Input
-                  value={aboutData.hero?.eyebrow ?? ""}
-                  onChange={(e) => updateAboutField(["hero", "eyebrow"], e.target.value)}
-                  className="mt-1 h-8 text-xs"
-                />
-              </div>
-              <div>
-                <label className="text-xs font-semibold text-foreground">Hero Title</label>
-                <Input
-                  value={aboutData.hero?.title ?? ""}
-                  onChange={(e) => updateAboutField(["hero", "title"], e.target.value)}
-                  className="mt-1 h-8 text-xs font-bold"
-                />
-              </div>
-            </div>
-
-            <div>
-              <label className="text-xs font-semibold text-foreground">Lead Body Paragraph</label>
-              <textarea
-                value={aboutData.hero?.body ?? ""}
-                onChange={(e) => updateAboutField(["hero", "body"], e.target.value)}
-                rows={3}
-                className="mt-1 w-full rounded-md border border-input bg-background p-2.5 text-xs text-foreground focus-visible:outline-none leading-relaxed"
-              />
-            </div>
-          </div>
-
-          {/* About Mission Section */}
-          <div className="rounded-2xl border border-border bg-card p-6 shadow-xs space-y-4">
-            <div className="border-b border-border/50 pb-3">
-              <h2 className="text-base font-bold text-foreground">Our Mission</h2>
-              <p className="text-xs text-muted-foreground">
-                Core mission statement presented across public and partner channels.
-              </p>
-            </div>
-
-            <div>
-              <label className="text-xs font-semibold text-foreground">Mission Section Title</label>
-              <Input
-                value={aboutData.mission?.title ?? ""}
-                onChange={(e) => updateAboutField(["mission", "title"], e.target.value)}
-                className="mt-1 h-8 text-xs font-bold"
-              />
-            </div>
-
-            <div>
-              <label className="text-xs font-semibold text-foreground">Mission Narrative Statement</label>
-              <textarea
-                value={aboutData.mission?.body ?? ""}
-                onChange={(e) => updateAboutField(["mission", "body"], e.target.value)}
-                rows={3}
-                className="mt-1 w-full rounded-md border border-input bg-background p-2.5 text-xs text-foreground focus-visible:outline-none leading-relaxed"
-              />
-            </div>
-          </div>
-
-          {/* Open Creative Call Band */}
-          <div className="rounded-2xl border border-border bg-card p-6 shadow-xs space-y-4">
-            <div className="border-b border-border/50 pb-3">
-              <h2 className="text-base font-bold text-foreground">Open Creative Call &amp; Talent Network</h2>
-              <p className="text-xs text-muted-foreground">
-                Recruitment strip for young animators, storytellers, researchers, and podcast hosts.
-              </p>
-            </div>
-
-            <div>
-              <label className="text-xs font-semibold text-foreground">Section Title</label>
-              <Input
-                value={aboutData.openCall?.title ?? ""}
-                onChange={(e) => updateAboutField(["openCall", "title"], e.target.value)}
-                className="mt-1 h-8 text-xs font-bold"
-              />
-            </div>
-
-            <div>
-              <label className="text-xs font-semibold text-foreground">Section Body Copy</label>
-              <textarea
-                value={aboutData.openCall?.body ?? ""}
-                onChange={(e) => updateAboutField(["openCall", "body"], e.target.value)}
-                rows={2}
-                className="mt-1 w-full rounded-md border border-input bg-background p-2.5 text-xs text-foreground focus-visible:outline-none leading-relaxed"
-              />
-            </div>
-
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-              <div>
-                <label className="text-xs font-semibold text-foreground">Primary Action Button Label</label>
-                <Input
-                  value={aboutData.openCall?.primaryCta?.label ?? ""}
-                  onChange={(e) => updateAboutField(["openCall", "primaryCta", "label"], e.target.value)}
-                  className="mt-1 h-8 text-xs"
-                />
-              </div>
-              <div>
-                <label className="text-xs font-semibold text-foreground">Primary Button URL</label>
-                <Input
-                  value={aboutData.openCall?.primaryCta?.href ?? ""}
-                  onChange={(e) => updateAboutField(["openCall", "primaryCta", "href"], e.target.value)}
-                  className="mt-1 h-8 text-xs font-mono"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* STANDARD MULTI-TAB WORKSPACE (LANDING, PROGRAMMES, & PROGRAMME DETAIL PAGES) */}
-      {selectedPageKey !== "featured-blogs" && selectedPageKey !== "custom-pages" && selectedPageKey !== "about" && (
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
-        {/* Left Nav: Section Tabs for Selected Page */}
-        <div className="space-y-3 lg:col-span-3">
-          <div className="rounded-xl border border-border bg-card p-3 shadow-xs">
-            <div className="mb-2 px-2 text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
-              Page Editor Desks
-            </div>
-            <div className="space-y-1">
-              <button
-                type="button"
-                onClick={() => setActiveTab("sections")}
-                className={`flex w-full items-center justify-between rounded-lg px-3 py-2 text-xs font-medium transition-colors ${
-                  activeTab === "sections"
-                    ? "bg-primary text-primary-foreground font-semibold"
-                    : "text-muted-foreground hover:bg-muted hover:text-foreground"
-                }`}
-              >
-                <div className="flex items-center gap-2">
-                  <Layers className="size-3.5" />
-                  <span>Sections &amp; Policy</span>
-                </div>
-                <span
-                  className={`rounded-full px-1.5 py-0.5 text-[10px] ${
-                    isOverBudget
-                      ? "bg-rose-500 text-white"
-                      : activeTab === "sections"
-                      ? "bg-primary-foreground/20 text-primary-foreground"
-                      : "bg-muted text-muted-foreground"
-                  }`}
-                >
-                  {visibleSectionCount}/{maxAllowed}
-                </span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setActiveTab("hero")}
-                className={`flex w-full items-center gap-2 rounded-lg px-3 py-2 text-xs font-medium transition-colors ${
-                  activeTab === "hero"
-                    ? "bg-primary text-primary-foreground font-semibold"
-                    : "text-muted-foreground hover:bg-muted hover:text-foreground"
-                }`}
-              >
-                <Sparkles className="size-3.5" />
-                <span>Hero &amp; Headlines</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setActiveTab("core")}
-                className={`flex w-full items-center gap-2 rounded-lg px-3 py-2 text-xs font-medium transition-colors ${
-                  activeTab === "core"
-                    ? "bg-primary text-primary-foreground font-semibold"
-                    : "text-muted-foreground hover:bg-muted hover:text-foreground"
-                }`}
-              >
-                <FileText className="size-3.5" />
-                <span>Story &amp; Value Thesis</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setActiveTab("deliverables")}
-                className={`flex w-full items-center gap-2 rounded-lg px-3 py-2 text-xs font-medium transition-colors ${
-                  activeTab === "deliverables"
-                    ? "bg-primary text-primary-foreground font-semibold"
-                    : "text-muted-foreground hover:bg-muted hover:text-foreground"
-                }`}
-              >
-                <BarChart2 className="size-3.5" />
-                <span>Scale, Deliverables &amp; Steps</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setActiveTab("buttons")}
-                className={`flex w-full items-center gap-2 rounded-lg px-3 py-2 text-xs font-medium transition-colors ${
-                  activeTab === "buttons"
-                    ? "bg-primary text-primary-foreground font-semibold"
-                    : "text-muted-foreground hover:bg-muted hover:text-foreground"
-                }`}
-              >
-                <Link2 className="size-3.5" />
-                <span>Buttons &amp; Links</span>
-              </button>
-
-              {selectedPageKey !== "landing" && selectedPageKey !== "programmes" && (
-                <button
-                  type="button"
-                  onClick={() => setActiveTab("faqs")}
-                  className={`flex w-full items-center gap-2 rounded-lg px-3 py-2 text-xs font-medium transition-colors ${
-                    activeTab === "faqs"
-                      ? "bg-primary text-primary-foreground font-semibold"
-                      : "text-muted-foreground hover:bg-muted hover:text-foreground"
-                  }`}
-                >
-                  <HelpCircle className="size-3.5" />
-                  <span>Frequently Asked Questions</span>
-                </button>
-              )}
-            </div>
-          </div>
-
-          {/* Quick Context Card */}
-          <div className="rounded-xl border border-border/70 bg-card p-4 text-xs space-y-2.5">
-            <div className="font-semibold text-foreground flex items-center gap-1.5">
-              <ShieldCheck className="size-4 text-emerald-500" />
-              <span>Editorial Policy Guardrail</span>
-            </div>
-            <p className="text-muted-foreground leading-relaxed">
-              Partner pages enforce the Jan Kennis rule: at most {maxAllowed} visible sections to maintain high attention and zero fluff.
-            </p>
-            <div className="flex items-center justify-between pt-1 border-t border-border/40 text-[11px]">
-              <span className="text-muted-foreground">Active on page:</span>
-              <span className={`font-mono font-bold ${isOverBudget ? "text-rose-500" : "text-emerald-500"}`}>
-                {visibleSectionCount} of {maxAllowed} allowed
-              </span>
-            </div>
-          </div>
-        </div>
-
-        {/* Right Area: Structured Form Panels */}
-        <div className="space-y-6 lg:col-span-9">
-          {/* TAB 1: SECTIONS & VISIBILITY */}
-          {activeTab === "sections" && (
-            <div className="space-y-4 rounded-2xl border border-border bg-card p-6 shadow-xs">
-              <div className="flex items-center justify-between border-b border-border/50 pb-4">
-                <div>
-                  <h2 className="text-base font-bold text-foreground">Section Visibility &amp; Ordering</h2>
-                  <p className="text-xs text-muted-foreground">
-                    Toggle which blocks appear on {currentPage.label}. Saved to <code className="font-mono">partner-page-sections.json</code>.
-                  </p>
-                </div>
-                <Badge
-                  variant={isOverBudget ? "destructive" : "secondary"}
-                  className="font-mono text-xs"
-                >
-                  {visibleSectionCount}/{maxAllowed} visible
-                </Badge>
-              </div>
-
-              {isOverBudget && (
-                <div className="flex items-start gap-2.5 rounded-xl border border-rose-500/30 bg-rose-500/10 p-3.5 text-xs text-rose-600 dark:text-rose-400">
-                  <AlertTriangle className="size-4 shrink-0 mt-0.5" />
-                  <div>
-                    <strong className="font-semibold">Policy Violation:</strong> This partner-facing page has {visibleSectionCount} active blocks, exceeding the limit of {maxAllowed}. Please toggle off non-essential sections to maintain Rockefeller editorial clarity.
-                  </div>
-                </div>
-              )}
-
-              <div className="divide-y divide-border/40 rounded-xl border border-border/60 bg-muted/20">
-                {(pageSectionsConfig.sections || []).map((sec: any) => (
-                  <div
-                    key={sec.id}
-                    className="flex items-center justify-between p-3.5 transition-colors hover:bg-muted/40"
-                  >
-                    <div className="space-y-0.5">
-                      <div className="flex items-center gap-2">
-                        <span className="font-medium text-xs text-foreground">{sec.label}</span>
-                        <code className="rounded bg-muted px-1.5 py-0.5 font-mono text-[10px] text-muted-foreground">
-                          id: {sec.id}
-                        </code>
-                      </div>
-                    </div>
-
-                    <button
-                      type="button"
-                      onClick={() => handleToggleSection(sec.id)}
-                      className={`relative inline-flex h-5 w-10 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
-                        sec.visible ? "bg-emerald-600" : "bg-neutral-300 dark:bg-neutral-700"
-                      }`}
-                    >
-                      <span
-                        className={`pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow-sm ring-0 transition duration-200 ease-in-out ${
-                          sec.visible ? "translate-x-5" : "translate-x-0"
-                        }`}
-                      />
-                    </button>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* TAB 2: HERO & HEADLINES */}
-          {activeTab === "hero" && (
-            <div className="space-y-5 rounded-2xl border border-border bg-card p-6 shadow-xs">
-              <div className="border-b border-border/50 pb-3">
-                <h2 className="text-base font-bold text-foreground">Hero Section Copy</h2>
-                <p className="text-xs text-muted-foreground">
-                  The primary above-the-fold narrative for {currentPage.label}.
-                </p>
-              </div>
-
-              {selectedPageKey === "landing" ? (
-                <div className="space-y-4">
-                  <div>
-                    <label className="text-xs font-semibold text-foreground">Hero Eyebrow</label>
-                    <Input
-                      value={landingData.heroNarrative?.eyebrow ?? ""}
-                      onChange={(e) => updateLandingField(["heroNarrative", "eyebrow"], e.target.value)}
-                      placeholder="e.g. After Budget Day"
-                      className="mt-1 h-9 text-xs"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="text-xs font-semibold text-foreground">Main Title (Headline)</label>
-                    <Input
-                      value={landingData.heroNarrative?.title ?? ""}
-                      onChange={(e) => updateLandingField(["heroNarrative", "title"], e.target.value)}
-                      placeholder="e.g. The books land. Then the silence."
-                      className="mt-1 h-9 text-xs"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="text-xs font-semibold text-foreground">Lede Paragraph</label>
-                    <textarea
-                      value={landingData.heroNarrative?.lede ?? ""}
-                      onChange={(e) => updateLandingField(["heroNarrative", "lede"], e.target.value)}
-                      rows={4}
-                      className="mt-1 w-full rounded-md border border-input bg-background p-2.5 text-xs text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                      placeholder="Hero narrative describing the core premise..."
-                    />
-                  </div>
-                </div>
-              ) : selectedPageKey === "programmes" ? (
-                <div className="space-y-4">
-                  <div>
-                    <label className="text-xs font-semibold text-foreground">SEO Title</label>
-                    <Input
-                      value={programmesData.landing?.seoTitle ?? ""}
-                      onChange={(e) => updateProgrammesLandingField(["seoTitle"], e.target.value)}
-                      className="mt-1 h-9 text-xs"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="text-xs font-semibold text-foreground">Hero Headline</label>
-                    <Input
-                      value={programmesData.landing?.headline ?? ""}
-                      onChange={(e) => updateProgrammesLandingField(["headline"], e.target.value)}
-                      className="mt-1 h-9 text-xs"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="text-xs font-semibold text-foreground">Hero Body Copy</label>
-                    <textarea
-                      value={programmesData.landing?.body ?? ""}
-                      onChange={(e) => updateProgrammesLandingField(["body"], e.target.value)}
-                      rows={3}
-                      className="mt-1 w-full rounded-md border border-input bg-background p-2.5 text-xs text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="text-xs font-semibold text-foreground">Hero Subhead / Whisper</label>
-                    <Input
-                      value={programmesData.landing?.subhead ?? ""}
-                      onChange={(e) => updateProgrammesLandingField(["subhead"], e.target.value)}
-                      className="mt-1 h-9 text-xs"
-                    />
-                  </div>
-                </div>
-              ) : currentProgramme ? (
-                <div className="space-y-4">
-                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                    <div>
-                      <label className="text-xs font-semibold text-foreground">Programme Eyebrow</label>
-                      <Input
-                        value={currentProgramme.eyebrow ?? ""}
-                        onChange={(e) => updateCurrentProgrammeField("eyebrow", e.target.value)}
-                        className="mt-1 h-9 text-xs"
-                      />
-                    </div>
-                    <div>
-                      <label className="text-xs font-semibold text-foreground">Programme Display Name</label>
-                      <Input
-                        value={currentProgramme.name ?? ""}
-                        onChange={(e) => updateCurrentProgrammeField("name", e.target.value)}
-                        className="mt-1 h-9 text-xs"
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="text-xs font-semibold text-foreground">Hero Headline</label>
-                    <Input
-                      value={currentProgramme.headline ?? ""}
-                      onChange={(e) => updateCurrentProgrammeField("headline", e.target.value)}
-                      className="mt-1 h-9 text-xs"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="text-xs font-semibold text-foreground">Hero Description Body</label>
-                    <textarea
-                      value={currentProgramme.body ?? ""}
-                      onChange={(e) => updateCurrentProgrammeField("body", e.target.value)}
-                      rows={4}
-                      className="mt-1 w-full rounded-md border border-input bg-background p-2.5 text-xs text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                    />
-                  </div>
-                </div>
-              ) : null}
-            </div>
-          )}
-
-          {/* TAB 3: STORY & VALUE THESIS */}
-          {activeTab === "core" && (
-            <div className="space-y-5 rounded-2xl border border-border bg-card p-6 shadow-xs">
-              <div className="border-b border-border/50 pb-3">
-                <h2 className="text-base font-bold text-foreground">Story &amp; Value Thesis</h2>
-                <p className="text-xs text-muted-foreground">
-                  The intellectual foundation, investor thesis, and mandate fit.
-                </p>
-              </div>
-
-              {selectedPageKey === "landing" ? (
-                <div className="space-y-5">
-                  <div className="rounded-xl border border-border/60 bg-muted/20 p-4 space-y-3">
-                    <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
-                      Who We Are &amp; Operating Thesis
-                    </h3>
-
-                    <div>
-                      <label className="text-xs font-semibold text-foreground">Thesis Eyebrow</label>
-                      <Input
-                        value={landingData.thesis?.eyebrow ?? ""}
-                        onChange={(e) => updateLandingField(["thesis", "eyebrow"], e.target.value)}
-                        className="mt-1 h-9 text-xs"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="text-xs font-semibold text-foreground">Thesis Title</label>
-                      <Input
-                        value={landingData.thesis?.title ?? ""}
-                        onChange={(e) => updateLandingField(["thesis", "title"], e.target.value)}
-                        className="mt-1 h-9 text-xs"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="text-xs font-semibold text-foreground">Thesis Body</label>
-                      <textarea
-                        value={landingData.thesis?.body ?? ""}
-                        onChange={(e) => updateLandingField(["thesis", "body"], e.target.value)}
-                        rows={3}
-                        className="mt-1 w-full rounded-md border border-input bg-background p-2.5 text-xs text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="text-xs font-semibold text-foreground">Method Whisper</label>
-                      <Input
-                        value={landingData.thesis?.method ?? ""}
-                        onChange={(e) => updateLandingField(["thesis", "method"], e.target.value)}
-                        className="mt-1 h-9 text-xs"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="rounded-xl border border-border/60 bg-muted/20 p-4 space-y-3">
-                    <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
-                      Featured Projects Intro
-                    </h3>
-                    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                      <div>
-                        <label className="text-xs font-semibold text-foreground">Intro Eyebrow</label>
-                        <Input
-                          value={landingData.featuredIntro?.eyebrow ?? ""}
-                          onChange={(e) => updateLandingField(["featuredIntro", "eyebrow"], e.target.value)}
-                          className="mt-1 h-9 text-xs"
-                        />
-                      </div>
-                      <div>
-                        <label className="text-xs font-semibold text-foreground">Intro Headline</label>
-                        <Input
-                          value={landingData.featuredIntro?.headline ?? ""}
-                          onChange={(e) => updateLandingField(["featuredIntro", "headline"], e.target.value)}
-                          className="mt-1 h-9 text-xs"
-                        />
-                      </div>
-                    </div>
-                    <div>
-                      <label className="text-xs font-semibold text-foreground">Intro Lede</label>
-                      <textarea
-                        value={landingData.featuredIntro?.lede ?? ""}
-                        onChange={(e) => updateLandingField(["featuredIntro", "lede"], e.target.value)}
-                        rows={2}
-                        className="mt-1 w-full rounded-md border border-input bg-background p-2.5 text-xs text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                      />
-                    </div>
-                  </div>
-                </div>
-              ) : selectedPageKey === "programmes" ? (
-                <div className="space-y-4">
-                  <div className="rounded-xl border border-border/60 bg-muted/20 p-4 space-y-3">
-                    <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
-                      Investor Matrix Card Blurbs
-                    </h3>
-                    <p className="text-[11px] text-muted-foreground">
-                      Concise 1-sentence statements displayed on the three programme cards.
-                    </p>
-
-                    <div className="space-y-3">
-                      <div>
-                        <label className="text-xs font-semibold text-foreground">Connect Blurb</label>
-                        <Input
-                          value={programmesData.cardBlurbs?.connect ?? ""}
-                          onChange={(e) => updateCardBlurb("connect", e.target.value)}
-                          className="mt-1 h-9 text-xs"
-                        />
-                      </div>
-                      <div>
-                        <label className="text-xs font-semibold text-foreground">Mashinani Blurb</label>
-                        <Input
-                          value={programmesData.cardBlurbs?.mashinani ?? ""}
-                          onChange={(e) => updateCardBlurb("mashinani", e.target.value)}
-                          className="mt-1 h-9 text-xs"
-                        />
-                      </div>
-                      <div>
-                        <label className="text-xs font-semibold text-foreground">Wanahabari Lab Blurb</label>
-                        <Input
-                          value={programmesData.cardBlurbs?.["wanahabari-lab"] ?? ""}
-                          onChange={(e) => updateCardBlurb("wanahabari-lab", e.target.value)}
-                          className="mt-1 h-9 text-xs"
-                        />
-                      </div>
-                      <div>
-                        <label className="text-xs font-semibold text-foreground">Studios Blurb</label>
-                        <Input
-                          value={programmesData.cardBlurbs?.studios ?? ""}
-                          onChange={(e) => updateCardBlurb("studios", e.target.value)}
-                          className="mt-1 h-9 text-xs"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ) : currentProgramme ? (
-                <div className="space-y-4">
-                  <div>
-                    <label className="text-xs font-semibold text-foreground">Mandate Fit</label>
-                    <Input
-                      value={currentProgramme.mandateFit ?? ""}
-                      onChange={(e) => updateCurrentProgrammeField("mandateFit", e.target.value)}
-                      placeholder="e.g. Sub-National Governance · Devolution Delivery"
-                      className="mt-1 h-9 text-xs"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="text-xs font-semibold text-foreground">
-                      The Conundrum (Why We Intervene)
-                    </label>
-                    <textarea
-                      value={currentProgramme.investorThesis ?? ""}
-                      onChange={(e) => updateCurrentProgrammeField("investorThesis", e.target.value)}
-                      rows={3}
-                      className="mt-1 w-full rounded-md border border-input bg-background p-2.5 text-xs text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                      placeholder="The root problem in Kenya's public finance system..."
-                    />
-                  </div>
-
-                  <div>
-                    <label className="text-xs font-semibold text-foreground">
-                      The Intervention (How We Execute)
-                    </label>
-                    <textarea
-                      value={currentProgramme.whatWeDo ?? ""}
-                      onChange={(e) => updateCurrentProgrammeField("whatWeDo", e.target.value)}
-                      rows={3}
-                      className="mt-1 w-full rounded-md border border-input bg-background p-2.5 text-xs text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                      placeholder="How this programme systematically addresses the issue..."
-                    />
-                  </div>
-                </div>
-              ) : null}
-            </div>
-          )}
-
-          {/* TAB 4: SCALE, DELIVERABLES & PROCESS */}
-          {activeTab === "deliverables" && (
-            <div className="space-y-6 rounded-2xl border border-border bg-card p-6 shadow-xs">
-              <div className="border-b border-border/50 pb-3">
-                <h2 className="text-base font-bold text-foreground">Scale Stats, Process &amp; Deliverables</h2>
-                <p className="text-xs text-muted-foreground">
-                  The proof-points, operational steps, and partner deliverables.
-                </p>
-              </div>
-
-              {selectedPageKey === "landing" ? (
-                <div className="space-y-4">
-                  <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
-                    Three Numbered Big Bets
-                  </h3>
-                  <div className="space-y-4">
-                    {(landingData.programmeExplains || []).map((bet: any, i: number) => (
-                      <div key={bet.slug} className="rounded-xl border border-border/60 bg-muted/20 p-4 space-y-3">
-                        <div className="flex items-center justify-between">
-                          <span className="font-bold text-xs text-foreground">{bet.number} · {bet.name}</span>
-                          <code className="text-[10px] font-mono text-muted-foreground">{bet.slug}</code>
-                        </div>
-
-                        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                          <div>
-                            <label className="text-[11px] font-semibold text-foreground">Eyebrow</label>
-                            <Input
-                              value={bet.eyebrow ?? ""}
-                              onChange={(e) => {
-                                const explains = [...(landingData.programmeExplains || [])];
-                                explains[i] = { ...explains[i], eyebrow: e.target.value };
-                                updateLandingField(["programmeExplains"], explains);
-                              }}
-                              className="mt-1 h-8 text-xs"
-                            />
-                          </div>
-                          <div>
-                            <label className="text-[11px] font-semibold text-foreground">Title (Phrase)</label>
-                            <Input
-                              value={bet.title ?? ""}
-                              onChange={(e) => {
-                                const explains = [...(landingData.programmeExplains || [])];
-                                explains[i] = { ...explains[i], title: e.target.value };
-                                updateLandingField(["programmeExplains"], explains);
-                              }}
-                              className="mt-1 h-8 text-xs"
-                            />
-                          </div>
-                        </div>
-
-                        <div>
-                          <label className="text-[11px] font-semibold text-foreground">Lede</label>
-                          <textarea
-                            value={bet.lede ?? ""}
-                            onChange={(e) => {
-                              const explains = [...(landingData.programmeExplains || [])];
-                              explains[i] = { ...explains[i], lede: e.target.value };
-                              updateLandingField(["programmeExplains"], explains);
-                            }}
-                            rows={2}
-                            className="mt-1 w-full rounded-md border border-input bg-background p-2 text-xs text-foreground focus-visible:outline-none"
-                          />
-                        </div>
-
-                        <div>
-                          <label className="text-[11px] font-semibold text-foreground">What Success Looks Like</label>
-                          <textarea
-                            value={bet.success ?? ""}
-                            onChange={(e) => {
-                              const explains = [...(landingData.programmeExplains || [])];
-                              explains[i] = { ...explains[i], success: e.target.value };
-                              updateLandingField(["programmeExplains"], explains);
-                            }}
-                            rows={2}
-                            className="mt-1 w-full rounded-md border border-input bg-background p-2 text-xs text-foreground focus-visible:outline-none"
-                          />
-                        </div>
-
-                        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                          <div>
-                            <label className="text-[11px] font-semibold text-foreground">Cycle Whisper</label>
-                            <Input
-                              value={bet.cycle ?? ""}
-                              onChange={(e) => {
-                                const explains = [...(landingData.programmeExplains || [])];
-                                explains[i] = { ...explains[i], cycle: e.target.value };
-                                updateLandingField(["programmeExplains"], explains);
-                              }}
-                              className="mt-1 h-8 text-xs"
-                            />
-                          </div>
-                          <div>
-                            <label className="text-[11px] font-semibold text-foreground">Button Label</label>
-                            <Input
-                              value={bet.ctaLabel ?? ""}
-                              onChange={(e) => {
-                                const explains = [...(landingData.programmeExplains || [])];
-                                explains[i] = { ...explains[i], ctaLabel: e.target.value };
-                                updateLandingField(["programmeExplains"], explains);
-                              }}
-                              className="mt-1 h-8 text-xs"
-                            />
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              ) : currentProgramme ? (
-                <div className="space-y-6">
-                  {/* 3 Key Stats */}
-                  <div className="space-y-3">
-                    <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
-                      Three Key Scale Metrics
-                    </h3>
-                    <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-                      {(currentProgramme.stats || []).map((stat: any, idx: number) => (
-                        <div key={idx} className="rounded-xl border border-border/60 bg-muted/20 p-3 space-y-2">
-                          <label className="text-[11px] font-semibold text-foreground">Stat {idx + 1} Value</label>
-                          <Input
-                            value={stat.value ?? ""}
-                            onChange={(e) => handleUpdateStat(idx, "value", e.target.value)}
-                            className="h-8 text-xs font-mono font-bold"
-                            placeholder="e.g. 4.8T or 04"
-                          />
-                          <label className="text-[11px] font-semibold text-foreground">Label</label>
-                          <Input
-                            value={stat.label ?? ""}
-                            onChange={(e) => handleUpdateStat(idx, "label", e.target.value)}
-                            className="h-8 text-xs"
-                            placeholder="Label description"
-                          />
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* 4 Process Steps */}
-                  <div className="space-y-3 pt-2 border-t border-border/40">
-                    <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
-                      Four-Step Operational Delivery Sequence
-                    </h3>
-                    <div className="space-y-3">
-                      {(currentProgramme.process || []).map((step: any, idx: number) => (
-                        <div key={idx} className="rounded-xl border border-border/60 bg-muted/20 p-3 space-y-2">
-                          <div className="flex items-center gap-2">
-                            <span className="font-mono text-xs font-bold text-primary">0{idx + 1}.</span>
-                            <Input
-                              value={step.title ?? ""}
-                              onChange={(e) => handleUpdateProcess(idx, "title", e.target.value)}
-                              className="h-8 text-xs font-semibold"
-                              placeholder="Step title"
-                            />
-                          </div>
-                          <textarea
-                            value={step.body ?? ""}
-                            onChange={(e) => handleUpdateProcess(idx, "body", e.target.value)}
-                            rows={2}
-                            className="w-full rounded-md border border-input bg-background p-2 text-xs text-foreground focus-visible:outline-none"
-                            placeholder="Step description"
-                          />
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* 3 Concrete Deliverables */}
-                  <div className="space-y-3 pt-2 border-t border-border/40">
-                    <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
-                      Three Concrete Partner Deliverables
-                    </h3>
-                    <div className="space-y-3">
-                      {(currentProgramme.deliverables || []).map((deliv: any, idx: number) => (
-                        <div key={idx} className="rounded-xl border border-border/60 bg-muted/20 p-3 space-y-2">
-                          <div className="flex items-center gap-2">
-                            <span className="font-mono text-xs font-bold text-emerald-500">#{idx + 1}</span>
-                            <Input
-                              value={deliv.title ?? ""}
-                              onChange={(e) => handleUpdateDeliverable(idx, "title", e.target.value)}
-                              className="h-8 text-xs font-semibold"
-                              placeholder="Deliverable title"
-                            />
-                          </div>
-                          <textarea
-                            value={deliv.description ?? ""}
-                            onChange={(e) => handleUpdateDeliverable(idx, "description", e.target.value)}
-                            rows={2}
-                            className="w-full rounded-md border border-input bg-background p-2 text-xs text-foreground focus-visible:outline-none"
-                            placeholder="Deliverable description"
-                          />
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              ) : (
-                <div className="text-xs text-muted-foreground">
-                  Deliverables for this page are managed on the individual programme pages.
-                </div>
-              )}
-            </div>
-          )}
-
-          {/* TAB 5: BUTTONS & LINKS */}
-          {activeTab === "buttons" && (
-            <div className="space-y-5 rounded-2xl border border-border bg-card p-6 shadow-xs">
-              <div className="border-b border-border/50 pb-3">
-                <h2 className="text-base font-bold text-foreground">Buttons, Links &amp; CTAs</h2>
-                <p className="text-xs text-muted-foreground">
-                  Configure every button label, target route, and partner link for {currentPage.label}.
-                </p>
-              </div>
-
-              {selectedPageKey === "landing" ? (
-                <div className="space-y-5">
-                  <div className="rounded-xl border border-border/60 bg-muted/20 p-4 space-y-3">
-                    <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
-                      Partner Closing CTA Band
-                    </h3>
-
-                    <div>
-                      <label className="text-xs font-semibold text-foreground">CTA Band Eyebrow</label>
-                      <Input
-                        value={landingData.partnerCta?.eyebrow ?? ""}
-                        onChange={(e) => updateLandingField(["partnerCta", "eyebrow"], e.target.value)}
-                        className="mt-1 h-9 text-xs"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="text-xs font-semibold text-foreground">CTA Band Title</label>
-                      <Input
-                        value={landingData.partnerCta?.title ?? ""}
-                        onChange={(e) => updateLandingField(["partnerCta", "title"], e.target.value)}
-                        className="mt-1 h-9 text-xs"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="text-xs font-semibold text-foreground">CTA Band Description</label>
-                      <textarea
-                        value={landingData.partnerCta?.description ?? ""}
-                        onChange={(e) => updateLandingField(["partnerCta", "description"], e.target.value)}
-                        rows={2}
-                        className="mt-1 w-full rounded-md border border-input bg-background p-2 text-xs text-foreground focus-visible:outline-none"
-                      />
-                    </div>
-
-                    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                      <div>
-                        <label className="text-xs font-semibold text-foreground">Primary Button Label</label>
-                        <Input
-                          value={landingData.partnerCta?.ctaLabel ?? ""}
-                          onChange={(e) => updateLandingField(["partnerCta", "ctaLabel"], e.target.value)}
-                          className="mt-1 h-8 text-xs"
-                        />
-                      </div>
-                      <div>
-                        <label className="text-xs font-semibold text-foreground">Primary Button Target URL</label>
-                        <Input
-                          value={landingData.partnerCta?.ctaHref ?? ""}
-                          onChange={(e) => updateLandingField(["partnerCta", "ctaHref"], e.target.value)}
-                          className="mt-1 h-8 text-xs font-mono"
-                        />
-                      </div>
-                    </div>
-
-                    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                      <div>
-                        <label className="text-xs font-semibold text-foreground">Secondary Button Label</label>
-                        <Input
-                          value={landingData.partnerCta?.secondaryLabel ?? ""}
-                          onChange={(e) => updateLandingField(["partnerCta", "secondaryLabel"], e.target.value)}
-                          className="mt-1 h-8 text-xs"
-                        />
-                      </div>
-                      <div>
-                        <label className="text-xs font-semibold text-foreground">Secondary Button Target URL</label>
-                        <Input
-                          value={landingData.partnerCta?.secondaryHref ?? ""}
-                          onChange={(e) => updateLandingField(["partnerCta", "secondaryHref"], e.target.value)}
-                          className="mt-1 h-8 text-xs font-mono"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ) : selectedPageKey === "programmes" ? (
-                <div className="space-y-5">
-                  <div className="rounded-xl border border-border/60 bg-muted/20 p-4 space-y-3">
-                    <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
-                      Hero Action Buttons
-                    </h3>
-
-                    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                      <div>
-                        <label className="text-xs font-semibold text-foreground">Primary Button Label</label>
-                        <Input
-                          value={programmesData.landing?.exploreCta?.label ?? ""}
-                          onChange={(e) => updateProgrammesLandingField(["exploreCta", "label"], e.target.value)}
-                          className="mt-1 h-8 text-xs"
-                        />
-                      </div>
-                      <div>
-                        <label className="text-xs font-semibold text-foreground">Primary Button Link</label>
-                        <Input
-                          value={programmesData.landing?.exploreCta?.href ?? ""}
-                          onChange={(e) => updateProgrammesLandingField(["exploreCta", "href"], e.target.value)}
-                          className="mt-1 h-8 text-xs font-mono"
-                        />
-                      </div>
-                    </div>
-
-                    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                      <div>
-                        <label className="text-xs font-semibold text-foreground">Secondary Button Label</label>
-                        <Input
-                          value={programmesData.landing?.partnerCta?.label ?? ""}
-                          onChange={(e) => updateProgrammesLandingField(["partnerCta", "label"], e.target.value)}
-                          className="mt-1 h-8 text-xs"
-                        />
-                      </div>
-                      <div>
-                        <label className="text-xs font-semibold text-foreground">Secondary Button Link</label>
-                        <Input
-                          value={programmesData.landing?.partnerCta?.href ?? ""}
-                          onChange={(e) => updateProgrammesLandingField(["partnerCta", "href"], e.target.value)}
-                          className="mt-1 h-8 text-xs font-mono"
-                        />
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="rounded-xl border border-border/60 bg-muted/20 p-4 space-y-3">
-                    <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
-                      Closing Partnership Band
-                    </h3>
-                    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                      <div>
-                        <label className="text-xs font-semibold text-foreground">Button Label</label>
-                        <Input
-                          value={programmesData.closing?.cta?.label ?? ""}
-                          onChange={(e) => updateProgrammesClosingField(["cta", "label"], e.target.value)}
-                          className="mt-1 h-8 text-xs"
-                        />
-                      </div>
-                      <div>
-                        <label className="text-xs font-semibold text-foreground">Button Target URL</label>
-                        <Input
-                          value={programmesData.closing?.cta?.href ?? ""}
-                          onChange={(e) => updateProgrammesClosingField(["cta", "href"], e.target.value)}
-                          className="mt-1 h-8 text-xs font-mono"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ) : currentProgramme ? (
-                <div className="space-y-4">
-                  <div className="rounded-xl border border-border/60 bg-muted/20 p-4 space-y-3">
-                    <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
-                      Programme Primary &amp; Secondary Buttons
-                    </h3>
-
-                    {/* Primary Button */}
-                    <div className="space-y-2 border-b border-border/40 pb-3">
-                      <div className="text-[11px] font-bold text-foreground">Primary Action Button</div>
-                      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                        <div>
-                          <label className="text-[11px] font-semibold text-muted-foreground">Label</label>
-                          <Input
-                            value={currentProgramme.cta?.label ?? ""}
-                            onChange={(e) => {
-                              const cta = { ...(currentProgramme.cta || {}), label: e.target.value };
-                              updateCurrentProgrammeField("cta", cta);
-                            }}
-                            className="mt-0.5 h-8 text-xs"
-                          />
-                        </div>
-                        <div>
-                          <label className="text-[11px] font-semibold text-muted-foreground">URL Target</label>
-                          <Input
-                            value={currentProgramme.cta?.href ?? ""}
-                            onChange={(e) => {
-                              const cta = { ...(currentProgramme.cta || {}), href: e.target.value };
-                              updateCurrentProgrammeField("cta", cta);
-                            }}
-                            className="mt-0.5 h-8 text-xs font-mono"
-                          />
-                        </div>
-                      </div>
-                      <div>
-                        <label className="text-[11px] font-semibold text-muted-foreground">Note / Subtext</label>
-                        <Input
-                          value={currentProgramme.cta?.note ?? ""}
-                          onChange={(e) => {
-                            const cta = { ...(currentProgramme.cta || {}), note: e.target.value };
-                            updateCurrentProgrammeField("cta", cta);
-                          }}
-                          className="mt-0.5 h-8 text-xs"
-                        />
-                      </div>
-                    </div>
-
-                    {/* Secondary Button */}
-                    <div className="space-y-2 pt-1">
-                      <div className="text-[11px] font-bold text-foreground">Secondary Action Button (Co-Funding)</div>
-                      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                        <div>
-                          <label className="text-[11px] font-semibold text-muted-foreground">Label</label>
-                          <Input
-                            value={currentProgramme.secondaryCta?.label ?? "Discuss Co-Funding"}
-                            onChange={(e) => {
-                              const secondary = {
-                                ...(currentProgramme.secondaryCta || {}),
-                                label: e.target.value,
-                              };
-                              updateCurrentProgrammeField("secondaryCta", secondary);
-                            }}
-                            className="mt-0.5 h-8 text-xs"
-                          />
-                        </div>
-                        <div>
-                          <label className="text-[11px] font-semibold text-muted-foreground">URL Target</label>
-                          <Input
-                            value={
-                              currentProgramme.secondaryCta?.href ??
-                              `/contact?intent=partner&programme=${currentProgramme.slug}`
-                            }
-                            onChange={(e) => {
-                              const secondary = {
-                                ...(currentProgramme.secondaryCta || {}),
-                                href: e.target.value,
-                              };
-                              updateCurrentProgrammeField("secondaryCta", secondary);
-                            }}
-                            className="mt-0.5 h-8 text-xs font-mono"
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ) : null}
-            </div>
-          )}
-
-          {/* TAB 6: FAQS */}
-          {activeTab === "faqs" && currentProgramme && (
-            <div className="space-y-5 rounded-2xl border border-border bg-card p-6 shadow-xs">
-              <div className="flex items-center justify-between border-b border-border/50 pb-3">
-                <div>
-                  <h2 className="text-base font-bold text-foreground">Frequently Asked Questions</h2>
-                  <p className="text-xs text-muted-foreground">
-                    Edit partner FAQs for {currentProgramme.name}.
-                  </p>
-                </div>
-                <Button
-                  type="button"
-                  onClick={handleAddFaq}
-                  size="sm"
-                  variant="outline"
-                  className="gap-1 text-xs"
-                >
-                  <Plus className="size-3.5" />
-                  <span>Add Question</span>
-                </Button>
-              </div>
-
-              <div className="space-y-3">
-                {(currentProgramme.faqs || []).map((faq: any, idx: number) => (
-                  <div
-                    key={idx}
-                    className="rounded-xl border border-border/60 bg-muted/20 p-3.5 space-y-2 relative"
-                  >
-                    <div className="flex items-start justify-between gap-3">
-                      <div className="flex-1 space-y-1">
-                        <label className="text-[11px] font-semibold text-foreground">
-                          Question {idx + 1}
-                        </label>
-                        <Input
-                          value={faq.q ?? ""}
-                          onChange={(e) => handleUpdateFaq(idx, "q", e.target.value)}
-                          className="h-8 text-xs font-medium"
-                        />
-                      </div>
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => handleDeleteFaq(idx)}
-                        className="h-8 w-8 p-0 text-muted-foreground hover:text-rose-500"
-                      >
-                        <Trash2 className="size-3.5" />
-                      </Button>
-                    </div>
-
-                    <div className="space-y-1">
-                      <label className="text-[11px] font-semibold text-foreground">Answer</label>
-                      <textarea
-                        value={faq.a ?? ""}
-                        onChange={(e) => handleUpdateFaq(idx, "a", e.target.value)}
-                        rows={2}
-                        className="w-full rounded-md border border-input bg-background p-2 text-xs text-foreground focus-visible:outline-none"
-                      />
-                    </div>
-                  </div>
-                ))}
-
-                {(currentProgramme.faqs || []).length === 0 && (
-                  <div className="p-6 text-center text-xs text-muted-foreground border border-dashed rounded-xl">
-                    No FAQs defined for this programme. Click &ldquo;Add Question&rdquo; to create one.
-                  </div>
-                )}
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
-      )}
-        </div>
-      )}
-
+      ) : null}
     </div>
   );
 }

@@ -27,10 +27,9 @@ describe("ProgrammesInvestorMatrix & EcosystemFlywheel", () => {
     expect(screen.getByText("BNS Mashinani")).toBeInTheDocument();
     expect(screen.getByText("Wanahabari Lab")).toBeInTheDocument();
 
-    // Investor outputs/deliverables
-    expect(screen.getByText(/Quarterly National Fiscal Briefs/i)).toBeInTheDocument();
-    expect(screen.getByText(/Quarterly County Budget Scorecards/i)).toBeInTheDocument();
-    expect(screen.getByText(/4 Fiscal-Calendar Intensives/i)).toBeInTheDocument();
+    // Conundrum and Intervention dossiers
+    expect(screen.getAllByText(/The Conundrum:/i).length).toBe(3);
+    expect(screen.getAllByText(/The Intervention/i).length).toBe(3);
 
     // Verification methodology
     expect(screen.getByRole("heading", { name: /How we work/i })).toBeInTheDocument();

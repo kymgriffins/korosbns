@@ -52,7 +52,9 @@ export function MediaAssetPicker({
   const [r2Items, setR2Items] = useState<R2Item[]>([]);
   const [isLoadingR2, setIsLoadingR2] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [filterType, setFilterType] = useState<"all" | "video" | "image">("all");
+  const [filterType, setFilterType] = useState<"all" | "video" | "image">(
+    currentType === "image" ? "image" : currentType === "video" ? "video" : "all",
+  );
 
   // Upload State
   const [isUploading, setIsUploading] = useState(false);

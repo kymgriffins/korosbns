@@ -13,8 +13,9 @@ vi.mock("@/components/marketing/premium-landing-client", () => ({
 import HomePage from "../page";
 
 describe("HomePage", () => {
-  it("renders background and premium landing client without crashing", () => {
-    render(<HomePage />);
+  it("renders background and premium landing client without crashing", async () => {
+    const Component = await HomePage();
+    render(Component);
     expect(screen.getByTestId("global-background")).toBeInTheDocument();
     expect(screen.getByTestId("premium-landing-client")).toBeInTheDocument();
   });

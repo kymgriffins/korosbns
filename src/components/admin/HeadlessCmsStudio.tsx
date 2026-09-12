@@ -285,51 +285,43 @@ export function HeadlessCmsStudio() {
 
   return (
     <div className="space-y-6">
-      {/* Studio Mode Selector (Visual Page Studio vs Advanced Datasets) */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-2 rounded-2xl border border-border bg-card shadow-xs">
-        <div className="flex rounded-xl bg-muted/60 p-1">
-          <button
-            type="button"
-            onClick={() => setStudioMode("pages")}
-            className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold transition-all ${
-              studioMode === "pages"
-                ? "bg-background text-foreground shadow-xs"
-                : "text-muted-foreground hover:text-foreground"
-            }`}
-          >
-            <span>🎨 Visual Page Studio</span>
-            <Badge variant="secondary" className="text-[10px] px-1.5 py-0 h-4">
-              Live Preview &amp; Forms
-            </Badge>
-          </button>
-          <button
-            type="button"
-            onClick={() => setStudioMode("raw")}
-            className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-medium transition-all ${
-              studioMode === "raw"
-                ? "bg-background text-foreground shadow-xs font-bold"
-                : "text-muted-foreground hover:text-foreground"
-            }`}
-          >
-            <span>🛠️ Advanced Datasets (Engineers)</span>
-            <Badge variant="outline" className="text-[10px] px-1.5 py-0 h-4 text-muted-foreground">
-              Optional
-            </Badge>
-          </button>
-        </div>
-
-        <div className="text-xs text-muted-foreground px-2">
-          {studioMode === "pages"
-            ? "Visual content manager with real-time live preview — no code or JSON required."
-            : "Direct raw JSON datasets engine and bulk disk synchronization."}
-        </div>
-      </div>
-
       {studioMode === "pages" ? (
-        <HeadlessPageStudio />
+        <div className="space-y-6">
+          <HeadlessPageStudio />
+
+          {/* Minimalist Developer Footer Toggle */}
+          <div className="flex items-center justify-between border-t border-border/40 pt-4 px-2 text-xs text-muted-foreground">
+            <span>Budget Ndio Story · Authoritative Content Management</span>
+            <button
+              type="button"
+              onClick={() => setStudioMode("raw")}
+              className="text-[11px] text-muted-foreground hover:text-foreground underline underline-offset-4 transition-colors"
+            >
+              Developer Mode: Raw JSON Schemas
+            </button>
+          </div>
+        </div>
       ) : (
         <>
           {/* Studio Header Banner */}
+          <div className="flex items-center justify-between p-3.5 rounded-xl border border-border bg-card shadow-xs">
+            <div className="flex items-center gap-2.5">
+              <Badge variant="outline" className="font-mono text-xs bg-purple-500/10 text-purple-600 border-purple-500/20">
+                Developer Engine
+              </Badge>
+              <span className="text-xs text-muted-foreground">Direct Raw JSON Datasets &amp; Disk Sync</span>
+            </div>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => setStudioMode("pages")}
+              className="text-xs font-semibold"
+            >
+              ← Back to Visual Studio
+            </Button>
+          </div>
+
           <div className="rounded-2xl border border-border/80 bg-card shadow-sm p-6 relative overflow-hidden space-y-4">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
           <div className="flex items-center gap-3.5">

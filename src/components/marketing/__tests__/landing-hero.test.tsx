@@ -13,6 +13,8 @@ vi.mock("@/components/marketing/landing-tiktok-phone", () => ({
   LandingTikTokPhone: () => <div data-testid="landing-tiktok-phone" />,
 }));
 
+import { landingContent } from "@/content";
+
 describe("LandingHero", () => {
   it("renders live news ticker, headline, and single mobile CTA", () => {
     render(<LandingHero />);
@@ -26,11 +28,11 @@ describe("LandingHero", () => {
     expect(screen.getByRole("heading", { level: 1 })).toBeInTheDocument();
 
     // Primary CTA (always visible)
-    const primaryCta = screen.getByRole("link", { name: /Explore Programmes/i });
+    const primaryCta = screen.getByRole("link", { name: new RegExp(landingContent.hero.primaryCta.label, "i") });
     expect(primaryCta).toBeInTheDocument();
 
     // Secondary CTA exists for sm+ viewports but is hidden on mobile
-    const secondaryCta = screen.getByRole("link", { name: /Partner with BNS/i });
+    const secondaryCta = screen.getByRole("link", { name: new RegExp(landingContent.hero.secondaryCta.label, "i") });
     expect(secondaryCta).toBeInTheDocument();
     expect(secondaryCta).toHaveClass("hidden", "sm:inline-flex");
   });
