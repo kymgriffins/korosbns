@@ -1,16 +1,28 @@
 "use client";
 
-import { PARTNER_LANDING_THESIS } from "@/content/partner-landing";
+import {
+  PARTNER_LANDING_THESIS,
+  resolvePartnerThesis,
+} from "@/content/partner-landing";
 import { LandingSection } from "@/layouts/landing-section";
 import { LANDING_TYPOGRAPHY as T } from "@/constants/landing-typography";
 import { cn } from "@/utils";
+
+export interface PartnerLandingThesisProps {
+  thesis?: {
+    eyebrow?: string;
+    title?: string;
+    body?: string;
+    method?: string;
+  };
+}
 
 /**
  * Thin thesis + who/how band — RF “Big Bets” clarity without dashboard chrome.
  * Sits between hero reel and the three numbered programme bets.
  */
-export function PartnerLandingThesis() {
-  const { eyebrow, title, body, method } = PARTNER_LANDING_THESIS;
+export function PartnerLandingThesis({ thesis }: PartnerLandingThesisProps = {}) {
+  const { eyebrow, title, body, method } = resolvePartnerThesis(thesis);
 
   return (
     <LandingSection

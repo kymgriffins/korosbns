@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import fs from "node:fs/promises";
 import path from "node:path";
 import {
@@ -178,6 +179,18 @@ export async function POST(
       console.warn(`[Cloudflare Purge Warning]`, purgeErr);
     }
 
+    // 5. Invalidate Next.js internal server cache on-demand
+    let nextRevalidated = false;
+    try {
+      revalidatePath("/");
+      if (slug === "programmes") revalidatePath("/programmes");
+      if (slug === "about") revalidatePath("/about");
+      if (slug === "custom-pages") revalidatePath("/pages", "layout");
+      nextRevalidated = true;
+    } catch (revalErr) {
+      console.warn(`[CMS Next Cache Revalidate Warning]`, revalErr);
+    }
+
     return NextResponse.json({
       ...res,
       masterEditor: MASTER_CMS_EMAIL,
@@ -185,6 +198,7 @@ export async function POST(
       r2Persisted,
       r2Url,
       edgePurged,
+      nextRevalidated,
       filePath: targetPath,
       message: `Successfully updated and persisted ${slug}.json to Disk and Cloudflare R2.`,
     });

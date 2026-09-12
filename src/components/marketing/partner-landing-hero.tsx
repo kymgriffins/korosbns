@@ -14,6 +14,8 @@ import {
   PARTNER_HERO_NARRATIVE,
   PARTNER_HERO_PROGRAMME_LINES,
   PARTNER_LANDING_STILLS,
+  resolvePartnerHeroNarrative,
+  type PartnerLandingStill,
 } from "@/content/partner-landing";
 import { fadeIn } from "@/motion/variants";
 import styles from "./partner-landing-hero.module.css";
@@ -21,12 +23,24 @@ import styles from "./partner-landing-hero.module.css";
 const AUTO_MS = 6500;
 const SWIPE_PX = 48;
 
+export interface PartnerLandingHeroProps {
+  heroNarrative?: {
+    eyebrow?: string;
+    title?: string;
+    lede?: string;
+  };
+  stills?: PartnerLandingStill[];
+}
+
 /**
  * Partner homepage hero — project reel under the marketing nav.
  * One viewport: fixed narrative + rotating evidence + bottom-left programme anchors.
  */
-export default function PartnerLandingHero() {
-  const slides = PARTNER_LANDING_STILLS;
+export default function PartnerLandingHero({
+  heroNarrative,
+  stills,
+}: PartnerLandingHeroProps = {}) {
+  const slides = stills && stills.length > 0 ? stills : PARTNER_LANDING_STILLS;
   const reduceMotion = useReducedMotion();
   const [index, setIndex] = useState(0);
   const [paused, setPaused] = useState(false);
@@ -85,7 +99,7 @@ export default function PartnerLandingHero() {
 
   if (!current) return null;
 
-  const { eyebrow, title, lede } = PARTNER_HERO_NARRATIVE;
+  const { eyebrow, title, lede } = resolvePartnerHeroNarrative(heroNarrative);
 
   return (
     <section

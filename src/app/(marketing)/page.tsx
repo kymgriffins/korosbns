@@ -41,11 +41,17 @@ export const metadata: Metadata = {
   },
 };
 
-export default function HomePage() {
+import { getLiveLandingData } from "@/lib/cms-live-data";
+
+export const revalidate = 60;
+
+export default async function HomePage() {
+  const landingData = await getLiveLandingData();
+
   return (
     <div className="w-full min-h-dvh bg-background overflow-x-clip">
       <Background />
-      <PremiumLandingClient />
+      <PremiumLandingClient landingData={landingData} />
     </div>
   );
 }

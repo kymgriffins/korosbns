@@ -44,16 +44,41 @@ const NewsletterPopup = dynamic(
   { ssr: false },
 );
 
+import type { LandingContent } from "@/lib/cms-live-data";
+
+export interface PremiumLandingClientProps {
+  landingData?: Partial<LandingContent>;
+}
+
 /**
  * Partner homepage spine (RF-shaped, BNS-honest):
  * Hero reel → thesis/who-how → 3 numbered bets → featured evidence → CTA
  * Learner capture (newsletter popup) muted via SHOW_NEWSLETTER_POPUP.
  */
-export default function PremiumLandingClient() {
+export default function PremiumLandingClient({ landingData }: PremiumLandingClientProps = {}) {
+  const activeCta = {
+    eyebrow: landingData?.partnerCta?.eyebrow ?? PARTNER_LANDING_CTA.eyebrow,
+    title: landingData?.partnerCta?.title ?? PARTNER_LANDING_CTA.title,
+    description: landingData?.partnerCta?.description ?? PARTNER_LANDING_CTA.description,
+    ctaLabel: landingData?.partnerCta?.ctaLabel ?? PARTNER_LANDING_CTA.ctaLabel,
+    ctaHref: landingData?.partnerCta?.ctaHref ?? PARTNER_LANDING_CTA.ctaHref,
+    secondaryLabel: landingData?.partnerCta?.secondaryLabel ?? PARTNER_LANDING_CTA.secondaryLabel,
+    secondaryHref: landingData?.partnerCta?.secondaryHref ?? PARTNER_LANDING_CTA.secondaryHref,
+    hidePrimaryButton: (landingData?.partnerCta as any)?.hidePrimaryButton ?? PARTNER_LANDING_CTA.hidePrimaryButton,
+    hideSecondaryButton: (landingData?.partnerCta as any)?.hideSecondaryButton ?? PARTNER_LANDING_CTA.hideSecondaryButton,
+  };
+
   return (
     <>
-      {isSectionVisible("home", "hero") ? <PartnerLandingHero /> : null}
-      {isSectionVisible("home", "whoHow") ? <PartnerLandingThesis /> : null}
+      {isSectionVisible("home", "hero") ? (
+        <PartnerLandingHero
+          heroNarrative={landingData?.heroNarrative}
+          stills={landingData?.heroReelStills as any}
+        />
+      ) : null}
+      {isSectionVisible("home", "whoHow") ? (
+        <PartnerLandingThesis thesis={landingData?.thesis} />
+      ) : null}
       {isSectionVisible("home", "programmeExplains") ? (
         <PartnerProgrammeExplainSections />
       ) : null}
@@ -63,13 +88,13 @@ export default function PremiumLandingClient() {
       {isSectionVisible("home", "partners") ? <PartnersMarquee /> : null}
       {isSectionVisible("home", "cta") ? (
         <EditorialCtaBand
-          eyebrow={PARTNER_LANDING_CTA.eyebrow}
-          title={PARTNER_LANDING_CTA.title}
-          description={PARTNER_LANDING_CTA.description}
-          ctaHref={PARTNER_LANDING_CTA.hidePrimaryButton ? undefined : (PARTNER_LANDING_CTA.ctaHref || "/contact?intent=partner")}
-          ctaLabel={PARTNER_LANDING_CTA.ctaLabel}
-          secondaryHref={PARTNER_LANDING_CTA.hideSecondaryButton ? undefined : (PARTNER_LANDING_CTA.secondaryHref || "/programmes")}
-          secondaryLabel={PARTNER_LANDING_CTA.secondaryLabel}
+          eyebrow={activeCta.eyebrow}
+          title={activeCta.title}
+          description={activeCta.description}
+          ctaHref={activeCta.hidePrimaryButton ? undefined : (activeCta.ctaHref || "/contact?intent=partner")}
+          ctaLabel={activeCta.ctaLabel}
+          secondaryHref={activeCta.hideSecondaryButton ? undefined : (activeCta.secondaryHref || "/programmes")}
+          secondaryLabel={activeCta.secondaryLabel}
           images={CIVIC_PROGRAMMES.slice(0, 2).map((p) => ({
             src: p.visual.hero,
             alt: p.visual.heroAlt,

@@ -86,11 +86,23 @@ export const PARTNER_PROGRAMME_VOCAB = {
  */
 export const PARTNER_HERO_NARRATIVE = {
   eyebrow: rawLanding.heroNarrative?.eyebrow ?? "After Budget Day",
-  title: rawLanding.heroNarrative?.title ?? "The books land. Then the silence.",
+  title: rawLanding.heroNarrative?.title ?? "The budget lands. Then the silence.",
   lede:
     rawLanding.heroNarrative?.lede ??
     "Every year the budget is read from the Treasury. Through BNS Connect we read, analyse, and interpret. In BNS Mashinani we verify in four counties. Wanahabari Lab delivers research-worthy reporting — all captured by BNS Studio.",
 };
+
+export function resolvePartnerHeroNarrative(override?: {
+  eyebrow?: string;
+  title?: string;
+  lede?: string;
+}) {
+  return {
+    eyebrow: override?.eyebrow || PARTNER_HERO_NARRATIVE.eyebrow,
+    title: override?.title || PARTNER_HERO_NARRATIVE.title,
+    lede: override?.lede || PARTNER_HERO_NARRATIVE.lede,
+  };
+}
 
 /**
  * Brand-level promise + who/how — first text band after the hero reel.
@@ -106,6 +118,20 @@ export const PARTNER_LANDING_THESIS = {
   /** Shared method whisper — verify → embed → train/co-produce */
   method: rawLanding.thesis?.method ?? "Verify → embed → train & co-produce",
 };
+
+export function resolvePartnerThesis(override?: {
+  eyebrow?: string;
+  title?: string;
+  body?: string;
+  method?: string;
+}) {
+  return {
+    eyebrow: override?.eyebrow || PARTNER_LANDING_THESIS.eyebrow,
+    title: override?.title || PARTNER_LANDING_THESIS.title,
+    body: override?.body || PARTNER_LANDING_THESIS.body,
+    method: override?.method || PARTNER_LANDING_THESIS.method,
+  };
+}
 
 /** Featured-projects intro — stories behind the evidence (no vanity millions). */
 export const PARTNER_FEATURED_INTRO = {
