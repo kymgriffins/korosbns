@@ -1,7 +1,9 @@
 "use client";
 
 import { FeaturedProjectsSection } from "@/components/marketing/featured-projects-section";
-import { ProgrammesInvestorMatrix } from "@/components/programmes/programmes-investor-matrix";
+import { ProgrammesEcosystemFlywheel, type FlywheelContent } from "@/components/programmes/programmes-ecosystem-flywheel";
+import { ProgrammesInvestorMatrix, type MatrixIntro } from "@/components/programmes/programmes-investor-matrix";
+import type { MethodologyContent } from "@/components/programmes/programmes-methodology-section";
 import { ProgrammesProjectsLoop } from "@/components/programmes/programmes-projects-loop";
 import {
   EditorialCtaBand,
@@ -9,15 +11,17 @@ import {
   PillButtonGroup,
 } from "@/components/ui/editorial";
 import { LANDING_TYPOGRAPHY as T } from "@/constants/landing-typography";
-import {
-  CIVIC_PROGRAMMES,
-  PROGRAMMES_CLOSING,
-  PROGRAMMES_LANDING,
-} from "@/content";
+import type { ProgrammeBlock } from "@/content";
 import {
   HERO_SECTION_PADDING,
   SECTION_SHELL_INNER,
 } from "@/layouts/section-shell";
+import type {
+  FeaturedProjectsContent,
+  PartnerPageSectionsContent,
+  ProgrammesContent,
+} from "@/lib/cms-live-data";
+import { civicProgrammesFromContent } from "@/lib/cms-live-data";
 import { isSectionVisible } from "@/lib/partner-page-cms";
 import { cn } from "@/utils";
 import dynamic from "next/dynamic";
@@ -31,17 +35,40 @@ const PartnersMarquee = dynamic(
   },
 );
 
+type ProgrammesLandingCms = ProgrammesContent["landing"] & {
+  featuredIntro?: { eyebrow?: string; headline?: string; lede?: string };
+  flywheel?: FlywheelContent;
+  matrix?: MatrixIntro;
+  methodology?: MethodologyContent;
+};
+
+export type ProgrammesLandingProps = {
+  programmesData: ProgrammesContent;
+  sectionsConfig?: PartnerPageSectionsContent | null;
+  featuredProjects?: FeaturedProjectsContent | null;
+};
+
 /**
  * Programmes hub — Rockefeller-clarity partner architecture:
  * Hero → Ecosystem Flywheel → Three Big Bets (Investor Matrix) → Featured Projects → CTA
  * BNS Studio is separate at /bns-studio.
  */
-export function ProgrammesLanding() {
-  const landing = PROGRAMMES_LANDING;
+export function ProgrammesLanding({
+  programmesData,
+  sectionsConfig,
+  featuredProjects,
+}: ProgrammesLandingProps) {
+  const landing = programmesData.landing as ProgrammesLandingCms;
+  const closing = programmesData.closing;
+  const civic = civicProgrammesFromContent(programmesData) as ProgrammeBlock[];
+  const featuredIntro = landing.featuredIntro;
+
+  const show = (sectionId: string) =>
+    isSectionVisible("programmes", sectionId, sectionsConfig);
 
   return (
     <div className="w-full min-h-dvh bg-background overflow-x-clip text-foreground">
-      {isSectionVisible("programmes", "hero") ? (
+      {show("hero") ? (
         <section
           className={cn(
             HERO_SECTION_PADDING,
@@ -94,9 +121,9 @@ export function ProgrammesLanding() {
               <figure className="space-y-2.5 lg:col-span-7">
                 <div className="relative aspect-[4/3] w-full overflow-hidden bg-muted md:aspect-[16/10]">
                   <Image
-                    src={CIVIC_PROGRAMMES[0]?.visual.hero ?? "/logo.svg"}
+                    src={civic[0]?.visual.hero ?? "/logo.svg"}
                     alt={
-                      CIVIC_PROGRAMMES[0]?.visual.heroAlt ??
+                      civic[0]?.visual.heroAlt ??
                       "Budget Ndio Story programmes"
                     }
                     fill
@@ -106,7 +133,7 @@ export function ProgrammesLanding() {
                   />
                 </div>
                 <figcaption className={cn(T.caption, "text-muted-foreground")}>
-                  {CIVIC_PROGRAMMES[0]?.visual.heroAlt ??
+                  {civic[0]?.visual.heroAlt ??
                     "Budget Ndio Story programmes"}
                 </figcaption>
               </figure>
@@ -115,31 +142,47 @@ export function ProgrammesLanding() {
         </section>
       ) : null}
 
-      {isSectionVisible("programmes", "programmesMap") ? (
-        <ProgrammesInvestorMatrix />
+      {show("flywheel") ? (
+        <ProgrammesEcosystemFlywheel content={landing.flywheel} />
       ) : null}
 
-      {isSectionVisible("programmes", "featuredProjects") ? (
-        <FeaturedProjectsSection
-          headline="Featured projects across the programmes"
-          lede="Published YouTube evidence — illicit financial flows, CABRI digital PFM, and Project TERRA — with thumbnails and titles refreshed from the source URLs."
+      {show("programmesMap") ? (
+        <ProgrammesInvestorMatrix
+          programmes={civic}
+          studios={
+            programmesData.items.find(
+              (p) => (p as { slug?: string }).slug === "studios",
+            ) as ProgrammeBlock | undefined
+          }
+          matrix={landing.matrix}
+          methodology={landing.methodology}
         />
       ) : null}
 
-      {isSectionVisible("programmes", "partners") ? <PartnersMarquee /> : null}
-
-      {isSectionVisible("programmes", "projectsLoop") ? (
-        <ProgrammesProjectsLoop />
+      {show("featuredProjects") ? (
+        <FeaturedProjectsSection
+          eyebrow={featuredIntro?.eyebrow}
+          headline={featuredIntro?.headline}
+          lede={featuredIntro?.lede}
+          initialProjects={
+            ((featuredProjects as { results?: unknown[] })?.results ||
+              (featuredProjects as { projects?: unknown[] })?.projects) as never
+          }
+        />
       ) : null}
 
-      {isSectionVisible("programmes", "cta") ? (
+      {show("partners") ? <PartnersMarquee /> : null}
+
+      {show("projectsLoop") ? <ProgrammesProjectsLoop /> : null}
+
+      {show("cta") ? (
         <EditorialCtaBand
           eyebrow="Next step"
-          title={PROGRAMMES_CLOSING.headline}
-          description={PROGRAMMES_CLOSING.body}
-          ctaHref={PROGRAMMES_CLOSING.cta.href}
-          ctaLabel={PROGRAMMES_CLOSING.cta.label}
-          images={CIVIC_PROGRAMMES.slice(0, 2).map((p) => ({
+          title={closing.headline}
+          description={closing.body}
+          ctaHref={closing.cta.href}
+          ctaLabel={closing.cta.label}
+          images={civic.slice(0, 2).map((p) => ({
             src: p.visual.hero,
             alt: p.visual.heroAlt,
           }))}

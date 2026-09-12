@@ -22,11 +22,13 @@ import { LANDING_TYPOGRAPHY as T } from "@/constants/landing-typography";
 import {
   CIVIC_PROGRAMMES,
   PROGRAMMES_CLOSING,
-  programmeHref,
   getReelsByProgramme,
+  programmeHref,
   type ProgrammeBlock,
+  type ProgrammeReel,
   type ProgrammeSlug,
 } from "@/content";
+import type { PartnerPageSectionsContent, ProgrammesContent } from "@/lib/cms-live-data";
 import { isSectionVisible } from "@/lib/partner-page-cms";
 import { cn } from "@/utils";
 
@@ -44,20 +46,34 @@ const PAGE_ID_BY_SLUG: Record<Exclude<ProgrammeSlug, "studios">, string> = {
  */
 export function ProgrammeLandingLayout({
   programme,
+  civicProgrammes = CIVIC_PROGRAMMES,
+  closing = PROGRAMMES_CLOSING,
+  sectionsConfig,
+  reels,
 }: {
   programme: ProgrammeBlock;
+  civicProgrammes?: ProgrammeBlock[];
+  closing?: ProgrammesContent["closing"];
+  sectionsConfig?: PartnerPageSectionsContent | null;
+  reels?: ProgrammeReel[];
 }) {
   if (programme.slug === "studios") {
     return null;
   }
 
   const pageId = PAGE_ID_BY_SLUG[programme.slug];
-  const others = CIVIC_PROGRAMMES.filter((p) => p.slug !== programme.slug);
+  const others = civicProgrammes.filter((p) => p.slug !== programme.slug);
   const primaryCta = programme.cta;
+  const show = (sectionId: string) =>
+    isSectionVisible(pageId, sectionId, sectionsConfig);
+  const programmeReels =
+    reels !== undefined
+      ? reels.filter((r) => r.programmeSlug === programme.slug)
+      : getReelsByProgramme(programme.slug);
 
   return (
     <div className="w-full min-h-dvh bg-background overflow-x-clip text-foreground">
-      {isSectionVisible(pageId, "hero") ? (
+      {show("hero") ? (
         <section
           className={cn(HERO_SECTION_PADDING, "border-b border-border/50 bg-background")}
           aria-labelledby={`programme-${programme.slug}-heading`}
@@ -138,7 +154,7 @@ export function ProgrammeLandingLayout({
         </section>
       ) : null}
 
-      {isSectionVisible(pageId, "body") ? (
+      {show("body") ? (
         <LandingSection
           aria-labelledby={`programme-${programme.slug}-body`}
           className="border-t border-border/50"
@@ -309,15 +325,18 @@ export function ProgrammeLandingLayout({
         </LandingSection>
       ) : null}
 
-      {isSectionVisible(pageId, "projects") ? (
+      {show("projects") ? (
         <ProgrammeProjectGrid programmeSlug={programme.slug} />
       ) : null}
 
-      {isSectionVisible(pageId, "reels") ? (
-        <ProgrammeReelsSection programmeSlug={programme.slug} />
+      {show("reels") ? (
+        <ProgrammeReelsSection
+          programmeSlug={programme.slug}
+          reels={programmeReels}
+        />
       ) : null}
 
-      {isSectionVisible(pageId, "otherProgrammes") && others.length > 0 ? (
+      {show("otherProgrammes") && others.length > 0 ? (
         <LandingSection
           aria-labelledby="other-programmes-heading"
           className="border-t border-border/50"
@@ -364,13 +383,13 @@ export function ProgrammeLandingLayout({
         </LandingSection>
       ) : null}
 
-      {isSectionVisible(pageId, "cta") ? (
+      {show("cta") ? (
         <EditorialCtaBand
           eyebrow="Next step"
-          title={PROGRAMMES_CLOSING.headline}
-          description={PROGRAMMES_CLOSING.body}
-          ctaHref={PROGRAMMES_CLOSING.cta.href}
-          ctaLabel={PROGRAMMES_CLOSING.cta.label}
+          title={closing.headline}
+          description={closing.body}
+          ctaHref={closing.cta.href}
+          ctaLabel={closing.cta.label}
           images={[
             { src: programme.visual.hero, alt: programme.visual.heroAlt },
             ...others.slice(0, 1).map((p) => ({
@@ -384,8 +403,13 @@ export function ProgrammeLandingLayout({
   );
 }
 
-function ProgrammeReelsSection({ programmeSlug }: { programmeSlug: ProgrammeSlug }) {
-  const reels = getReelsByProgramme(programmeSlug);
+function ProgrammeReelsSection({
+  programmeSlug,
+  reels,
+}: {
+  programmeSlug: ProgrammeSlug;
+  reels: ProgrammeReel[];
+}) {
   if (reels.length === 0) return null;
 
   return (

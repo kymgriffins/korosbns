@@ -7,6 +7,18 @@ import customPagesFallback from "@/content/custom-pages.json";
 import featuredProjectsFallback from "@/data/fallbacks/featured-projects.json";
 import navigationFallback from "@/content/navigation.json";
 import designTokensFallback from "@/content/design-tokens.json";
+import faqFallback from "@/content/faq.json";
+import storiesFallback from "@/content/stories.json";
+import impactFallback from "@/content/impact.json";
+import consortiumFallback from "@/content/consortium.json";
+import careersFallback from "@/content/careers.json";
+import legalFallback from "@/content/legal.json";
+import teamInitiativesFallback from "@/content/team-initiatives.json";
+import landingHeroFallback from "@/content/landing-hero.json";
+import landingSectionsFallback from "@/content/landing-sections.json";
+import programmeReelsFallback from "@/content/programme-reels.json";
+import studiosEvidenceFallback from "@/data/fallbacks/studios-evidence.json";
+import bnsStudioFallback from "@/content/bns-studio.json";
 import type { CmsCollectionSlug } from "@/lib/headless-cms";
 
 export type LandingContent = typeof landingFallback;
@@ -17,6 +29,18 @@ export type CustomPagesContent = typeof customPagesFallback;
 export type FeaturedProjectsContent = typeof featuredProjectsFallback;
 export type NavigationContent = typeof navigationFallback;
 export type DesignTokensContent = typeof designTokensFallback;
+export type FaqContent = typeof faqFallback;
+export type StoriesContent = typeof storiesFallback;
+export type ImpactContent = typeof impactFallback;
+export type ConsortiumContent = typeof consortiumFallback;
+export type CareersContent = typeof careersFallback;
+export type LegalContent = typeof legalFallback;
+export type TeamInitiativesContent = typeof teamInitiativesFallback;
+export type LandingHeroContent = typeof landingHeroFallback;
+export type LandingSectionsContent = typeof landingSectionsFallback;
+export type ProgrammeReelsContent = typeof programmeReelsFallback;
+export type StudiosEvidenceContent = typeof studiosEvidenceFallback;
+export type BnsStudioContent = typeof bnsStudioFallback;
 
 const FALLBACK_MAP: Partial<Record<CmsCollectionSlug, unknown>> = {
   landing: landingFallback,
@@ -27,6 +51,18 @@ const FALLBACK_MAP: Partial<Record<CmsCollectionSlug, unknown>> = {
   "featured-projects": featuredProjectsFallback,
   navigation: navigationFallback,
   "design-tokens": designTokensFallback,
+  faq: faqFallback,
+  stories: storiesFallback,
+  impact: impactFallback,
+  consortium: consortiumFallback,
+  careers: careersFallback,
+  legal: legalFallback,
+  "team-initiatives": teamInitiativesFallback,
+  "landing-hero": landingHeroFallback,
+  "landing-sections": landingSectionsFallback,
+  "programme-reels": programmeReelsFallback,
+  "studios-evidence": studiosEvidenceFallback,
+  "bns-studio": bnsStudioFallback,
 };
 
 /**
@@ -54,6 +90,51 @@ export async function getLiveCmsCollection<T = Record<string, unknown>>(
  */
 export async function getLiveLandingData(): Promise<LandingContent> {
   return getLiveCmsCollection<LandingContent>("landing", landingFallback);
+}
+
+/**
+ * Loads live programmes hub + programme dossier content from R2 or fallback.
+ */
+export async function getLiveProgrammesContent(): Promise<ProgrammesContent> {
+  return getLiveCmsCollection<ProgrammesContent>("programmes", programmesFallback);
+}
+
+/**
+ * Loads live about-page content from R2 or fallback.
+ */
+export async function getLiveAboutContent(): Promise<AboutContent> {
+  return getLiveCmsCollection<AboutContent>("about", aboutFallback);
+}
+
+/**
+ * Loads live custom pages from R2 or fallback.
+ */
+export async function getLiveCustomPages(): Promise<CustomPagesContent> {
+  return getLiveCmsCollection<CustomPagesContent>("custom-pages", customPagesFallback);
+}
+
+/** Resolve a programme block from live (or fallback) programmes JSON. */
+export function findProgrammeInContent(
+  content: ProgrammesContent,
+  slug: string,
+): ProgrammesContent["items"][number] | undefined {
+  const key = slug.trim().toLowerCase();
+  const items = Array.isArray(content.items) ? content.items : [];
+  return items.find(
+    (item) =>
+      String((item as { slug?: string }).slug ?? "").toLowerCase() === key ||
+      String((item as { id?: string }).id ?? "").toLowerCase() === key,
+  );
+}
+
+/** Civic programmes only (excludes studios redirect stub). */
+export function civicProgrammesFromContent(
+  content: ProgrammesContent,
+): ProgrammesContent["items"] {
+  const items = Array.isArray(content.items) ? content.items : [];
+  return items.filter(
+    (item) => String((item as { slug?: string }).slug ?? "") !== "studios",
+  );
 }
 
 /**
@@ -88,4 +169,88 @@ export async function getLiveNavigationData(): Promise<NavigationContent> {
  */
 export async function getLiveDesignTokens(): Promise<DesignTokensContent> {
   return getLiveCmsCollection<DesignTokensContent>("design-tokens", designTokensFallback);
+}
+
+/**
+ * Loads live FAQ & help center content from R2 or fallback.
+ */
+export async function getLiveFaqContent(): Promise<FaqContent> {
+  return getLiveCmsCollection<FaqContent>("faq", faqFallback);
+}
+
+/**
+ * Loads live budget stories content from R2 or fallback.
+ */
+export async function getLiveStoriesContent(): Promise<StoriesContent> {
+  return getLiveCmsCollection<StoriesContent>("stories", storiesFallback);
+}
+
+/**
+ * Loads live impact metrics & testimonials from R2 or fallback.
+ */
+export async function getLiveImpactContent(): Promise<ImpactContent> {
+  return getLiveCmsCollection<ImpactContent>("impact", impactFallback);
+}
+
+/**
+ * Loads live consortium partners content from R2 or fallback.
+ */
+export async function getLiveConsortiumContent(): Promise<ConsortiumContent> {
+  return getLiveCmsCollection<ConsortiumContent>("consortium", consortiumFallback);
+}
+
+/**
+ * Loads live careers & open roles content from R2 or fallback.
+ */
+export async function getLiveCareersContent(): Promise<CareersContent> {
+  return getLiveCmsCollection<CareersContent>("careers", careersFallback);
+}
+
+/**
+ * Loads live legal pages content from R2 or fallback.
+ */
+export async function getLiveLegalContent(): Promise<LegalContent> {
+  return getLiveCmsCollection<LegalContent>("legal", legalFallback);
+}
+
+/**
+ * Loads live team member initiatives from R2 or fallback.
+ */
+export async function getLiveTeamInitiatives(): Promise<TeamInitiativesContent> {
+  return getLiveCmsCollection<TeamInitiativesContent>("team-initiatives", teamInitiativesFallback);
+}
+
+/**
+ * Loads live landing hero section from R2 or fallback.
+ */
+export async function getLiveLandingHero(): Promise<LandingHeroContent> {
+  return getLiveCmsCollection<LandingHeroContent>("landing-hero", landingHeroFallback);
+}
+
+/**
+ * Loads live landing page sections from R2 or fallback.
+ */
+export async function getLiveLandingSections(): Promise<LandingSectionsContent> {
+  return getLiveCmsCollection<LandingSectionsContent>("landing-sections", landingSectionsFallback);
+}
+
+/**
+ * Loads live programme reels from R2 or fallback.
+ */
+export async function getLiveProgrammeReels(): Promise<ProgrammeReelsContent> {
+  return getLiveCmsCollection<ProgrammeReelsContent>("programme-reels", programmeReelsFallback);
+}
+
+/**
+ * Loads live studios evidence projects from R2 or fallback.
+ */
+export async function getLiveStudiosEvidence(): Promise<StudiosEvidenceContent> {
+  return getLiveCmsCollection<StudiosEvidenceContent>("studios-evidence", studiosEvidenceFallback);
+}
+
+/**
+ * Loads live BNS Studio page content from R2 or fallback.
+ */
+export async function getLiveBnsStudioContent(): Promise<BnsStudioContent> {
+  return getLiveCmsCollection<BnsStudioContent>("bns-studio", bnsStudioFallback);
 }

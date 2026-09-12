@@ -1,6 +1,12 @@
 ﻿import { Metadata } from "next";
 import { CareersLanding } from "@/components/marketing/careers-landing";
 import { canonicalUrl } from "@/utils/metadata";
+import {
+  getLiveCareersContent,
+  getLivePartnerPageSections,
+} from "@/lib/cms-live-data";
+
+export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: "Careers & Creative Network | Budget Ndio Story",
@@ -24,6 +30,13 @@ export const metadata: Metadata = {
   },
 };
 
-export default function CareersPage() {
-  return <CareersLanding />;
+export default async function CareersPage() {
+  const [careersData, sectionsConfig] = await Promise.all([
+    getLiveCareersContent(),
+    getLivePartnerPageSections(),
+  ]);
+
+  return (
+    <CareersLanding careersData={careersData} sectionsConfig={sectionsConfig} />
+  );
 }

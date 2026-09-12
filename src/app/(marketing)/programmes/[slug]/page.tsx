@@ -2,14 +2,26 @@ import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
 import { buildPageMetadata } from "@/utils/page-metadata";
 import { ProgrammeDetail } from "@/components/programmes/programme-detail";
-import { CIVIC_PROGRAMMES, getProgramme } from "@/content";
+import type { ProgrammeBlock } from "@/content";
+import {
+  civicProgrammesFromContent,
+  findProgrammeInContent,
+  getLivePartnerPageSections,
+  getLiveProgrammeReels,
+  getLiveProgrammesContent,
+} from "@/lib/cms-live-data";
 
 type PageProps = {
   params: Promise<{ slug: string }>;
 };
 
-export function generateStaticParams() {
-  return CIVIC_PROGRAMMES.map((p) => ({ slug: p.slug }));
+export const revalidate = 60;
+
+export async function generateStaticParams() {
+  const programmes = await getLiveProgrammesContent();
+  return civicProgrammesFromContent(programmes).map((p) => ({
+    slug: String((p as { slug: string }).slug),
+  }));
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
@@ -22,7 +34,10 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       path: "/bns-studio",
     });
   }
-  const programme = getProgramme(slug);
+  const programmes = await getLiveProgrammesContent();
+  const programme = findProgrammeInContent(programmes, slug) as
+    | ProgrammeBlock
+    | undefined;
   if (!programme) {
     return buildPageMetadata({
       title: "Programmes | Budget Ndio Story",
@@ -42,7 +57,27 @@ export default async function ProgrammeSlugPage({ params }: PageProps) {
   if (slug === "studios") {
     redirect("/bns-studio");
   }
-  const programme = getProgramme(slug);
+
+  const [programmesData, sectionsConfig, reelsData] = await Promise.all([
+    getLiveProgrammesContent(),
+    getLivePartnerPageSections(),
+    getLiveProgrammeReels(),
+  ]);
+
+  const programme = findProgrammeInContent(programmesData, slug) as
+    | ProgrammeBlock
+    | undefined;
   if (!programme || programme.slug === "studios") notFound();
-  return <ProgrammeDetail programme={programme} />;
+
+  const civic = civicProgrammesFromContent(programmesData) as ProgrammeBlock[];
+
+  return (
+    <ProgrammeDetail
+      programme={programme}
+      civicProgrammes={civic}
+      closing={programmesData.closing}
+      sectionsConfig={sectionsConfig}
+      reels={(reelsData as { reels?: unknown[] }).reels as never}
+    />
+  );
 }

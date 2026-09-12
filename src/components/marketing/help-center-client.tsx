@@ -14,8 +14,6 @@ import {
   MessageCircle,
   Mail,
   ArrowRight,
-  ExternalLink,
-  ChevronDown,
   X,
   Sparkles,
   BookOpen,
@@ -23,8 +21,9 @@ import {
 import {
   HELP_TOPICS,
   HELP_FAQS,
-  HelpTopicId,
-  HelpFaqItem,
+  type HelpTopicId,
+  type HelpFaqItem,
+  type HelpTopic,
 } from "@/data/help-faq-data";
 import {
   Accordion,
@@ -37,6 +36,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/utils";
 import { landingSectionsContent } from "@/content";
+import type { LandingSectionsContent } from "@/lib/cms-live-data";
 
 const topicIconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   Compass,
@@ -47,23 +47,35 @@ const topicIconMap: Record<string, React.ComponentType<{ className?: string }>> 
   Users,
 };
 
-export default function HelpCenterClient() {
+export type HelpCenterClientProps = {
+  faqs?: HelpFaqItem[];
+  topics?: HelpTopic[];
+  landingSections?: LandingSectionsContent;
+};
+
+export default function HelpCenterClient({
+  faqs,
+  topics,
+  landingSections,
+}: HelpCenterClientProps = {}) {
+  const faqItems = faqs ?? HELP_FAQS;
+  const topicItems = topics ?? HELP_TOPICS;
+  const sections = landingSections ?? landingSectionsContent;
+
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedTopic, setSelectedTopic] = useState<HelpTopicId | "all">("all");
 
-  // Topic item counts
   const topicCounts = useMemo(() => {
-    const counts: Record<string, number> = { all: HELP_FAQS.length };
-    for (const item of HELP_FAQS) {
+    const counts: Record<string, number> = { all: faqItems.length };
+    for (const item of faqItems) {
       counts[item.topicId] = (counts[item.topicId] || 0) + 1;
     }
     return counts;
-  }, []);
+  }, [faqItems]);
 
-  // Filtered FAQ items
   const filteredFaqs = useMemo(() => {
     const q = searchQuery.toLowerCase().trim();
-    return HELP_FAQS.filter((item) => {
+    return faqItems.filter((item) => {
       if (selectedTopic !== "all" && item.topicId !== selectedTopic) {
         return false;
       }
@@ -75,15 +87,16 @@ export default function HelpCenterClient() {
       }
       return true;
     });
-  }, [searchQuery, selectedTopic]);
+  }, [searchQuery, selectedTopic, faqItems]);
 
-  const quickTags = landingSectionsContent.helpCenter.quickTags as Array<{ label: string; query: string }>;
+  const quickTags = sections.helpCenter.quickTags as Array<{
+    label: string;
+    query: string;
+  }>;
 
   return (
     <div className="w-full">
-      {/* Help Center Hero */}
       <section className="relative overflow-hidden border-b border-border/40 bg-linear-to-b from-muted/50 via-background to-background pt-20 pb-16 sm:pt-24 sm:pb-20 lg:pt-28 lg:pb-24">
-        {/* Subtle background glow */}
         <div
           className="absolute -top-40 left-1/2 -translate-x-1/2 h-96 w-3/4 max-w-4xl rounded-full bg-primary/10 blur-3xl pointer-events-none"
           aria-hidden
@@ -92,22 +105,21 @@ export default function HelpCenterClient() {
         <div className="relative mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 text-center space-y-5">
           <div className="flex items-center justify-center gap-2">
             <EditorialPill variant="primary" size="xs" dot>
-              {landingSectionsContent.helpCenter.badge}
+              {sections.helpCenter.badge}
             </EditorialPill>
             <span className="font-mono text-xs text-muted-foreground uppercase tracking-wider">
-              {landingSectionsContent.helpCenter.domain}
+              {sections.helpCenter.domain}
             </span>
           </div>
 
           <h1 className="font-heading text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight text-foreground leading-[1.05]">
-            {landingSectionsContent.helpCenter.title}
+            {sections.helpCenter.title}
           </h1>
 
           <p className="mx-auto max-w-2xl text-base sm:text-lg text-muted-foreground leading-relaxed">
-            {landingSectionsContent.helpCenter.description}
+            {sections.helpCenter.description}
           </p>
 
-          {/* Search Box */}
           <div className="mx-auto mt-8 max-w-2xl">
             <div className="relative flex items-center">
               <Search className="absolute left-4 size-5 text-muted-foreground pointer-events-none" />
@@ -130,7 +142,6 @@ export default function HelpCenterClient() {
               )}
             </div>
 
-            {/* Quick Search Suggestions */}
             <div className="mt-3 flex flex-wrap items-center justify-center gap-2 text-xs text-muted-foreground">
               <span className="font-medium text-foreground/70 flex items-center gap-1">
                 <Sparkles className="size-3 text-primary" /> Popular searches:
@@ -153,9 +164,7 @@ export default function HelpCenterClient() {
         </div>
       </section>
 
-      {/* Main Body */}
       <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
-        {/* Topic Navigation Cards (Help Center Vibe) */}
         <div className="mb-14">
           <div className="flex items-center justify-between mb-6">
             <div>
@@ -180,7 +189,7 @@ export default function HelpCenterClient() {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
-            {HELP_TOPICS.map((topic) => {
+            {topicItems.map((topic) => {
               const Icon = topicIconMap[topic.iconName] || HelpCircle;
               const isSelected = selectedTopic === topic.id;
               const count = topicCounts[topic.id] || 0;
@@ -196,7 +205,7 @@ export default function HelpCenterClient() {
                     "group relative flex flex-col text-left rounded-3xl border p-6 transition-all duration-200 cursor-pointer",
                     isSelected
                       ? "border-primary bg-primary/5 shadow-md ring-2 ring-primary/20"
-                      : "border-border/70 bg-card/60 hover:border-primary/40 hover:bg-card hover:shadow-xs"
+                      : "border-border/70 bg-card/60 hover:border-primary/40 hover:bg-card hover:shadow-xs",
                   )}
                 >
                   <div className="flex items-start justify-between gap-4 mb-3">
@@ -205,7 +214,7 @@ export default function HelpCenterClient() {
                         "size-11 rounded-2xl flex items-center justify-center transition-colors",
                         isSelected
                           ? "bg-primary text-primary-foreground shadow-xs"
-                          : "bg-muted text-muted-foreground group-hover:bg-primary/10 group-hover:text-primary"
+                          : "bg-muted text-muted-foreground group-hover:bg-primary/10 group-hover:text-primary",
                       )}
                     >
                       <Icon className="size-5" />
@@ -215,7 +224,7 @@ export default function HelpCenterClient() {
                         "text-[11px] font-mono font-semibold px-2.5 py-0.5 rounded-full",
                         isSelected
                           ? "bg-primary/20 text-primary"
-                          : "bg-muted text-muted-foreground"
+                          : "bg-muted text-muted-foreground",
                       )}
                     >
                       {count} articles
@@ -235,7 +244,7 @@ export default function HelpCenterClient() {
                     <ArrowRight
                       className={cn(
                         "size-3.5 transition-transform duration-200",
-                        isSelected ? "translate-x-1" : "group-hover:translate-x-1"
+                        isSelected ? "translate-x-1" : "group-hover:translate-x-1",
                       )}
                     />
                   </div>
@@ -245,22 +254,21 @@ export default function HelpCenterClient() {
           </div>
         </div>
 
-        {/* FAQs Accordion Area */}
         <div className="space-y-6">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-border/40">
             <div>
               <h2 className="font-heading text-2xl sm:text-3xl font-black tracking-tight text-foreground">
                 {selectedTopic === "all"
                   ? "All Frequently Asked Questions"
-                  : HELP_TOPICS.find((t) => t.id === selectedTopic)?.title}
+                  : topicItems.find((t) => t.id === selectedTopic)?.title}
               </h2>
               <p className="text-xs sm:text-sm text-muted-foreground mt-0.5">
-                Showing <strong className="text-foreground">{filteredFaqs.length}</strong> verified answers
+                Showing <strong className="text-foreground">{filteredFaqs.length}</strong>{" "}
+                verified answers
                 {searchQuery && <span> matching &quot;{searchQuery}&quot;</span>}
               </p>
             </div>
 
-            {/* Topic Filter Pills */}
             <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none">
               <button
                 type="button"
@@ -269,12 +277,12 @@ export default function HelpCenterClient() {
                   "rounded-full px-3 py-1 text-xs font-semibold whitespace-nowrap transition-colors cursor-pointer",
                   selectedTopic === "all"
                     ? "bg-primary text-primary-foreground font-bold shadow-xs"
-                    : "border border-border/70 bg-card text-muted-foreground hover:text-foreground"
+                    : "border border-border/70 bg-card text-muted-foreground hover:text-foreground",
                 )}
               >
-                All ({HELP_FAQS.length})
+                All ({faqItems.length})
               </button>
-              {HELP_TOPICS.map((t) => (
+              {topicItems.map((t) => (
                 <button
                   key={t.id}
                   type="button"
@@ -283,7 +291,7 @@ export default function HelpCenterClient() {
                     "rounded-full px-3 py-1 text-xs font-semibold whitespace-nowrap transition-colors cursor-pointer",
                     selectedTopic === t.id
                       ? "bg-primary text-primary-foreground font-bold shadow-xs"
-                      : "border border-border/70 bg-card text-muted-foreground hover:text-foreground"
+                      : "border border-border/70 bg-card text-muted-foreground hover:text-foreground",
                   )}
                 >
                   {t.title}
@@ -295,7 +303,7 @@ export default function HelpCenterClient() {
           {filteredFaqs.length > 0 ? (
             <Accordion type="single" collapsible className="w-full space-y-3">
               {filteredFaqs.map((faq) => {
-                const topic = HELP_TOPICS.find((t) => t.id === faq.topicId);
+                const topic = topicItems.find((t) => t.id === faq.topicId);
 
                 return (
                   <AccordionItem
@@ -342,9 +350,12 @@ export default function HelpCenterClient() {
           ) : (
             <div className="rounded-3xl border border-dashed border-border/80 bg-card/40 p-12 text-center max-w-lg mx-auto">
               <HelpCircle className="size-10 text-muted-foreground mx-auto mb-3" />
-              <h3 className="font-heading text-lg font-bold text-foreground">No matching answers found</h3>
+              <h3 className="font-heading text-lg font-bold text-foreground">
+                No matching answers found
+              </h3>
               <p className="mt-1 text-xs text-muted-foreground">
-                We couldn&apos;t find an answer matching &quot;{searchQuery}&quot;. Try another term or contact us directly.
+                We couldn&apos;t find an answer matching &quot;{searchQuery}&quot;. Try
+                another term or contact us directly.
               </p>
               <div className="mt-5 flex items-center justify-center gap-3">
                 <Button
@@ -368,7 +379,6 @@ export default function HelpCenterClient() {
           )}
         </div>
 
-        {/* Dedicated Direct Assistance & Contact Band */}
         <div className="mt-16 rounded-3xl border border-border/70 bg-linear-to-br from-card via-card to-primary/5 p-8 sm:p-10">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
             <div className="lg:col-span-7 space-y-3">
@@ -381,14 +391,15 @@ export default function HelpCenterClient() {
                 Still have an unanswered question?
               </h3>
               <p className="text-sm text-muted-foreground leading-relaxed">
-                Whether you need specialized county financial datasets, want to propose a Wanahabari
-                investigation, or wish to commission BNS Studios, our desks are ready to assist.
+                Whether you need specialized county financial datasets, want to propose a
+                Wanahabari investigation, or wish to commission BNS Studios, our desks are
+                ready to assist.
               </p>
             </div>
 
             <div className="lg:col-span-5 grid grid-cols-1 sm:grid-cols-2 gap-3">
               <a
-                href={landingSectionsContent.helpCenter.contactSection.whatsapp.href}
+                href={sections.helpCenter.contactSection.whatsapp.href}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-3 rounded-2xl border border-border/80 bg-background/80 p-4 hover:border-primary/50 hover:bg-card transition-all"
@@ -398,7 +409,9 @@ export default function HelpCenterClient() {
                 </div>
                 <div className="text-left">
                   <p className="text-xs font-bold text-foreground">WhatsApp</p>
-                  <p className="text-[11px] text-muted-foreground">{landingSectionsContent.helpCenter.contactSection.whatsapp.number}</p>
+                  <p className="text-[11px] text-muted-foreground">
+                    {sections.helpCenter.contactSection.whatsapp.number}
+                  </p>
                 </div>
               </a>
 
@@ -411,7 +424,9 @@ export default function HelpCenterClient() {
                 </div>
                 <div className="text-left">
                   <p className="text-xs font-bold text-foreground">Email Inquiries</p>
-                  <p className="text-[11px] text-muted-foreground">{landingSectionsContent.helpCenter.contactSection.email.address}</p>
+                  <p className="text-[11px] text-muted-foreground">
+                    {sections.helpCenter.contactSection.email.address}
+                  </p>
                 </div>
               </Link>
 
@@ -425,7 +440,7 @@ export default function HelpCenterClient() {
                 <div className="text-left flex-1">
                   <p className="text-xs font-bold text-foreground">Budget Glossary</p>
                   <p className="text-[11px] text-muted-foreground">
-                    {landingSectionsContent.helpCenter.contactSection.glossary.description}
+                    {sections.helpCenter.contactSection.glossary.description}
                   </p>
                 </div>
                 <ArrowRight className="size-4 text-muted-foreground" />

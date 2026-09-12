@@ -1,8 +1,9 @@
 "use client";
 
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { motion } from "motion/react";
+import { AnimatePresence, motion } from "motion/react";
 import { fadeInUp, staggerContainer } from "@/motion/variants";
 import { EditorialPill, PillButtonGroup } from "@/components/ui/editorial";
 import { SECTION_SHELL_INNER } from "@/layouts/section-shell";
@@ -18,6 +19,10 @@ import {
   Handshake,
   Globe,
   Users,
+  ArrowUpRight,
+  ChevronDown,
+  Volume2,
+  VolumeX,
   type LucideIcon,
 } from "lucide-react";
 
@@ -466,6 +471,277 @@ function PartnerWithUsSection({ section }: PartnerWithUsSectionProps) {
   );
 }
 
+type HeroReelSlide = {
+  id: string;
+  label: string;
+  shortDesc: string;
+  image: string;
+  imagePosition?: string;
+  videoUrl?: string;
+  projectSlug?: string;
+  year: string;
+  layout: "cinema" | "vertical" | "square";
+};
+
+type HeroReelSectionProps = {
+  section: SectionData;
+};
+
+function HeroReelSection({ section }: HeroReelSectionProps) {
+  const s = section as Record<string, unknown>;
+  const badge = str(s.badge);
+  const swipeHint = str(s.swipeHint);
+  const slides = (s.slides as HeroReelSlide[]) || [];
+  const autoPlayMs = typeof s.autoPlayMs === "number" ? s.autoPlayMs : 7000;
+
+  const [index, setIndex] = useState(0);
+  const [segmentProgress, setSegmentProgress] = useState(0);
+  const [paused, setPaused] = useState(false);
+  const [isMuted, setIsMuted] = useState(true);
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+  const pointerStart = useRef<{ x: number; y: number } | null>(null);
+
+  const current = slides[index];
+
+  const goTo = useCallback(
+    (next: number) => {
+      setSegmentProgress(0);
+      setIndex((next + slides.length) % slides.length);
+    },
+    [slides.length],
+  );
+
+  const next = useCallback(() => goTo(index + 1), [goTo, index]);
+  const prev = useCallback(() => goTo(index - 1), [goTo, index]);
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "ArrowRight") next();
+      if (e.key === "ArrowLeft") prev();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [next, prev]);
+
+  useEffect(() => {
+    if (paused || !current?.videoUrl) return;
+    const start = performance.now();
+    let frame = 0;
+    const tick = (now: number) => {
+      const elapsed = now - start;
+      const p = Math.min(1, elapsed / autoPlayMs);
+      setSegmentProgress(p);
+      if (p >= 1) {
+        next();
+      } else {
+        frame = requestAnimationFrame(tick);
+      }
+    };
+    frame = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(frame);
+  }, [index, next, paused, autoPlayMs, current?.videoUrl]);
+
+  const onPointerDown = (e: React.PointerEvent) => {
+    pointerStart.current = { x: e.clientX, y: e.clientY };
+    setPaused(true);
+  };
+
+  const onPointerUp = (e: React.PointerEvent) => {
+    const start = pointerStart.current;
+    pointerStart.current = null;
+    setPaused(false);
+    if (!start) return;
+    const dx = e.clientX - start.x;
+    const dy = e.clientY - start.y;
+    if (Math.abs(dx) < 48 || Math.abs(dx) < Math.abs(dy)) return;
+    if (dx < 0) next();
+    else prev();
+  };
+
+  const onZoneClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const third = rect.width / 3;
+    if (x < third) prev();
+    else if (x > third * 2) next();
+  };
+
+  if (!current || slides.length === 0) return null;
+
+  const getThemeColor = (layout: string) => {
+    if (layout === "vertical") return "text-emerald-400";
+    if (layout === "square") return "text-amber-400";
+    return "text-primary";
+  };
+
+  return (
+    <section
+      id={section.id}
+      className="relative h-[calc(100dvh-3.5rem)] md:h-[calc(100dvh-4rem)] w-full overflow-hidden bg-black text-white"
+      aria-roledescription="carousel"
+      aria-label="BNS Studios format reel"
+    >
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={current.id}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.45 }}
+          className="absolute inset-0"
+          onPointerDown={onPointerDown}
+          onPointerUp={onPointerUp}
+          onPointerCancel={() => {
+            pointerStart.current = null;
+            setPaused(false);
+          }}
+        >
+          <div className={cn(
+            "absolute inset-0",
+            current.layout === "vertical" && "flex items-center justify-center"
+          )}>
+            {current.videoUrl ? (
+              <video
+                key={current.videoUrl}
+                ref={(el) => {
+                  videoRef.current = el;
+                  if (el) {
+                    el.muted = isMuted;
+                    el.play().catch(() => {});
+                  }
+                }}
+                src={current.videoUrl}
+                poster={current.image}
+                autoPlay
+                muted={isMuted}
+                loop
+                playsInline
+                preload="metadata"
+                className={cn(
+                  "absolute inset-0 size-full object-cover",
+                  current.imagePosition || "object-center",
+                  current.layout === "vertical" && "w-auto h-full max-w-none"
+                )}
+                aria-label={current.label}
+              >
+                <source src={current.videoUrl} type="video/mp4" />
+              </video>
+            ) : (
+              <Image
+                src={current.image}
+                alt=""
+                fill
+                priority
+                className={cn(
+                  "object-cover",
+                  current.imagePosition || "object-center",
+                  current.layout === "vertical" && "w-auto h-full max-w-none"
+                )}
+                sizes="100vw"
+              />
+            )}
+          </div>
+          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-black/50" />
+
+          <div
+            className="absolute inset-0 z-10"
+            onClick={onZoneClick}
+            role="presentation"
+          >
+            <p className={cn(
+              "absolute left-6 top-1/2 -translate-y-1/2 font-mono text-xs uppercase tracking-widest writing-mode-vertical",
+              getThemeColor(current.layout)
+            )}>
+              {current.layout}
+            </p>
+
+            <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-6">
+              <p className="font-mono text-sm text-white/60 mb-4">
+                {String(index + 1).padStart(2, "0")} / {String(slides.length).padStart(2, "0")}
+              </p>
+              <h1 className="font-heading text-4xl sm:text-6xl md:text-7xl font-black text-white tracking-tight mb-4">
+                {current.label}
+              </h1>
+              <p className="text-lg sm:text-xl text-white/70 max-w-2xl mb-6">
+                {current.shortDesc}
+              </p>
+
+              <div className="flex flex-wrap items-center justify-center gap-3">
+                {current.projectSlug && (
+                  <Link
+                    href={`/bns-studio/${current.projectSlug}`}
+                    className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-black/60 px-5 py-2.5 text-sm font-bold text-white backdrop-blur-md hover:bg-black/80 transition-colors"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    Open case
+                    <ArrowUpRight className="size-4" />
+                  </Link>
+                )}
+
+                {current.videoUrl && (
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      const nextMuted = !isMuted;
+                      setIsMuted(nextMuted);
+                      if (videoRef.current) {
+                        videoRef.current.muted = nextMuted;
+                        videoRef.current.play().catch(() => {});
+                      }
+                    }}
+                    className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-black/60 px-5 py-2.5 text-sm font-bold text-white backdrop-blur-md hover:bg-black/80 transition-colors cursor-pointer"
+                  >
+                    {isMuted ? <VolumeX className="size-4" /> : <Volume2 className="size-4 text-primary" />}
+                    <span>{isMuted ? "Unmute" : "Sound On"}</span>
+                  </button>
+                )}
+              </div>
+            </div>
+
+            <p className={cn(
+              "absolute right-6 top-1/2 -translate-y-1/2 font-mono text-xs text-white/40 writing-mode-vertical",
+            )}>
+              {current.year}
+            </p>
+          </div>
+
+          <div className="absolute bottom-6 inset-x-0 z-20 flex justify-center pointer-events-none">
+            <div className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-black/60 px-4 py-1.5 text-xs font-mono font-medium text-white/90 backdrop-blur-md animate-bounce">
+              <span>{swipeHint}</span>
+              <ChevronDown className="size-3.5" />
+            </div>
+          </div>
+        </motion.div>
+      </AnimatePresence>
+
+      <div className="absolute bottom-0 inset-x-0 z-30 flex justify-center gap-1.5 pb-6" role="tablist" aria-label="Format slides">
+        {slides.map((slide, i) => (
+          <button
+            key={slide.id}
+            type="button"
+            role="tab"
+            aria-selected={i === index}
+            aria-label={slide.label}
+            onClick={() => goTo(i)}
+            className="relative h-1 w-12 bg-white/20 rounded-full overflow-hidden cursor-pointer hover:bg-white/40 transition-colors"
+          >
+            <span
+              className="absolute inset-0 origin-left bg-white [transform:scaleX(var(--segment-progress,0))]"
+              style={
+                {
+                  "--segment-progress":
+                    i < index ? 1 : i === index ? segmentProgress : 0,
+                } as React.CSSProperties
+              }
+            />
+          </button>
+        ))}
+      </div>
+    </section>
+  );
+}
+
 type CtaBannerSectionProps = {
   section: SectionData;
 };
@@ -531,6 +807,7 @@ function CtaBannerSection({ section }: CtaBannerSectionProps) {
 }
 
 const SECTION_RENDERERS: Record<string, React.ComponentType<{ section: SectionData }>> = {
+  "hero-reel": HeroReelSection,
   "hero-image": HeroImageSection,
   "feature-grid": FeatureGridSection,
   "image-marquee": ImageMarqueeSection,

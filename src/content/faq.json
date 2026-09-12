@@ -1,23 +1,93 @@
 {
   "categories": [
-    { "id": "all", "label": "All Questions", "icon": "HelpCircle", "count": 10 },
-    { "id": "basics", "label": "Budget Basics", "icon": "FileText", "count": 3 },
-    { "id": "eta", "label": "BETA Agenda", "icon": "TrendingUp", "count": 1 },
-    { "id": "debt", "label": "Debt & Borrowing", "icon": "Wallet", "count": 2 },
-    { "id": "counties", "label": "Counties", "icon": "Building2", "count": 1 },
-    { "id": "risks", "label": "Fiscal Risks", "icon": "AlertTriangle", "count": 2 }
+    {
+      "id": "all",
+      "label": "All Questions",
+      "icon": "HelpCircle",
+      "count": 10
+    },
+    {
+      "id": "basics",
+      "label": "Budget Basics",
+      "icon": "FileText",
+      "count": 3
+    },
+    {
+      "id": "eta",
+      "label": "BETA Agenda",
+      "icon": "TrendingUp",
+      "count": 1
+    },
+    {
+      "id": "debt",
+      "label": "Debt & Borrowing",
+      "icon": "Wallet",
+      "count": 2
+    },
+    {
+      "id": "counties",
+      "label": "Counties",
+      "icon": "Building2",
+      "count": 1
+    },
+    {
+      "id": "risks",
+      "label": "Fiscal Risks",
+      "icon": "AlertTriangle",
+      "count": 2
+    }
   ],
   "items": [
-    { "q": "What is the Budget Policy Statement (BPS)?", "a": "The BPS is a yearly government document that sets out Kenya's spending priorities. It's like a preview of the national budget - showing where money will come from and where it'll go.", "category": "basics" },
-    { "q": "When is the BPS released?", "a": "By law (PFM Act), the BPS must be submitted to Parliament by February 15th every year. The final budget comes later on April 30th.", "category": "basics" },
-    { "q": "What's the difference between BPS and the national budget?", "a": "Think of BPS as the blueprint or trailer, and the national budget as the full movie. BPS sets the priorities and direction, while the budget is the actual detailed spending plan.", "category": "basics" },
-    { "q": "What is BETA?", "a": "BETA = Bottom-Up Economic Transformation Agenda. It's Kenya's plan to grow the economy by focusing on agriculture, small businesses, healthcare, housing, and digital transformation.", "category": "eta" },
-    { "q": "Why does Kenya borrow so much?", "a": "Kenya spends more than it collects in taxes (fiscal deficit). The gap is filled through borrowing - both from foreign sources and domestic (like treasury bonds). This helps fund development but also increases debt costs.", "category": "debt" },
-    { "q": "What is the fiscal deficit?", "a": "When government spending exceeds revenue, that's a fiscal deficit. Kenya's FY2026/27 deficit is KES 1,146.2 billion (5.5% of GDP) — up from KES 933.3 billion in FY2025/26 — financed through borrowing.", "category": "debt" },
-    { "q": "How much goes to county governments?", "a": "In FY2026/27, Parliament approved KES 428 billion equitable share to counties (KES 415B in FY2025/26). Total county allocation is KES 502 billion including conditional grants. This funds local services like roads, health, water, and markets in all 47 counties.", "category": "counties" },
-    { "q": "What are the main fiscal risks?", "a": "The BPS warns about: rising debt payments, state corporations needing bailouts, economic slowdowns, climate change (droughts/floods), and increased county demands.", "category": "risks" },
-    { "q": "How does the budget affect me?", "a": "Every shilling in the budget affects public services you use: roads, schools, hospitals, security, and more. Understanding the budget helps you hold leaders accountable.", "category": "basics" },
-    { "q": "Are there climate risks in the budget?", "a": "Yes! The BPS identifies climate change as a major fiscal risk. Droughts can reduce agricultural output and hydroelectric power, while floods can damage infrastructure. These affect tax revenue and increase emergency spending.", "category": "risks" }
+    {
+      "q": "What is the Budget Policy Statement (BPS)?",
+      "a": "The BPS is a yearly government document that sets out Kenya's spending priorities. It's like a preview of the national budget - showing where money will come from and where it'll go.",
+      "category": "basics"
+    },
+    {
+      "q": "When is the BPS released?",
+      "a": "By law (PFM Act), the BPS must be submitted to Parliament by February 15th every year. The final budget comes later on April 30th.",
+      "category": "basics"
+    },
+    {
+      "q": "What's the difference between BPS and the national budget?",
+      "a": "Think of BPS as the blueprint or trailer, and the national budget as the full movie. BPS sets the priorities and direction, while the budget is the actual detailed spending plan.",
+      "category": "basics"
+    },
+    {
+      "q": "What is BETA?",
+      "a": "BETA = Bottom-Up Economic Transformation Agenda. It's Kenya's plan to grow the economy by focusing on agriculture, small businesses, healthcare, housing, and digital transformation.",
+      "category": "eta"
+    },
+    {
+      "q": "Why does Kenya borrow so much?",
+      "a": "Kenya spends more than it collects in taxes (fiscal deficit). The gap is filled through borrowing - both from foreign sources and domestic (like treasury bonds). This helps fund development but also increases debt costs.",
+      "category": "debt"
+    },
+    {
+      "q": "What is the fiscal deficit?",
+      "a": "When government spending exceeds revenue, that's a fiscal deficit. Kenya's FY2026/27 deficit is KES 1,146.2 billion (5.5% of GDP) — up from KES 933.3 billion in FY2025/26 — financed through borrowing.",
+      "category": "debt"
+    },
+    {
+      "q": "How much goes to county governments?",
+      "a": "In FY2026/27, Parliament approved KES 428 billion equitable share to counties (KES 415B in FY2025/26). Total county allocation is KES 502 billion including conditional grants. This funds local services like roads, health, water, and markets in all 47 counties.",
+      "category": "counties"
+    },
+    {
+      "q": "What are the main fiscal risks?",
+      "a": "The BPS warns about: rising debt payments, state corporations needing bailouts, economic slowdowns, climate change (droughts/floods), and increased county demands.",
+      "category": "risks"
+    },
+    {
+      "q": "How does the budget affect me?",
+      "a": "Every shilling in the budget affects public services you use: roads, schools, hospitals, security, and more. Understanding the budget helps you hold leaders accountable.",
+      "category": "basics"
+    },
+    {
+      "q": "Are there climate risks in the budget?",
+      "a": "Yes! The BPS identifies climate change as a major fiscal risk. Droughts can reduce agricultural output and hydroelectric power, while floods can damage infrastructure. These affect tax revenue and increase emergency spending.",
+      "category": "risks"
+    }
   ],
   "hero": {
     "eyebrow": "Budget literacy",
@@ -25,5 +95,403 @@
     "ctaDescription": "Dive deeper with free civic modules on Kenya's budget cycle.",
     "ctaLabel": "Start learning",
     "ctaHref": "/learn"
-  }
+  },
+  "helpTopics": [
+    {
+      "id": "programmes",
+      "title": "BNS Programmes",
+      "description": "Mashinani, Connect, Wanahabari Lab, and Studios operations, coverage, and fellowships.",
+      "badge": "Core Pillars",
+      "iconName": "Compass",
+      "popularSearch": "Mashinani, Wanahabari fellowship, Connect surveys"
+    },
+    {
+      "id": "budget",
+      "title": "Budget & Public Finance",
+      "description": "How Kenya's budget works, BPS timeline, Finance Bill, devolution, and fiscal policy.",
+      "badge": "Civic Literacy",
+      "iconName": "FileText",
+      "popularSearch": "BPS calendar, Equitable share, Finance Bill"
+    },
+    {
+      "id": "learning",
+      "title": "Learn Hub & Courses",
+      "description": "Interactive civic modules, certificates, quizzes, study guides, and mobile access.",
+      "badge": "Education",
+      "iconName": "GraduationCap",
+      "popularSearch": "Free courses, certificates, quizzes"
+    },
+    {
+      "id": "reports",
+      "title": "Reports & Data Sources",
+      "description": "Official data sourcing from National Treasury, OCOB, Auditor-General, and research dossiers.",
+      "badge": "Audited Data",
+      "iconName": "BarChart3",
+      "popularSearch": "OCOB data, Auditor-General reports, Scorecards"
+    },
+    {
+      "id": "studios",
+      "title": "BNS Studios & Media",
+      "description": "Documentaries, podcasts, animated explainers, partner commissions, and syndication.",
+      "badge": "Creative Engine",
+      "iconName": "Film",
+      "popularSearch": "Commissioning media, podcasts, explainers"
+    },
+    {
+      "id": "community",
+      "title": "Community & Accounts",
+      "description": "Citizen accounts, data privacy, WhatsApp channels, campus chapters, and participation.",
+      "badge": "Get Involved",
+      "iconName": "Users",
+      "popularSearch": "WhatsApp channel, privacy, submit feedback"
+    }
+  ],
+  "helpFaqs": [
+    {
+      "id": "prog-mashinani",
+      "question": "What is BNS Mashinani and which counties are covered?",
+      "answer": "BNS Mashinani is our hyper-focused county budget oversight initiative. Rather than skimming surface data, our teams embed in four designated focal counties—Kakamega, Kilifi, Nakuru, and Wajir—tracking budget allocations against actual community delivery (such as healthcare dispensaries, rural feeder roads, and water kiosks) and organizing citizen barazas and scorecards.",
+      "topicId": "programmes",
+      "tags": [
+        "mashinani",
+        "counties",
+        "kakamega",
+        "kilifi",
+        "nakuru",
+        "wajir",
+        "devolution"
+      ],
+      "programmeSlug": "mashinani",
+      "actionLink": {
+        "label": "Explore BNS Mashinani",
+        "href": "/programmes/mashinani"
+      }
+    },
+    {
+      "id": "prog-connect",
+      "question": "How does BNS Connect track the national budget?",
+      "answer": "BNS Connect monitors macro-fiscal policymaking at the National Treasury and Parliament. It translates technical documents like the Budget Policy Statement (BPS), Division of Revenue Bill (DORA), and national debt ceiling into accessible citizen metrics. Connect also runs nationwide youth sentiment surveys and youth engagement dialogues.",
+      "topicId": "programmes",
+      "tags": [
+        "connect",
+        "national budget",
+        "surveys",
+        "treasury",
+        "youth"
+      ],
+      "programmeSlug": "connect",
+      "actionLink": {
+        "label": "Explore BNS Connect",
+        "href": "/programmes/connect"
+      }
+    },
+    {
+      "id": "prog-wanahabari",
+      "question": "What is Wanahabari Lab and who can apply for fellowships?",
+      "answer": "Wanahabari Lab is our dedicated investigative incubator for Kenyan journalists, newsroom editors, and independent digital creators. We provide hands-on training on financial forensic data, access to our verified budget database, and quarterly reporting grants to produce in-depth public finance stories. Applications open quarterly via our portal.",
+      "topicId": "programmes",
+      "tags": [
+        "wanahabari",
+        "journalism",
+        "fellowship",
+        "grants",
+        "media"
+      ],
+      "programmeSlug": "wanahabari-lab",
+      "actionLink": {
+        "label": "Learn About Wanahabari Lab",
+        "href": "/programmes/wanahabari-lab"
+      }
+    },
+    {
+      "id": "prog-studios",
+      "question": "What is BNS Studios and how can institutions commission work?",
+      "answer": "BNS Studios is our narrative creative agency producing award-winning civic media: documentary series (such as our multilingual public finance series with CABRI), investigative podcasts, and data-driven motion explainers. Civil society organizations, public agencies, and development partners can commission BNS Studios to translate complex policy into high-impact visual storytelling.",
+      "topicId": "programmes",
+      "tags": [
+        "studios",
+        "commissions",
+        "documentary",
+        "podcasts",
+        "motion"
+      ],
+      "programmeSlug": "studios",
+      "actionLink": {
+        "label": "Visit BNS Studios",
+        "href": "/bns-studio"
+      }
+    },
+    {
+      "id": "prog-neutrality",
+      "question": "Is Budget Ndio Story non-partisan and how is editorial independence maintained?",
+      "answer": "Budget Ndio Story is strictly non-partisan, non-sectarian, and editorially independent. We do not endorse political parties or candidates. Every claim, chart, and scorecard produced by BNS is grounded directly in verified public records from the National Treasury, Controller of Budget, and Auditor-General.",
+      "topicId": "programmes",
+      "tags": [
+        "non-partisan",
+        "independence",
+        "neutrality",
+        "verification"
+      ],
+      "actionLink": {
+        "label": "Read About Our Vision & Ethics",
+        "href": "/about"
+      }
+    },
+    {
+      "id": "bud-cycle",
+      "question": "What is the timeline of Kenya's annual budget cycle?",
+      "answer": "Kenya's national budget cycle runs on a strict statutory calendar under the PFM Act: (1) August: Budget Circular issued; (2) February 15: Budget Policy Statement (BPS) and Division of Revenue Bill submitted to Parliament; (3) April 30: Detailed Budget Estimates and Finance Bill submitted; (4) June: Budget speech read in the National Assembly; (5) June 30: Appropriation Act and Finance Act enacted into law.",
+      "topicId": "budget",
+      "tags": [
+        "budget cycle",
+        "calendar",
+        "timeline",
+        "bps",
+        "appropriation act"
+      ],
+      "actionLink": {
+        "label": "View Budget Glossary",
+        "href": "/glossary"
+      }
+    },
+    {
+      "id": "bud-finance-vs-appropriation",
+      "question": "What is the difference between the Finance Bill and the Appropriation Act?",
+      "answer": "Think of the Finance Bill as how the government collects money (tax policy, excise duties, VAT rates) and the Appropriation Act as how the government legally spends money (authorized ministry and project votes). Both must be debated, approved by Parliament, and signed by the President to take legal effect.",
+      "topicId": "budget",
+      "tags": [
+        "finance bill",
+        "appropriation act",
+        "taxes",
+        "spending"
+      ],
+      "actionLink": {
+        "label": "See Finance Bill in Glossary",
+        "href": "/glossary#finance-bill"
+      }
+    },
+    {
+      "id": "bud-equitable-share",
+      "question": "How is the County Equitable Share determined and distributed?",
+      "answer": "The Constitution (Article 203) guarantees counties at least 15% of all national revenue based on the latest audited accounts approved by Parliament. The Division of Revenue Act (DORA) allocates this overall amount, and the County Allocation of Revenue Act (CARA) uses the Commission on Revenue Allocation (CRA) formula—weighting population, land area, poverty levels, and fiscal effort—to divide it among the 47 counties.",
+      "topicId": "budget",
+      "tags": [
+        "equitable share",
+        "cara",
+        "dora",
+        "cra",
+        "counties"
+      ],
+      "actionLink": {
+        "label": "Read Equitable Share Definition",
+        "href": "/glossary#equitable-share"
+      }
+    },
+    {
+      "id": "bud-deficit-debt",
+      "question": "Why does Kenya have a fiscal deficit and how is public debt managed?",
+      "answer": "A fiscal deficit occurs when planned expenditures exceed anticipated tax revenue. Kenya finances this shortfall by borrowing domestically (Treasury bills and bonds) and externally (concessional loans and sovereign bonds). Public debt is legally anchored under the PFM Act to prevent debt distress and ensure fiscal sustainability.",
+      "topicId": "budget",
+      "tags": [
+        "fiscal deficit",
+        "debt",
+        "borrowing",
+        "bonds",
+        "pfm act"
+      ],
+      "actionLink": {
+        "label": "Understand Fiscal Deficit",
+        "href": "/glossary#fiscal-deficit"
+      }
+    },
+    {
+      "id": "bud-public-participation",
+      "question": "How can citizens participate in budget hearings under Article 201?",
+      "answer": "Under Articles 10, 118, 196, and 201 of the Constitution, both Parliament and County Assemblies are legally required to invite public submissions. Citizens can attend county barazas, submit written memoranda on the BPS or Finance Bill, or participate through Budget Ndio Story's digital surveys and town halls.",
+      "topicId": "budget",
+      "tags": [
+        "public participation",
+        "article 201",
+        "memoranda",
+        "barazas"
+      ],
+      "actionLink": {
+        "label": "Join Ongoing Surveys",
+        "href": "/surveys"
+      }
+    },
+    {
+      "id": "learn-free",
+      "question": "Are BNS Learn Hub courses, modules, and study tracks free?",
+      "answer": "Yes, 100% free. Budget Ndio Story is committed to democratizing civic literacy. Anyone can read our chapters, take knowledge checks, and explore data visualisations without paying any subscription or paywall fees.",
+      "topicId": "learning",
+      "tags": [
+        "learn hub",
+        "free courses",
+        "civic education",
+        "modules"
+      ],
+      "actionLink": {
+        "label": "Open Learn Hub",
+        "href": "/learn"
+      }
+    },
+    {
+      "id": "learn-certs",
+      "question": "How do learning tracks and certificates work?",
+      "answer": "As you read chapters and complete end-of-module quizzes, your progress is tracked locally and in your citizen profile. Completing foundational tracks (such as Public Finance Mastery or County Budget Tracking) unlocks verified completion badges and digital shareable certificates.",
+      "topicId": "learning",
+      "tags": [
+        "certificates",
+        "badges",
+        "tracking",
+        "completion"
+      ],
+      "actionLink": {
+        "label": "View Learning Modules",
+        "href": "/learn"
+      }
+    },
+    {
+      "id": "learn-offline",
+      "question": "Can I access BNS Learn Hub content offline or on low-bandwidth connections?",
+      "answer": "Yes. Our Learn Hub progressive web app is optimized for mobile data efficiency with offline service worker caching. Once loaded, core reading chapters, glossary terms, and study texts remain accessible even without active internet connectivity.",
+      "topicId": "learning",
+      "tags": [
+        "offline",
+        "mobile",
+        "pwa",
+        "low bandwidth"
+      ]
+    },
+    {
+      "id": "rep-sources",
+      "question": "Where does Budget Ndio Story get its data?",
+      "answer": "All budget figures are sourced exclusively from statutory government authorities: (1) The National Treasury (BPS, Budget Estimates, Quarterly Economic & Budgetary Reviews); (2) Office of the Controller of Budget - OCOB (County and National Budget Implementation Review Reports); (3) Office of the Auditor-General - OAG; (4) Kenya National Bureau of Statistics (KNBS).",
+      "topicId": "reports",
+      "tags": [
+        "data sources",
+        "treasury",
+        "ocob",
+        "auditor general",
+        "knbs"
+      ],
+      "actionLink": {
+        "label": "Browse Published Reports",
+        "href": "/reports"
+      }
+    },
+    {
+      "id": "rep-frequency",
+      "question": "How frequently are county scorecards and national reports updated?",
+      "answer": "Our research desk publishes quarterly reviews following the release of Controller of Budget implementation reports, and annual scorecards aligned with the publication of the Auditor-General's audited county financial statements.",
+      "topicId": "reports",
+      "tags": [
+        "update frequency",
+        "scorecards",
+        "quarterly reviews"
+      ],
+      "actionLink": {
+        "label": "Read Latest Reports",
+        "href": "/reports"
+      }
+    },
+    {
+      "id": "rep-downloads",
+      "question": "Can researchers, journalists, and students download BNS data dossiers?",
+      "answer": "Yes. Our public reports include downloadable PDF summaries and research briefs. Researchers and journalists working on in-depth publications can also request raw data tables by contacting our research desk.",
+      "topicId": "reports",
+      "tags": [
+        "downloads",
+        "data dossiers",
+        "research",
+        "journalism"
+      ],
+      "actionLink": {
+        "label": "Contact Research Desk",
+        "href": "/contact"
+      }
+    },
+    {
+      "id": "std-commissions",
+      "question": "How can partners commission BNS Studios for civic media campaigns?",
+      "answer": "Development partners, civil society coalitions, and public agencies can commission BNS Studios for end-to-end media production. Our team handles research scripting, filming, high-end motion graphics, multilingual voiceovers, and multi-platform distribution across YouTube, TikTok, and community radio.",
+      "topicId": "studios",
+      "tags": [
+        "commissions",
+        "campaigns",
+        "production",
+        "studios"
+      ],
+      "programmeSlug": "studios",
+      "actionLink": {
+        "label": "View Studio Capabilities",
+        "href": "/bns-studio"
+      }
+    },
+    {
+      "id": "std-syndication",
+      "question": "Can newsrooms or educators syndicate and republish BNS content?",
+      "answer": "Yes! Our educational infographics, short-form clips, and podcast episodes are available for civic and educational republication under Creative Commons Attribution guidelines. We encourage newsrooms and educators to broadcast our explainers to broaden citizen reach.",
+      "topicId": "studios",
+      "tags": [
+        "syndication",
+        "republishing",
+        "creative commons",
+        "education"
+      ],
+      "actionLink": {
+        "label": "Reach Media Desk",
+        "href": "/contact"
+      }
+    },
+    {
+      "id": "com-account-need",
+      "question": "Do I need to create an account to use Budget Ndio Story?",
+      "answer": "No account is required to read articles, browse budget data, inspect county scorecards, or access the Budget Glossary. Creating a free account is only required if you want to track your course progress across devices, bookmark lessons, or participate in verified citizen quizzes.",
+      "topicId": "community",
+      "tags": [
+        "account",
+        "signup",
+        "anonymous",
+        "free access"
+      ],
+      "actionLink": {
+        "label": "Create Citizen Account",
+        "href": "/auth/register"
+      }
+    },
+    {
+      "id": "com-privacy",
+      "question": "How does Budget Ndio Story safeguard citizen privacy?",
+      "answer": "We strictly uphold privacy by design. We do not sell personal data, display intrusive third-party ads, or track users across external websites. All survey submissions and civic feedback are aggregated and anonymized in accordance with the Kenya Data Protection Act 2019.",
+      "topicId": "community",
+      "tags": [
+        "privacy",
+        "data protection act",
+        "anonymity",
+        "security"
+      ],
+      "actionLink": {
+        "label": "Read Privacy Policy",
+        "href": "/privacy"
+      }
+    },
+    {
+      "id": "com-whatsapp",
+      "question": "How can I join the Budget Ndio Story WhatsApp channel or community?",
+      "answer": "You can join our active WhatsApp citizen channel for real-time budget alerts, debunked fiscal myths, and public participation notices. You can reach our team directly on WhatsApp at +254 790 631 623 or via our social links.",
+      "topicId": "community",
+      "tags": [
+        "whatsapp",
+        "community",
+        "alerts",
+        "channel"
+      ],
+      "actionLink": {
+        "label": "Message Us on WhatsApp",
+        "href": "https://wa.me/254790631623"
+      }
+    }
+  ]
 }

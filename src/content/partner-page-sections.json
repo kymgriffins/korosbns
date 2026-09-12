@@ -67,6 +67,7 @@
         { "id": "hero", "label": "Landing-format hero", "visible": true },
         { "id": "body", "label": "What this programme does", "visible": true },
         { "id": "projects", "label": "Project grid", "visible": true },
+        { "id": "reels", "label": "Programme social reels", "visible": false },
         { "id": "otherProgrammes", "label": "Other programmes", "visible": true },
         { "id": "cta", "label": "Editorial CTA", "visible": true }
       ]
@@ -81,6 +82,7 @@
         { "id": "hero", "label": "Landing-format hero", "visible": true },
         { "id": "body", "label": "What this programme does", "visible": true },
         { "id": "projects", "label": "Project grid", "visible": true },
+        { "id": "reels", "label": "Programme social reels", "visible": false },
         { "id": "otherProgrammes", "label": "Other programmes", "visible": true },
         { "id": "cta", "label": "Editorial CTA", "visible": true }
       ]
@@ -95,6 +97,7 @@
         { "id": "hero", "label": "Landing-format hero", "visible": true },
         { "id": "body", "label": "What this programme does", "visible": true },
         { "id": "projects", "label": "Project grid", "visible": true },
+        { "id": "reels", "label": "Programme social reels", "visible": false },
         { "id": "otherProgrammes", "label": "Other programmes", "visible": true },
         { "id": "cta", "label": "Editorial CTA", "visible": true }
       ]
@@ -158,10 +161,13 @@
       "blogLike": false,
       "composer": "src/components/studio/BNSStudioPageClient.tsx",
       "sections": [
-        { "id": "reelHero", "label": "Viewport video hero", "visible": true },
+        { "id": "hero-reel", "label": "Hero reel carousel", "visible": true },
         { "id": "screening", "label": "Screening theatre", "visible": true },
-        { "id": "spectrum", "label": "Production spectrum", "visible": true },
-        { "id": "commissionCta", "label": "Commission CTA", "visible": true }
+        { "id": "production-spectrum", "label": "Production spectrum", "visible": true },
+        { "id": "gallery", "label": "Studio gallery marquee", "visible": false },
+        { "id": "about", "label": "About the studio", "visible": false },
+        { "id": "partner-cta", "label": "Partner with us", "visible": true },
+        { "id": "commission", "label": "Commission CTA", "visible": true }
       ]
     },
     "work": {

@@ -1,17 +1,33 @@
 "use client";
 
-import { ProgrammesMethodologySection } from "@/components/programmes/programmes-methodology-section";
+import { ProgrammesMethodologySection, type MethodologyContent } from "@/components/programmes/programmes-methodology-section";
 import { EditorialPill } from "@/components/ui/editorial";
 import { LANDING_TYPOGRAPHY as T } from "@/constants/landing-typography";
-import { CIVIC_PROGRAMMES, getProgramme, programmeHref } from "@/content";
+import { programmeHref, type ProgrammeBlock } from "@/content";
 import { LandingSection } from "@/layouts/landing-section";
 import { cn } from "@/utils";
 import { ArrowRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
-export function ProgrammesInvestorMatrix() {
-  const studios = getProgramme("studios");
+export type MatrixIntro = {
+  eyebrow?: string;
+  headline?: string;
+  lede?: string;
+};
+
+export function ProgrammesInvestorMatrix({
+  programmes = [],
+  studios,
+  matrix,
+  methodology,
+}: {
+  programmes?: ProgrammeBlock[];
+  studios?: ProgrammeBlock | null;
+  matrix?: MatrixIntro | null;
+  methodology?: MethodologyContent | null;
+}) {
+  void studios;
 
   return (
     <LandingSection
@@ -22,21 +38,20 @@ export function ProgrammesInvestorMatrix() {
       <div className="mb-10 flex flex-col gap-4 md:mb-14 md:flex-row md:items-end md:justify-between">
         <div className="max-w-2xl space-y-3">
           <EditorialPill dot pulse variant="default">
-            The Three Big Bets
+            {matrix?.eyebrow ?? "The Three Big Bets"}
           </EditorialPill>
           <h2 id="matrix-heading" className={T.sectionTitle}>
-            Where partners invest
+            {matrix?.headline ?? "Where partners invest"}
           </h2>
         </div>
         <p className={cn(T.lead, "max-w-md md:text-right")}>
-          Three distinct, non-overlapping interventions spanning national
-          macro-policy, county delivery, and investigative newsrooms.
+          {matrix?.lede ??
+            "Three distinct, non-overlapping interventions spanning national macro-policy, county delivery, and investigative newsrooms."}
         </p>
       </div>
 
-      {/* The 3 Civic Big Bets */}
       <div className="space-y-12">
-        {CIVIC_PROGRAMMES.map((programme, index) => {
+        {programmes.map((programme, index) => {
           const number = `0${index + 1}`;
           const reverse = index % 2 === 1;
           const href = programmeHref(programme.slug);
@@ -52,10 +67,8 @@ export function ProgrammesInvestorMatrix() {
                   reverse && "lg:[&>*:first-child]:order-2",
                 )}
               >
-                {/* Left Column / Text Dossier */}
                 <div className="flex flex-col justify-between p-6 sm:p-8 lg:col-span-7">
                   <div className="space-y-6">
-                    {/* Header: Number & Mandate */}
                     <div className="flex flex-wrap items-center gap-2">
                       <span className="font-mono text-xs font-bold text-primary">
                         {number}
@@ -78,7 +91,6 @@ export function ProgrammesInvestorMatrix() {
                       ) : null}
                     </div>
 
-                    {/* Headline */}
                     <div className="space-y-2">
                       <h3 className="font-heading text-2xl font-bold tracking-tight text-foreground md:text-3xl">
                         {programme.name}
@@ -88,7 +100,6 @@ export function ProgrammesInvestorMatrix() {
                       </p>
                     </div>
 
-                    {/* Why & What (Minimalist scannable lines) */}
                     <div className="space-y-3 rounded-none border-l-2 border-primary/60 bg-muted/20 p-4">
                       <div>
                         <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
@@ -109,7 +120,6 @@ export function ProgrammesInvestorMatrix() {
                     </div>
                   </div>
 
-                  {/* Actions & Metrics */}
                   <div className="mt-8 flex flex-col gap-4 border-t border-border/40 pt-6 sm:flex-row sm:items-center sm:justify-between">
                     <div className="flex flex-wrap items-center gap-3">
                       <Link
@@ -133,7 +143,6 @@ export function ProgrammesInvestorMatrix() {
                       </Link>
                     </div>
 
-                    {/* Scale metric */}
                     {programme.stats && programme.stats[0] ? (
                       <div className="flex items-baseline gap-2">
                         <span className="font-heading text-xl font-bold tracking-tight text-foreground md:text-2xl">
@@ -147,7 +156,6 @@ export function ProgrammesInvestorMatrix() {
                   </div>
                 </div>
 
-                {/* Right Column / High-Craft Evidence Still */}
                 <figure className="relative min-h-[280px] w-full overflow-hidden bg-muted lg:col-span-5 lg:min-h-full">
                   <Image
                     src={programme.visual.hero}
@@ -166,10 +174,7 @@ export function ProgrammesInvestorMatrix() {
         })}
       </div>
 
-      {/* The 4-Stage Verification Methodology */}
-      <ProgrammesMethodologySection asSubSection />
-
-      {/* The Engine: BNS Studio */}
+      <ProgrammesMethodologySection asSubSection content={methodology} />
     </LandingSection>
   );
 }

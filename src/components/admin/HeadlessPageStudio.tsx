@@ -48,6 +48,10 @@ import { NavigationStudioEditor } from "./NavigationStudioEditor";
 import { DesignTokensStudioEditor } from "./DesignTokensStudioEditor";
 import { CoursesStudioEditor } from "./CoursesStudioEditor";
 import { ContactStudioEditor } from "./ContactStudioEditor";
+import {
+  CmsCollectionJsonEditor,
+  isCollectionPageKey,
+} from "./CmsCollectionJsonEditor";
 
 type PageKey =
   | "landing"
@@ -62,7 +66,19 @@ type PageKey =
   | "navigation"
   | "tokens"
   | "courses"
-  | "contact";
+  | "contact"
+  | "faq"
+  | "stories"
+  | "impact"
+  | "consortium"
+  | "careers"
+  | "legal"
+  | "team-initiatives"
+  | "landing-hero"
+  | "landing-sections"
+  | "programme-reels"
+  | "studios-evidence"
+  | "bns-studio";
 
 type TabKey = "sections" | "hero" | "carousel" | "bets" | "core" | "deliverables" | "buttons" | "faqs" | "media";
 
@@ -180,6 +196,102 @@ const PAGES: PageMeta[] = [
     sectionPageId: "contact",
     icon: "📬",
   },
+  {
+    key: "faq",
+    label: "FAQ & Help Center",
+    tag: "Frequently Asked Questions",
+    route: "/faq",
+    sectionPageId: "faq",
+    icon: "❓",
+  },
+  {
+    key: "stories",
+    label: "Budget Stories",
+    tag: "Explainers & Deep Dives",
+    route: "/stories",
+    sectionPageId: "stories",
+    icon: "📖",
+  },
+  {
+    key: "impact",
+    label: "Impact Metrics",
+    tag: "Metrics & Testimonials",
+    route: "/impact",
+    sectionPageId: "impact",
+    icon: "📊",
+  },
+  {
+    key: "consortium",
+    label: "Consortium Partners",
+    tag: "Partner Profiles & Activities",
+    route: "/consortium",
+    sectionPageId: "consortium",
+    icon: "🤝",
+  },
+  {
+    key: "careers",
+    label: "Careers & Open Roles",
+    tag: "Job Listings & Culture",
+    route: "/careers",
+    sectionPageId: "careers",
+    icon: "💼",
+  },
+  {
+    key: "legal",
+    label: "Legal Pages",
+    tag: "Security, Privacy & Terms",
+    route: "/security",
+    sectionPageId: "legal",
+    icon: "📜",
+  },
+  {
+    key: "team-initiatives",
+    label: "Team Initiatives",
+    tag: "Per-Member Initiative Links",
+    route: "/team",
+    sectionPageId: "team-initiatives",
+    icon: "👥",
+  },
+  {
+    key: "landing-hero",
+    label: "Landing Hero",
+    tag: "Homepage Hero Section",
+    route: "/",
+    sectionPageId: "landing-hero",
+    icon: "🎯",
+  },
+  {
+    key: "landing-sections",
+    label: "Landing Sections",
+    tag: "All Homepage Sections",
+    route: "/",
+    sectionPageId: "landing-sections",
+    icon: "📐",
+  },
+  {
+    key: "programme-reels",
+    label: "Programme Reels",
+    tag: "R2 Social Reels Archive",
+    route: "/programmes",
+    sectionPageId: "programme-reels",
+    icon: "🎬",
+  },
+  {
+    key: "studios-evidence",
+    label: "Studios Evidence",
+    tag: "Verified Output Projects",
+    route: "/bns-studio",
+    sectionPageId: "studios-evidence",
+    icon: "🎥",
+  },
+  {
+    key: "bns-studio",
+    label: "BNS Studio Page",
+    tag: "Dynamic Sections & Hero",
+    route: "/bns-studio",
+    sectionPageId: "bns-studio",
+    icon: "🎞️",
+  },
 ];
 
 export function HeadlessPageStudio() {
@@ -206,6 +318,18 @@ export function HeadlessPageStudio() {
   const [designTokensData, setDesignTokensData] = useState<Record<string, any>>({});
   const [coursesData, setCoursesData] = useState<Record<string, any>>({ results: [] });
   const [contactData, setContactData] = useState<Record<string, any>>({});
+  const [faqData, setFaqData] = useState<Record<string, any>>({});
+  const [storiesData, setStoriesData] = useState<Record<string, any>>({});
+  const [impactData, setImpactData] = useState<Record<string, any>>({});
+  const [consortiumData, setConsortiumData] = useState<Record<string, any>>({});
+  const [careersData, setCareersData] = useState<Record<string, any>>({});
+  const [legalData, setLegalData] = useState<Record<string, any>>({});
+  const [teamInitiativesData, setTeamInitiativesData] = useState<Record<string, any>>({});
+  const [landingHeroData, setLandingHeroData] = useState<Record<string, any>>({});
+  const [landingSectionsData, setLandingSectionsData] = useState<Record<string, any>>({});
+  const [programmeReelsData, setProgrammeReelsData] = useState<Record<string, any>>({});
+  const [studiosEvidenceData, setStudiosEvidenceData] = useState<Record<string, any>>({});
+  const [bnsStudioData, setBnsStudioData] = useState<Record<string, any>>({});
 
   // Selections for sub-studios
   const [selectedCustomPageSlug, setSelectedCustomPageSlug] = useState<string>("");
@@ -247,7 +371,7 @@ export function HeadlessPageStudio() {
   const loadAllData = useCallback(async () => {
     setIsLoading(true);
     try {
-      const [resLanding, resProg, resSec, resAbout, resCustom, resFeatured, resNav, resTokens, resCourses, resContact] = await Promise.all([
+      const [resLanding, resProg, resSec, resAbout, resCustom, resFeatured, resNav, resTokens, resCourses, resContact, resFaq, resStories, resImpact, resConsortium, resCareers, resLegal, resTeamInitiatives, resLandingHero, resLandingSections, resProgrammeReels, resStudiosEvidence, resBnsStudio] = await Promise.all([
         fetch("/api/cms/landing"),
         fetch("/api/cms/programmes"),
         fetch("/api/cms/partner-page-sections"),
@@ -258,6 +382,18 @@ export function HeadlessPageStudio() {
         fetch("/api/cms/design-tokens"),
         fetch("/api/cms/civic-modules"),
         fetch("/api/cms/contact"),
+        fetch("/api/cms/faq"),
+        fetch("/api/cms/stories"),
+        fetch("/api/cms/impact"),
+        fetch("/api/cms/consortium"),
+        fetch("/api/cms/careers"),
+        fetch("/api/cms/legal"),
+        fetch("/api/cms/team-initiatives"),
+        fetch("/api/cms/landing-hero"),
+        fetch("/api/cms/landing-sections"),
+        fetch("/api/cms/programme-reels"),
+        fetch("/api/cms/studios-evidence"),
+        fetch("/api/cms/bns-studio"),
       ]);
 
       if (resLanding.ok) {
@@ -307,6 +443,54 @@ export function HeadlessPageStudio() {
       if (resContact.ok) {
         const json = await resContact.json();
         setContactData(json.data || {});
+      }
+      if (resFaq.ok) {
+        const json = await resFaq.json();
+        setFaqData(json.data || {});
+      }
+      if (resStories.ok) {
+        const json = await resStories.json();
+        setStoriesData(json.data || {});
+      }
+      if (resImpact.ok) {
+        const json = await resImpact.json();
+        setImpactData(json.data || {});
+      }
+      if (resConsortium.ok) {
+        const json = await resConsortium.json();
+        setConsortiumData(json.data || {});
+      }
+      if (resCareers.ok) {
+        const json = await resCareers.json();
+        setCareersData(json.data || {});
+      }
+      if (resLegal.ok) {
+        const json = await resLegal.json();
+        setLegalData(json.data || {});
+      }
+      if (resTeamInitiatives.ok) {
+        const json = await resTeamInitiatives.json();
+        setTeamInitiativesData(json.data || {});
+      }
+      if (resLandingHero.ok) {
+        const json = await resLandingHero.json();
+        setLandingHeroData(json.data || {});
+      }
+      if (resLandingSections.ok) {
+        const json = await resLandingSections.json();
+        setLandingSectionsData(json.data || {});
+      }
+      if (resProgrammeReels.ok) {
+        const json = await resProgrammeReels.json();
+        setProgrammeReelsData(json.data || {});
+      }
+      if (resStudiosEvidence.ok) {
+        const json = await resStudiosEvidence.json();
+        setStudiosEvidenceData(json.data || {});
+      }
+      if (resBnsStudio.ok) {
+        const json = await resBnsStudio.json();
+        setBnsStudioData(json.data || {});
       }
       setLastSaved(new Date().toLocaleTimeString());
     } catch {
@@ -845,6 +1029,66 @@ export function HeadlessPageStudio() {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ data: contactData, editorEmail: MASTER_CMS_EMAIL }),
         }),
+        fetch("/api/cms/faq", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ data: faqData, editorEmail: MASTER_CMS_EMAIL }),
+        }),
+        fetch("/api/cms/stories", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ data: storiesData, editorEmail: MASTER_CMS_EMAIL }),
+        }),
+        fetch("/api/cms/impact", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ data: impactData, editorEmail: MASTER_CMS_EMAIL }),
+        }),
+        fetch("/api/cms/consortium", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ data: consortiumData, editorEmail: MASTER_CMS_EMAIL }),
+        }),
+        fetch("/api/cms/careers", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ data: careersData, editorEmail: MASTER_CMS_EMAIL }),
+        }),
+        fetch("/api/cms/legal", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ data: legalData, editorEmail: MASTER_CMS_EMAIL }),
+        }),
+        fetch("/api/cms/team-initiatives", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ data: teamInitiativesData, editorEmail: MASTER_CMS_EMAIL }),
+        }),
+        fetch("/api/cms/landing-hero", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ data: landingHeroData, editorEmail: MASTER_CMS_EMAIL }),
+        }),
+        fetch("/api/cms/landing-sections", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ data: landingSectionsData, editorEmail: MASTER_CMS_EMAIL }),
+        }),
+        fetch("/api/cms/programme-reels", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ data: programmeReelsData, editorEmail: MASTER_CMS_EMAIL }),
+        }),
+        fetch("/api/cms/studios-evidence", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ data: studiosEvidenceData, editorEmail: MASTER_CMS_EMAIL }),
+        }),
+        fetch("/api/cms/bns-studio", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ data: bnsStudioData, editorEmail: MASTER_CMS_EMAIL }),
+        }),
       ];
 
       const responses = await Promise.all(payloadPromises);
@@ -854,7 +1098,7 @@ export function HeadlessPageStudio() {
         setLastSaved(new Date().toLocaleTimeString());
         setPreviewRefreshKey((k) => k + 1);
         toast.success(`Successfully saved and published live!`, {
-          description: `Updated landing, programmes, sections, custom pages, featured blogs, navigation, tokens, courses, contact, and about schemas.`,
+          description: `Updated all 22 CMS collections including landing, programmes, sections, custom pages, featured blogs, navigation, tokens, courses, contact, about, FAQ, stories, impact, consortium, careers, legal, team initiatives, landing hero, landing sections, programme reels, studios evidence, and BNS studio schemas.`,
         });
       } else {
         throw new Error("One or more collections failed to persist");
@@ -1759,8 +2003,49 @@ export function HeadlessPageStudio() {
         />
       )}
 
+      {/* GENERIC COLLECTION EDITORS (FAQ, stories, careers, bns-studio, etc.) */}
+      {isCollectionPageKey(selectedPageKey) && (
+        <CmsCollectionJsonEditor
+          title={currentPage.label}
+          description={`Edit live CMS collection \`${selectedPageKey}\`. Changes save to R2 and appear on marketing routes after revalidation.`}
+          data={
+            ({
+              faq: faqData,
+              stories: storiesData,
+              impact: impactData,
+              consortium: consortiumData,
+              careers: careersData,
+              legal: legalData,
+              "team-initiatives": teamInitiativesData,
+              "landing-hero": landingHeroData,
+              "landing-sections": landingSectionsData,
+              "programme-reels": programmeReelsData,
+              "studios-evidence": studiosEvidenceData,
+              "bns-studio": bnsStudioData,
+            }[selectedPageKey] as Record<string, unknown>) || {}
+          }
+          onChange={(next) => {
+            const setters: Record<string, (v: Record<string, unknown>) => void> = {
+              faq: setFaqData,
+              stories: setStoriesData,
+              impact: setImpactData,
+              consortium: setConsortiumData,
+              careers: setCareersData,
+              legal: setLegalData,
+              "team-initiatives": setTeamInitiativesData,
+              "landing-hero": setLandingHeroData,
+              "landing-sections": setLandingSectionsData,
+              "programme-reels": setProgrammeReelsData,
+              "studios-evidence": setStudiosEvidenceData,
+              "bns-studio": setBnsStudioData,
+            };
+            setters[selectedPageKey]?.(next);
+          }}
+        />
+      )}
+
       {/* STANDARD MULTI-TAB WORKSPACE (LANDING, PROGRAMMES, & PROGRAMME DETAIL PAGES) */}
-      {selectedPageKey !== "featured-blogs" && selectedPageKey !== "custom-pages" && selectedPageKey !== "about" && selectedPageKey !== "navigation" && selectedPageKey !== "tokens" && selectedPageKey !== "courses" && selectedPageKey !== "contact" && (
+      {selectedPageKey !== "featured-blogs" && selectedPageKey !== "custom-pages" && selectedPageKey !== "about" && selectedPageKey !== "navigation" && selectedPageKey !== "tokens" && selectedPageKey !== "courses" && selectedPageKey !== "contact" && !isCollectionPageKey(selectedPageKey) && (
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
         {/* Left Nav: Section Tabs for Selected Page */}
         <div className="space-y-3 lg:col-span-3">

@@ -12,6 +12,102 @@
     "partnerCta": {
       "label": "Discuss Partnership",
       "href": "/contact?intent=partner"
+    },
+    "matrix": {
+      "eyebrow": "The Three Big Bets",
+      "headline": "Where partners invest",
+      "lede": "Three distinct, non-overlapping interventions spanning national macro-policy, county delivery, and investigative newsrooms."
+    },
+    "featuredIntro": {
+      "eyebrow": "Evidence",
+      "headline": "Featured projects across the programmes",
+      "lede": "Published YouTube evidence — illicit financial flows, CABRI digital PFM, and Project TERRA — with thumbnails and titles refreshed from the source URLs."
+    },
+    "flywheel": {
+      "eyebrow": "The Closed-Loop Ecosystem",
+      "headline": "How the programmes connect",
+      "lede": "One continuous accountability engine: national data informs local scrutiny, newsrooms broadcast the findings, and high-craft production funds the next cycle.",
+      "nodes": [
+        {
+          "step": "01",
+          "name": "BNS Connect",
+          "eyebrow": "National Intelligence",
+          "icon": "BarChart3",
+          "href": "/programmes/connect",
+          "role": "Ingests & tracks",
+          "description": "Follows Kenya's KSh 4.8T national budget and debt flow from Treasury to line ministries.",
+          "feedsTo": "Feeds verified allocation baselines into county teams and newsrooms"
+        },
+        {
+          "step": "02",
+          "name": "BNS Mashinani",
+          "eyebrow": "County Ground Truth",
+          "icon": "Building2",
+          "href": "/programmes/mashinani",
+          "role": "Verifies on site",
+          "description": "Embedded full-cycle in Kakamega, Kilifi, Nakuru, and Wajir to check whether money built real facilities.",
+          "feedsTo": "Feeds ground truth and delivery scorecards into investigative reporters"
+        },
+        {
+          "step": "03",
+          "name": "Wanahabari Lab",
+          "eyebrow": "Newsroom Scrutiny",
+          "icon": "Newspaper",
+          "href": "/programmes/wanahabari-lab",
+          "role": "Investigates & reports",
+          "description": "Trains 120–200 journalists and creators to report budget stories during the 11 months after Budget Day.",
+          "feedsTo": "Feeds public demand and investigations into civic town halls and oversight bodies"
+        },
+        {
+          "step": "04",
+          "name": "BNS Studio",
+          "eyebrow": "Production & Surplus",
+          "icon": "Video",
+          "href": "/bns-studio",
+          "role": "Documents & sustains",
+          "description": "Produces cinema-grade films and facilitated town halls; commercial surplus funds the civic watchdog.",
+          "feedsTo": "Feeds commercial surplus back into Connect, Mashinani, and Wanahabari"
+        }
+      ]
+    },
+    "methodology": {
+      "eyebrow": "Methodology & Standards",
+      "headline": "How we verify before we publish",
+      "lede": "Every claim is anchored in statutory releases, triangulated against Controller of Budget and Auditor-General records, then framed for newsrooms and citizens.",
+      "steps": [
+        {
+          "step": "01",
+          "title": "Ingest & Trace",
+          "subtitle": "PFM Act & Constitution (Art. 201–207)",
+          "icon": "Landmark",
+          "description": "We track statutory releases against the budget calendar — Budget Policy Statements (BPS), County Fiscal Strategy Papers (CFSP), and Appropriation Bills.",
+          "highlight": "No speculative commentary; anchored in official government gazettes."
+        },
+        {
+          "step": "02",
+          "title": "Triangulate & Verify",
+          "subtitle": "Controller of Budget & OAG Records",
+          "icon": "Search",
+          "description": "Every Treasury and county allocation is cross-verified against actual Controller of Budget (CoB) exchequer withdrawals and Auditor-General audit findings.",
+          "highlight": "Zero published claims without primary documentation backing."
+        },
+        {
+          "step": "03",
+          "title": "Frame & Publish",
+          "subtitle": "Feed-Ready Dashboards & Newsroom Packs",
+          "icon": "FileText",
+          "description": "We translate complex public finance spreadsheets into actionable scorecards, interactive dashboards, and investigative media toolkits.",
+          "highlight": "Published in English, Kiswahili, and Sheng for maximum civic reach."
+        },
+        {
+          "step": "04",
+          "title": "Convene & Hold Pressure",
+          "subtitle": "Multi-Camera Town Halls & Briefings",
+          "icon": "Users",
+          "description": "We convene facilitated citizen-official forums and provide embargoed briefings to newsroom editors ahead of critical fiscal votes.",
+          "highlight": "Turning verified evidence into structured, non-partisan public dialogue."
+        }
+      ]
     }
   },
   "cardBlurbs": {

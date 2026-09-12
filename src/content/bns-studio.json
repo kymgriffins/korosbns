@@ -1,38 +1,76 @@
 {
   "provenance": {
     "source": "BNS Studio page content (seed)",
-    "note": "CMS-managed page sections, images, and configuration for the BNS Studio page. Add/remove sections in the 'sections' array.",
+    "note": "CMS-managed page sections, images, and configuration for the BNS Studio page. Add/remove/reorder sections in the 'sections' array.",
     "level": "seed",
     "lastUpdated": "2026-09-12"
   },
-  "hero": {
-    "badge": "National Treasury Explainer Series · 480K+ Views",
-    "swipeHint": "Swipe formats · Scroll for master theatre",
-    "formatsLabel": "formats",
-    "reelImages": [
-      {
-        "src": "/images/reels/reel-01-poster.jpg",
-        "alt": "Social Media Reel - Budget Explainer",
-        "caption": "Social media format"
-      },
-      {
-        "src": "/images/reels/reel-02-poster.jpg",
-        "alt": "Documentary Reel - County Tracker",
-        "caption": "Documentary format"
-      },
-      {
-        "src": "/images/reels/reel-03-poster.jpg",
-        "alt": "Animation Reel - Policy Breakdown",
-        "caption": "Animation format"
-      },
-      {
-        "src": "/images/reels/reel-04-poster.jpg",
-        "alt": "Podcast Reel - Fiscal Deep Dive",
-        "caption": "Podcast format"
-      }
-    ]
-  },
   "sections": [
+    {
+      "id": "hero-reel",
+      "type": "hero-reel",
+      "badge": "National Treasury Explainer Series · 480K+ Views",
+      "swipeHint": "Swipe formats · Scroll for master theatre",
+      "formatsLabel": "formats",
+      "autoPlayMs": 7000,
+      "slides": [
+        {
+          "id": "social-media",
+          "label": "Social Media Series",
+          "shortDesc": "Bite-sized vertical video engineered for reach and civic action.",
+          "image": "/images/reels/reel-01-poster.jpg",
+          "imagePosition": "center top",
+          "videoUrl": "",
+          "projectSlug": "",
+          "year": "2025",
+          "layout": "vertical"
+        },
+        {
+          "id": "podcast",
+          "label": "Podcast & Audio",
+          "shortDesc": "Bilingual fiscal deep-dives, field soundscapes, and expert debate series.",
+          "image": "/images/reels/reel-04-poster.jpg",
+          "imagePosition": "center",
+          "videoUrl": "",
+          "projectSlug": "",
+          "year": "2025",
+          "layout": "square"
+        },
+        {
+          "id": "explainer",
+          "label": "Explainer Videos",
+          "shortDesc": "Step-by-step visual breakdowns of public finance, policy memos, and sector allocations.",
+          "image": "/images/reels/reel-02-poster.jpg",
+          "imagePosition": "center",
+          "videoUrl": "",
+          "projectSlug": "",
+          "year": "2025",
+          "layout": "cinema"
+        },
+        {
+          "id": "documentary",
+          "label": "Documentaries",
+          "shortDesc": "Cinematic, character-driven storytelling capturing grassroots community realities.",
+          "image": "/images/reels/reel-03-poster.jpg",
+          "imagePosition": "center",
+          "videoUrl": "",
+          "projectSlug": "",
+          "year": "2025",
+          "layout": "cinema"
+        },
+        {
+          "id": "animation",
+          "label": "Animations",
+          "shortDesc": "High-engagement 2D and motion explainers that demystify complex legislation.",
+          "image": "/images/reels/reel-05-poster.jpg",
+          "imagePosition": "center",
+          "videoUrl": "",
+          "projectSlug": "",
+          "year": "2025",
+          "layout": "cinema"
+        }
+      ]
+    },
     {
       "id": "screening",
       "type": "hero-image",

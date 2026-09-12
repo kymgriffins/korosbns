@@ -1,7 +1,14 @@
 import { Metadata } from "next";
 import HelpCenterClient from "@/components/marketing/help-center-client";
-import { HELP_FAQS } from "@/data/help-faq-data";
+import { HELP_FAQS, HELP_TOPICS, type HelpFaqItem, type HelpTopic } from "@/data/help-faq-data";
 import { canonicalUrl } from "@/utils/metadata";
+import {
+  getLiveFaqContent,
+  getLiveLandingSections,
+  type FaqContent,
+} from "@/lib/cms-live-data";
+
+export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: "FAQ & Help Center: Programmes, Budget & Devolution | Budget Ndio Story",
@@ -25,11 +32,36 @@ export const metadata: Metadata = {
   },
 };
 
-export default function FAQPage() {
+type FaqWithHelp = FaqContent & {
+  helpFaqs?: HelpFaqItem[];
+  helpTopics?: HelpTopic[];
+};
+
+function resolveHelpFaqs(faq: FaqWithHelp): HelpFaqItem[] {
+  return Array.isArray(faq.helpFaqs) && faq.helpFaqs.length > 0
+    ? faq.helpFaqs
+    : HELP_FAQS;
+}
+
+function resolveHelpTopics(faq: FaqWithHelp): HelpTopic[] {
+  return Array.isArray(faq.helpTopics) && faq.helpTopics.length > 0
+    ? faq.helpTopics
+    : HELP_TOPICS;
+}
+
+export default async function FAQPage() {
+  const [faqContent, landingSections] = await Promise.all([
+    getLiveFaqContent(),
+    getLiveLandingSections(),
+  ]);
+
+  const faqs = resolveHelpFaqs(faqContent as FaqWithHelp);
+  const topics = resolveHelpTopics(faqContent as FaqWithHelp);
+
   const faqSchema = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
-    mainEntity: HELP_FAQS.map((faq) => ({
+    mainEntity: faqs.map((faq) => ({
       "@type": "Question",
       name: faq.question,
       acceptedAnswer: {
@@ -45,7 +77,11 @@ export default function FAQPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
       />
-      <HelpCenterClient />
+      <HelpCenterClient
+        faqs={faqs}
+        topics={topics}
+        landingSections={landingSections}
+      />
     </>
   );
 }

@@ -7,8 +7,12 @@ import { PartnerLandingThesis } from "@/components/marketing/partner-landing-the
 import { EditorialCtaBand } from "@/components/ui/editorial";
 import { CIVIC_PROGRAMMES } from "@/content";
 import { PARTNER_LANDING_CTA } from "@/content/partner-landing";
-import { isSectionVisible } from "@/lib/partner-page-cms";
 import { SHOW_NEWSLETTER_POPUP } from "@/lib/marketing-chrome";
+import type {
+  LandingContent,
+  PartnerPageSectionsContent,
+  FeaturedProjectsContent,
+} from "@/lib/cms-live-data";
 
 /** Below-fold: defer so hero stills paint first. */
 const PartnerProgrammeExplainSections = dynamic(
@@ -44,12 +48,6 @@ const NewsletterPopup = dynamic(
   { ssr: false },
 );
 
-import type {
-  LandingContent,
-  PartnerPageSectionsContent,
-  FeaturedProjectsContent,
-} from "@/lib/cms-live-data";
-
 export interface PremiumLandingClientProps {
   landingData?: Partial<LandingContent>;
   sectionsConfig?: Partial<PartnerPageSectionsContent>;
@@ -72,14 +70,14 @@ export default function PremiumLandingClient({
     description: landingData?.partnerCta?.description ?? PARTNER_LANDING_CTA.description,
     ctaLabel: landingData?.partnerCta?.ctaLabel ?? PARTNER_LANDING_CTA.ctaLabel,
     ctaHref: landingData?.partnerCta?.ctaHref ?? PARTNER_LANDING_CTA.ctaHref,
-    ctaVariant: (landingData?.partnerCta as any)?.ctaVariant ?? "primary",
+    ctaVariant: (landingData?.partnerCta as { ctaVariant?: string })?.ctaVariant ?? "primary",
     secondaryLabel: landingData?.partnerCta?.secondaryLabel ?? PARTNER_LANDING_CTA.secondaryLabel,
     secondaryHref: landingData?.partnerCta?.secondaryHref ?? PARTNER_LANDING_CTA.secondaryHref,
-    secondaryVariant: (landingData?.partnerCta as any)?.secondaryVariant ?? "outline",
-    buttonAlign: (landingData?.partnerCta as any)?.buttonAlign ?? "right",
-    theme: (landingData?.partnerCta as any)?.theme ?? "muted",
-    hidePrimaryButton: (landingData?.partnerCta as any)?.hidePrimaryButton ?? PARTNER_LANDING_CTA.hidePrimaryButton,
-    hideSecondaryButton: (landingData?.partnerCta as any)?.hideSecondaryButton ?? PARTNER_LANDING_CTA.hideSecondaryButton,
+    secondaryVariant: (landingData?.partnerCta as { secondaryVariant?: string })?.secondaryVariant ?? "outline",
+    buttonAlign: (landingData?.partnerCta as { buttonAlign?: string })?.buttonAlign ?? "right",
+    theme: (landingData?.partnerCta as { theme?: string })?.theme ?? "muted",
+    hidePrimaryButton: (landingData?.partnerCta as { hidePrimaryButton?: boolean })?.hidePrimaryButton ?? PARTNER_LANDING_CTA.hidePrimaryButton,
+    hideSecondaryButton: (landingData?.partnerCta as { hideSecondaryButton?: boolean })?.hideSecondaryButton ?? PARTNER_LANDING_CTA.hideSecondaryButton,
   };
 
   const homeSections = sectionsConfig?.pages?.home?.sections || [
@@ -94,9 +92,8 @@ export default function PremiumLandingClient({
   return (
     <>
       {homeSections.map((sec) => {
-        // Respect CMS section visibility
-        const isVisible = sec.visible !== false && isSectionVisible("home", sec.id);
-        if (!isVisible) return null;
+        // Live CMS section visibility only — do not double-gate with static bundle.
+        if (sec.visible === false) return null;
 
         switch (sec.id) {
           case "hero":
@@ -104,8 +101,8 @@ export default function PremiumLandingClient({
               <PartnerLandingHero
                 key={sec.id}
                 heroNarrative={landingData?.heroNarrative}
-                stills={landingData?.heroReelStills as any}
-                programmeLines={(landingData as any)?.heroProgrammeLines}
+                stills={landingData?.heroReelStills as never}
+                programmeLines={(landingData as { heroProgrammeLines?: unknown })?.heroProgrammeLines as never}
               />
             );
           case "whoHow":
@@ -119,7 +116,7 @@ export default function PremiumLandingClient({
             return (
               <PartnerProgrammeExplainSections
                 key={sec.id}
-                explains={landingData?.programmeExplains as any}
+                explains={landingData?.programmeExplains as never}
               />
             );
           case "featuredProjects":
@@ -129,14 +126,14 @@ export default function PremiumLandingClient({
                 eyebrow={landingData?.featuredIntro?.eyebrow}
                 headline={landingData?.featuredIntro?.headline}
                 lede={landingData?.featuredIntro?.lede}
-                initialProjects={((featuredProjects as any)?.results || (featuredProjects as any)?.projects) as any}
+                initialProjects={((featuredProjects as { results?: unknown[] })?.results || (featuredProjects as { projects?: unknown[] })?.projects) as never}
               />
             );
           case "partners":
             return (
               <PartnersMarquee
                 key={sec.id}
-                eyebrow={(landingData as any)?.partnersEyebrow || "BNS Partners"}
+                eyebrow={(landingData as { partnersEyebrow?: string })?.partnersEyebrow || "BNS Partners"}
               />
             );
           case "cta":
@@ -148,12 +145,15 @@ export default function PremiumLandingClient({
                 description={activeCta.description}
                 ctaHref={activeCta.hidePrimaryButton ? undefined : (activeCta.ctaHref || "/contact?intent=partner")}
                 ctaLabel={activeCta.ctaLabel}
-                ctaVariant={activeCta.ctaVariant}
+                ctaVariant={activeCta.ctaVariant as never}
                 secondaryHref={activeCta.hideSecondaryButton ? undefined : (activeCta.secondaryHref || "/programmes")}
                 secondaryLabel={activeCta.secondaryLabel}
-                secondaryVariant={activeCta.secondaryVariant}
-                buttonAlign={activeCta.buttonAlign}
-                theme={(sec as any)?.theme || activeCta.theme}
+                secondaryVariant={activeCta.secondaryVariant as never}
+                buttonAlign={activeCta.buttonAlign as never}
+                theme={
+                  ((sec as { theme?: "default" | "contrast" | "card" | "muted" }).theme ||
+                    activeCta.theme) as "default" | "contrast" | "card" | "muted" | undefined
+                }
                 images={CIVIC_PROGRAMMES.slice(0, 2).map((p) => ({
                   src: p.visual.hero,
                   alt: p.visual.heroAlt,

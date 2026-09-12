@@ -48,6 +48,55 @@
     "primaryCta": { "label": "Partner With Us", "href": "/contact" },
     "secondaryCta": { "label": "Join Creative Network", "href": "/careers" }
   },
+  "aboutTheoryOfChange": {
+    "eyebrow": "Theory of Change",
+    "title": "How Forensic Data Becomes Citizen Power.",
+    "description": "We do not stop at generating infographics. We build the complete institutional pathway from initial investigation to binding legal and budget revisions.",
+    "cta": { "label": "Explore Programmes", "href": "/programmes" },
+    "items": [
+      {
+        "id": "theory-01",
+        "step": "01",
+        "title": "Investigate & Mine",
+        "description": "Forensic scrutiny of Controller of Budget (OCOB) reports, National Treasury estimates, Auditor General findings, and county CBROPs before money disappears.",
+        "badge": "Primary Data",
+        "stat": {
+          "value": "KSh 4.82T",
+          "label": "Audited line-by-line across exchequer tables and OCOB quarterly reports"
+        }
+      },
+      {
+        "id": "theory-02",
+        "step": "02",
+        "title": "Translate & Package",
+        "description": "Transforming 800-page fiscal bills into bilingual podcasts, viral short-form TikToks, visual explainers, and one-page citizen briefs.",
+        "badge": "Creative Media",
+        "imageKey": "cohortA",
+        "imageAlt": "Youth editorial team packaging budget intelligence"
+      },
+      {
+        "id": "theory-03",
+        "step": "03",
+        "title": "Mobilize on the Ground",
+        "description": "Hosting town halls, county civic forums, and youth assemblies across Kakamega, Kilifi, Nakuru, and Wajir to empower local taxpayers.",
+        "badge": "Grassroots Action",
+        "imageKey": "forumA",
+        "imageAlt": "Community budget baraza in session"
+      },
+      {
+        "id": "theory-04",
+        "step": "04",
+        "title": "Enforce & Hold Accountable",
+        "description": "Filing formal public participation submissions to the National Assembly, petitioning county assemblies, and partnering with investigative newsrooms.",
+        "badge": "Civic Power & Delivery",
+        "stat": {
+          "value": "100%",
+          "label": "Public submissions legally grounded in Article 201 of Kenya's Constitution"
+        },
+        "cta": { "label": "Explore Programmes", "href": "/programmes" }
+      }
+    ]
+  },
   "disconnect": {
     "badge": "The Challenge",
     "title": "Kenya's youth are politically active but fiscally excluded.",

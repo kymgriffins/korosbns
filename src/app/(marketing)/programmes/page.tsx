@@ -1,14 +1,35 @@
 import type { Metadata } from "next";
 import { buildPageMetadata } from "@/utils/page-metadata";
 import { ProgrammesLanding } from "@/components/programmes/programmes-landing";
-import { PROGRAMMES_LANDING } from "@/constants/programmes-content";
+import {
+  getLiveFeaturedProjects,
+  getLivePartnerPageSections,
+  getLiveProgrammesContent,
+} from "@/lib/cms-live-data";
 
-export const metadata: Metadata = buildPageMetadata({
-  title: PROGRAMMES_LANDING.seoTitle,
-  description: PROGRAMMES_LANDING.seoDescription,
-  path: "/programmes",
-});
+export const revalidate = 60;
 
-export default function ProgrammesPage() {
-  return <ProgrammesLanding />;
+export async function generateMetadata(): Promise<Metadata> {
+  const programmes = await getLiveProgrammesContent();
+  return buildPageMetadata({
+    title: programmes.landing.seoTitle,
+    description: programmes.landing.seoDescription,
+    path: "/programmes",
+  });
+}
+
+export default async function ProgrammesPage() {
+  const [programmesData, sectionsConfig, featuredProjects] = await Promise.all([
+    getLiveProgrammesContent(),
+    getLivePartnerPageSections(),
+    getLiveFeaturedProjects(),
+  ]);
+
+  return (
+    <ProgrammesLanding
+      programmesData={programmesData}
+      sectionsConfig={sectionsConfig}
+      featuredProjects={featuredProjects}
+    />
+  );
 }

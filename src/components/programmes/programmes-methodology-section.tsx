@@ -1,114 +1,95 @@
 "use client";
 
-import { CheckCircle, FileText, Landmark, Search, Users } from "lucide-react";
+import {
+  CheckCircle,
+  FileText,
+  Landmark,
+  Search,
+  Users,
+  type LucideIcon,
+} from "lucide-react";
 import { LandingSection } from "@/layouts/landing-section";
 import { EditorialPill } from "@/components/ui/editorial";
 import { LANDING_TYPOGRAPHY as T } from "@/constants/landing-typography";
 import { cn } from "@/utils";
 
-const METHODOLOGY_STEPS = [
-  {
-    step: "01",
-    title: "Ingest & Trace",
-    subtitle: "PFM Act & Constitution (Art. 201–207)",
-    icon: Landmark,
-    description:
-      "We track statutory releases against the budget calendar — Budget Policy Statements (BPS), County Fiscal Strategy Papers (CFSP), and Appropriation Bills.",
-    highlight: "No speculative commentary; anchored in official government gazettes.",
-  },
-  {
-    step: "02",
-    title: "Triangulate & Verify",
-    subtitle: "Controller of Budget & OAG Records",
-    icon: Search,
-    description:
-      "Every Treasury and county allocation is cross-verified against actual Controller of Budget (CoB) exchequer withdrawals and Auditor-General audit findings.",
-    highlight: "Zero published claims without primary documentation backing.",
-  },
-  {
-    step: "03",
-    title: "Frame & Publish",
-    subtitle: "Feed-Ready Dashboards & Newsroom Packs",
-    icon: FileText,
-    description:
-      "We translate complex public finance spreadsheets into actionable scorecards, interactive dashboards, and investigative media toolkits.",
-    highlight: "Published in English, Kiswahili, and Sheng for maximum civic reach.",
-  },
-  {
-    step: "04",
-    title: "Convene & Hold Pressure",
-    subtitle: "Multi-Camera Town Halls & Briefings",
-    icon: Users,
-    description:
-      "We convene facilitated citizen-official forums and provide embargoed briefings to newsroom editors ahead of critical fiscal votes.",
-    highlight: "Turning verified evidence into structured, non-partisan public dialogue.",
-  },
-];
+const ICON_MAP: Record<string, LucideIcon> = {
+  Landmark,
+  Search,
+  FileText,
+  Users,
+  CheckCircle,
+};
+
+export type MethodologyStep = {
+  step: string;
+  title: string;
+  subtitle: string;
+  icon: string;
+  description: string;
+  highlight: string;
+};
+
+export type MethodologyContent = {
+  eyebrow?: string;
+  headline?: string;
+  lede?: string;
+  steps?: MethodologyStep[];
+};
 
 export function ProgrammesMethodologySection({
   asSubSection = false,
+  content,
 }: {
   asSubSection?: boolean;
+  content?: MethodologyContent | null;
 }) {
-  const content = (
+  const steps = content?.steps ?? [];
+  if (steps.length === 0) return null;
+
+  const body = (
     <>
       <div className="mb-10 flex flex-col gap-4 md:mb-14 md:flex-row md:items-end md:justify-between">
         <div className="max-w-2xl space-y-3">
           <EditorialPill dot pulse variant="default">
-            Methodology & Standards
+            {content?.eyebrow ?? "Methodology & Standards"}
           </EditorialPill>
           <h2 id="methodology-heading" className={T.sectionTitle}>
-            How we work
+            {content?.headline ?? "How we verify before we publish"}
           </h2>
         </div>
-        <p className={cn(T.lead, "max-w-md md:text-right")}>
-          A rigorous 4-stage verification lifecycle ensuring every data point partners cite is non-partisan, legal-grade, and grounded in official public records.
-        </p>
+        {content?.lede ? (
+          <p className={cn(T.lead, "max-w-md md:text-right")}>{content.lede}</p>
+        ) : null}
       </div>
 
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-        {METHODOLOGY_STEPS.map((item) => {
-          const Icon = item.icon;
-
+        {steps.map((item) => {
+          const Icon = ICON_MAP[item.icon] ?? Landmark;
           return (
-            <div
+            <article
               key={item.step}
-              className="flex flex-col justify-between border border-border/60 bg-background p-6"
+              className="flex flex-col border border-border/60 bg-background p-5"
             >
-              <div>
-                <div className="flex items-center justify-between border-b border-border/40 pb-4">
-                  <span className="font-mono text-sm font-bold text-primary">
-                    
-                  </span>
-                  <div className="flex size-8 items-center justify-center bg-muted/40">
-                    <Icon className="size-4 text-foreground/80" aria-hidden="true" />
-                  </div>
-                </div>
-
-                <div className="mt-4 space-y-1">
-                  <h3 className="font-heading text-lg font-bold text-foreground">
-                    {item.title}
-                  </h3>
-                  <p className="text-xs font-medium text-muted-foreground">
-                    {item.subtitle}
-                  </p>
-                </div>
-
-                <p className="mt-3 text-sm leading-relaxed text-foreground/75">
-                  {item.description}
-                </p>
+              <div className="flex items-center justify-between border-b border-border/40 pb-3">
+                <span className="font-mono text-xs font-bold text-primary">
+                  {item.step}
+                </span>
+                <Icon className="size-4 text-muted-foreground" aria-hidden />
               </div>
-
-              <div className="mt-6 border-t border-border/40 pt-4">
-                <div className="flex items-start gap-2">
-                  <CheckCircle
-                    className="mt-0.5 size-3.5 shrink-0 text-primary"
-                    aria-hidden="true"
-                  />
-                  <p className="text-xs text-muted-foreground">{item.highlight}</p>
-                </div>
-              </div>
-            </div>
+              <h3 className="mt-4 font-heading text-base font-bold text-foreground">
+                {item.title}
+              </h3>
+              <p className="mt-1 text-xs font-medium text-muted-foreground">
+                {item.subtitle}
+              </p>
+              <p className="mt-3 flex-1 text-sm leading-relaxed text-foreground/75">
+                {item.description}
+              </p>
+              <p className="mt-4 border-t border-border/40 pt-3 text-xs text-muted-foreground">
+                {item.highlight}
+              </p>
+            </article>
           );
         })}
       </div>
@@ -117,19 +98,19 @@ export function ProgrammesMethodologySection({
 
   if (asSubSection) {
     return (
-      <div id="how-we-work" aria-labelledby="methodology-heading" className="border-t border-border/50 pt-12">
-        {content}
+      <div className="mt-16 border-t border-border/50 pt-14" aria-labelledby="methodology-heading">
+        {body}
       </div>
     );
   }
 
   return (
     <LandingSection
-      id="how-we-work"
+      id="methodology"
       aria-labelledby="methodology-heading"
       className="border-t border-border/50"
     >
-      {content}
+      {body}
     </LandingSection>
   );
 }
