@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { Play } from "lucide-react";
 import {
   EditorialCtaBand,
   EditorialPill,
@@ -21,6 +22,7 @@ import {
   CIVIC_PROGRAMMES,
   PROGRAMMES_CLOSING,
   programmeHref,
+  getReelsByProgramme,
   type ProgrammeBlock,
   type ProgrammeSlug,
 } from "@/content";
@@ -310,6 +312,10 @@ export function ProgrammeLandingLayout({
         <ProgrammeProjectGrid programmeSlug={programme.slug} />
       ) : null}
 
+      {isSectionVisible(pageId, "reels") ? (
+        <ProgrammeReelsSection programmeSlug={programme.slug} />
+      ) : null}
+
       {isSectionVisible(pageId, "otherProgrammes") && others.length > 0 ? (
         <LandingSection
           aria-labelledby="other-programmes-heading"
@@ -374,5 +380,71 @@ export function ProgrammeLandingLayout({
         />
       ) : null}
     </div>
+  );
+}
+
+function ProgrammeReelsSection({ programmeSlug }: { programmeSlug: ProgrammeSlug }) {
+  const reels = getReelsByProgramme(programmeSlug);
+  if (reels.length === 0) return null;
+
+  return (
+    <LandingSection
+      className="border-t border-border/50"
+      aria-labelledby={`reels-heading-${programmeSlug}`}
+    >
+      <div className="mb-8 flex flex-col gap-4 md:mb-10 md:flex-row md:items-end md:justify-between">
+        <div className="max-w-2xl space-y-3">
+          <p className={cn(T.eyebrow, "text-muted-foreground")}>Social Reels</p>
+          <h2
+            id={`reels-heading-${programmeSlug}`}
+            className={cn(T.sectionTitle, "text-balance text-foreground")}
+          >
+            Short-form civic content
+          </h2>
+          <p className={cn(T.lead, "text-foreground/75")}>
+            Quick-hit explainers, citizen voices, and field recordings from this programme.
+          </p>
+        </div>
+        <p className={cn(T.caption, "shrink-0 text-muted-foreground md:text-right")}>
+          <span className="font-semibold text-foreground">{reels.length}</span>{" "}
+          {reels.length === 1 ? "reel" : "reels"}
+        </p>
+      </div>
+
+      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        {reels.map((reel) => (
+          <a
+            key={reel.id}
+            href={reel.videoUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group relative aspect-[9/16] overflow-hidden rounded-xl bg-muted"
+          >
+            <Image
+              src={reel.posterUrl}
+              alt={reel.title}
+              fill
+              className="object-cover transition-transform duration-500 group-hover:scale-105"
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+            <div className="absolute bottom-3 inset-x-3 space-y-1 z-10">
+              <p className="text-[10px] font-mono text-white/70 uppercase tracking-wider">
+                {reel.category} · {reel.duration}
+              </p>
+              <h3 className="text-sm font-bold text-white leading-snug line-clamp-2">
+                {reel.title}
+              </h3>
+            </div>
+            <div className="absolute top-2 right-2 z-10">
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-mono bg-black/60 text-white/90 backdrop-blur-md border border-white/10">
+                <Play className="size-2.5 fill-current" />
+                {(reel.plays / 1000).toFixed(0)}K
+              </span>
+            </div>
+          </a>
+        ))}
+      </div>
+    </LandingSection>
   );
 }

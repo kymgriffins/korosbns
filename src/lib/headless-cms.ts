@@ -49,6 +49,8 @@ import legalContent from "@/content/legal.json";
 import teamInitiativesContent from "@/content/team-initiatives.json";
 import landingHeroContent from "@/content/landing-hero.json";
 import landingSectionsContent from "@/content/landing-sections.json";
+import programmeReelsContent from "@/content/programme-reels.json";
+import studiosEvidenceContent from "@/data/fallbacks/studios-evidence.json";
 
 // Optional imports for budgethub datasets
 let budgetFyEpisodesContent: unknown = {};
@@ -117,7 +119,9 @@ export type CmsCollectionSlug =
   | "legal"
   | "team-initiatives"
   | "landing-hero"
-  | "landing-sections";
+  | "landing-sections"
+  | "programme-reels"
+  | "studios-evidence";
 
 export type CmsCategory =
   | "Marketing & Site Copy"
@@ -557,6 +561,30 @@ export const CMS_COLLECTIONS_CATALOG: Record<CmsCollectionSlug, CmsCollectionMet
     lastUpdated: new Date().toISOString(),
     schemaKeys: ["aboutHero", "aboutCharter", "disconnect", "roi", "upcomingProjects", "whatWeDo", "wallOfLove", "capabilities", "integrations", "governmentPartnerships", "newsletter", "helpCenter", "cta", "footer"],
   },
+  "programme-reels": {
+    slug: "programme-reels",
+    name: "Programme Reels",
+    description: "R2-hosted social reels tagged by programme for cross-programme discovery.",
+    category: "Marketing & Site Copy",
+    filePath: "src/content/programme-reels.json",
+    itemCount: Array.isArray((programmeReelsContent as { reels?: unknown[] }).reels)
+      ? (programmeReelsContent as { reels: unknown[] }).reels.length
+      : 8,
+    lastUpdated: new Date().toISOString(),
+    schemaKeys: ["id", "title", "caption", "category", "author", "videoUrl", "posterUrl", "programmeSlug"],
+  },
+  "studios-evidence": {
+    slug: "studios-evidence",
+    name: "Studios Evidence Projects",
+    description: "Verified output projects, partner organisations, and production evidence for programme pages.",
+    category: "Marketing & Site Copy",
+    filePath: "src/data/fallbacks/studios-evidence.json",
+    itemCount: Array.isArray((studiosEvidenceContent as { projects?: unknown[] }).projects)
+      ? (studiosEvidenceContent as { projects: unknown[] }).projects.length
+      : 12,
+    lastUpdated: new Date().toISOString(),
+    schemaKeys: ["organizations", "projects", "id", "slug", "title", "contentType", "programmeSlug", "media"],
+  },
 };
 
 // In-memory collection storage cache
@@ -600,6 +628,8 @@ const _cmsDataCache: Record<CmsCollectionSlug, Record<string, unknown>> = {
   "team-initiatives": teamInitiativesContent as unknown as Record<string, unknown>,
   "landing-hero": landingHeroContent as Record<string, unknown>,
   "landing-sections": landingSectionsContent as Record<string, unknown>,
+  "programme-reels": programmeReelsContent as Record<string, unknown>,
+  "studios-evidence": studiosEvidenceContent as unknown as Record<string, unknown>,
 };
 
 function getFormattedDate() {

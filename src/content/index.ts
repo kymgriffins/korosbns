@@ -19,6 +19,7 @@ import legalJson from "@/content/legal.json";
 import teamInitiativesJson from "@/content/team-initiatives.json";
 import landingHeroJson from "@/content/landing-hero.json";
 import landingSectionsJson from "@/content/landing-sections.json";
+import programmeReelsJson from "@/content/programme-reels.json";
 
 export const mediaContent = mediaJson;
 export const programmesContent = programmesJson;
@@ -36,6 +37,7 @@ export const legalContent = legalJson;
 export const teamInitiativesContent = teamInitiativesJson;
 export const landingHeroContent = landingHeroJson;
 export const landingSectionsContent = landingSectionsJson;
+export const programmeReelsContent = programmeReelsJson;
 
 export type ProgrammeSlug = "connect" | "mashinani" | "wanahabari-lab" | "studios";
 
@@ -143,4 +145,40 @@ export function cloudinaryUrl(
   key: keyof typeof mediaContent.cloudinary,
 ): string {
   return mediaContent.cloudinary[key];
+}
+
+export interface ProgrammeReel {
+  id: string;
+  title: string;
+  caption: string;
+  category: string;
+  author: string;
+  authorAvatar: string;
+  videoUrl: string;
+  r2Key: string;
+  posterUrl: string;
+  likes: number;
+  comments: number;
+  shares: number;
+  plays: number;
+  duration: string;
+  hashtags: string[];
+  tiktokUrl: string;
+  featuredInHero?: boolean;
+  programmeSlug: ProgrammeSlug;
+}
+
+export type ProgrammeReelsContent = {
+  provenance: { source: string; note: string; level: string; lastUpdated: string };
+  reels: ProgrammeReel[];
+};
+
+export const PROGRAMME_REELS = (programmeReelsContent as ProgrammeReelsContent).reels;
+
+export function getReelsByProgramme(slug: ProgrammeSlug): ProgrammeReel[] {
+  return PROGRAMME_REELS.filter((r) => r.programmeSlug === slug);
+}
+
+export function getFeaturedReel(): ProgrammeReel {
+  return PROGRAMME_REELS.find((r) => r.featuredInHero) || PROGRAMME_REELS[0];
 }

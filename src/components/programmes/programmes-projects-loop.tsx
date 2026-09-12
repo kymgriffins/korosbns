@@ -5,7 +5,6 @@ import {
   studiosEvidenceData
 } from "@/data/studios-evidence";
 import { SECTION_SHELL_INNER } from "@/layouts/section-shell";
-import { resolveProjectId } from "@/lib/programme-project-ids";
 import { cn } from "@/utils";
 import {
   ArrowUpRight,
@@ -43,6 +42,7 @@ const PROGRAMME_CONFIG: Record<
     number: string;
     pillClass: string;
     accentClass: string;
+    href: string;
   }
 > = {
   connect: {
@@ -50,24 +50,28 @@ const PROGRAMME_CONFIG: Record<
     number: "01",
     pillClass: "bg-emerald-600/90 text-white",
     accentClass: "text-emerald-400",
+    href: "/programmes/connect",
   },
   mashinani: {
     name: "BNS Mashinani",
     number: "02",
     pillClass: "bg-amber-600/90 text-white",
     accentClass: "text-amber-400",
+    href: "/programmes/mashinani",
   },
   "wanahabari-lab": {
     name: "Wanahabari Lab",
     number: "03",
     pillClass: "bg-rose-600/90 text-white",
     accentClass: "text-rose-400",
+    href: "/programmes/wanahabari-lab",
   },
   studios: {
     name: "BNS Studio",
     number: "Studio",
     pillClass: "bg-primary text-primary-foreground",
     accentClass: "text-primary",
+    href: "/bns-studio",
   },
 };
 
@@ -88,14 +92,6 @@ function getFormatIcon(type: string, contentType: string) {
     return <Users2 className="size-3" />;
   }
   return <FileSearch className="size-3" />;
-}
-
-function getProjectLink(slug: string) {
-  const canonical = resolveProjectId(slug);
-  if (canonical === "project-terra") {
-    return "/bns-project/terra";
-  }
-  return `/bns-studio/${canonical}`;
 }
 
 export function ProgrammesProjectsLoop({ className }: { className?: string }) {
@@ -318,7 +314,7 @@ export function ProgrammesProjectsLoop({ className }: { className?: string }) {
               {filteredProjects.map((project, idx) => {
                 const programmeMeta =
                   PROGRAMME_CONFIG[project.programmeSlug] || PROGRAMME_CONFIG.studios;
-                const href = getProjectLink(project.slug);
+                const href = programmeMeta.href;
 
                 return (
                   <Link
@@ -366,7 +362,7 @@ export function ProgrammesProjectsLoop({ className }: { className?: string }) {
                       <div className="flex items-center justify-between text-[11px] text-white/60 pt-1 border-t border-white/10">
                         <span className="font-mono">{project.year}</span>
                         <span className="inline-flex items-center gap-1 text-white font-medium group-hover:translate-x-0.5 transition-transform">
-                          Inspect <ArrowUpRight className="size-3" />
+                          View Programme <ArrowUpRight className="size-3" />
                         </span>
                       </div>
                     </div>
@@ -412,7 +408,7 @@ export function ProgrammesProjectsLoop({ className }: { className?: string }) {
             {filteredProjects.map((project, idx) => {
               const programmeMeta =
                 PROGRAMME_CONFIG[project.programmeSlug] || PROGRAMME_CONFIG.studios;
-              const href = getProjectLink(project.slug);
+              const href = programmeMeta.href;
 
               return (
                 <Link
