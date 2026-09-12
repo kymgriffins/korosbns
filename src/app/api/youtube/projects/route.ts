@@ -1,37 +1,17 @@
 import { NextResponse } from "next/server";
-import featuredFallback from "@/data/fallbacks/featured-projects.json";
-import {
-  getFeaturedProjects,
-  refreshFeaturedProjectsFromYoutube,
-  setFeaturedProjects,
-} from "@/data/featured-projects";
-import { withFallback } from "@/data/adapter";
+import { getLiveFeaturedProjects } from "@/lib/cms-live-data";
 
 /**
- * Featured partner projects — oEmbed JSON + channel RSS, with JSON seed fallback.
- * Does not touch Learn Hub content-videos.json.
+ * Featured partner projects — live Cloudflare R2 / CMS data with fallback.
  */
 export async function GET() {
-  const projects = await withFallback(
-    "featured-projects-api",
-    async () => {
-      const live = await refreshFeaturedProjectsFromYoutube();
-      setFeaturedProjects(live);
-      return live;
-    },
-    () => getFeaturedProjects(),
-    {
-      accept: (result) =>
-        Array.isArray(result) &&
-        result.length > 0 &&
-        result.every((p) => Boolean(p.videoId && p.thumbnail && p.title)),
-    },
-  );
+  const live = await getLiveFeaturedProjects();
+  const projects = (live as any).results || (live as any).projects || [];
 
   return NextResponse.json({
     projects,
     count: projects.length,
-    provenance: featuredFallback.provenance,
-    source: "featured-projects.json|youtube-oembed+rss",
+    provenance: (live as any).provenance,
+    source: "cms/featured-projects.json",
   });
 }

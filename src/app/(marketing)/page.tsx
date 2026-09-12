@@ -41,20 +41,29 @@ export const metadata: Metadata = {
   },
 };
 
-import { getLiveLandingData, getLivePartnerPageSections } from "@/lib/cms-live-data";
+import {
+  getLiveLandingData,
+  getLivePartnerPageSections,
+  getLiveFeaturedProjects,
+} from "@/lib/cms-live-data";
 
 export const revalidate = 60;
 
 export default async function HomePage() {
-  const [landingData, sectionsConfig] = await Promise.all([
+  const [landingData, sectionsConfig, featuredProjects] = await Promise.all([
     getLiveLandingData(),
     getLivePartnerPageSections(),
+    getLiveFeaturedProjects(),
   ]);
 
   return (
     <div className="w-full min-h-dvh bg-background overflow-x-clip">
       <Background />
-      <PremiumLandingClient landingData={landingData} sectionsConfig={sectionsConfig} />
+      <PremiumLandingClient
+        landingData={landingData}
+        sectionsConfig={sectionsConfig}
+        featuredProjects={featuredProjects}
+      />
     </div>
   );
 }

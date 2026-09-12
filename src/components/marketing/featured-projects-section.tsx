@@ -20,6 +20,7 @@ type FeaturedProjectsSectionProps = {
   headline?: string;
   lede?: string;
   className?: string;
+  initialProjects?: FeaturedProject[];
 };
 
 /**
@@ -31,14 +32,37 @@ export function FeaturedProjectsSection({
   headline = PARTNER_FEATURED_INTRO.headline,
   lede = PARTNER_FEATURED_INTRO.lede,
   className,
+  initialProjects,
 }: FeaturedProjectsSectionProps) {
   const [projects, setProjects] = useState<FeaturedProject[]>(() =>
-    featuredProjectsData.get(),
+    initialProjects && initialProjects.length > 0
+      ? initialProjects
+      : featuredProjectsData.get(),
   );
 
   useEffect(() => {
+    if (initialProjects && initialProjects.length > 0) {
+      setProjects(initialProjects);
+    }
+  }, [initialProjects]);
+
+  useEffect(() => {
     let cancelled = false;
-    const run = () => {
+    const run = async () => {
+      try {
+        const res = await fetch("/api/cms/featured-projects");
+        if (res.ok) {
+          const json = await res.json();
+          const results = json.data?.results || json.data?.projects;
+          if (!cancelled && Array.isArray(results) && results.length > 0) {
+            setProjects(results);
+            return;
+          }
+        }
+      } catch {
+        // fallback
+      }
+
       void featuredProjectsData.fetch().then((live) => {
         if (!cancelled && live.length) setProjects(live);
       });

@@ -25,6 +25,7 @@ import {
   newsletterSubscribeErrorMessage,
   subscribeNewsletter,
 } from "@/lib/newsletter-subscribe";
+import defaultNavigation from "@/content/navigation.json";
 
 const socialIconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   x: IconBrandX,
@@ -39,7 +40,19 @@ const socialIconMap: Record<string, React.ComponentType<{ className?: string }>>
 
 const Footer = () => {
   const { config, showNewsletter } = useOrg();
-  const [email, setEmail] = useState<string>("");
+  const [email, setEmail] = useState<string>(" ");
+  const [navConfig, setNavConfig] = useState(defaultNavigation);
+
+  React.useEffect(() => {
+    fetch("/api/cms/navigation")
+      .then((res) => (res.ok ? res.json() : null))
+      .then((json) => {
+        if (json?.data) {
+          setNavConfig(json.data);
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   const displaySocial = useMemo(() => {
     const api = config.socials?.filter((s) => s.url && s.platform && s.platform !== "website");
@@ -54,6 +67,7 @@ const Footer = () => {
   }, [config.socials]);
 
   const footerBlurb =
+    navConfig?.footer?.blurb ||
     config.layout?.footer_note ||
     config.tagline ||
     config.mission ||
@@ -81,6 +95,25 @@ const Footer = () => {
     }
   };
 
+  const logoConfig = navConfig?.logo || {
+    src: "/logo.svg",
+    alt: organizationTitle,
+    href: "/",
+  };
+
+  const productColumn = navConfig?.footer?.columns?.product || {
+    title: "Product",
+    links: footerLinks.product,
+  };
+  const resourcesColumn = navConfig?.footer?.columns?.resources || {
+    title: "Resources",
+    links: footerLinks.resources,
+  };
+  const companyColumn = navConfig?.footer?.columns?.company || {
+    title: "Company",
+    links: footerLinks.company,
+  };
+
   return (
     <footer className="w-full relative mt-16 lg:mt-24 overflow-hidden">
       <div className="absolute top-0 inset-x-0 h-px bg-linear-to-r from-foreground/0 via-foreground/20 to-foreground/0" />
@@ -91,10 +124,10 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 lg:gap-12 w-full max-w-6xl mx-auto mb-12">
           {/* Brand Column */}
           <div className="lg:col-span-2 flex flex-col items-start text-left">
-            <Link href="/" className="inline-block group mb-4">
+            <Link href={logoConfig.href || "/"} className="inline-block group mb-4">
               <Image
-                src="/logo.svg"
-                alt={organizationTitle}
+                src={logoConfig.src || "/logo.svg"}
+                alt={logoConfig.alt || organizationTitle}
                 width={160}
                 height={32}
                 className="h-6 lg:h-7 w-auto transition-all group-hover:brightness-110"
@@ -104,11 +137,18 @@ const Footer = () => {
 
             {showNewsletter && (
               <form onSubmit={handleSubmit} className="mt-6 w-full max-w-sm">
-                <p className="text-sm font-medium mb-3">Subscribe to the Story</p>
+                <p className="text-sm font-medium mb-1.5">
+                  {navConfig?.footer?.newsletter?.headline || "Subscribe to the Story"}
+                </p>
+                {navConfig?.footer?.newsletter?.subhead && (
+                  <p className="text-xs text-muted-foreground mb-3 leading-relaxed">
+                    {navConfig.footer.newsletter.subhead}
+                  </p>
+                )}
                 <div className="flex gap-2">
                   <Input
                     type="email"
-                    placeholder="Enter your email"
+                    placeholder={navConfig?.footer?.newsletter?.placeholder || "Enter your email"}
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
@@ -119,7 +159,7 @@ const Footer = () => {
                     size="sm"
                     className="h-10 px-6 rounded-full"
                   >
-                    Subscribe
+                    {navConfig?.footer?.newsletter?.buttonLabel || "Subscribe"}
                   </Button>
                 </div>
               </form>
@@ -129,9 +169,9 @@ const Footer = () => {
           {/* Product Links */}
           <div className="flex flex-col gap-3">
             <h4 className="text-sm font-semibold uppercase tracking-wider text-foreground/60">
-              Product
+              {productColumn.title}
             </h4>
-            {footerLinks.product.map((link, idx) => (
+            {productColumn.links.map((link, idx) => (
               <Link
                 key={idx}
                 href={link.href}
@@ -145,9 +185,9 @@ const Footer = () => {
           {/* Resources Links */}
           <div className="flex flex-col gap-3">
             <h4 className="text-sm font-semibold uppercase tracking-wider text-foreground/60">
-              Resources
+              {resourcesColumn.title}
             </h4>
-            {footerLinks.resources.map((link, idx) => (
+            {resourcesColumn.links.map((link, idx) => (
               <Link
                 key={idx}
                 href={link.href}
@@ -161,9 +201,9 @@ const Footer = () => {
           {/* Company Links */}
           <div className="flex flex-col gap-3">
             <h4 className="text-sm font-semibold uppercase tracking-wider text-foreground/60">
-              Company
+              {companyColumn.title}
             </h4>
-            {footerLinks.company.map((link, idx) => (
+            {companyColumn.links.map((link, idx) => (
               <Link
                 key={idx}
                 href={link.href}
@@ -181,7 +221,9 @@ const Footer = () => {
             <p>
               © {new Date().getFullYear()} {organizationTitle}. All rights reserved.
             </p>
-            {config.layout?.footer_note ? (
+            {navConfig?.footer?.legal ? (
+              <p className="text-[11px] text-muted-foreground/80">{navConfig.footer.legal}</p>
+            ) : config.layout?.footer_note ? (
               <p className="text-[11px] text-muted-foreground/90">{config.layout.footer_note}</p>
             ) : null}
           </div>

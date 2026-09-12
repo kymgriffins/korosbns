@@ -16,13 +16,26 @@ import { motion, AnimatePresence, useScroll, useMotionValueEvent } from "motion/
 import { navbarEnter } from "@/motion/variants";
 import { toast } from "sonner";
 import { SHOW_MARKETING_SIGN_IN } from "@/lib/marketing-chrome";
+import defaultNavigation from "@/content/navigation.json";
 
 const Navbar = () => {
   const { isLoggedIn, loading: authLoading, user, logout } = useAuth();
   const router = useRouter();
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [scrolled, setScrolled] = useState(false);
+  const [navConfig, setNavConfig] = useState(defaultNavigation);
   const ref = useClickOutside(() => setIsOpen(false));
+
+  useEffect(() => {
+    fetch("/api/cms/navigation")
+      .then((res) => (res.ok ? res.json() : null))
+      .then((json) => {
+        if (json?.data) {
+          setNavConfig(json.data);
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   async function handleLogout() {
     try {
@@ -95,15 +108,15 @@ const Navbar = () => {
           <div className="flex items-center justify-between w-full px-4 min-h-14 md:min-h-16 shrink-0">
             {/* Logo */}
             <div className="flex items-center flex-1">
-              <Link href={Routes.Home} className="flex items-center gap-2 group">
+              <Link href={navConfig.logo?.href || Routes.Home} className="flex items-center gap-2 group">
                 <motion.div
                   whileHover={{ scale: 1.04 }}
                   whileTap={{ scale: 0.97 }}
                   transition={{ duration: 0.3, ease: [0.25, 0.4, 0, 1] }}
                 >
                   <Image
-                    src="/logo.svg"
-                    alt="Budget Ndio Story"
+                    src={navConfig.logo?.src || "/logo.svg"}
+                    alt={navConfig.logo?.alt || "Budget Ndio Story"}
                     width={180}
                     height={50}
                     className="w-auto h-8 lg:h-10 transition-all group-hover:brightness-110 drop-shadow-[0_1px_10px_hsl(0_0%_0%/0.35)]"
@@ -115,29 +128,36 @@ const Navbar = () => {
 
             {/* Center Desktop Navigation */}
             <nav className="hidden lg:flex items-center gap-1 xl:gap-2 mr-4" aria-label="Desktop primary navigation">
-              <Link
-                href={Routes.Programmes}
-                className="px-3.5 py-1.5 text-sm font-medium text-foreground drop-shadow-[0_1px_8px_hsl(0_0%_0%/0.25)] hover:text-primary hover:bg-muted/40 transition-colors"
-              >
-                Programmes
-              </Link>
-              <Link
-                href={Routes.About}
-                className="px-3.5 py-1.5 text-sm font-medium text-foreground drop-shadow-[0_1px_8px_hsl(0_0%_0%/0.25)] hover:text-primary hover:bg-muted/40 transition-colors"
-              >
-                About
-              </Link>
-              <Link
-                href={Routes.Contact}
-                className="px-3.5 py-1.5 text-sm font-medium text-foreground drop-shadow-[0_1px_8px_hsl(0_0%_0%/0.25)] hover:text-primary hover:bg-muted/40 transition-colors"
-              >
-                Contact
-              </Link>
+              {(navConfig.navLinks || []).map((link: any) => (
+                <Link
+                  key={link.id || link.href}
+                  href={link.href}
+                  className="px-3.5 py-1.5 text-sm font-medium text-foreground drop-shadow-[0_1px_8px_hsl(0_0%_0%/0.25)] hover:text-primary hover:bg-muted/40 transition-colors inline-flex items-center gap-1.5 rounded-full"
+                >
+                  <span>{link.label}</span>
+                  {link.badge && (
+                    <span className="rounded-full bg-primary/15 px-1.5 py-0.5 text-[10px] font-semibold text-primary">
+                      {link.badge}
+                    </span>
+                  )}
+                </Link>
+              ))}
             </nav>
 
             {/* Right controls */}
             <div className="flex items-center gap-2 md:gap-3 drop-shadow-[0_1px_8px_hsl(0_0%_0%/0.28)]">
               <ThemeToggle />
+              {navConfig.actions?.cta?.show !== false && (
+                <Link href={navConfig.actions?.cta?.href || "/contact?intent=partner"} className="hidden sm:inline-flex">
+                  <Button
+                    variant={navConfig.actions?.cta?.variant === "primary" ? "default" : "white"}
+                    size="sm"
+                    className="h-9 px-4 rounded-full font-medium"
+                  >
+                    {navConfig.actions?.cta?.label || "Discuss Partnership"}
+                  </Button>
+                </Link>
+              )}
               {!authLoading &&
                 (isLoggedIn ? (
                   <div className="flex items-center gap-2">
@@ -163,14 +183,14 @@ const Navbar = () => {
                       <LogOut className="size-4" />
                     </Button>
                   </div>
-                ) : SHOW_MARKETING_SIGN_IN ? (
-                  <Link href={Routes.Login}>
+                ) : (navConfig.actions?.showSignIn ?? SHOW_MARKETING_SIGN_IN) ? (
+                  <Link href={navConfig.actions?.signInHref || Routes.Login}>
                     <Button
-                      variant="white"
+                      variant="ghost"
                       size="sm"
-                      className="h-9 px-4 rounded-full font-medium gap-2"
+                      className="h-9 px-3 rounded-full font-medium text-foreground hover:bg-muted/40"
                     >
-                      Sign in
+                      {navConfig.actions?.signInLabel || "Sign in"}
                     </Button>
                   </Link>
                 ) : null)}
@@ -218,7 +238,7 @@ const Navbar = () => {
       </motion.header>
 
       {/* Mobile full-screen overlay menu */}
-      <MobileMenu isOpen={isOpen} setIsOpen={setIsOpen} />
+      <MobileMenu isOpen={isOpen} setIsOpen={setIsOpen} navConfig={navConfig} />
     </div>
   );
 };

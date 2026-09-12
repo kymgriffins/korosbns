@@ -44,6 +44,9 @@ import { WysiwygProseEditor } from "./WysiwygProseEditor";
 import { MediaAssetPicker, type MediaSelection } from "./MediaAssetPicker";
 import { ImageFieldControl } from "./ImageFieldControl";
 import { MediaEmbed } from "@/components/ui/media-embed";
+import { NavigationStudioEditor } from "./NavigationStudioEditor";
+import { DesignTokensStudioEditor } from "./DesignTokensStudioEditor";
+
 type PageKey =
   | "landing"
   | "programmes"
@@ -53,7 +56,9 @@ type PageKey =
   | "studios"
   | "about"
   | "featured-blogs"
-  | "custom-pages";
+  | "custom-pages"
+  | "navigation"
+  | "tokens";
 
 type TabKey = "sections" | "hero" | "carousel" | "bets" | "core" | "deliverables" | "buttons" | "faqs" | "media";
 
@@ -139,6 +144,22 @@ const PAGES: PageMeta[] = [
     sectionPageId: "custom-pages",
     icon: "📄",
   },
+  {
+    key: "navigation",
+    label: "Navbar & Footer",
+    tag: "Global Navigation & Chrome",
+    route: "/",
+    sectionPageId: "navigation",
+    icon: "🧭",
+  },
+  {
+    key: "tokens",
+    label: "Design Tokens & Badges",
+    tag: "Global Brand Styles",
+    route: "/",
+    sectionPageId: "tokens",
+    icon: "🎨",
+  },
 ];
 
 export function HeadlessPageStudio() {
@@ -161,6 +182,8 @@ export function HeadlessPageStudio() {
   const [aboutData, setAboutData] = useState<Record<string, any>>({});
   const [customPagesData, setCustomPagesData] = useState<{ pages?: any[] }>({ pages: [] });
   const [featuredData, setFeaturedData] = useState<{ count?: number; provenance?: any; results?: any[] }>({ results: [] });
+  const [navigationData, setNavigationData] = useState<Record<string, any>>({});
+  const [designTokensData, setDesignTokensData] = useState<Record<string, any>>({});
 
   // Selections for sub-studios
   const [selectedCustomPageSlug, setSelectedCustomPageSlug] = useState<string>("");
@@ -202,13 +225,15 @@ export function HeadlessPageStudio() {
   const loadAllData = useCallback(async () => {
     setIsLoading(true);
     try {
-      const [resLanding, resProg, resSec, resAbout, resCustom, resFeatured] = await Promise.all([
+      const [resLanding, resProg, resSec, resAbout, resCustom, resFeatured, resNav, resTokens] = await Promise.all([
         fetch("/api/cms/landing"),
         fetch("/api/cms/programmes"),
         fetch("/api/cms/partner-page-sections"),
         fetch("/api/cms/about"),
         fetch("/api/cms/custom-pages"),
         fetch("/api/cms/featured-projects"),
+        fetch("/api/cms/navigation"),
+        fetch("/api/cms/design-tokens"),
       ]);
 
       if (resLanding.ok) {
@@ -242,6 +267,14 @@ export function HeadlessPageStudio() {
         if (results.length > 0) {
           setSelectedFeaturedId((prev) => prev || results[0].id);
         }
+      }
+      if (resNav.ok) {
+        const json = await resNav.json();
+        setNavigationData(json.data || {});
+      }
+      if (resTokens.ok) {
+        const json = await resTokens.json();
+        setDesignTokensData(json.data || {});
       }
       setLastSaved(new Date().toLocaleTimeString());
     } catch {
@@ -735,6 +768,16 @@ export function HeadlessPageStudio() {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ data: featuredData, editorEmail: MASTER_CMS_EMAIL }),
         }),
+        fetch("/api/cms/navigation", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ data: navigationData, editorEmail: MASTER_CMS_EMAIL }),
+        }),
+        fetch("/api/cms/design-tokens", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ data: designTokensData, editorEmail: MASTER_CMS_EMAIL }),
+        }),
       ];
 
       const responses = await Promise.all(payloadPromises);
@@ -744,7 +787,7 @@ export function HeadlessPageStudio() {
         setLastSaved(new Date().toLocaleTimeString());
         setPreviewRefreshKey((k) => k + 1);
         toast.success(`Successfully saved and published live!`, {
-          description: `Updated landing, programmes, sections, custom pages, featured blogs, and about schemas.`,
+          description: `Updated landing, programmes, sections, custom pages, featured blogs, navigation, tokens, and about schemas.`,
         });
       } else {
         throw new Error("One or more collections failed to persist");
@@ -1576,8 +1619,36 @@ export function HeadlessPageStudio() {
         </div>
       )}
 
+      {/* SPECIAL DESK 4: NAVIGATION & FOOTER */}
+      {selectedPageKey === "navigation" && (
+        <NavigationStudioEditor
+          data={navigationData}
+          onChange={setNavigationData}
+          onOpenMediaPicker={(onSelect) => {
+            setActiveImagePicker({
+              isOpen: true,
+              title: "Select Brand Logo from R2 Bucket",
+              currentUrl: navigationData.logo?.src,
+              onSelect: (url) => {
+                onSelect(url);
+                setActiveImagePicker(null);
+              },
+            });
+          }}
+          onUploadToR2={handleFileUploadToR2}
+        />
+      )}
+
+      {/* SPECIAL DESK 5: DESIGN TOKENS & BADGES */}
+      {selectedPageKey === "tokens" && (
+        <DesignTokensStudioEditor
+          data={designTokensData}
+          onChange={setDesignTokensData}
+        />
+      )}
+
       {/* STANDARD MULTI-TAB WORKSPACE (LANDING, PROGRAMMES, & PROGRAMME DETAIL PAGES) */}
-      {selectedPageKey !== "featured-blogs" && selectedPageKey !== "custom-pages" && selectedPageKey !== "about" && (
+      {selectedPageKey !== "featured-blogs" && selectedPageKey !== "custom-pages" && selectedPageKey !== "about" && selectedPageKey !== "navigation" && selectedPageKey !== "tokens" && (
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
         {/* Left Nav: Section Tabs for Selected Page */}
         <div className="space-y-3 lg:col-span-3">

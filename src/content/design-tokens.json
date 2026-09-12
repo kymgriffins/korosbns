@@ -1,0 +1,17 @@
+{
+  "badges": {
+    "shape": "pill",
+    "variant": "soft",
+    "colorScheme": "emerald",
+    "typography": "uppercase",
+    "showDot": true
+  },
+  "buttons": {
+    "borderRadius": "full",
+    "defaultElevation": "subtle"
+  },
+  "typography": {
+    "eyebrowTracking": "wider",
+    "headlineWeight": "bold"
+  }
+}

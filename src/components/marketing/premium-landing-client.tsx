@@ -44,11 +44,16 @@ const NewsletterPopup = dynamic(
   { ssr: false },
 );
 
-import type { LandingContent, PartnerPageSectionsContent } from "@/lib/cms-live-data";
+import type {
+  LandingContent,
+  PartnerPageSectionsContent,
+  FeaturedProjectsContent,
+} from "@/lib/cms-live-data";
 
 export interface PremiumLandingClientProps {
   landingData?: Partial<LandingContent>;
   sectionsConfig?: Partial<PartnerPageSectionsContent>;
+  featuredProjects?: Partial<FeaturedProjectsContent>;
 }
 
 /**
@@ -59,6 +64,7 @@ export interface PremiumLandingClientProps {
 export default function PremiumLandingClient({
   landingData,
   sectionsConfig,
+  featuredProjects,
 }: PremiumLandingClientProps = {}) {
   const activeCta = {
     eyebrow: landingData?.partnerCta?.eyebrow ?? PARTNER_LANDING_CTA.eyebrow,
@@ -122,6 +128,7 @@ export default function PremiumLandingClient({
                 eyebrow={landingData?.featuredIntro?.eyebrow}
                 headline={landingData?.featuredIntro?.headline}
                 lede={landingData?.featuredIntro?.lede}
+                initialProjects={((featuredProjects as any)?.results || (featuredProjects as any)?.projects) as any}
               />
             );
           case "partners":

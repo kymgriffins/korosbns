@@ -21,6 +21,8 @@ import socialsContent from "@/content/socials.json";
 import timelineContent from "@/content/timeline.json";
 import partnerPageSectionsContent from "@/content/partner-page-sections.json";
 import customPagesContent from "@/content/custom-pages.json";
+import navigationContent from "@/content/navigation.json";
+import designTokensContent from "@/content/design-tokens.json";
 import teamContent from "@/data/team.json";
 import partnersContent from "@/data/partners.json";
 import featuredProjectsContent from "@/data/fallbacks/featured-projects.json";
@@ -75,6 +77,8 @@ export type CmsCollectionSlug =
   | CoreCmsCollectionSlug
   | "partner-page-sections"
   | "custom-pages"
+  | "navigation"
+  | "design-tokens"
   | "team"
   | "partners"
   | "featured-projects"
@@ -234,6 +238,28 @@ export const CMS_COLLECTIONS_CATALOG: Record<CmsCollectionSlug, CmsCollectionMet
       : 3,
     lastUpdated: new Date().toISOString(),
     schemaKeys: ["provenance", "count", "results"],
+  },
+  navigation: {
+    slug: "navigation",
+    name: "Global Navigation & Footer",
+    description: "Header navigation links, brand logo, action CTA buttons, mobile menu, and footer columns.",
+    category: "Marketing & Site Copy",
+    filePath: "src/content/navigation.json",
+    itemCount: Array.isArray((navigationContent as { navLinks?: unknown[] }).navLinks)
+      ? (navigationContent as { navLinks: unknown[] }).navLinks.length
+      : 4,
+    lastUpdated: new Date().toISOString(),
+    schemaKeys: ["logo", "navLinks", "actions", "footer"],
+  },
+  "design-tokens": {
+    slug: "design-tokens",
+    name: "Global Design Tokens & Badges",
+    description: "Visual design tokens for badges, chips, button border radii, and section eyebrow styling.",
+    category: "Marketing & Site Copy",
+    filePath: "src/content/design-tokens.json",
+    itemCount: 3,
+    lastUpdated: new Date().toISOString(),
+    schemaKeys: ["badges", "buttons", "typography"],
   },
   org: {
     slug: "org",
@@ -413,6 +439,8 @@ const _cmsDataCache: Record<CmsCollectionSlug, Record<string, unknown>> = {
   timeline: timelineContent as Record<string, unknown>,
   "partner-page-sections": partnerPageSectionsContent as Record<string, unknown>,
   "custom-pages": customPagesContent as Record<string, unknown>,
+  navigation: navigationContent as Record<string, unknown>,
+  "design-tokens": designTokensContent as Record<string, unknown>,
   team: teamContent as unknown as Record<string, unknown>,
   partners: partnersContent as unknown as Record<string, unknown>,
   "featured-projects": featuredProjectsContent as Record<string, unknown>,

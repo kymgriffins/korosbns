@@ -19,14 +19,16 @@ describe("Persistent Headless CMS & JSON Studio Test Suite", () => {
     expect(slugs).toContain("timeline");
   });
 
-  it("exposes all 27 registered JSON datasets in getAllCollections", () => {
+  it("exposes all 29 registered JSON datasets in getAllCollections", () => {
     const all = headlessCmsApi.getAllCollections();
-    expect(all.length).toBe(27);
+    expect(all.length).toBe(29);
 
     const slugs = all.map((c) => c.slug);
     expect(slugs).toContain("partner-page-sections");
     expect(slugs).toContain("custom-pages");
     expect(slugs).toContain("featured-projects");
+    expect(slugs).toContain("navigation");
+    expect(slugs).toContain("design-tokens");
     expect(slugs).toContain("org");
     expect(slugs).toContain("counties-allocations");
     expect(slugs).toContain("bns-config");
@@ -40,7 +42,7 @@ describe("Persistent Headless CMS & JSON Studio Test Suite", () => {
     expect(slugs).toContain("video-transcripts");
   });
 
-  it("ensures all 23 collections have valid file paths, categories and schema keys", () => {
+  it("ensures all 29 collections have valid file paths, categories and schema keys", () => {
     const all = headlessCmsApi.getAllCollections();
 
     for (const item of all) {
@@ -82,15 +84,17 @@ describe("Persistent Headless CMS & JSON Studio Test Suite", () => {
     expect(parsed._lastEditedBy).toBe("admin@budgetndiostory.org");
   });
 
-  it("exports a complete bundle of all 27 collections", () => {
+  it("exports a complete bundle of all 29 collections", () => {
     const bundle = headlessCmsApi.exportAllCollectionsJson();
-    expect(Object.keys(bundle).length).toBe(27);
+    expect(Object.keys(bundle).length).toBe(29);
     expect(bundle.landing).toBeDefined();
     expect(bundle.org).toBeDefined();
     expect(bundle["bns-config"]).toBeDefined();
     expect(bundle["partner-page-sections"]).toBeDefined();
     expect(bundle["custom-pages"]).toBeDefined();
     expect(bundle["featured-projects"]).toBeDefined();
+    expect(bundle.navigation).toBeDefined();
+    expect(bundle["design-tokens"]).toBeDefined();
   });
 
   it("rejects unauthorized external emails from editing JSON collections", () => {

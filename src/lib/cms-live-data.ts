@@ -5,6 +5,8 @@ import aboutFallback from "@/content/about.json";
 import partnerPageSectionsFallback from "@/content/partner-page-sections.json";
 import customPagesFallback from "@/content/custom-pages.json";
 import featuredProjectsFallback from "@/data/fallbacks/featured-projects.json";
+import navigationFallback from "@/content/navigation.json";
+import designTokensFallback from "@/content/design-tokens.json";
 import type { CmsCollectionSlug } from "@/lib/headless-cms";
 
 export type LandingContent = typeof landingFallback;
@@ -13,6 +15,8 @@ export type AboutContent = typeof aboutFallback;
 export type PartnerPageSectionsContent = typeof partnerPageSectionsFallback;
 export type CustomPagesContent = typeof customPagesFallback;
 export type FeaturedProjectsContent = typeof featuredProjectsFallback;
+export type NavigationContent = typeof navigationFallback;
+export type DesignTokensContent = typeof designTokensFallback;
 
 const FALLBACK_MAP: Partial<Record<CmsCollectionSlug, unknown>> = {
   landing: landingFallback,
@@ -21,6 +25,8 @@ const FALLBACK_MAP: Partial<Record<CmsCollectionSlug, unknown>> = {
   "partner-page-sections": partnerPageSectionsFallback,
   "custom-pages": customPagesFallback,
   "featured-projects": featuredProjectsFallback,
+  navigation: navigationFallback,
+  "design-tokens": designTokensFallback,
 };
 
 /**
@@ -58,4 +64,28 @@ export async function getLivePartnerPageSections(): Promise<PartnerPageSectionsC
     "partner-page-sections",
     partnerPageSectionsFallback,
   );
+}
+
+/**
+ * Loads live featured evidence & investigative stories.
+ */
+export async function getLiveFeaturedProjects(): Promise<FeaturedProjectsContent> {
+  return getLiveCmsCollection<FeaturedProjectsContent>(
+    "featured-projects",
+    featuredProjectsFallback,
+  );
+}
+
+/**
+ * Loads live site navigation and footer chrome data.
+ */
+export async function getLiveNavigationData(): Promise<NavigationContent> {
+  return getLiveCmsCollection<NavigationContent>("navigation", navigationFallback);
+}
+
+/**
+ * Loads live brand design tokens for badges, buttons, and styles.
+ */
+export async function getLiveDesignTokens(): Promise<DesignTokensContent> {
+  return getLiveCmsCollection<DesignTokensContent>("design-tokens", designTokensFallback);
 }

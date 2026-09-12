@@ -34,6 +34,7 @@ import { SHOW_MARKETING_SIGN_IN } from "@/lib/marketing-chrome";
 interface Props {
   isOpen: boolean;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  navConfig?: any;
 }
 
 function isActiveNav(pathname: string, href: string) {
@@ -95,9 +96,10 @@ function NavItemIcon({ label }: { label: string }) {
   }
 }
 
-function MenuPanel({ isOpen, setIsOpen }: Props) {
+function MenuPanel({ isOpen, setIsOpen, navConfig }: Props) {
   const pathname = usePathname();
   const { isLoggedIn, loading: authLoading, user } = useAuth();
+  const links = (navConfig?.navLinks as any[]) || NAV_LINKS;
 
   return (
     <AnimatePresence>
@@ -136,7 +138,7 @@ function MenuPanel({ isOpen, setIsOpen }: Props) {
             </div>
             <div className="flex-1 overflow-y-auto px-4 py-6">
               <ul className="flex flex-col space-y-1">
-                {NAV_LINKS.map((item, index) => (
+                {links.map((item: any, index: number) => (
                   <motion.li
                     key={index}
                     initial={{ opacity: 0, x: 20 }}
@@ -221,7 +223,7 @@ function MenuPanel({ isOpen, setIsOpen }: Props) {
             </div>
             <div className="flex-1 overflow-y-auto px-4 pb-6 pt-2">
               <ul className="flex flex-col space-y-1">
-                {NAV_LINKS.map((item, index) => (
+                {links.map((item: any, index: number) => (
                   <motion.li
                     key={index}
                     initial={{ opacity: 0, y: 16 }}
