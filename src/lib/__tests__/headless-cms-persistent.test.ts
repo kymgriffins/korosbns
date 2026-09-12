@@ -19,9 +19,9 @@ describe("Persistent Headless CMS & JSON Studio Test Suite", () => {
     expect(slugs).toContain("timeline");
   });
 
-  it("exposes all 30 registered JSON datasets in getAllCollections", () => {
+  it("exposes all 39 registered JSON datasets in getAllCollections", () => {
     const all = headlessCmsApi.getAllCollections();
-    expect(all.length).toBe(30);
+    expect(all.length).toBe(39);
 
     const slugs = all.map((c) => c.slug);
     expect(slugs).toContain("partner-page-sections");
@@ -40,9 +40,18 @@ describe("Persistent Headless CMS & JSON Studio Test Suite", () => {
     expect(slugs).toContain("learn-articles");
     expect(slugs).toContain("learn-trivia");
     expect(slugs).toContain("video-transcripts");
+    expect(slugs).toContain("faq");
+    expect(slugs).toContain("stories");
+    expect(slugs).toContain("impact");
+    expect(slugs).toContain("consortium");
+    expect(slugs).toContain("careers");
+    expect(slugs).toContain("legal");
+    expect(slugs).toContain("team-initiatives");
+    expect(slugs).toContain("landing-hero");
+    expect(slugs).toContain("landing-sections");
   });
 
-  it("ensures all 30 collections have valid file paths, categories and schema keys", () => {
+  it("ensures all 39 collections have valid file paths, categories and schema keys", () => {
     const all = headlessCmsApi.getAllCollections();
 
     for (const item of all) {
@@ -84,9 +93,9 @@ describe("Persistent Headless CMS & JSON Studio Test Suite", () => {
     expect(parsed._lastEditedBy).toBe("admin@budgetndiostory.org");
   });
 
-  it("exports a complete bundle of all 30 collections", () => {
+  it("exports a complete bundle of all 39 collections", () => {
     const bundle = headlessCmsApi.exportAllCollectionsJson();
-    expect(Object.keys(bundle).length).toBe(30);
+    expect(Object.keys(bundle).length).toBe(39);
     expect(bundle.landing).toBeDefined();
     expect(bundle.org).toBeDefined();
     expect(bundle["bns-config"]).toBeDefined();
