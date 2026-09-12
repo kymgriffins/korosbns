@@ -25,6 +25,18 @@
       "stillIds": [
         "maingi-afrodad",
         "wajackoyah-afrodad"
+      ],
+      "images": [
+        {
+          "src": "/images/events/afrodad-2026/james-maingi-mutinda.jpeg",
+          "alt": "James Maingi Mutinda at AFRODAD",
+          "caption": "National Debt Forum"
+        },
+        {
+          "src": "/images/events/afrodad-2026/george-wajackoyah.jpeg",
+          "alt": "George Wajackoyah at AFRODAD",
+          "caption": "Policy Scrutiny Panel"
+        }
       ]
     },
     {
@@ -41,6 +53,18 @@
       "stillIds": [
         "townhall-room",
         "townhall-brief"
+      ],
+      "images": [
+        {
+          "src": "/images/cohort1 groundworks/129A3964.jpg",
+          "alt": "Town hall meeting",
+          "caption": "County Budget Scrutiny"
+        },
+        {
+          "src": "/images/towwnhallmay/129A3912.jpg",
+          "alt": "Floor briefing",
+          "caption": "Disbursement Verification"
+        }
       ]
     },
     {
@@ -57,6 +81,18 @@
       "stillIds": [
         "hall-camera",
         "latif-launch"
+      ],
+      "images": [
+        {
+          "src": "/images/media/129A4039.jpg",
+          "alt": "Field camera filming",
+          "caption": "Investigative Capture"
+        },
+        {
+          "src": "/images/events/red-flags-book-launch/dr-lyla-latif.jpeg",
+          "alt": "Dr. Lyla Latif",
+          "caption": "Red Flags Investigation"
+        }
       ]
     }
   ],
@@ -244,8 +280,8 @@
       "alt": "Working groups at desks during a civic convening workshop",
       "caption": "Convening · Mashinani",
       "programme": "mashinani",
-      "storyTitle": "Tables mid-brief",
-      "storyLine": "Small groups lean over phones and notebooks while a facilitator checks in.",
+      "storyTitle": "Civic Working Groups",
+      "storyLine": "Small groups examine fiscal estimates and budget allocation data.",
       "visible": true
     },
     {
@@ -319,5 +355,22 @@
       "visible": true
     }
   ],
-  "partnersEyebrow": "BNS Partners"
+  "partnersEyebrow": "BNS Partners",
+  "heroProgrammeLines": [
+    {
+      "slug": "connect",
+      "label": "Connect",
+      "href": "/programmes/connect"
+    },
+    {
+      "slug": "mashinani",
+      "label": "Mashinani",
+      "href": "/programmes/mashinani"
+    },
+    {
+      "slug": "wanahabari-lab",
+      "label": "Wanahabari",
+      "href": "/programmes/wanahabari-lab"
+    }
+  ]
 }

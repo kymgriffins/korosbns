@@ -30,6 +30,7 @@ export interface PartnerLandingHeroProps {
     lede?: string;
   };
   stills?: PartnerLandingStill[];
+  programmeLines?: Array<{ slug: string; label: string; href: string }>;
 }
 
 /**
@@ -39,7 +40,14 @@ export interface PartnerLandingHeroProps {
 export default function PartnerLandingHero({
   heroNarrative,
   stills,
+  programmeLines,
 }: PartnerLandingHeroProps = {}) {
+  const activeProgrammeLines =
+    (programmeLines && programmeLines.length > 0)
+      ? programmeLines
+      : (Array.isArray((heroNarrative as any)?.programmeLines) && (heroNarrative as any).programmeLines.length > 0)
+      ? (heroNarrative as any).programmeLines
+      : PARTNER_HERO_PROGRAMME_LINES;
   const candidateSlides = stills && stills.length > 0 ? stills : PARTNER_LANDING_STILLS;
   const visibleSlides = candidateSlides.filter((s) => s.visible !== false);
   const slides = visibleSlides.length > 0 ? visibleSlides : candidateSlides;
@@ -165,7 +173,7 @@ export default function PartnerLandingHero({
       </div>
 
       <nav className={styles["partner-reel-programmes"]} aria-label="Three programmes">
-        {PARTNER_HERO_PROGRAMME_LINES.map((item) => {
+        {activeProgrammeLines.map((item: any) => {
           const active = current.programme === item.slug;
           return (
             <Link

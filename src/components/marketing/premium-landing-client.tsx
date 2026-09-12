@@ -105,6 +105,7 @@ export default function PremiumLandingClient({
                 key={sec.id}
                 heroNarrative={landingData?.heroNarrative}
                 stills={landingData?.heroReelStills as any}
+                programmeLines={(landingData as any)?.heroProgrammeLines}
               />
             );
           case "whoHow":

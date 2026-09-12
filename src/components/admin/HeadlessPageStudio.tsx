@@ -46,6 +46,7 @@ import { ImageFieldControl } from "./ImageFieldControl";
 import { MediaEmbed } from "@/components/ui/media-embed";
 import { NavigationStudioEditor } from "./NavigationStudioEditor";
 import { DesignTokensStudioEditor } from "./DesignTokensStudioEditor";
+import { CoursesStudioEditor } from "./CoursesStudioEditor";
 
 type PageKey =
   | "landing"
@@ -58,7 +59,8 @@ type PageKey =
   | "featured-blogs"
   | "custom-pages"
   | "navigation"
-  | "tokens";
+  | "tokens"
+  | "courses";
 
 type TabKey = "sections" | "hero" | "carousel" | "bets" | "core" | "deliverables" | "buttons" | "faqs" | "media";
 
@@ -160,6 +162,14 @@ const PAGES: PageMeta[] = [
     sectionPageId: "tokens",
     icon: "🎨",
   },
+  {
+    key: "courses",
+    label: "Learning Courses (BNSKE)",
+    tag: "Civic Projects & Curriculum",
+    route: "/learn",
+    sectionPageId: "courses",
+    icon: "🎓",
+  },
 ];
 
 export function HeadlessPageStudio() {
@@ -184,6 +194,7 @@ export function HeadlessPageStudio() {
   const [featuredData, setFeaturedData] = useState<{ count?: number; provenance?: any; results?: any[] }>({ results: [] });
   const [navigationData, setNavigationData] = useState<Record<string, any>>({});
   const [designTokensData, setDesignTokensData] = useState<Record<string, any>>({});
+  const [coursesData, setCoursesData] = useState<Record<string, any>>({ results: [] });
 
   // Selections for sub-studios
   const [selectedCustomPageSlug, setSelectedCustomPageSlug] = useState<string>("");
@@ -225,7 +236,7 @@ export function HeadlessPageStudio() {
   const loadAllData = useCallback(async () => {
     setIsLoading(true);
     try {
-      const [resLanding, resProg, resSec, resAbout, resCustom, resFeatured, resNav, resTokens] = await Promise.all([
+      const [resLanding, resProg, resSec, resAbout, resCustom, resFeatured, resNav, resTokens, resCourses] = await Promise.all([
         fetch("/api/cms/landing"),
         fetch("/api/cms/programmes"),
         fetch("/api/cms/partner-page-sections"),
@@ -234,6 +245,7 @@ export function HeadlessPageStudio() {
         fetch("/api/cms/featured-projects"),
         fetch("/api/cms/navigation"),
         fetch("/api/cms/design-tokens"),
+        fetch("/api/cms/civic-modules"),
       ]);
 
       if (resLanding.ok) {
@@ -275,6 +287,10 @@ export function HeadlessPageStudio() {
       if (resTokens.ok) {
         const json = await resTokens.json();
         setDesignTokensData(json.data || {});
+      }
+      if (resCourses.ok) {
+        const json = await resCourses.json();
+        setCoursesData(json.data || { results: [] });
       }
       setLastSaved(new Date().toLocaleTimeString());
     } catch {
@@ -734,6 +750,31 @@ export function HeadlessPageStudio() {
   };
 
   // Save All Changes to Disk via Persistent APIs
+  const [isSyncingRss, setIsSyncingRss] = useState(false);
+  const handleSyncYoutubeRss = async () => {
+    setIsSyncingRss(true);
+    try {
+      const res = await fetch("/api/youtube/sync", { method: "POST" });
+      const json = await res.json();
+      if (json.success && Array.isArray(json.results)) {
+        setFeaturedData({
+          ...featuredData,
+          count: json.results.length,
+          results: json.results,
+        });
+        toast.success("Successfully synced YouTube products!", {
+          description: `Curated ${json.results.length} flagship products without duplicate multi-part episodes.`,
+        });
+      } else {
+        throw new Error(json.error || "Failed to sync RSS");
+      }
+    } catch (err: any) {
+      toast.error(err.message || "YouTube sync failed");
+    } finally {
+      setIsSyncingRss(false);
+    }
+  };
+
   const handleSaveAll = async () => {
     setIsSaving(true);
     try {
@@ -1019,16 +1060,30 @@ export function HeadlessPageStudio() {
                     Featured impact projects on homepage &amp; hub.
                   </p>
                 </div>
-                <Button
-                  type="button"
-                  onClick={handleAddFeaturedStory}
-                  size="sm"
-                  variant="outline"
-                  className="gap-1 text-xs"
-                >
-                  <Plus className="size-3.5" />
-                  <span>Add Story</span>
-                </Button>
+                <div className="flex items-center gap-2">
+                  <Button
+                    type="button"
+                    onClick={handleSyncYoutubeRss}
+                    disabled={isSyncingRss}
+                    size="sm"
+                    variant="outline"
+                    className="gap-1.5 text-xs font-semibold bg-primary/5 hover:bg-primary/10 border-primary/30 text-foreground"
+                    title="Automate & Curate flagship products from YouTube RSS (never duplicates parts)"
+                  >
+                    <RefreshCw className={`size-3.5 text-primary ${isSyncingRss ? "animate-spin" : ""}`} />
+                    <span>Sync YouTube RSS</span>
+                  </Button>
+                  <Button
+                    type="button"
+                    onClick={handleAddFeaturedStory}
+                    size="sm"
+                    variant="outline"
+                    className="gap-1 text-xs"
+                  >
+                    <Plus className="size-3.5" />
+                    <span>Add Story</span>
+                  </Button>
+                </div>
               </div>
 
               <div className="space-y-2">
@@ -1647,8 +1702,28 @@ export function HeadlessPageStudio() {
         />
       )}
 
+      {/* SPECIAL DESK 6: LEARNING COURSES (BNSKE PROJECTS) */}
+      {selectedPageKey === "courses" && (
+        <CoursesStudioEditor
+          data={coursesData}
+          onChange={setCoursesData}
+          onOpenMediaPicker={(onSelect) => {
+            setActiveImagePicker({
+              isOpen: true,
+              title: "Select Course Cover Image from R2 Bucket",
+              currentUrl: "",
+              onSelect: (url) => {
+                onSelect(url);
+                setActiveImagePicker(null);
+              },
+            });
+          }}
+          onUploadToR2={handleFileUploadToR2}
+        />
+      )}
+
       {/* STANDARD MULTI-TAB WORKSPACE (LANDING, PROGRAMMES, & PROGRAMME DETAIL PAGES) */}
-      {selectedPageKey !== "featured-blogs" && selectedPageKey !== "custom-pages" && selectedPageKey !== "about" && selectedPageKey !== "navigation" && selectedPageKey !== "tokens" && (
+      {selectedPageKey !== "featured-blogs" && selectedPageKey !== "custom-pages" && selectedPageKey !== "about" && selectedPageKey !== "navigation" && selectedPageKey !== "tokens" && selectedPageKey !== "courses" && (
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
         {/* Left Nav: Section Tabs for Selected Page */}
         <div className="space-y-3 lg:col-span-3">
@@ -2309,6 +2384,78 @@ export function HeadlessPageStudio() {
                           <span>Hide Call to Action button for this bet</span>
                         </label>
                       </div>
+
+                      {/* Evidence Images for this Bet */}
+                      <div className="space-y-3 pt-2 border-t border-border/50">
+                        <div className="flex items-center justify-between">
+                          <label className="text-[11px] font-bold uppercase tracking-wider text-foreground">
+                            Evidence &amp; Field Stills (Displayed on Landing)
+                          </label>
+                          <span className="text-[10px] text-muted-foreground">2 Photos per Bet</span>
+                        </div>
+
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                          {[0, 1].map((imgIdx) => {
+                            const currentImgs = bet.images || [];
+                            const currentImg = currentImgs[imgIdx] || { src: "", alt: "", caption: "" };
+                            return (
+                              <div key={imgIdx} className="space-y-2 rounded-xl border border-border/70 bg-card p-3 shadow-xs">
+                                <ImageFieldControl
+                                  label={`Photo #${imgIdx + 1}`}
+                                  value={currentImg.src ?? ""}
+                                  onChange={(newSrc) => {
+                                    const nextImgs = [...(bet.images || [{}, {}])];
+                                    nextImgs[imgIdx] = { ...nextImgs[imgIdx], src: newSrc };
+                                    updateLandingProgrammeExplain(idx, "images", nextImgs);
+                                  }}
+                                  onOpenBucket={() => {
+                                    setActiveImagePicker({
+                                      isOpen: true,
+                                      title: `Select Photo #${imgIdx + 1} for ${bet.name || bet.eyebrow}`,
+                                      currentUrl: currentImg.src,
+                                      onSelect: (url) => {
+                                        const nextImgs = [...(bet.images || [{}, {}])];
+                                        nextImgs[imgIdx] = { ...nextImgs[imgIdx], src: url };
+                                        updateLandingProgrammeExplain(idx, "images", nextImgs);
+                                        setActiveImagePicker(null);
+                                      },
+                                    });
+                                  }}
+                                  description="Displayed in the 4:3 evidence frame on the landing page."
+                                />
+                                <div className="grid grid-cols-2 gap-2 pt-1">
+                                  <div>
+                                    <span className="text-[10px] font-semibold text-muted-foreground">Caption</span>
+                                    <Input
+                                      value={currentImg.caption ?? ""}
+                                      onChange={(e) => {
+                                        const nextImgs = [...(bet.images || [{}, {}])];
+                                        nextImgs[imgIdx] = { ...nextImgs[imgIdx], caption: e.target.value };
+                                        updateLandingProgrammeExplain(idx, "images", nextImgs);
+                                      }}
+                                      className="h-7 text-xs"
+                                      placeholder="Photo caption"
+                                    />
+                                  </div>
+                                  <div>
+                                    <span className="text-[10px] font-semibold text-muted-foreground">Alt Text</span>
+                                    <Input
+                                      value={currentImg.alt ?? ""}
+                                      onChange={(e) => {
+                                        const nextImgs = [...(bet.images || [{}, {}])];
+                                        nextImgs[imgIdx] = { ...nextImgs[imgIdx], alt: e.target.value };
+                                        updateLandingProgrammeExplain(idx, "images", nextImgs);
+                                      }}
+                                      className="h-7 text-xs"
+                                      placeholder="Alt text"
+                                    />
+                                  </div>
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -2356,6 +2503,63 @@ export function HeadlessPageStudio() {
                       className="mt-1 w-full rounded-md border border-input bg-background p-2.5 text-xs text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                       placeholder="Hero narrative describing the core premise..."
                     />
+                  </div>
+
+                  {/* Hero Bottom-Left Programme Lines */}
+                  <div className="rounded-xl border border-border/70 p-4 space-y-3 bg-muted/10">
+                    <div className="flex items-center justify-between border-b border-border/40 pb-2">
+                      <div>
+                        <h4 className="text-xs font-bold uppercase tracking-wider text-foreground">
+                          Hero Bottom-Left Programme Anchors
+                        </h4>
+                        <p className="text-[11px] text-muted-foreground">
+                          Customise the active programme labels displayed at the bottom of the hero reel.
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                      {((landingData.heroProgrammeLines as any[]) || [
+                        { slug: "connect", label: "Connect", href: "/programmes/connect" },
+                        { slug: "mashinani", label: "Mashinani", href: "/programmes/mashinani" },
+                        { slug: "wanahabari-lab", label: "Wanahabari Lab", href: "/programmes/wanahabari-lab" },
+                      ]).map((line: any, lIdx: number) => (
+                        <div key={line.slug || lIdx} className="space-y-1.5 rounded-lg border border-border/60 bg-card p-2.5">
+                          <div>
+                            <span className="text-[10px] font-semibold text-muted-foreground">Label</span>
+                            <Input
+                              value={line.label ?? ""}
+                              onChange={(e) => {
+                                const currentLines = [...((landingData.heroProgrammeLines as any[]) || [
+                                  { slug: "connect", label: "Connect", href: "/programmes/connect" },
+                                  { slug: "mashinani", label: "Mashinani", href: "/programmes/mashinani" },
+                                  { slug: "wanahabari-lab", label: "Wanahabari Lab", href: "/programmes/wanahabari-lab" },
+                                ])];
+                                currentLines[lIdx] = { ...currentLines[lIdx], label: e.target.value };
+                                updateLandingField(["heroProgrammeLines"], currentLines);
+                              }}
+                              className="h-7 text-xs font-semibold"
+                            />
+                          </div>
+                          <div>
+                            <span className="text-[10px] font-semibold text-muted-foreground">URL</span>
+                            <Input
+                              value={line.href ?? ""}
+                              onChange={(e) => {
+                                const currentLines = [...((landingData.heroProgrammeLines as any[]) || [
+                                  { slug: "connect", label: "Connect", href: "/programmes/connect" },
+                                  { slug: "mashinani", label: "Mashinani", href: "/programmes/mashinani" },
+                                  { slug: "wanahabari-lab", label: "Wanahabari Lab", href: "/programmes/wanahabari-lab" },
+                                ])];
+                                currentLines[lIdx] = { ...currentLines[lIdx], href: e.target.value };
+                                updateLandingField(["heroProgrammeLines"], currentLines);
+                              }}
+                              className="h-7 text-[11px] font-mono"
+                            />
+                          </div>
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 </div>
               ) : selectedPageKey === "programmes" ? (

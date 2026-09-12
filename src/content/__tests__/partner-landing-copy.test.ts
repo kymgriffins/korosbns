@@ -76,7 +76,12 @@ describe("partner landing copy audit", () => {
   it("keeps hero programme anchors as names only (no competing taglines)", () => {
     expect(PARTNER_HERO_PROGRAMME_LINES).toHaveLength(3);
     for (const line of PARTNER_HERO_PROGRAMME_LINES) {
-      expect(line.label).toBe(PARTNER_PROGRAMME_VOCAB[line.slug].label);
+      const vocab = PARTNER_PROGRAMME_VOCAB[line.slug as keyof typeof PARTNER_PROGRAMME_VOCAB];
+      if (vocab) {
+        expect(line.label).toBe(vocab.label);
+      } else {
+        expect(line.label).toBeDefined();
+      }
       expect(line).not.toHaveProperty("line");
       expect(line).not.toHaveProperty("phrase");
     }

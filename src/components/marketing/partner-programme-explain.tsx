@@ -31,7 +31,17 @@ export function PartnerProgrammeExplainSections({
   return (
     <>
       {items.map((item, index) => {
-        const stills = stillsForIds(item.stillIds);
+        const stills = (item.images && item.images.length > 0)
+          ? item.images.map((img: any, i: number) => ({
+              id: `${item.slug}-custom-${i}`,
+              src: img.src,
+              alt: img.alt || item.title,
+              caption: img.caption || item.eyebrow,
+              programme: item.slug as any,
+              storyTitle: img.caption || item.name,
+              storyLine: item.lede,
+            }))
+          : stillsForIds(item.stillIds);
         const reverse = index % 2 === 1;
 
         return (

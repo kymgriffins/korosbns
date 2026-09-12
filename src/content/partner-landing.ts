@@ -175,7 +175,7 @@ export const DEFAULT_PARTNER_LANDING_STILLS: PartnerLandingStill[] = [
     alt: "Working groups at desks during a civic convening workshop",
     caption: "Convening · Mashinani",
     programme: "mashinani",
-    storyTitle: "Tables mid-brief",
+    storyTitle: "Civic Working Groups",
     storyLine: "Small groups lean over phones and notebooks while a facilitator checks in.",
   },
   {
@@ -249,16 +249,24 @@ export const PARTNER_LANDING_STILLS: PartnerLandingStill[] =
     ? rawLanding.heroReelStills
     : DEFAULT_PARTNER_LANDING_STILLS;
 
-/** Hero bottom-left: programme names only — phrase lives in sections. */
-export const PARTNER_HERO_PROGRAMME_LINES = [
-  PARTNER_PROGRAMME_VOCAB.connect,
-  PARTNER_PROGRAMME_VOCAB.mashinani,
-  PARTNER_PROGRAMME_VOCAB["wanahabari-lab"],
-].map((p) => ({
-  slug: p.slug,
-  label: p.label,
-  href: p.href,
-}));
+export type PartnerHeroProgrammeLine = {
+  slug: "connect" | "mashinani" | "wanahabari-lab" | string;
+  label: string;
+  href: string;
+};
+
+export const PARTNER_HERO_PROGRAMME_LINES: PartnerHeroProgrammeLine[] =
+  Array.isArray((rawLanding as any)?.heroProgrammeLines) && (rawLanding as any).heroProgrammeLines.length > 0
+    ? (rawLanding as any).heroProgrammeLines
+    : [
+        PARTNER_PROGRAMME_VOCAB.connect,
+        PARTNER_PROGRAMME_VOCAB.mashinani,
+        PARTNER_PROGRAMME_VOCAB["wanahabari-lab"],
+      ].map((p) => ({
+        slug: p.slug,
+        label: p.label,
+        href: p.href,
+      }));
 
 export type PartnerProgrammeExplain = {
   slug: "connect" | "mashinani" | "wanahabari-lab";
@@ -278,6 +286,7 @@ export type PartnerProgrammeExplain = {
   ctaLabel: string;
   hideCta?: boolean;
   stillIds: string[];
+  images?: Array<{ src: string; alt: string; caption?: string }>;
 };
 
 const DEFAULT_PROGRAMME_EXPLAINS: PartnerProgrammeExplain[] = [
