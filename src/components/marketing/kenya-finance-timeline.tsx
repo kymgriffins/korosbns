@@ -67,7 +67,7 @@ const budgetCycleTimeline: TimelineItem[] = [
   },
   {
     id: 5,
-    date: "May–Jun 2026",
+    date: "May-Jun 2026",
     title: "Budget & Committee Review",
     description: "Budget and Appropriations Committee review with public participation",
     status: "completed",
@@ -89,7 +89,7 @@ const budgetCycleTimeline: TimelineItem[] = [
     id: 7,
     date: "Jun 11, 2026",
     title: "Budget Reading: CS Mbadi Presents KES 4.82T Budget",
-    description: "CS John Mbadi delivers Budget Statement — KES 4.82 trillion expenditure, KES 1.15 trillion deficit",
+    description: "CS John Mbadi delivers Budget Statement - KES 4.82 trillion expenditure, KES 1.15 trillion deficit",
     status: "completed",
     icon: "🎤",
     details: "Theme: 'Sustaining BETA for Resilient and Inclusive Growth amid Global Uncertainty'. Revenue KES 3.63T, ordinary KES 2.99T. Deficit at 5.5% of GDP, financed through KES 1.03T domestic + KES 116B external borrowing. Debt interest: KES 1.2T.",

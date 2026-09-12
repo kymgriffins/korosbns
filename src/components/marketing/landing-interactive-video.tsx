@@ -73,7 +73,7 @@ const LandingInteractiveVideo = () => {
                         <div className="max-w-lg">
                             <h2 className="gusto-subheading text-white mb-4">Featured programme evidence</h2>
                             <p className="text-white/60 text-sm md:text-base tracking-wide leading-relaxed">
-                                Dr. Lyla Latif with House of Fiscal Wisdom — forensic briefing produced with Wanahabari Lab.
+                                Dr. Lyla Latif with House of Fiscal Wisdom - forensic briefing produced with Wanahabari Lab.
                             </p>
                         </div>
                     </div>

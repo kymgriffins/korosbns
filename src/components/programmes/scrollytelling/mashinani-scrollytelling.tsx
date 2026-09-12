@@ -17,7 +17,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 /**
- * Narrative arc: place essay — four counties as characters, embed → track → score.
+ * Narrative arc: place essay - four counties as characters, embed → track → score.
  * Distinct from Connect's feed cadence and Wanahabari's newsroom masthead.
  */
 export function MashinaniScrollytelling() {
@@ -66,8 +66,8 @@ export function MashinaniScrollytelling() {
 
             <p className="text-xl sm:text-2xl font-medium text-foreground/80 leading-relaxed max-w-3xl">
               Mashinani does not tour Kenya with a camera and a checklist. Teams
-              settle into four counties for the budget cycle — fiscal strategy
-              paper to execution report — and ask whether the promise on paper
+              settle into four counties for the budget cycle - fiscal strategy
+              paper to execution report - and ask whether the promise on paper
               matches the borehole, the maternity wing, or the feeder road on
               the ground.
             </p>
@@ -157,7 +157,7 @@ export function MashinaniScrollytelling() {
                       County baraza
                     </span>
                     <p className="text-sm font-semibold leading-snug">
-                      Residents and officials in the same room — with
+                      Residents and officials in the same room - with
                       documentation that outlives the meeting.
                     </p>
                   </div>
@@ -180,7 +180,7 @@ export function MashinaniScrollytelling() {
               </h2>
               <p className="text-sm text-muted-foreground leading-relaxed">
                 Why Mashinani pairs document checks with laminated ward
-                scorecards, signboard inspections, and vernacular radio — not
+                scorecards, signboard inspections, and vernacular radio - not
                 only apps.
               </p>
             </aside>
@@ -197,7 +197,7 @@ export function MashinaniScrollytelling() {
                   Mashinani works offline-first where it must: waterproof ward
                   scorecards, contractor signboard checklists, and community
                   radio briefings alongside digital trackers. The goal is the
-                  same in every county — match the gazette line to the physical
+                  same in every county - match the gazette line to the physical
                   site, then publish what can be verified.
                 </p>
               </div>

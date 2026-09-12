@@ -56,7 +56,7 @@ const SIZE_CLASSES: Record<PillButtonSize, string> = {
 };
 
 /**
- * Single pill CTA Link with inline arrow — universal landing design token.
+ * Single pill CTA Link with inline arrow - universal landing design token.
  */
 export function PillButtonGroup({
   href,

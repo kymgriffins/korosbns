@@ -22,7 +22,7 @@ import {
 import { ProgrammeProjectGrid } from "@/components/programmes/programme-project-grid";
 
 /**
- * Narrative arc: newsroom masthead — Budget Day theatre → the other 364 days → craft.
+ * Narrative arc: newsroom masthead - Budget Day theatre → the other 364 days → craft.
  * Distinct from Connect's feed brief and Mashinani's place essay.
  */
 export function WanahabariScrollytelling() {
@@ -65,7 +65,7 @@ export function WanahabariScrollytelling() {
             </h1>
 
             <p className="text-xl sm:text-2xl font-medium text-foreground/80 leading-relaxed max-w-3xl">
-              Kenyan newsrooms still crowd June. Wanahabari Lab trains reporters and digital creators for the rest of the fiscal calendar — when Controller of Budget releases, supplementary votes, and pending bills decide what actually reaches wards.
+              Kenyan newsrooms still crowd June. Wanahabari Lab trains reporters and digital creators for the rest of the fiscal calendar - when Controller of Budget releases, supplementary votes, and pending bills decide what actually reaches wards.
             </p>
 
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 pt-6 border-t border-border/50">
@@ -82,7 +82,7 @@ export function WanahabariScrollytelling() {
                   Bench size
                 </p>
                 <p className="text-base font-bold text-foreground">
-                  <MetricCounter value={120} suffix="–200 / year" />
+                  <MetricCounter value={120} suffix="-200 / year" />
                 </p>
                 <p className="text-xs text-muted-foreground">Journalists and creators</p>
               </div>
@@ -125,7 +125,7 @@ export function WanahabariScrollytelling() {
                   Every June, television anchors dress for Budget Day, newspapers print commemorative inserts, and camera crews trail the Cabinet Secretary into Parliament. For twenty-four hours the nation argues tax.
                 </p>
                 <p>
-                  By early July, coverage thins. Quarterly releases, late-night supplementary budgets, and pending-bill settlements move with far less scrutiny. Wanahabari Lab exists because newsrooms need a bench that can read those documents — and still write for the front page and the feed.
+                  By early July, coverage thins. Quarterly releases, late-night supplementary budgets, and pending-bill settlements move with far less scrutiny. Wanahabari Lab exists because newsrooms need a bench that can read those documents - and still write for the front page and the feed.
                 </p>
               </div>
 
@@ -134,7 +134,7 @@ export function WanahabariScrollytelling() {
                   &ldquo;The budget story does not end on Budget Day. That is when the spending begins. Journalists must stay in the room for the other three hundred and sixty-four.&rdquo;
                 </p>
                 <footer className="text-xs font-mono font-bold text-primary uppercase tracking-wider">
-                  — Wanahabari Lab alumni voice
+                  - Wanahabari Lab alumni voice
                 </footer>
               </blockquote>
             </div>
@@ -190,7 +190,7 @@ export function WanahabariScrollytelling() {
                 Parse public finance documents fast
               </h3>
               <p className="text-sm text-muted-foreground leading-relaxed">
-                Fellows practise turning Controller of Budget and Treasury tables into searchable notes — without inventing figures when a cell is blank or a PDF is locked.
+                Fellows practise turning Controller of Budget and Treasury tables into searchable notes - without inventing figures when a cell is blank or a PDF is locked.
               </p>
             </div>
 
@@ -203,7 +203,7 @@ export function WanahabariScrollytelling() {
                 Pending bills and contingent claims
               </h3>
               <p className="text-sm text-muted-foreground leading-relaxed">
-                How to report obligations that sit beside the headline budget — with source discipline and legal caution, not rumour.
+                How to report obligations that sit beside the headline budget - with source discipline and legal caution, not rumour.
               </p>
             </div>
 
@@ -233,7 +233,7 @@ export function WanahabariScrollytelling() {
               Method first. Headlines second.
             </h2>
             <p className="text-base sm:text-lg text-muted-foreground leading-relaxed">
-              Illustrative reporting workflows fellows practise in Lab — not claimed case outcomes with invented amounts.
+              Illustrative reporting workflows fellows practise in Lab - not claimed case outcomes with invented amounts.
             </p>
           </div>
 

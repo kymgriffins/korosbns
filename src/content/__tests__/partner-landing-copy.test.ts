@@ -11,7 +11,7 @@ import {
 } from "@/content/partner-landing";
 
 /**
- * Copy audit — thesis → who/how → three bets → evidence → CTA must not fight.
+ * Copy audit - thesis → who/how → three bets → evidence → CTA must not fight.
  */
 describe("partner landing copy audit", () => {
   it("keeps a short brand thesis and who/how path to proof", () => {
@@ -23,19 +23,15 @@ describe("partner landing copy audit", () => {
     expect(PARTNER_LANDING_THESIS.body).not.toMatch(/\d{1,3}(?:,\d{3})+\s*(?:people|citizens|viewers)/i);
   });
 
-  it("keeps a fixed hero narrative with stakes then the programme chain", () => {
+  it("keeps a fixed hero narrative under 2 lines and 20 words of lede", () => {
     const { eyebrow, title, lede } = PARTNER_HERO_NARRATIVE;
     expect(eyebrow.toLowerCase()).toMatch(/budget day/);
     expect(title.length).toBeLessThan(80);
     expect(title.toLowerCase()).toMatch(/silence|quiet|books|pdf/);
-    expect(lede.length).toBeGreaterThan(120);
-    expect(lede.length).toBeLessThan(420);
-    expect(lede).toContain(PARTNER_PROGRAMME_VOCAB.connect.name);
-    expect(lede).toContain(PARTNER_PROGRAMME_VOCAB.mashinani.name);
-    expect(lede).toContain(PARTNER_PROGRAMME_VOCAB["wanahabari-lab"].name);
-    expect(lede.toLowerCase()).toMatch(/bns studio/);
-    expect(lede.toLowerCase()).toMatch(/four counties|4 counties/);
-    expect(lede.toLowerCase()).toMatch(/treasury/);
+    const wordCount = lede.trim().split(/\s+/).length;
+    expect(wordCount).toBeLessThanOrEqual(20);
+    expect(lede.toLowerCase()).toMatch(/treasury|counties|newsrooms/);
+    expect(lede).not.toMatch(/\u2014|\u2013/);
     const askBan = [/invest/i, /partner on/i, /fund against/i, /co-fund/i];
     for (const pattern of askBan) {
       expect(title).not.toMatch(pattern);
@@ -87,7 +83,7 @@ describe("partner landing copy audit", () => {
     }
   });
 
-  it("keeps rotating still captions observational — arc lives in PARTNER_HERO_NARRATIVE", () => {
+  it("keeps rotating still captions observational - arc lives in PARTNER_HERO_NARRATIVE", () => {
     const banned = [
       /invest/i,
       /partner on/i,
@@ -112,7 +108,7 @@ describe("partner landing copy audit", () => {
     expect(new Set(titles).size).toBe(titles.length);
   });
 
-  it("uses local event photography — no YouTube hqdefault covers", () => {
+  it("uses local event photography - no YouTube hqdefault covers", () => {
     for (const still of PARTNER_LANDING_STILLS) {
       expect(still.src.startsWith("/images/")).toBe(true);
       expect(still.src).not.toMatch(/ytimg\.com|hqdefault/);

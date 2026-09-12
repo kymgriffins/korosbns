@@ -80,7 +80,7 @@ const FORMAT_LINKS: FormatNavLink[] = [
 ];
 
 /**
- * Mobile-first learn shell — standalone header (reveals on scroll), responsive dock.
+ * Mobile-first learn shell - standalone header (reveals on scroll), responsive dock.
  */
 export function LearnAppShell({ children }: { children: React.ReactNode }) {
   const { activeTab } = useLearn();
@@ -113,7 +113,7 @@ export function LearnAppShell({ children }: { children: React.ReactNode }) {
       data-testid="learn-app-shell"
       className="learn-app flex min-h-svh w-full min-w-0 flex-1 flex-col bg-background"
     >
-      {/* Standalone Learn Navbar — appears on scroll on landing, fixed on subpages */}
+      {/* Standalone Learn Navbar - appears on scroll on landing, fixed on subpages */}
       <header
         className={cn(
           "fixed top-0 left-0 right-0 z-40 w-full border-b border-border/40 bg-background/95 backdrop-blur-md transition-all duration-300",
@@ -204,7 +204,7 @@ export function LearnAppShell({ children }: { children: React.ReactNode }) {
         </div>
       </header>
 
-      {/* Main Content Area — no artificial offset on landing, pt-16 on subpages */}
+      {/* Main Content Area - no artificial offset on landing, pt-16 on subpages */}
       <main
         className={cn(
           "learn-app-shell-inner w-full flex-1 px-4 sm:px-6 pb-20 md:pb-16",
@@ -222,5 +222,5 @@ export function LearnAppShell({ children }: { children: React.ReactNode }) {
   );
 }
 
-/** @deprecated Use LearnAppShell — kept for any leftover imports during migration. */
+/** @deprecated Use LearnAppShell - kept for any leftover imports during migration. */
 export const CitizenSyllabusShell = LearnAppShell;

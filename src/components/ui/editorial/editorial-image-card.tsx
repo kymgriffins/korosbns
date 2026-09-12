@@ -15,7 +15,7 @@ type EditorialImageCardProps = {
 };
 
 /**
- * Full-bleed image card with bottom-left overlay text — Marwa blog grid pattern.
+ * Full-bleed image card with bottom-left overlay text - Marwa blog grid pattern.
  */
 export function EditorialImageCard({
   href,

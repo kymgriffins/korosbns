@@ -18,7 +18,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 /**
- * Narrative arc: feed brief — short cadence, PDF → phone → Parliament.
+ * Narrative arc: feed brief - short cadence, PDF → phone → Parliament.
  * Distinct from Mashinani's place essay and Wanahabari's newsroom scene.
  */
 export function ConnectScrollytelling() {
@@ -144,8 +144,8 @@ export function ConnectScrollytelling() {
                 <p className="first-letter:float-left first-letter:mr-3 first-letter:font-heading first-letter:text-6xl first-letter:font-black first-letter:text-primary">
                   Every June, Parliament debates a national budget that crosses
                   into the trillions of shillings. The documents that explain
-                  where that money is meant to go — Budget Estimates, the
-                  Medium-Term Debt Strategy, the Finance Bill — arrive dense,
+                  where that money is meant to go - Budget Estimates, the
+                  Medium-Term Debt Strategy, the Finance Bill - arrive dense,
                   technical, and easy to abandon after page twelve.
                 </p>
                 <p>
@@ -164,7 +164,7 @@ export function ConnectScrollytelling() {
                   className="font-heading text-xl font-medium italic text-foreground md:text-2xl leading-relaxed"
                 />
                 <footer className="text-xs font-mono font-bold text-primary uppercase tracking-wider">
-                  — Youth Tracker voice, Nairobi hub
+                  - Youth Tracker voice, Nairobi hub
                 </footer>
               </blockquote>
             </div>
@@ -215,7 +215,7 @@ export function ConnectScrollytelling() {
                 Join the desk
               </EditorialPill>
               <h2 className="font-heading text-3xl sm:text-5xl font-black text-foreground tracking-tight leading-tight">
-                Become a Budget Tracker — or bring your campus circle with you.
+                Become a Budget Tracker - or bring your campus circle with you.
               </h2>
               <p className="text-base sm:text-lg text-muted-foreground leading-relaxed max-w-2xl font-medium">
                 Whether you organise a regional budget reading club or produce

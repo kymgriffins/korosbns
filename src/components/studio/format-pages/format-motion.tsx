@@ -4,7 +4,7 @@ import { motion, useReducedMotion, type Easing } from "motion/react";
 import type { StudioFormatExperience } from "@/lib/studio-format-themes";
 
 /**
- * Per-format motion personalities — every narrative enters and reveals
+ * Per-format motion personalities - every narrative enters and reveals
  * like the medium it is. Film drifts in slow, feeds pop, dossiers rise
  * calm. Reduced motion always collapses to a plain fade.
  */

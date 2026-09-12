@@ -48,7 +48,7 @@ export function AgencyCaseStudyTemplate({ project }: { project: StudioProjectEvi
   const primaryVoice =
     project.formatDetails?.voices?.[0] ?? {
       quote:
-        "When public money is tracked line-by-line, communities reclaim their constitutional voice. Transparency is not an abstract theory—it is schools, clinics, and clean water.",
+        "When public money is tracked line-by-line, communities reclaim their constitutional voice. Transparency is not an abstract theory-it is schools, clinics, and clean water.",
       name: "Frontline Citizen Delegate",
       role: "County Budget Forum",
     };
@@ -59,7 +59,7 @@ export function AgencyCaseStudyTemplate({ project }: { project: StudioProjectEvi
       data-testid="agency-case-study"
       data-section-count={SECTION_COUNT}
     >
-      {/* 01 — Hook */}
+      {/* 01 - Hook */}
       <header
         className="border-b border-border/40 bg-background pt-24 pb-12 md:pt-32 md:pb-16"
         data-project-section="hook"
@@ -154,7 +154,7 @@ export function AgencyCaseStudyTemplate({ project }: { project: StudioProjectEvi
         </div>
       </header>
 
-      {/* 02 — Evidence media */}
+      {/* 02 - Evidence media */}
       <section
         className="border-b border-border/30 bg-muted/20 py-8 md:py-12"
         data-project-section="media"
@@ -264,7 +264,7 @@ export function AgencyCaseStudyTemplate({ project }: { project: StudioProjectEvi
         </div>
       </section>
 
-      {/* 03 — What it is */}
+      {/* 03 - What it is */}
       <section
         className="border-b border-border/30 py-14 md:py-20"
         data-project-section="what"
@@ -288,7 +288,7 @@ export function AgencyCaseStudyTemplate({ project }: { project: StudioProjectEvi
         </div>
       </section>
 
-      {/* 04 — Outcomes / partners voice */}
+      {/* 04 - Outcomes / partners voice */}
       <section
         className="border-b border-border/30 py-14 md:py-20"
         data-project-section="outcomes"
@@ -323,7 +323,7 @@ export function AgencyCaseStudyTemplate({ project }: { project: StudioProjectEvi
                 &ldquo;{primaryVoice.quote}&rdquo;
               </p>
               <footer className="font-mono text-xs font-bold uppercase tracking-wider text-primary">
-                — {primaryVoice.name}
+                - {primaryVoice.name}
                 {primaryVoice.role ? `, ${primaryVoice.role}` : ""}
               </footer>
             </blockquote>
@@ -332,7 +332,7 @@ export function AgencyCaseStudyTemplate({ project }: { project: StudioProjectEvi
               {project.outputs.length} verified deliverables with{" "}
               {project.organization.name}
               {project.impactEvidence.primaryMetric
-                ? ` — ${project.impactEvidence.primaryMetric}`
+                ? ` - ${project.impactEvidence.primaryMetric}`
                 : ""}
               .
             </p>
@@ -340,7 +340,7 @@ export function AgencyCaseStudyTemplate({ project }: { project: StudioProjectEvi
         </div>
       </section>
 
-      {/* 05 — CTA */}
+      {/* 05 - CTA */}
       <footer
         className="border-t border-border/40 bg-muted/10 py-16 md:py-24"
         data-project-section="cta"

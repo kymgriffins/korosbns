@@ -55,7 +55,7 @@ export function ProgrammesEcosystemFlywheel({
     >
       <div className="mb-10 flex flex-col gap-4 md:mb-14 md:flex-row md:items-end md:justify-between">
         <div className="max-w-2xl space-y-3">
-          <EditorialPill dot pulse variant="default">
+          <EditorialPill variant="default">
             {content?.eyebrow ?? "The Closed-Loop Ecosystem"}
           </EditorialPill>
           <h2 id="flywheel-heading" className={T.sectionTitle}>
@@ -79,10 +79,7 @@ export function ProgrammesEcosystemFlywheel({
               className="relative flex flex-col justify-between border border-border/60 bg-background p-6 transition-all hover:border-primary/50"
             >
               <div>
-                <div className="flex items-center justify-between border-b border-border/40 pb-4">
-                  <span className="font-mono text-xs font-semibold tracking-wider text-muted-foreground">
-                    {node.step}
-                  </span>
+                <div className="flex items-center justify-end border-b border-border/40 pb-4">
                   <Icon className="size-5 text-primary" aria-hidden />
                 </div>
                 <p className={cn(T.eyebrow, "mt-4 text-muted-foreground")}>

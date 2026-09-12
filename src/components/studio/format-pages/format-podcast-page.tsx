@@ -27,7 +27,7 @@ export function FormatPodcastPage({ project }: { project: StudioProjectEvidence 
     <FormatShell project={project}>
       <div className="fworld-podcast">
         <div className="fpage-flow">
-          {/* Hero — vinyl art + copy */}
+          {/* Hero - vinyl art + copy */}
           <header className="fw-podcast-hero">
             <div className="fw-podcast-vinyl">
               <Image
@@ -66,7 +66,7 @@ export function FormatPodcastPage({ project }: { project: StudioProjectEvidence 
                   </audio>
                 ) : (
                   <p className="fw-podcast-note">
-                    Full episode available on request — contact BNS Studios.
+                    Full episode available on request - contact BNS Studios.
                   </p>
                 )}
               </div>
@@ -89,7 +89,7 @@ export function FormatPodcastPage({ project }: { project: StudioProjectEvidence 
                 </p>
                 <blockquote className="fw-podcast-blockquote">
                   {project.organization.description}
-                  <cite>— {project.organization.name}</cite>
+                  <cite>- {project.organization.name}</cite>
                 </blockquote>
               </section>
 

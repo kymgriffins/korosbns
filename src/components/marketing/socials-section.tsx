@@ -187,7 +187,7 @@ export function SocialsSection() {
           ))}
         </div>
 
-        {/* Mobile: static compact list — no hover animation */}
+        {/* Mobile: static compact list - no hover animation */}
         <ul className="grid grid-cols-1 gap-2 sm:grid-cols-2 md:hidden">
           {platforms.map((platform) => {
             const Icon = platform.icon;

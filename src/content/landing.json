@@ -2,12 +2,12 @@
   "heroNarrative": {
     "eyebrow": "After Budget Day",
     "title": "The budget lands. Then the silence.",
-    "lede": "Every year the budget is read from the Treasury. Through BNS Connect we read, analyse, and interpret. In BNS Mashinani we verify in four counties. Wanahabari Lab delivers research-worthy reporting — all captured by BNS Studio."
+    "lede": "We verify Treasury claims, track four counties, and train newsrooms after Budget Day."
   },
   "thesis": {
     "eyebrow": "Who we are",
     "title": "Three bets. Year-round accountability.",
-    "body": "Budget Ndio Story verifies what Treasury and counties publish, embeds where delivery happens, and trains newsrooms to stay forensic after Budget Day — so partners fund accountability they can brief and cite.",
+    "body": "Budget Ndio Story verifies what Treasury and counties publish, embeds where delivery happens, and trains newsrooms to stay forensic after Budget Day - so partners fund accountability they can brief and cite.",
     "method": "Verify → embed → train & co-produce"
   },
   "programmeExplains": [
@@ -18,7 +18,7 @@
       "eyebrow": "Connect",
       "title": "National budget intelligence",
       "lede": "We verify what Treasury publishes and keep national debt and allocation questions alive after Budget Day.",
-      "success": "Success looks like a baseline partners can fund and cite — AFRODAD debt forums, continental panels, continuous scrutiny.",
+      "success": "Success looks like a baseline partners can fund and cite - AFRODAD debt forums, continental panels, continuous scrutiny.",
       "cycle": "Formulation → Budget Day → continuous scrutiny",
       "href": "/programmes/connect",
       "ctaLabel": "Read more",
@@ -46,7 +46,7 @@
       "eyebrow": "Mashinani",
       "title": "County delivery verification",
       "lede": "Full-cycle embeds in Kakamega, Kilifi, Nakuru, and Wajir track whether equitable share reaches clinics, roads, and schools.",
-      "success": "Success looks like scorecards, town halls, and field briefings that show delivery — not estimates alone.",
+      "success": "Success looks like scorecards, town halls, and field briefings that show delivery - not estimates alone.",
       "cycle": "Estimates → assembly → disbursement & delivery",
       "href": "/programmes/mashinani",
       "ctaLabel": "Read more",
@@ -73,9 +73,9 @@
       "name": "Wanahabari Lab",
       "eyebrow": "Wanahabari",
       "title": "Newsroom scrutiny",
-      "lede": "Training and co-production keep journalists forensic after Budget Day — when the spending story actually begins.",
-      "success": "Success looks like investigations and launches partners can brief against — Red Flags, TERRA, newsroom-ready scrutiny.",
-      "cycle": "Post–Budget Day → investigations & public narrative",
+      "lede": "Training and co-production keep journalists forensic after Budget Day - when the spending story actually begins.",
+      "success": "Success looks like investigations and launches partners can brief against - Red Flags, TERRA, newsroom-ready scrutiny.",
+      "cycle": "Post-Budget Day → investigations & public narrative",
       "href": "/programmes/wanahabari-lab",
       "ctaLabel": "Read more",
       "stillIds": [
@@ -99,12 +99,12 @@
   "featuredIntro": {
     "eyebrow": "Stories behind the evidence",
     "headline": "Projects partners can brief against",
-    "lede": "Published films and convenings — AFRODAD debt forums, Red Flags, and Project TERRA — with local event photography as cover art. Titles stay fresh from YouTube; reach claims stay off the page."
+    "lede": "Published films and convenings - AFRODAD debt forums, Red Flags, and Project TERRA - with local event photography as cover art. Titles stay fresh from YouTube; reach claims stay off the page."
   },
   "partnerCta": {
     "eyebrow": "Partner with us",
     "title": "Fund the bet that fits your mandate.",
-    "description": "Co-fund national budget intelligence, county delivery verification, or newsroom scrutiny — with production captured through BNS Studio.",
+    "description": "Co-fund national budget intelligence, county delivery verification, or newsroom scrutiny - with production captured through BNS Studio.",
     "ctaLabel": "Discuss a partnership",
     "ctaHref": "/contact?intent=partner",
     "secondaryLabel": "View programmes",
@@ -114,7 +114,7 @@
     "brand": "Budget Ndio Story",
     "headlineBefore": "Follow the budget.",
     "headlineHighlight": "Find the story.",
-    "body": "Kenya's public money moves fast, and mostly out of sight. We turn opaque fiscal policy into verified intelligence for partners, institutions, and newsrooms — nationally and in select counties.",
+    "body": "Kenya's public money moves fast, and mostly out of sight. We turn opaque fiscal policy into verified intelligence for partners, institutions, and newsrooms - nationally and in select counties.",
     "primaryCta": {
       "label": "See how programmes work",
       "href": "#explain-connect"
@@ -127,7 +127,7 @@
   },
   "storyIntro": {
     "title": "Featured programme evidence",
-    "body": "House of Fiscal Wisdom with Dr. Lyla Latif — forensic briefing on illicit financial flows, produced with Wanahabari Lab as evidence partners can brief against.",
+    "body": "House of Fiscal Wisdom with Dr. Lyla Latif - forensic briefing on illicit financial flows, produced with Wanahabari Lab as evidence partners can brief against.",
     "cta": {
       "label": "View programmes",
       "href": "/programmes"
@@ -145,12 +145,12 @@
     "seriesLabelBefore": "Featured project ·",
     "seriesHighlight": "Dr. Lyla Latif",
     "seriesLabelAfter": "House of Fiscal Wisdom",
-    "youtubeTitle": "Dr. Lyla Latif — illicit financial flows briefing (House of Fiscal Wisdom)",
+    "youtubeTitle": "Dr. Lyla Latif - illicit financial flows briefing (House of Fiscal Wisdom)",
     "youtubeEmbedKey": "youtubeEmbed"
   },
   "programmesStrip": {
     "title": "Our programmes",
-    "description": "Connect, Mashinani, and Wanahabari — with production and commissions captured through BNS Studio.",
+    "description": "Connect, Mashinani, and Wanahabari - with production and commissions captured through BNS Studio.",
     "seeMoreLabel": "Explore our programmes",
     "seeMoreHref": "/programmes",
     "exploreLabel": "Explore our programmes",
@@ -161,7 +161,7 @@
     "titleBefore": "County budgets,",
     "titleHighlight": "made to scroll",
     "titleAfter": ".",
-    "description": "Snackable explainers that meet youth where they scroll — turning county fiscal data into stories anyone can share.",
+    "description": "Snackable explainers that meet youth where they scroll - turning county fiscal data into stories anyone can share.",
     "profileUrl": "https://www.tiktok.com/@budget.ndio.story",
     "profileCta": "Follow @budget.ndio.story"
   },
@@ -191,7 +191,7 @@
     "eyebrow": "Impact production",
     "titleBefore": "Evidence by",
     "titleHighlight": "format and partner",
-    "description": "Browse commissioned podcasts, documentaries, animations, and civic campaigns organised by content type and organisation — every project helps fund Kenya's leading youth budget platform.",
+    "description": "Browse commissioned podcasts, documentaries, animations, and civic campaigns organised by content type and organisation - every project helps fund Kenya's leading youth budget platform.",
     "highlight": "Every commission is double impact: evidence-based content for your audience, with proceeds reinvested into Budget Ndio Story's civic mission.",
     "seeMoreLabel": "Browse evidence",
     "seeMoreHref": "/bns-studio",
@@ -211,7 +211,7 @@
     "eyebrow": "Stay connected",
     "titleBefore": "Find us where",
     "titleHighlight": "you already scroll",
-    "description": "Hover a channel to see the handle and what we post — then follow in one click.",
+    "description": "Hover a channel to see the handle and what we post - then follow in one click.",
     "seeMoreLabel": "Follow on TikTok",
     "seeMoreHref": "https://www.tiktok.com/@budget.ndio.story"
   },
@@ -271,7 +271,7 @@
       "caption": "Town hall · Mashinani",
       "programme": "mashinani",
       "storyTitle": "Hall full of questions",
-      "storyLine": "Desks filled, camera rolling — a May town hall listens from the back row.",
+      "storyLine": "Desks filled, camera rolling - a May town hall listens from the back row.",
       "visible": true
     },
     {
@@ -291,7 +291,7 @@
       "caption": "Floor briefing · Mashinani",
       "programme": "mashinani",
       "storyTitle": "Mic and estimates",
-      "storyLine": "Papers in hand, mic open — the briefing stays close to the room.",
+      "storyLine": "Papers in hand, mic open - the briefing stays close to the room.",
       "visible": true
     },
     {
@@ -311,7 +311,7 @@
       "caption": "Field capture · Wanahabari",
       "programme": "wanahabari-lab",
       "storyTitle": "Recording the room",
-      "storyLine": "Gimbal up — the convening is filmed as it happens.",
+      "storyLine": "Gimbal up - the convening is filmed as it happens.",
       "visible": true
     },
     {
@@ -321,7 +321,7 @@
       "caption": "James Maingi Mutinda · AFRODAD",
       "programme": "connect",
       "storyTitle": "Debt on the record",
-      "storyLine": "James Maingi Mutinda at AFRODAD — a continental forum, held for the brief.",
+      "storyLine": "James Maingi Mutinda at AFRODAD - a continental forum, held for the brief.",
       "visible": true
     },
     {
@@ -331,7 +331,7 @@
       "caption": "Prof. George Wajackoyah · AFRODAD",
       "programme": "connect",
       "storyTitle": "Panel under the brief",
-      "storyLine": "Wajackoyah on the mic — Read. Understand. Change the outcome.",
+      "storyLine": "Wajackoyah on the mic - Read. Understand. Change the outcome.",
       "visible": true
     },
     {
@@ -341,7 +341,7 @@
       "caption": "Dr. Lyla Latif · Red Flags",
       "programme": "wanahabari-lab",
       "storyTitle": "Red Flags in the room",
-      "storyLine": "Dr. Lyla Latif — AFRODAD week, Red Flags launch, mic still live.",
+      "storyLine": "Dr. Lyla Latif - AFRODAD week, Red Flags launch, mic still live.",
       "visible": true
     },
     {

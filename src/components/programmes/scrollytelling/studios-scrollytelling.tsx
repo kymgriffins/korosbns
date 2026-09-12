@@ -29,7 +29,7 @@ const STUDIOS_BEATS: NarrativeBeat[] = [
     title: "Civic scrutiny should not vanish when a grant year ends.",
     paragraphs: [
       "Too many accountability projects live on twelve-month funding cycles. When priorities pivot, the cameras pack up and the scorecards stop printing.",
-      "BNS Studios is the production house that sells podcasts, documentaries, motion graphics, and town-hall broadcasts to governments, partners, companies, and CSOs — so civic work is not wholly hostage to a single donor calendar.",
+      "BNS Studios is the production house that sells podcasts, documentaries, motion graphics, and town-hall broadcasts to governments, partners, companies, and CSOs - so civic work is not wholly hostage to a single donor calendar.",
       "A portion of Studios operating surplus funds Budget Ndio Story programmes: national tracking, county embeds, and newsroom labs. That covenant is the point of the desk.",
     ],
     quote: {
@@ -51,7 +51,7 @@ const STUDIOS_BEATS: NarrativeBeat[] = [
     eyebrow: "The craft standard",
     title: "We do not ship shelfware PDFs. We produce media people finish.",
     paragraphs: [
-      "Opacity thrives when truth is boring. Dry reports compete with WhatsApp rumours — and rumours usually win.",
+      "Opacity thrives when truth is boring. Dry reports compete with WhatsApp rumours - and rumours usually win.",
       "Studios treats fiscal stories like cinema and radio: bilingual sound, motion that clarifies rather than decorates, and cuts short enough for a feed without stripping the source citation.",
       "Flagship explainers such as Budget Sasa ni Delivery are built from published Treasury tables. Reach is measured; figures are never invented for shareability.",
     ],
@@ -74,7 +74,7 @@ const STUDIOS_BEATS: NarrativeBeat[] = [
     eyebrow: "The commission letter",
     title: "Your film or forum also bankrolls the next scorecard.",
     paragraphs: [
-      "When a development partner, county, or coalition commissions a documentary, podcast season, or multi-camera town hall, they receive broadcast-quality delivery — and help keep civic programmes running after the invoice clears.",
+      "When a development partner, county, or coalition commissions a documentary, podcast season, or multi-camera town hall, they receive broadcast-quality delivery - and help keep civic programmes running after the invoice clears.",
       "That is the double job of Studios: craft for the client's audience, surplus for Connect, Mashinani, and Wanahabari Lab.",
       "Editorial independence stays non-negotiable. We will not invent budget numbers to flatter a brief, and we label unavailable figures as unavailable.",
     ],
@@ -167,7 +167,7 @@ const STUDIOS_GALLERY_ITEMS: GalleryItem[] = [
 export function StudiosScrollytelling() {
   return (
     <article className="min-h-screen bg-background text-foreground selection:bg-primary/20">
-      {/* 00 — PERSISTENT LOCOMOTIVE-GRADE TECHNICAL HUD */}
+      {/* 00 - PERSISTENT LOCOMOTIVE-GRADE TECHNICAL HUD */}
       <TelemetryHUD
         activeDesk="BNS STUDIOS"
         focusArea="CRAFT COMMISSIONS & CIVIC SURPLUS"
@@ -205,7 +205,7 @@ export function StudiosScrollytelling() {
 
             <div className="max-w-3xl">
               <TextRevealOnScroll
-                text="Commission podcasts, documentaries, motion graphics, and town halls from a studio that is fluent in public finance — and routes a portion of surplus into Budget Ndio Story's civic programmes."
+                text="Commission podcasts, documentaries, motion graphics, and town halls from a studio that is fluent in public finance - and routes a portion of surplus into Budget Ndio Story's civic programmes."
                 by="word"
                 as="p"
                 className="text-xl sm:text-2xl font-medium text-foreground/80 leading-relaxed"
@@ -261,14 +261,14 @@ export function StudiosScrollytelling() {
         </div>
       </header>
 
-      {/* 02 — THE NARRATIVE SCROLLYTELLING CANVAS */}
+      {/* 02 - THE NARRATIVE SCROLLYTELLING CANVAS */}
       <section className="border-b border-border/40 pb-16">
         <div className={SECTION_SHELL_INNER}>
           <NarrativeScrollytellingCanvas beats={STUDIOS_BEATS} mediaPosition="right" />
         </div>
       </section>
 
-      {/* 03 — 3X3 KINETIC EXPANDING PRODUCTION DESK GALLERY */}
+      {/* 03 - 3X3 KINETIC EXPANDING PRODUCTION DESK GALLERY */}
       <section className="border-b border-border/40 bg-zinc-950 text-white overflow-hidden py-12 md:py-16">
         <div className={SECTION_SHELL_INNER}>
           <ScrollGallery
@@ -277,12 +277,12 @@ export function StudiosScrollytelling() {
             playThreshold={0.65}
             eyebrow="PRODUCTION SUITE"
             headline="Nine craft surfaces. One civic job."
-            subheadline="Scroll to expand the production suite — audio, cinema, motion, and live convenings that keep public-finance stories watchable."
+            subheadline="Scroll to expand the production suite - audio, cinema, motion, and live convenings that keep public-finance stories watchable."
           />
         </div>
       </section>
 
-      {/* 04 — INTERACTIVE CINEMA TIMELINE & FORMAT SPECTRUM */}
+      {/* 04 - INTERACTIVE CINEMA TIMELINE & FORMAT SPECTRUM */}
       <section className="border-b border-border/40 py-16">
         <div className={SECTION_SHELL_INNER}>
           <CinemaTimelineStage />
@@ -296,7 +296,7 @@ export function StudiosScrollytelling() {
         description="Pan-African documentaries, podcast seasons, and broadcast event coverage supporting public-interest civic tracking."
       />
 
-      {/* 03 — COMMERCIAL INTAKE CALLOUT BAND */}
+      {/* 03 - COMMERCIAL INTAKE CALLOUT BAND */}
       <section className="py-16 md:py-24">
         <div className={SECTION_SHELL_INNER}>
           <div className="rounded-3xl bg-zinc-950 text-white p-8 sm:p-12 md:p-16 border border-zinc-800 relative overflow-hidden">
@@ -310,7 +310,7 @@ export function StudiosScrollytelling() {
                 Commission the craft. Fuel the civic work.
               </h2>
               <p className="text-zinc-300 text-base sm:text-lg leading-relaxed">
-                Whether you need a podcast season, a nationwide town-hall broadcast, or motion graphics that explain a reform without inventing figures — Studios delivers verified broadcast quality.
+                Whether you need a podcast season, a nationwide town-hall broadcast, or motion graphics that explain a reform without inventing figures - Studios delivers verified broadcast quality.
               </p>
 
               <div className="pt-4 flex flex-col sm:flex-row items-stretch sm:items-center gap-3">

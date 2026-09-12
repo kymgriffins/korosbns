@@ -26,7 +26,7 @@ export function FormatDossierPage({
     <FormatShell project={project}>
       <div className="fworld-dossier">
         <div className="fpage-flow">
-          {/* Document header — classified style */}
+          {/* Document header - classified style */}
           <header className="fw-dossier-header">
             <span className="fw-dossier-header-stamp">Research spotlight</span>
             <h1 className="fw-dossier-header-title">{project.title}</h1>
@@ -124,7 +124,7 @@ export function FormatDossierPage({
 
           <FormatCta
             title="Need dossiers like this?"
-            line="Institutional research, translated for real audiences — tell us what needs digesting."
+            line="Institutional research, translated for real audiences - tell us what needs digesting."
           />
           <FormatRelated project={project} />
         </div>

@@ -45,7 +45,7 @@ export const PROJECT_TERRA_METADATA = {
   title: "Project TERRA",
   fullTitle: "Project TERRA: Technology, Equality, Regulatory Risk Assessment",
   acronym: "Technology, Equality, Regulatory Risk Assessment",
-  timeframe: "2026 – 2027 (Two-Year Programme)",
+  timeframe: "2026 - 2027 (Two-Year Programme)",
   leadInvestigator: {
     name: "Dr. Lyla Latif",
     role: "Principal Investigator & Director",
@@ -105,7 +105,7 @@ export const PROJECT_TERRA_METADATA = {
       title: "Proactive Regulatory Sandbox Design",
       subtitle: "The Kenya Data Centre Risk Assessment Sandbox Pilot",
       tag: "Governance & Accountability",
-      body: "Inverts the traditional failed regulatory cycle—where rigid or captured laws are drafted after harm has already crystallized. The Kenya Data Centre Risk Assessment Sandbox establishes a live, empirical testing ground allowing regulators, parliamentarians, and civil society to stress-test fiscal accountability, resource consumption metrics, and labor standards before policy is codified into permanent legislation.",
+      body: "Inverts the traditional failed regulatory cycle-where rigid or captured laws are drafted after harm has already crystallized. The Kenya Data Centre Risk Assessment Sandbox establishes a live, empirical testing ground allowing regulators, parliamentarians, and civil society to stress-test fiscal accountability, resource consumption metrics, and labor standards before policy is codified into permanent legislation.",
       keyQuestions: [
         "Can regulatory sandboxes prevent regulatory capture by multinational tech lobbies?",
         "What audit telemetry is required to verify platform compliance in real time?",
@@ -176,7 +176,7 @@ export const PROJECT_TERRA_METADATA = {
       scale: "Largest on-demand home cleaning platform in South Africa",
       demographics: "Predominantly Black women workers serving urban households",
       finding:
-        "Traces how algorithmically determined cancellation penalties, platform service deductions, and independent contractor classification leave workers in a fiscal vacuum—generating high platform commissions with zero social security or UIF contributions.",
+        "Traces how algorithmically determined cancellation penalties, platform service deductions, and independent contractor classification leave workers in a fiscal vacuum-generating high platform commissions with zero social security or UIF contributions.",
     },
     {
       title: "East African Cross-Border Labor & Tech Corridor",

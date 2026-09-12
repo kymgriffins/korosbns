@@ -61,7 +61,7 @@ export const MEGA_MENU_DATA: MegaMenuSection[] = [
     ctaHref: "/programmes",
     featured: {
       title: "Partner-ready accountability",
-      description: "National tracking, county depth, and newsroom capacity — evidence captured through BNS Studio.",
+      description: "National tracking, county depth, and newsroom capacity - evidence captured through BNS Studio.",
       badge: "Programmes",
       href: "/programmes",
     },

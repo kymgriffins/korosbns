@@ -33,7 +33,7 @@ export function StudioAboutPage() {
 
   return (
     <div className="studio-about-page studio-about-borderless">
-      {/* 01 — Hero: studio statement */}
+      {/* 01 - Hero: studio statement */}
       <section className="studio-about-section studio-about-hero-v2">
         <div className="studio-about-copy">
           <p className="studio-about-eyebrow">{studios.eyebrow}</p>
@@ -70,13 +70,13 @@ export function StudioAboutPage() {
         ) : null}
       </section>
 
-      {/* 02 — Audio & visual craft: the 4 reel formats */}
+      {/* 02 - Audio & visual craft: the 4 reel formats */}
       <section className="studio-about-section studio-about-craft">
         <div className="studio-about-section-head">
           <p className="studio-about-index">01 / Craft</p>
           <h2 className="studio-about-h2">Audio & visuals, done properly.</h2>
           <p className="studio-about-standfirst">
-            Four formats carry the landing reel — bilingual audio, motion
+            Four formats carry the landing reel - bilingual audio, motion
             explainers, and cinematic documentary. Everything else lives in
             featured work.
           </p>
@@ -87,7 +87,7 @@ export function StudioAboutPage() {
               <div className="studio-about-craft-media">
                 <Image
                   src={service.image}
-                  alt={`${service.name} — BNS Studios`}
+                  alt={`${service.name} - BNS Studios`}
                   fill
                   className="object-cover object-center"
                   sizes="(max-width: 768px) 100vw, 25vw"
@@ -104,13 +104,13 @@ export function StudioAboutPage() {
         </div>
       </section>
 
-      {/* 03 — In the field: image-led production story */}
+      {/* 03 - In the field: image-led production story */}
       <section className="studio-about-section studio-about-field">
         <div className="studio-about-section-head">
           <p className="studio-about-index">02 / In the field</p>
           <h2 className="studio-about-h2">Shot on location. Cut in studio.</h2>
           <p className="studio-about-standfirst">
-            Town halls, county forums, youth cohorts, and interview rooms —
+            Town halls, county forums, youth cohorts, and interview rooms -
             the raw material behind every commission.
           </p>
         </div>
@@ -144,7 +144,7 @@ export function StudioAboutPage() {
         ) : null}
       </section>
 
-      {/* 04 — Why BNS: editorial text + double impact */}
+      {/* 04 - Why BNS: editorial text + double impact */}
       <section className="studio-about-section studio-about-why">
         <div className="studio-about-why-copy">
           <p className="studio-about-index">03 / Why BNS</p>
@@ -163,13 +163,13 @@ export function StudioAboutPage() {
             </div>
             <div className="studio-about-stat">
               <p className="studio-about-stat-num">2×</p>
-              <p className="studio-about-stat-label">Double impact — content for you, funding for civic media</p>
+              <p className="studio-about-stat-label">Double impact - content for you, funding for civic media</p>
             </div>
           </div>
           <p className="studio-about-body-sm">
             Governments meeting participation mandates, development partners
             pursuing localisation, companies delivering ESG, and CSOs without
-            in-house capacity — one studio, fluent in strategy and production.
+            in-house capacity - one studio, fluent in strategy and production.
           </p>
         </div>
         <div className="studio-about-why-visuals">
@@ -194,13 +194,13 @@ export function StudioAboutPage() {
         </div>
       </section>
 
-      {/* 05 — Commission */}
+      {/* 05 - Commission */}
       <section id="contact" className="studio-about-section studio-about-contact-v2">
         <div className="studio-about-contact-copy">
           <p className="studio-about-index">04 / Commission</p>
           <h2 className="studio-about-h2">Tell us what you need to move.</h2>
           <p className="studio-about-standfirst">
-            Podcasts, explainers, town halls, or full campaigns — we respond
+            Podcasts, explainers, town halls, or full campaigns - we respond
             with scope and timeline.
           </p>
           <div className="studio-about-hero-ctas">

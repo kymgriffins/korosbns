@@ -130,7 +130,7 @@ export default function NewsletterPopup() {
                 <Alert variant="default" className="border-amber-500/30 bg-amber-500/5">
                   <Inbox className="size-4 text-amber-600" />
                   <AlertDescription className="text-amber-800 dark:text-amber-200">
-                    <span className="font-semibold">Don&apos;t see our email?</span> Check your <strong>Spam</strong> or <strong>Junk</strong> folder — sometimes our messages land there. Mark us as &ldquo;Not Spam&rdquo; so you never miss an update.
+                    <span className="font-semibold">Don&apos;t see our email?</span> Check your <strong>Spam</strong> or <strong>Junk</strong> folder - sometimes our messages land there. Mark us as &ldquo;Not Spam&rdquo; so you never miss an update.
                   </AlertDescription>
                 </Alert>
                 <div className="pt-2">

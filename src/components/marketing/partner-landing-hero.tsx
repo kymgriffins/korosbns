@@ -13,11 +13,13 @@ import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import {
   PARTNER_HERO_NARRATIVE,
   PARTNER_HERO_PROGRAMME_LINES,
+  PARTNER_LANDING_CTA,
   PARTNER_LANDING_STILLS,
   resolvePartnerHeroNarrative,
   type PartnerLandingStill,
 } from "@/content/partner-landing";
 import { fadeIn } from "@/motion/variants";
+import { motionEnabled } from "@/lib/design-dials";
 import styles from "./partner-landing-hero.module.css";
 
 const AUTO_MS = 6500;
@@ -31,31 +33,47 @@ export interface PartnerLandingHeroProps {
   };
   stills?: PartnerLandingStill[];
   programmeLines?: Array<{ slug: string; label: string; href: string }>;
+  primaryCta?: { label: string; href: string };
+  secondaryCta?: { label: string; href: string };
 }
 
 /**
- * Partner homepage hero — project reel under the marketing nav.
- * One viewport: fixed narrative + rotating evidence + bottom-left programme anchors.
+ * Partner homepage hero - project reel under the marketing nav.
+ * One viewport: fixed narrative, CTA above the fold, rotating evidence.
  */
 export default function PartnerLandingHero({
   heroNarrative,
   stills,
   programmeLines,
+  primaryCta,
+  secondaryCta,
 }: PartnerLandingHeroProps = {}) {
   const activeProgrammeLines =
-    (programmeLines && programmeLines.length > 0)
+    programmeLines && programmeLines.length > 0
       ? programmeLines
-      : (Array.isArray((heroNarrative as any)?.programmeLines) && (heroNarrative as any).programmeLines.length > 0)
-      ? (heroNarrative as any).programmeLines
-      : PARTNER_HERO_PROGRAMME_LINES;
+      : Array.isArray((heroNarrative as { programmeLines?: unknown })?.programmeLines) &&
+          ((heroNarrative as { programmeLines: Array<{ slug: string; label: string; href: string }> }).programmeLines
+            .length > 0)
+        ? (heroNarrative as { programmeLines: Array<{ slug: string; label: string; href: string }> }).programmeLines
+        : PARTNER_HERO_PROGRAMME_LINES;
   const candidateSlides = stills && stills.length > 0 ? stills : PARTNER_LANDING_STILLS;
   const visibleSlides = candidateSlides.filter((s) => s.visible !== false);
   const slides = visibleSlides.length > 0 ? visibleSlides : candidateSlides;
   const reduceMotion = useReducedMotion();
+  const canAnimate = motionEnabled(reduceMotion);
   const [index, setIndex] = useState(0);
   const [paused, setPaused] = useState(false);
   const pointerStart = useRef<{ x: number; y: number } | null>(null);
   const current = slides[index];
+
+  const primary = {
+    label: primaryCta?.label ?? PARTNER_LANDING_CTA.ctaLabel,
+    href: primaryCta?.href ?? PARTNER_LANDING_CTA.ctaHref,
+  };
+  const secondary = {
+    label: secondaryCta?.label ?? PARTNER_LANDING_CTA.secondaryLabel,
+    href: secondaryCta?.href ?? PARTNER_LANDING_CTA.secondaryHref,
+  };
 
   const goTo = useCallback(
     (next: number) => {
@@ -77,10 +95,10 @@ export default function PartnerLandingHero({
   }, [next, prev]);
 
   useEffect(() => {
-    if (reduceMotion || paused) return;
+    if (!canAnimate || paused) return;
     const id = window.setTimeout(() => next(), AUTO_MS);
     return () => window.clearTimeout(id);
-  }, [index, next, paused, reduceMotion]);
+  }, [index, next, paused, canAnimate]);
 
   const onPointerDown = (e: ReactPointerEvent) => {
     pointerStart.current = { x: e.clientX, y: e.clientY };
@@ -122,9 +140,9 @@ export default function PartnerLandingHero({
           key={current.id}
           className={styles["partner-reel-slide"]}
           variants={fadeIn}
-          initial={reduceMotion ? false : "hidden"}
+          initial={canAnimate ? "hidden" : false}
           animate="visible"
-          exit={reduceMotion ? undefined : "hidden"}
+          exit={canAnimate ? "hidden" : undefined}
           onPointerDown={onPointerDown}
           onPointerUp={onPointerUp}
           onPointerCancel={() => {
@@ -156,24 +174,44 @@ export default function PartnerLandingHero({
           <p className={styles["partner-reel-eyebrow"]}>{eyebrow}</p>
           <h1 className={styles["partner-reel-title"]}>{title}</h1>
           <p className={styles["partner-reel-lede"]}>{lede}</p>
+          <div className={styles["partner-reel-cta"]}>
+            <Link
+              href={primary.href}
+              className={styles["partner-reel-cta-primary"]}
+              onClick={(e) => e.stopPropagation()}
+            >
+              {primary.label}
+            </Link>
+            <Link
+              href={secondary.href}
+              className={styles["partner-reel-cta-secondary"]}
+              onClick={(e) => e.stopPropagation()}
+            >
+              {secondary.label}
+            </Link>
+          </div>
         </div>
 
-        <AnimatePresence mode="wait">
-          <motion.p
-            key={current.id}
-            className={styles["partner-reel-caption"]}
-            variants={fadeIn}
-            initial={reduceMotion ? false : "hidden"}
-            animate="visible"
-            exit={reduceMotion ? undefined : "hidden"}
-          >
-            {current.storyTitle}
-          </motion.p>
-        </AnimatePresence>
+        {canAnimate ? (
+          <AnimatePresence mode="wait">
+            <motion.p
+              key={current.id}
+              className={styles["partner-reel-caption"]}
+              variants={fadeIn}
+              initial="hidden"
+              animate="visible"
+              exit="hidden"
+            >
+              {current.storyTitle}
+            </motion.p>
+          </AnimatePresence>
+        ) : (
+          <p className={styles["partner-reel-caption"]}>{current.storyTitle}</p>
+        )}
       </div>
 
       <nav className={styles["partner-reel-programmes"]} aria-label="Three programmes">
-        {activeProgrammeLines.map((item: any) => {
+        {activeProgrammeLines.map((item) => {
           const active = current.programme === item.slug;
           return (
             <Link

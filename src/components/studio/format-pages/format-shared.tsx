@@ -69,7 +69,7 @@ export function FormatCta({
       <h2 className="studio-about-h2-xl">{title}</h2>
       <p className="studio-about-standfirst">
         {line ??
-          "Tell us your story, audience, and timeline — we respond with scope, references, and a production plan."}
+          "Tell us your story, audience, and timeline - we respond with scope, references, and a production plan."}
       </p>
       <div className="studio-about-hero-ctas">
         <Link href="/bns-studio/about#contact" className="studio-about-cta">

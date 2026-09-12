@@ -105,7 +105,7 @@ function MenuPanel({ isOpen, setIsOpen, navConfig }: Props) {
     <AnimatePresence>
       {isOpen && (
         <>
-          {/* Backdrop — same for all screen sizes */}
+          {/* Backdrop - same for all screen sizes */}
           <motion.div
             key="backdrop"
             initial={{ opacity: 0 }}

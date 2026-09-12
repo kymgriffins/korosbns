@@ -24,7 +24,7 @@ type FeaturedProjectsSectionProps = {
 };
 
 /**
- * Partner landing featured evidence — prose + local event cover stills (no card chrome).
+ * Partner landing featured evidence - prose + local event cover stills (no card chrome).
  * YouTube URLs stay for playback; cover art is high-quality local photography.
  */
 export function FeaturedProjectsSection({

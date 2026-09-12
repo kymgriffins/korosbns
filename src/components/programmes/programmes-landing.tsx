@@ -49,7 +49,7 @@ export type ProgrammesLandingProps = {
 };
 
 /**
- * Programmes hub — Rockefeller-clarity partner architecture:
+ * Programmes hub - Rockefeller-clarity partner architecture:
  * Hero → Ecosystem Flywheel → Three Big Bets (Investor Matrix) → Featured Projects → CTA
  * BNS Studio is separate at /bns-studio.
  */
@@ -79,7 +79,7 @@ export function ProgrammesLanding({
           <div className={SECTION_SHELL_INNER}>
             <div className="grid grid-cols-1 items-start gap-10 lg:grid-cols-12 lg:gap-16">
               <div className="flex flex-col items-start gap-4 lg:col-span-5">
-                <EditorialPill dot pulse variant="default">
+                <EditorialPill variant="default">
                   Programmes ·
                 </EditorialPill>
                 <h1

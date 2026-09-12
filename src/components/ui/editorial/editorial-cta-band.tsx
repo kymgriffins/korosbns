@@ -34,7 +34,7 @@ const THEME_CLASSES: Record<string, string> = {
 };
 
 /**
- * Full-bleed minimal CTA band — square edges, page-width surface, pills only.
+ * Full-bleed minimal CTA band - square edges, page-width surface, pills only.
  */
 export function EditorialCtaBand({
   eyebrow = "Start now",

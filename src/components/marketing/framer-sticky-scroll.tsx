@@ -239,7 +239,7 @@ export default function FramerStickyScroll() {
       title: "Townhalls at 10 AM on weekdays?",
       subtitle: "Unreachable Public Hearings",
       description:
-        "County assemblies hold constitutional public hearings during working hours, excluding the youth demographic (18–34). Budget Ndio Story provides hyper-local alerts and digital templates to file submissions anytime.",
+        "County assemblies hold constitutional public hearings during working hours, excluding the youth demographic (18-34). Budget Ndio Story provides hyper-local alerts and digital templates to file submissions anytime.",
       visual: (
         <div className="relative w-full h-full rounded-2xl bg-card border border-border p-6 flex flex-col justify-between overflow-hidden">
           <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px] pointer-events-none" />

@@ -258,7 +258,7 @@ export default function Contact() {
               <div className="text-center">
                 <h2 className="text-lg font-semibold">Ready to collaborate?</h2>
                 <p className="text-sm text-foreground/60 mt-1">
-                  Send us a message — we read every one.
+                  Send us a message - we read every one.
                 </p>
               </div>
 

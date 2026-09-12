@@ -18,7 +18,7 @@ export interface PartnerLandingThesisProps {
 }
 
 /**
- * Thin thesis + who/how band — RF “Big Bets” clarity without dashboard chrome.
+ * Thin thesis + who/how band - RF “Big Bets” clarity without dashboard chrome.
  * Sits between hero reel and the three numbered programme bets.
  */
 export function PartnerLandingThesis({ thesis }: PartnerLandingThesisProps = {}) {

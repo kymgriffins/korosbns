@@ -70,7 +70,7 @@ export function ProgrammesFaq() {
         <div className="grid grid-cols-1 gap-10 lg:grid-cols-12 lg:gap-14">
           {/* Left Column: Desk Briefing */}
           <div className="space-y-5 self-start lg:sticky lg:top-28 lg:col-span-5">
-            <EditorialPill dot pulse variant="default">
+            <EditorialPill variant="default">
               Due Diligence & Governance
             </EditorialPill>
             <h2 id="faq-heading" className={T.sectionTitle}>

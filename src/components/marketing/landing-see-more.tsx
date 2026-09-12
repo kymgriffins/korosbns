@@ -12,7 +12,7 @@ type LandingSeeMoreProps = {
 };
 
 /**
- * Canonical landing section CTA — editorial pill + arrow companion.
+ * Canonical landing section CTA - editorial pill + arrow companion.
  */
 export function LandingSeeMore({
   href,

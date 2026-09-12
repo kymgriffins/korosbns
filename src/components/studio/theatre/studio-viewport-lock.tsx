@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 
-/** Locks document scroll — for full-viewport studio home reel. */
+/** Locks document scroll - for full-viewport studio home reel. */
 export function StudioViewportLock({ active }: { active: boolean }) {
   useEffect(() => {
     if (!active) return;

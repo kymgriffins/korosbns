@@ -45,7 +45,7 @@ type StudioBookingFormProps = {
 };
 
 /**
- * Commission enquiry form — click-to-reveal only.
+ * Commission enquiry form - click-to-reveal only.
  * Controlled usage renders nothing inline until opened (dialog overlay),
  * so embedding sections never pay whitespace for a hidden form.
  */
@@ -172,7 +172,7 @@ export function StudioBookingForm({ open, onOpenChange }: StudioBookingFormProps
                     Start your impact production
                   </h2>
                   <p className="studio-booking-dialog-lede">
-                    Share goals, format, and timeline — we respond with an
+                    Share goals, format, and timeline - we respond with an
                     evidence treatment and quote within 24 hours.
                   </p>
                 </div>

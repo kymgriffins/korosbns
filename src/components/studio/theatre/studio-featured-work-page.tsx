@@ -128,7 +128,7 @@ export function StudioFeaturedWorkPage() {
 
   return (
     <div className="min-h-screen bg-background text-foreground transition-colors selection:bg-primary/20">
-      {/* 01 — Sovereign Hero Header */}
+      {/* 01 - Sovereign Hero Header */}
       <section className="border-b border-border/40 bg-linear-to-b from-primary/5 via-muted/20 to-background pt-16 pb-6 sm:pt-24 sm:pb-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
           <GsapReveal className="space-y-4">
@@ -145,7 +145,7 @@ export function StudioFeaturedWorkPage() {
             </p>
           </GsapReveal>
 
-          {/* 02 — Programme filters with live counts */}
+          {/* 02 - Programme filters with live counts */}
           <GsapReveal delay={0.1} className="pt-2">
             <div className="flex items-center gap-2 overflow-x-auto scrollbar-hide py-1">
               {PROGRAMME_FILTERS.map((filter) => {
@@ -183,7 +183,7 @@ export function StudioFeaturedWorkPage() {
         </div>
       </section>
 
-      {/* 03 — Minimalist Search & Filter Strip */}
+      {/* 03 - Minimalist Search & Filter Strip */}
       <section ref={searchContainerRef} className="sticky top-14 md:top-16 z-30 border-b border-border/40 bg-background/90 backdrop-blur-md py-3 sm:py-4">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-3">
           <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-3">
@@ -328,7 +328,7 @@ export function StudioFeaturedWorkPage() {
         </div>
       </section>
 
-      {/* 04 — Evidence Dossiers List */}
+      {/* 04 - Evidence Dossiers List */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         {filtered.length > 0 ? (
           <GsapStaggerReveal itemSelector="[data-gsap-row]" className="space-y-4">

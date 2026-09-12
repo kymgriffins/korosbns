@@ -41,7 +41,7 @@ const PAGE_ID_BY_SLUG: Record<Exclude<ProgrammeSlug, "studios">, string> = {
 /**
  * Shared landing-format layout for civic programmes (Connect, Mashinani, Wanahabari).
  * Spine: Hero → body → projects → other programmes → CTA.
- * Quiet editorial surface — hairlines, flat imagery, no card chrome.
+ * Quiet editorial surface - hairlines, flat imagery, no card chrome.
  * BNS Studio is separate at /bns-studio. Legacy scrollytelling kept, not rendered.
  */
 export function ProgrammeLandingLayout({
@@ -81,7 +81,7 @@ export function ProgrammeLandingLayout({
           <div className={SECTION_SHELL_INNER}>
             <div className="grid grid-cols-1 items-start gap-10 lg:grid-cols-12 lg:gap-16">
               <div className="flex flex-col items-start gap-4 lg:col-span-5">
-                <EditorialPill dot pulse variant="default">
+                <EditorialPill variant="default">
                   {programme.eyebrow}
                 </EditorialPill>
                 <p className={cn(T.caption, "font-semibold uppercase tracking-wider text-muted-foreground")}>
@@ -348,7 +348,7 @@ export function ProgrammeLandingLayout({
               </h2>
             </div>
             <p className={cn(T.lead, "max-w-sm md:text-right")}>
-              Same format across Connect, Mashinani, and Wanahabari — pick the next programme.
+              Same format across Connect, Mashinani, and Wanahabari - pick the next programme.
             </p>
           </div>
           <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-3 lg:gap-12">

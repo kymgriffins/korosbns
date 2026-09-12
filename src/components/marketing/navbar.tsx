@@ -3,7 +3,7 @@
 import { cn } from "@/utils";
 import { MenuIcon, XIcon, LogOut } from "lucide-react";
 import Link from "next/link";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Routes } from "@/constants";
 import MobileMenu from "./mobile-menu";
@@ -79,165 +79,154 @@ const Navbar = () => {
 
   return (
     <div className="relative w-full h-full">
-      {/* Light top scrim — hero stays visible under fixed nav */}
-      <div
-        className={cn(
-          "z-[99] fixed pointer-events-none inset-x-0 h-[96px] transition-[background-color,backdrop-filter] duration-300",
-          "backdrop-blur-[6px]",
-          "[mask:linear-gradient(to_bottom,#000_12%,transparent_100%)]",
-          scrolled ? "bg-background/35" : "bg-background/20"
-        )}
-        aria-hidden
-      />
-
-      {/* Navbar bar — fixed top; borderless chrome over hero */}
+      {/* Single-line desktop bar, max 80px tall */}
       <motion.header
         variants={navbarEnter}
         initial="hidden"
         animate="visible"
         className={cn(
-          "fixed top-4 inset-x-0 mx-auto max-w-6xl px-2 md:px-12 z-[100]",
-          "transition-[height] duration-300 ease-in-out",
-          isOpen ? "h-14 md:h-16" : "h-14 md:h-16"
+          "fixed top-0 inset-x-0 z-[100] h-14 max-h-20 md:h-16",
+          "border-b border-border/20 backdrop-blur-md transition-colors duration-300",
+          scrolled ? "bg-background/80" : "bg-background/45",
         )}
       >
         <div
           ref={ref}
-          className="h-full flex flex-col relative bg-transparent"
+          className="mx-auto flex h-full max-w-6xl flex-row flex-nowrap items-center justify-between gap-3 px-4 md:px-8"
         >
-          <div className="flex items-center justify-between w-full px-4 min-h-14 md:min-h-16 shrink-0">
-            {/* Logo */}
-            <div className="flex items-center flex-1">
-              <Link href={navConfig.logo?.href || Routes.Home} className="flex items-center gap-2 group">
-                <motion.div
-                  whileHover={{ scale: 1.04 }}
-                  whileTap={{ scale: 0.97 }}
-                  transition={{ duration: 0.3, ease: [0.25, 0.4, 0, 1] }}
-                >
-                  <Image
-                    src={navConfig.logo?.src || "/logo.svg"}
-                    alt={navConfig.logo?.alt || "Budget Ndio Story"}
-                    width={180}
-                    height={50}
-                    className="w-auto h-8 lg:h-10 transition-all group-hover:brightness-110 drop-shadow-[0_1px_10px_hsl(0_0%_0%/0.35)]"
-                    priority
-                  />
-                </motion.div>
-              </Link>
-            </div>
+          <div className="flex min-w-0 shrink-0 items-center">
+            <Link href={navConfig.logo?.href || Routes.Home} className="flex items-center gap-2 group">
+              <motion.div
+                whileHover={{ scale: 1.04 }}
+                whileTap={{ scale: 0.97 }}
+                transition={{ duration: 0.3, ease: [0.25, 0.4, 0, 1] }}
+              >
+                <Image
+                  src={navConfig.logo?.src || "/logo.svg"}
+                  alt={navConfig.logo?.alt || "Budget Ndio Story"}
+                  width={180}
+                  height={40}
+                  className="h-8 w-auto lg:h-9 transition-all group-hover:brightness-110"
+                  priority
+                />
+              </motion.div>
+            </Link>
+          </div>
 
-            {/* Center Desktop Navigation */}
-            <nav className="hidden lg:flex items-center gap-1 xl:gap-2 mr-4" aria-label="Desktop primary navigation">
-              {(navConfig.navLinks || []).map((link: any) => (
+          <nav
+            className="hidden min-w-0 flex-1 lg:flex items-center justify-center gap-0.5 xl:gap-1 whitespace-nowrap overflow-x-auto"
+            aria-label="Desktop primary navigation"
+          >
+            {(navConfig.navLinks || []).map(
+              (link: { id?: string; href: string; label: string }) => (
                 <Link
                   key={link.id || link.href}
                   href={link.href}
-                  className="px-3.5 py-1.5 text-sm font-medium text-foreground drop-shadow-[0_1px_8px_hsl(0_0%_0%/0.25)] hover:text-primary hover:bg-muted/40 transition-colors inline-flex items-center gap-1.5 rounded-full"
+                  className="px-2.5 py-1.5 text-sm font-medium text-foreground hover:text-primary transition-colors inline-flex items-center rounded-md"
                 >
-                  <span>{link.label}</span>
-                  {link.badge && (
-                    <span className="rounded-full bg-primary/15 px-1.5 py-0.5 text-[10px] font-semibold text-primary">
-                      {link.badge}
-                    </span>
-                  )}
+                  {link.label}
                 </Link>
-              ))}
-            </nav>
+              ),
+            )}
+          </nav>
 
-            {/* Right controls */}
-            <div className="flex items-center gap-2 md:gap-3 drop-shadow-[0_1px_8px_hsl(0_0%_0%/0.28)]">
-              <ThemeToggle />
-              {navConfig.actions?.cta?.show !== false && (
-                <Link href={navConfig.actions?.cta?.href || "/contact?intent=partner"} className="hidden sm:inline-flex">
-                  <Button
-                    variant={navConfig.actions?.cta?.variant === "primary" ? "default" : "white"}
-                    size="sm"
-                    className="h-9 px-4 rounded-full font-medium"
-                  >
-                    {navConfig.actions?.cta?.label || "Discuss Partnership"}
-                  </Button>
-                </Link>
-              )}
-              {!authLoading &&
-                (isLoggedIn ? (
-                  <div className="flex items-center gap-2">
-                    <Link href={Routes.Home}>
-                      <Button
-                        variant="white"
-                        size="sm"
-                        className="h-9 px-4 rounded-full font-medium gap-2"
-                      >
-                        <span className="flex size-5 items-center justify-center rounded-full bg-primary/20 text-[10px] font-bold text-primary shrink-0">
-                          {user?.email?.charAt(0).toUpperCase() ?? "?"}
-                        </span>
-                        {user?.first_name ?? user?.email ?? "Citizen"}
-                      </Button>
-                    </Link>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={handleLogout}
-                      className="h-9 px-3 text-foreground/90 hover:text-foreground"
-                      aria-label="Log out"
-                    >
-                      <LogOut className="size-4" />
-                    </Button>
-                  </div>
-                ) : (navConfig.actions?.showSignIn ?? SHOW_MARKETING_SIGN_IN) ? (
-                  <Link href={navConfig.actions?.signInHref || Routes.Login}>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="h-9 px-3 rounded-full font-medium text-foreground hover:bg-muted/40"
-                    >
-                      {navConfig.actions?.signInLabel || "Sign in"}
-                    </Button>
-                  </Link>
-                ) : null)}
-              <motion.div
-                whileTap={{ scale: 0.92 }}
-                transition={{ duration: 0.3, ease: [0.25, 0.4, 0, 1] }}
+          <div className="flex shrink-0 items-center gap-1.5 md:gap-2">
+            <ThemeToggle />
+            {navConfig.actions?.cta?.show !== false && (
+              <Link
+                href={navConfig.actions?.cta?.href || "/contact?intent=partner"}
+                className="hidden sm:inline-flex"
               >
                 <Button
-                  size="icon-sm"
-                  variant="ghost"
-                  onClick={() => setIsOpen((prev) => !prev)}
-                  className="h-9 w-9 relative overflow-hidden text-foreground"
-                  aria-label="Toggle menu"
+                  variant={
+                    navConfig.actions?.cta?.variant === "primary" ? "default" : "white"
+                  }
+                  size="sm"
+                  className="h-9 px-4 rounded-full font-medium"
                 >
-                  <AnimatePresence mode="wait" initial={false}>
-                    {isOpen ? (
-                      <motion.span
-                        key="close"
-                        initial={{ opacity: 0, rotate: -90, scale: 0.6 }}
-                        animate={{ opacity: 1, rotate: 0, scale: 1 }}
-                        exit={{ opacity: 0, rotate: 90, scale: 0.6 }}
-                        transition={{ duration: 0.18 }}
-                        className="absolute inset-0 flex items-center justify-center"
-                      >
-                        <XIcon className="size-5" />
-                      </motion.span>
-                    ) : (
-                      <motion.span
-                        key="open"
-                        initial={{ opacity: 0, rotate: 90, scale: 0.6 }}
-                        animate={{ opacity: 1, rotate: 0, scale: 1 }}
-                        exit={{ opacity: 0, rotate: -90, scale: 0.6 }}
-                        transition={{ duration: 0.18 }}
-                        className="absolute inset-0 flex items-center justify-center"
-                      >
-                        <MenuIcon className="size-5" />
-                      </motion.span>
-                    )}
-                  </AnimatePresence>
+                  {navConfig.actions?.cta?.label || "Discuss Partnership"}
                 </Button>
-              </motion.div>
-            </div>
+              </Link>
+            )}
+            {!authLoading &&
+              (isLoggedIn ? (
+                <div className="flex items-center gap-2">
+                  <Link href={Routes.Home}>
+                    <Button
+                      variant="white"
+                      size="sm"
+                      className="h-9 px-4 rounded-full font-medium gap-2"
+                    >
+                      <span className="flex size-5 items-center justify-center rounded-full bg-primary/20 text-[10px] font-bold text-primary shrink-0">
+                        {user?.email?.charAt(0).toUpperCase() ?? "?"}
+                      </span>
+                      {user?.first_name ?? user?.email ?? "Citizen"}
+                    </Button>
+                  </Link>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={handleLogout}
+                    className="h-9 px-3 text-foreground/90 hover:text-foreground"
+                    aria-label="Log out"
+                  >
+                    <LogOut className="size-4" />
+                  </Button>
+                </div>
+              ) : (navConfig.actions?.showSignIn ?? SHOW_MARKETING_SIGN_IN) ? (
+                <Link href={navConfig.actions?.signInHref || Routes.Login}>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="h-9 px-3 rounded-full font-medium text-foreground hover:bg-muted/40"
+                  >
+                    {navConfig.actions?.signInLabel || "Sign in"}
+                  </Button>
+                </Link>
+              ) : null)}
+            <motion.div
+              whileTap={{ scale: 0.92 }}
+              transition={{ duration: 0.3, ease: [0.25, 0.4, 0, 1] }}
+              className="lg:hidden"
+            >
+              <Button
+                size="icon-sm"
+                variant="ghost"
+                onClick={() => setIsOpen((prev) => !prev)}
+                className="h-9 w-9 relative overflow-hidden text-foreground"
+                aria-label="Toggle menu"
+              >
+                <AnimatePresence mode="wait" initial={false}>
+                  {isOpen ? (
+                    <motion.span
+                      key="close"
+                      initial={{ opacity: 0, rotate: -90, scale: 0.6 }}
+                      animate={{ opacity: 1, rotate: 0, scale: 1 }}
+                      exit={{ opacity: 0, rotate: 90, scale: 0.6 }}
+                      transition={{ duration: 0.18 }}
+                      className="absolute inset-0 flex items-center justify-center"
+                    >
+                      <XIcon className="size-5" />
+                    </motion.span>
+                  ) : (
+                    <motion.span
+                      key="open"
+                      initial={{ opacity: 0, rotate: 90, scale: 0.6 }}
+                      animate={{ opacity: 1, rotate: 0, scale: 1 }}
+                      exit={{ opacity: 0, rotate: -90, scale: 0.6 }}
+                      transition={{ duration: 0.18 }}
+                      className="absolute inset-0 flex items-center justify-center"
+                    >
+                      <MenuIcon className="size-5" />
+                    </motion.span>
+                  )}
+                </AnimatePresence>
+              </Button>
+            </motion.div>
           </div>
         </div>
       </motion.header>
 
-      {/* Mobile full-screen overlay menu */}
       <MobileMenu isOpen={isOpen} setIsOpen={setIsOpen} navConfig={navConfig} />
     </div>
   );

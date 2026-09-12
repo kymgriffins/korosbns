@@ -11,7 +11,7 @@ vi.mock("next/image", () => ({
 }));
 
 describe("PartnerProgrammeExplainSections", () => {
-  it("renders three numbered bets with stakes, success, and Read more", () => {
+  it("renders three programme bets with stakes, success, and Read more", () => {
     render(<PartnerProgrammeExplainSections />);
 
     expect(
@@ -24,9 +24,9 @@ describe("PartnerProgrammeExplainSections", () => {
       screen.getByRole("heading", { name: /Newsroom scrutiny/i }),
     ).toBeInTheDocument();
 
-    expect(screen.getByText("01")).toBeInTheDocument();
-    expect(screen.getByText("02")).toBeInTheDocument();
-    expect(screen.getByText("03")).toBeInTheDocument();
+    expect(screen.queryByText("01")).not.toBeInTheDocument();
+    expect(screen.queryByText("02")).not.toBeInTheDocument();
+    expect(screen.queryByText("03")).not.toBeInTheDocument();
 
     expect(screen.queryByText(/^The gap$/i)).not.toBeInTheDocument();
     expect(screen.queryByText(/^What we deliver$/i)).not.toBeInTheDocument();

@@ -9,7 +9,7 @@ import { ProgrammeLandingLayout } from "@/components/programmes/programme-landin
 import type { PartnerPageSectionsContent, ProgrammesContent } from "@/lib/cms-live-data";
 
 /**
- * Programme detail entry — landing-format layout for all desks.
+ * Programme detail entry - landing-format layout for all desks.
  * Legacy scrollytelling composers remain under `scrollytelling/` (muted, not deleted).
  */
 export function ProgrammeDetail({

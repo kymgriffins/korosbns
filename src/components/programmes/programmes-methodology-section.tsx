@@ -51,7 +51,7 @@ export function ProgrammesMethodologySection({
     <>
       <div className="mb-10 flex flex-col gap-4 md:mb-14 md:flex-row md:items-end md:justify-between">
         <div className="max-w-2xl space-y-3">
-          <EditorialPill dot pulse variant="default">
+          <EditorialPill variant="default">
             {content?.eyebrow ?? "Methodology & Standards"}
           </EditorialPill>
           <h2 id="methodology-heading" className={T.sectionTitle}>
@@ -71,10 +71,7 @@ export function ProgrammesMethodologySection({
               key={item.step}
               className="flex flex-col border border-border/60 bg-background p-5"
             >
-              <div className="flex items-center justify-between border-b border-border/40 pb-3">
-                <span className="font-mono text-xs font-bold text-primary">
-                  {item.step}
-                </span>
+              <div className="flex items-center justify-end border-b border-border/40 pb-3">
                 <Icon className="size-4 text-muted-foreground" aria-hidden />
               </div>
               <h3 className="mt-4 font-heading text-base font-bold text-foreground">

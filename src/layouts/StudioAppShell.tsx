@@ -9,7 +9,7 @@ type Props = {
   children: React.ReactNode;
 };
 
-/** Unified Studio App Shell — mounts global BNS Header and Minimal Footer */
+/** Unified Studio App Shell - mounts global BNS Header and Minimal Footer */
 export function StudioAppShell({ children }: Props) {
   const { theme } = useStudioTheme();
   const pathname = usePathname();

@@ -13,7 +13,7 @@ type Props = {
   className?: string;
 };
 
-/** Keep-reading image rows — secondary to the active programme page. */
+/** Keep-reading image rows - secondary to the active programme page. */
 export function ProgrammeOtherProgrammes({ currentSlug, className }: Props) {
   const others = PROGRAMMES.filter((p) => p.slug !== currentSlug);
 

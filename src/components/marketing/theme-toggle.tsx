@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { motion, AnimatePresence, useReducedMotion } from "motion/react";
 import { cn } from "@/utils";
 
-/** Shared chrome size with Join us — keep header actions optically synced */
+/** Shared chrome size with Join us - keep header actions optically synced */
 export const NAV_CONTROL_SIZE = "h-9 w-9";
 export const NAV_CONTROL_RADIUS = "rounded-none";
 export const NAV_CONTROL_BORDER =

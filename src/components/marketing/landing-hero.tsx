@@ -24,7 +24,7 @@ export default function LandingHero() {
             data-gsap-hero-content
             className="flex flex-col items-start gap-4 lg:col-span-6 lg:gap-5 lg:pt-2 w-full min-w-0 max-w-full overflow-hidden"
           >
-            {/* Live Civic News & Ad Stream — decluttered, full-width, single pill */}
+            {/* Live Civic News & Ad Stream - decluttered, full-width, single pill */}
             <LandingHeroTicker />
 
             <h1 id="landing-hero-heading" className={cn(T.heroTitle, "max-w-xl text-balance")}>

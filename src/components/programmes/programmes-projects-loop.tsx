@@ -188,7 +188,7 @@ export function ProgrammesProjectsLoop({ className }: { className?: string }) {
           </p>
         </div>
 
-        {/* Search & Desk Filter Control Bar — Mobile Zero-Scroll Friendly */}
+        {/* Search & Desk Filter Control Bar - Mobile Zero-Scroll Friendly */}
         <div className="space-y-3 pt-1 pb-4">
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
             {/* Search Input */}
@@ -236,7 +236,7 @@ export function ProgrammesProjectsLoop({ className }: { className?: string }) {
 
           {/* Controls row: Desk filter tabs + View mode switcher (Grid / Reel) */}
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 pt-1">
-            {/* Minimalist Desk Filter Tabs — Edge Scrollable on Mobile */}
+            {/* Minimalist Desk Filter Tabs - Edge Scrollable on Mobile */}
             <div className="flex items-center gap-2 overflow-x-auto scrollbar-none py-1">
               {filterTabs.map((tab) => {
                 const isActive = activeFilter === tab.id;

@@ -3,11 +3,12 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { AnimatePresence, motion } from "motion/react";
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { fadeInUp, staggerContainer } from "@/motion/variants";
 import { EditorialPill, PillButtonGroup } from "@/components/ui/editorial";
 import { SECTION_SHELL_INNER } from "@/layouts/section-shell";
 import { cn } from "@/utils";
+import { motionEnabled } from "@/lib/design-dials";
 import {
   Play,
   Film,
@@ -20,7 +21,6 @@ import {
   Globe,
   Users,
   ArrowUpRight,
-  ChevronDown,
   Volume2,
   VolumeX,
   type LucideIcon,
@@ -490,7 +490,6 @@ type HeroReelSectionProps = {
 function HeroReelSection({ section }: HeroReelSectionProps) {
   const s = section as Record<string, unknown>;
   const badge = str(s.badge);
-  const swipeHint = str(s.swipeHint);
   const slides = (s.slides as HeroReelSlide[]) || [];
   const autoPlayMs = typeof s.autoPlayMs === "number" ? s.autoPlayMs : 7000;
 
@@ -500,6 +499,8 @@ function HeroReelSection({ section }: HeroReelSectionProps) {
   const [isMuted, setIsMuted] = useState(true);
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const pointerStart = useRef<{ x: number; y: number } | null>(null);
+  const reduceMotion = useReducedMotion();
+  const canAnimate = motionEnabled(reduceMotion);
 
   const current = slides[index];
 
@@ -524,7 +525,7 @@ function HeroReelSection({ section }: HeroReelSectionProps) {
   }, [next, prev]);
 
   useEffect(() => {
-    if (paused || !current?.videoUrl) return;
+    if (!canAnimate || paused || !current?.videoUrl) return;
     const start = performance.now();
     let frame = 0;
     const tick = (now: number) => {
@@ -539,7 +540,7 @@ function HeroReelSection({ section }: HeroReelSectionProps) {
     };
     frame = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(frame);
-  }, [index, next, paused, autoPlayMs, current?.videoUrl]);
+  }, [index, next, paused, autoPlayMs, current?.videoUrl, canAnimate]);
 
   const onPointerDown = (e: React.PointerEvent) => {
     pointerStart.current = { x: e.clientX, y: e.clientY };
@@ -567,12 +568,6 @@ function HeroReelSection({ section }: HeroReelSectionProps) {
   };
 
   if (!current || slides.length === 0) return null;
-
-  const getThemeColor = (layout: string) => {
-    if (layout === "vertical") return "text-emerald-400";
-    if (layout === "square") return "text-amber-400";
-    return "text-primary";
-  };
 
   return (
     <section
@@ -648,18 +643,8 @@ function HeroReelSection({ section }: HeroReelSectionProps) {
             onClick={onZoneClick}
             role="presentation"
           >
-            <p className={cn(
-              "absolute left-6 top-1/2 -translate-y-1/2 font-mono text-xs uppercase tracking-widest writing-mode-vertical",
-              getThemeColor(current.layout)
-            )}>
-              {current.layout}
-            </p>
-
             <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-6">
-              <p className="font-mono text-sm text-white/60 mb-4">
-                {String(index + 1).padStart(2, "0")} / {String(slides.length).padStart(2, "0")}
-              </p>
-              <h1 className="font-heading text-4xl sm:text-6xl md:text-7xl font-black text-white tracking-tight mb-4">
+              <h1 className="font-heading text-4xl sm:text-6xl md:text-7xl font-black text-white tracking-tight mb-4 line-clamp-2">
                 {current.label}
               </h1>
               <p className="text-lg sm:text-xl text-white/70 max-w-2xl mb-6">
@@ -697,19 +682,6 @@ function HeroReelSection({ section }: HeroReelSectionProps) {
                   </button>
                 )}
               </div>
-            </div>
-
-            <p className={cn(
-              "absolute right-6 top-1/2 -translate-y-1/2 font-mono text-xs text-white/40 writing-mode-vertical",
-            )}>
-              {current.year}
-            </p>
-          </div>
-
-          <div className="absolute bottom-6 inset-x-0 z-20 flex justify-center pointer-events-none">
-            <div className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-black/60 px-4 py-1.5 text-xs font-mono font-medium text-white/90 backdrop-blur-md animate-bounce">
-              <span>{swipeHint}</span>
-              <ChevronDown className="size-3.5" />
             </div>
           </div>
         </motion.div>

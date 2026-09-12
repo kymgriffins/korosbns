@@ -39,7 +39,7 @@ const SECTORS: Record<string, SectorData> = {
     icon: Sprout,
     slides: [
       { title: "Budget Allocation", value: "KES 52.4B", body: "Total allocation to agriculture and food security for FY 2026/27", accent: "Food security" },
-      { title: "The Gap", value: "68%", body: "Only 32% reaches smallholder farmers — rest lost to overhead and untracked subsidies", accent: "Last-mile leakage" },
+      { title: "The Gap", value: "68%", body: "Only 32% reaches smallholder farmers - rest lost to overhead and untracked subsidies", accent: "Last-mile leakage" },
       { title: "Your Action", value: "Demand transparency", body: "Insist on public beneficiary lists for all fertiliser and seed programmes within 14 days of disbursement", accent: "PFM Act 2012 Section 25" },
     ],
   },
@@ -63,7 +63,7 @@ const SECTORS: Record<string, SectorData> = {
     icon: HeartPulse,
     slides: [
       { title: "Budget Allocation", value: "KES 47.3B", body: "Allocated to SHA rollout and primary healthcare", accent: "UHC fund" },
-      { title: "The Gap", value: "40%", body: "Flagged for admin contracts — not frontline facilities or community health worker stipends", accent: "Admin bloat" },
+      { title: "The Gap", value: "40%", body: "Flagged for admin contracts - not frontline facilities or community health worker stipends", accent: "Admin bloat" },
       { title: "Your Action", value: "Ring-fence frontline care", body: "Push for 60% minimum of SHA allocation to direct facility improvements; cap admin at 15%", accent: "PFM Act 2012 Section 107" },
     ],
   },
@@ -75,7 +75,7 @@ const SECTORS: Record<string, SectorData> = {
     icon: Home,
     slides: [
       { title: "Budget Allocation", value: "KES 31.2B", body: "Affordable housing programme budget", accent: "Housing fund" },
-      { title: "The Gap", value: "4%", body: "Only 8,000 of 200,000 target units completed — KES 31.2B spent for 4% delivery", accent: "Delivery crisis" },
+      { title: "The Gap", value: "4%", body: "Only 8,000 of 200,000 target units completed - KES 31.2B spent for 4% delivery", accent: "Delivery crisis" },
       { title: "Your Action", value: "Audit the programme", body: "Demand a per-county completion tracker with photographic proof and independent audit reports before next tranche", accent: "Value for money" },
     ],
   },
@@ -99,7 +99,7 @@ const SECTORS: Record<string, SectorData> = {
     icon: Route,
     slides: [
       { title: "Budget Allocation", value: "KES 178.6B", body: "Roads and infrastructure development budget", accent: "Infrastructure fund" },
-      { title: "The Gap", value: "40%", body: "Only 40% goes to actual tarmacking — 60% consumed by debt repayments and design fees", accent: "Spending efficiency" },
+      { title: "The Gap", value: "40%", body: "Only 40% goes to actual tarmacking - 60% consumed by debt repayments and design fees", accent: "Spending efficiency" },
       { title: "Your Action", value: "Per-km cost breakdown", body: "Demand per-kilometre cost breakdowns for all projects over KES 100M and a weekly delayed-project tracker", accent: "Public Works Act" },
     ],
   },
@@ -111,7 +111,7 @@ const SECTORS: Record<string, SectorData> = {
     icon: BookOpen,
     slides: [
       { title: "Budget Allocation", value: "KES 784.5B", body: "Total education sector budget", accent: "Education fund" },
-      { title: "The Gap", value: "18%", body: "Capitation per learner frozen for 3 years despite 18% cumulative inflation — schools squeezed", accent: "Inflation erosion" },
+      { title: "The Gap", value: "18%", body: "Capitation per learner frozen for 3 years despite 18% cumulative inflation - schools squeezed", accent: "Inflation erosion" },
       { title: "Your Action", value: "Index capitation", body: "Push for inflation-indexed capitation rates and school-level financial transparency portals for all recipients", accent: "Right to education" },
     ],
   },
@@ -123,7 +123,7 @@ const SECTORS: Record<string, SectorData> = {
     icon: Droplets,
     slides: [
       { title: "Budget Allocation", value: "KES 26.4B", body: "Water and sanitation sector budget", accent: "Water fund" },
-      { title: "The Gap", value: "45%", body: "Of rural water projects remain incomplete beyond their scheduled completion date — no penalties invoked", accent: "Project delays" },
+      { title: "The Gap", value: "45%", body: "Of rural water projects remain incomplete beyond their scheduled completion date - no penalties invoked", accent: "Project delays" },
       { title: "Your Action", value: "Enforce deadlines", body: "Demand penalty enforcement on all water contracts exceeding deadline by 6+ months and a national completion tracker", accent: "Contract compliance" },
     ],
   },
@@ -184,7 +184,7 @@ export default function AlertsSimulator() {
               and democratic audit.
             </h2>
             <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
-              We translate dry budget allocations into sharp, sector-by-sector narratives that show you exactly where public money is falling short — and what you can do about it before the window closes.
+              We translate dry budget allocations into sharp, sector-by-sector narratives that show you exactly where public money is falling short - and what you can do about it before the window closes.
             </p>
 
             <div className="space-y-3 pt-2">
@@ -217,7 +217,7 @@ export default function AlertsSimulator() {
             </div>
           </motion.div>
 
-          {/* Right Column: Phone Mockup — Story Carousel */}
+          {/* Right Column: Phone Mockup - Story Carousel */}
           <motion.div
             initial={{ opacity: 0, y: 32, scale: 0.97 }}
             whileInView={{ opacity: 1, y: 0, scale: 1 }}

@@ -2,37 +2,37 @@
   "eyebrow": "FY 2026/27 Budget Cycle",
   "titleBefore": "Budget Tracker &",
   "titleHighlight": "Allocations",
-  "description": "Who moves Kenya's budget forward — Treasury, citizens, Parliament, the Executive, and implementation — in five clear stages for FY2026/27.",
-  "footerBody": "We'll take you through the full budget-making process — from Treasury formulation to implementation — and show you how you, as a Mwananchi, can take part at every stage.",
+  "description": "Who moves Kenya's budget forward - Treasury, citizens, Parliament, the Executive, and implementation - in five clear stages for FY2026/27.",
+  "footerBody": "We'll take you through the full budget-making process - from Treasury formulation to implementation - and show you how you, as a Mwananchi, can take part at every stage.",
   "footerCta": { "label": "Explore the learning hub", "href": "/learn" },
   "items": [
     {
-      "title": "National Treasury — Budget Formulation",
+      "title": "National Treasury - Budget Formulation",
       "description": "Treasury sets the fiscal frame for FY2026/27: MTEF ceilings to ministries and counties, then the Budget Policy Statement projecting KES 3.3T revenue and KES 4.2T expenditure under the BETA agenda.",
-      "date": "Aug 2025 – Feb 2026",
+      "date": "Aug 2025 - Feb 2026",
       "image": "/images/explainer-formulation.png"
     },
     {
-      "title": "Citizens — Public Participation",
+      "title": "Citizens - Public Participation",
       "description": "Kenyans engage through county hearings, memoranda, and civic forums. Communities and civil society submit input while the Budget and Appropriations Committee is still reviewing estimates.",
-      "date": "May – Jun 2026",
+      "date": "May - Jun 2026",
       "image": "/images/towwnhallmay/129A3863.jpg"
     },
     {
-      "title": "Parliament — Review & Approval",
-      "description": "After public hearings, the National Assembly scrutinises the estimates (KES 4.82T), adopts amendments, and approves the budget — including KES 781.4B for education and KES 175.5B for health.",
+      "title": "Parliament - Review & Approval",
+      "description": "After public hearings, the National Assembly scrutinises the estimates (KES 4.82T), adopts amendments, and approves the budget - including KES 781.4B for education and KES 175.5B for health.",
       "date": "Jun 2026",
       "image": "https://parliament.go.ke/sites/default/files/articles/1000399758_cedbf97f1f83496dda37a9f9148e70ed-9_18_2024%2C%2012_04_59%20PM_0.jpg"
     },
     {
-      "title": "Executive — Budget Reading & Assent",
+      "title": "Executive - Budget Reading & Assent",
       "description": "Cabinet Secretary John Mbadi presents the KES 4.82T Budget Statement to Parliament. The President assents to the Finance Bill and Appropriation Act, authorising spending for the new financial year.",
       "date": "Jun 2026",
       "image": "/images/treasury/budget-reading-2026.jpg"
     },
     {
-      "title": "Government — Implementation Begins",
-      "description": "FY2026/27 starts on 1 July under the Treasury’s Budget Sasa ni Delivery push — ministries, counties, and agencies turn approved allocations into services citizens can track through BNS.",
+      "title": "Government - Implementation Begins",
+      "description": "FY2026/27 starts on 1 July under the Treasury’s Budget Sasa ni Delivery push - ministries, counties, and agencies turn approved allocations into services citizens can track through BNS.",
       "date": "Jul 2026",
       "image": "/images/treasury/budget sasa ni delivery.jpg"
     }

@@ -132,12 +132,12 @@ export default function About({
 
   return (
     <div className="w-full bg-background min-h-screen text-foreground">
-      {/* 01 — Hero & Institutional Credo */}
+      {/* 01 - Hero & Institutional Credo */}
       <section className={cn(HERO_SECTION_PADDING, "border-b border-border/30 bg-background")}>
         <div className={SECTION_SHELL_INNER}>
           <GsapHeroChoreography className="grid grid-cols-1 items-start gap-8 lg:grid-cols-12 lg:gap-12">
             <div data-gsap-hero-content className="flex flex-col items-start gap-4 lg:col-span-7">
-              <EditorialPill dot pulse variant="default">
+              <EditorialPill variant="default">
                 {sections.aboutHero.pill}
               </EditorialPill>
               <h1 className={cn(T.heroTitle, "text-balance text-foreground")}>
@@ -201,7 +201,7 @@ export default function About({
         </div>
       </section>
 
-      {/* 02 — The Origin Story: Narrative Scrollytelling Documentary (muted: TMI) */}
+      {/* 02 - The Origin Story: Narrative Scrollytelling Documentary (muted: TMI) */}
       {showOriginStory ? (
         <section id="origin-story" className="border-b border-border/40 bg-muted/10">
           <div className={SECTION_SHELL_INNER}>
@@ -210,7 +210,7 @@ export default function About({
         </section>
       ) : null}
 
-      {/* 03 — Theory of Change: The 4-Stage Impact Engine (muted: TMI / scroll-heavy) */}
+      {/* 03 - Theory of Change: The 4-Stage Impact Engine (muted: TMI / scroll-heavy) */}
       {showTheoryOfChange && theory && theoryItems.length > 0 ? (
         <section id="theory-of-change" className="border-b border-border/40 py-20 md:py-28 lg:py-36 bg-muted/20">
           <div className={SECTION_SHELL_INNER}>
@@ -225,7 +225,7 @@ export default function About({
         </section>
       ) : null}
 
-      {/* 04 — Data Integrity & Editorial Independence Charter (muted: TMI) */}
+      {/* 04 - Data Integrity & Editorial Independence Charter (muted: TMI) */}
       {showIntegrityCharter ? (
         <section id="methodology" className="border-b border-border/40 py-20 md:py-28 bg-background">
           <div className={SECTION_SHELL_INNER}>
@@ -270,14 +270,14 @@ export default function About({
         </section>
       ) : null}
 
-      {/* 05 — Team Roster Showcase */}
+      {/* 05 - Team Roster Showcase */}
       {showTeam ? (
         <div id="team">
           <TeamSection />
         </div>
       ) : null}
 
-      {/* 06 — Civic Action & Partnership Portal */}
+      {/* 06 - Civic Action & Partnership Portal */}
       {showPartnerCta ? (
         <section className="py-20 md:py-28 bg-muted/30 border-t border-border/40">
           <div className={SECTION_SHELL_INNER}>

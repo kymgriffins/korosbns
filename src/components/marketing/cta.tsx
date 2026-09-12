@@ -39,7 +39,7 @@ const Cta = () => {
                         />
 
                         <div className="relative z-40 flex flex-col items-center text-center py-16 lg:py-20 px-6">
-                            {/* Logo — clean hover, no jitter */}
+                            {/* Logo - clean hover, no jitter */}
                             <motion.div
                                 initial={{ scale: 0.9, opacity: 0 }}
                                 whileInView={{ scale: 1, opacity: 1 }}

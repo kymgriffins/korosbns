@@ -2,7 +2,7 @@
   "policy": {
     "maxBlocksPartnerPages": 5,
     "blogLikeExempt": true,
-    "notes": "Partner-attention pages must keep visible sections ≤ maxBlocks. Blog-like / long-form project & article pages are exempt. Flip section.visible — do not delete section composers."
+    "notes": "Partner-attention pages must keep visible sections ≤ maxBlocks. Blog-like / long-form project & article pages are exempt. Flip section.visible - do not delete section composers."
   },
   "pages": {
     "home": {

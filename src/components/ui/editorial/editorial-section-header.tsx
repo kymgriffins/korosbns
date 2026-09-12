@@ -13,7 +13,7 @@ type EditorialSectionHeaderProps = {
 };
 
 /**
- * Asymmetric section header — title left, lead right (Marwa editorial layout).
+ * Asymmetric section header - title left, lead right (Marwa editorial layout).
  */
 export function EditorialSectionHeader({
   eyebrow,

@@ -33,7 +33,7 @@ interface NextChapterMeta {
   tagline: string;
 }
 
-/** Distinct bridge voice per programme — prose, not pill dumps. */
+/** Distinct bridge voice per programme - prose, not pill dumps. */
 const CHAPTER_FLOW: Record<ProgrammeSlug, NextChapterMeta> = {
   connect: {
     nextSlug: "mashinani",
@@ -42,7 +42,7 @@ const CHAPTER_FLOW: Record<ProgrammeSlug, NextChapterMeta> = {
     hookHeadline:
       "Kakamega. Kilifi. Nakuru. Wajir.  Agents bridging gap between Treasury data and Grassroots projects.",
     narrativeBridge:
-      "National tables only tell half the story. Mashinani embeds in four counties for the full budget cycle — matching gazette lines to boreholes, maternity wings, and feeder roads people can walk to.",
+      "National tables only tell half the story. Mashinani embeds in four counties for the full budget cycle - matching gazette lines to boreholes, maternity wings, and feeder roads people can walk to.",
     tagline: "County desk · Full-cycle embeds · Public scorecards",
   },
   mashinani: {
@@ -60,7 +60,7 @@ const CHAPTER_FLOW: Record<ProgrammeSlug, NextChapterMeta> = {
     leadEyebrow: "Craft that keeps the civic work solvent",
     hookHeadline: "High-craft media. A civic surplus attached.",
     narrativeBridge:
-      "Watchdogs fade when funding calendars flip. BNS Studios sells podcasts, documentaries, and town halls — and routes a portion of surplus into Connect, Mashinani, and the Lab.",
+      "Watchdogs fade when funding calendars flip. BNS Studios sells podcasts, documentaries, and town halls - and routes a portion of surplus into Connect, Mashinani, and the Lab.",
     tagline: "Production desk · Client craft · Civic surplus",
   },
   studios: {
@@ -120,7 +120,7 @@ export function ProgrammeChapterBridge({
     <section className="relative overflow-hidden border-t border-border/50 bg-gradient-to-b from-background via-muted/20 to-background py-16 sm:py-24">
       <div className={SECTION_SHELL_INNER}>
         {/* =========================================================================
-         * 01 — RELATED PROJECTS SHOWCASE FOR CURRENT PROGRAMME
+         * 01 - RELATED PROJECTS SHOWCASE FOR CURRENT PROGRAMME
          * ========================================================================= */}
         {relatedProjects.length > 0 && (
           <div className="mb-20 pb-16 border-b border-border/50">
@@ -242,7 +242,7 @@ export function ProgrammeChapterBridge({
         )}
 
         {/* =========================================================================
-         * 02 — PROGRAMME SELECTOR STRIP
+         * 02 - PROGRAMME SELECTOR STRIP
          * ========================================================================= */}
         <div className="flex flex-wrap items-center justify-between gap-4 pb-8 border-b border-border/40 font-mono text-xs">
           <div className="flex items-center gap-2">
@@ -274,7 +274,7 @@ export function ProgrammeChapterBridge({
         </div>
 
         {/* =========================================================================
-         * 03 — NEXT PROGRAMME NARRATIVE TRANSITION
+         * 03 - NEXT PROGRAMME NARRATIVE TRANSITION
          * ========================================================================= */}
         <div className="mt-12 py-8 sm:py-12 border-t border-border/60">
           <div className="max-w-4xl space-y-6">

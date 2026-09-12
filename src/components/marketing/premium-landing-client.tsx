@@ -92,7 +92,7 @@ export default function PremiumLandingClient({
   return (
     <>
       {homeSections.map((sec) => {
-        // Live CMS section visibility only — do not double-gate with static bundle.
+        // Live CMS section visibility only - do not double-gate with static bundle.
         if (sec.visible === false) return null;
 
         switch (sec.id) {
@@ -103,6 +103,14 @@ export default function PremiumLandingClient({
                 heroNarrative={landingData?.heroNarrative}
                 stills={landingData?.heroReelStills as never}
                 programmeLines={(landingData as { heroProgrammeLines?: unknown })?.heroProgrammeLines as never}
+                primaryCta={{
+                  label: activeCta.ctaLabel,
+                  href: activeCta.ctaHref || "/contact?intent=partner",
+                }}
+                secondaryCta={{
+                  label: activeCta.secondaryLabel,
+                  href: activeCta.secondaryHref || "/programmes",
+                }}
               />
             );
           case "whoHow":

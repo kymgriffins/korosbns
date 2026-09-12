@@ -28,7 +28,7 @@ export function FormatSeriesPage({
     <FormatShell project={project}>
       <div className="fworld-series">
         <div className="fpage-flow">
-          {/* Hero — phone + copy */}
+          {/* Hero - phone + copy */}
           <header className="fw-series-hero">
             <div className="fw-series-phone relative shrink-0 bg-black">
               <Image
@@ -104,7 +104,7 @@ export function FormatSeriesPage({
 
           <FormatCta
             title="Need series like this?"
-            line="Vertical video engineered for reach and civic action — tell us what the timeline ignores."
+            line="Vertical video engineered for reach and civic action - tell us what the timeline ignores."
           />
           <FormatRelated project={project} />
         </div>

@@ -65,7 +65,7 @@
     },
     {
       "q": "What is the fiscal deficit?",
-      "a": "When government spending exceeds revenue, that's a fiscal deficit. Kenya's FY2026/27 deficit is KES 1,146.2 billion (5.5% of GDP) — up from KES 933.3 billion in FY2025/26 — financed through borrowing.",
+      "a": "When government spending exceeds revenue, that's a fiscal deficit. Kenya's FY2026/27 deficit is KES 1,146.2 billion (5.5% of GDP) - up from KES 933.3 billion in FY2025/26 - financed through borrowing.",
       "category": "debt"
     },
     {
@@ -150,7 +150,7 @@
     {
       "id": "prog-mashinani",
       "question": "What is BNS Mashinani and which counties are covered?",
-      "answer": "BNS Mashinani is our hyper-focused county budget oversight initiative. Rather than skimming surface data, our teams embed in four designated focal counties—Kakamega, Kilifi, Nakuru, and Wajir—tracking budget allocations against actual community delivery (such as healthcare dispensaries, rural feeder roads, and water kiosks) and organizing citizen barazas and scorecards.",
+      "answer": "BNS Mashinani is our hyper-focused county budget oversight initiative. Rather than skimming surface data, our teams embed in four designated focal counties-Kakamega, Kilifi, Nakuru, and Wajir-tracking budget allocations against actual community delivery (such as healthcare dispensaries, rural feeder roads, and water kiosks) and organizing citizen barazas and scorecards.",
       "topicId": "programmes",
       "tags": [
         "mashinani",
@@ -273,7 +273,7 @@
     {
       "id": "bud-equitable-share",
       "question": "How is the County Equitable Share determined and distributed?",
-      "answer": "The Constitution (Article 203) guarantees counties at least 15% of all national revenue based on the latest audited accounts approved by Parliament. The Division of Revenue Act (DORA) allocates this overall amount, and the County Allocation of Revenue Act (CARA) uses the Commission on Revenue Allocation (CRA) formula—weighting population, land area, poverty levels, and fiscal effort—to divide it among the 47 counties.",
+      "answer": "The Constitution (Article 203) guarantees counties at least 15% of all national revenue based on the latest audited accounts approved by Parliament. The Division of Revenue Act (DORA) allocates this overall amount, and the County Allocation of Revenue Act (CARA) uses the Commission on Revenue Allocation (CRA) formula-weighting population, land area, poverty levels, and fiscal effort-to divide it among the 47 counties.",
       "topicId": "budget",
       "tags": [
         "equitable share",

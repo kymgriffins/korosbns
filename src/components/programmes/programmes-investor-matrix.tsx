@@ -37,7 +37,7 @@ export function ProgrammesInvestorMatrix({
     >
       <div className="mb-10 flex flex-col gap-4 md:mb-14 md:flex-row md:items-end md:justify-between">
         <div className="max-w-2xl space-y-3">
-          <EditorialPill dot pulse variant="default">
+          <EditorialPill variant="default">
             {matrix?.eyebrow ?? "The Three Big Bets"}
           </EditorialPill>
           <h2 id="matrix-heading" className={T.sectionTitle}>
@@ -52,7 +52,6 @@ export function ProgrammesInvestorMatrix({
 
       <div className="space-y-12">
         {programmes.map((programme, index) => {
-          const number = `0${index + 1}`;
           const reverse = index % 2 === 1;
           const href = programmeHref(programme.slug);
 
@@ -70,19 +69,13 @@ export function ProgrammesInvestorMatrix({
                 <div className="flex flex-col justify-between p-6 sm:p-8 lg:col-span-7">
                   <div className="space-y-6">
                     <div className="flex flex-wrap items-center gap-2">
-                      <span className="font-mono text-xs font-bold text-primary">
-                        {number}
-                      </span>
-                      <span aria-hidden className="text-border">
-                        ·
-                      </span>
                       <span className="font-mono text-xs uppercase tracking-wider text-muted-foreground">
                         {programme.eyebrow}
                       </span>
                       {programme.mandateFit ? (
                         <>
                           <span aria-hidden className="text-border">
-                            ·
+                            |
                           </span>
                           <span className="text-xs text-muted-foreground">
                             {programme.mandateFit}

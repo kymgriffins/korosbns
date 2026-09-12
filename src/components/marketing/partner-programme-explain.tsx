@@ -20,7 +20,7 @@ export interface PartnerProgrammeExplainSectionsProps {
 }
 
 /**
- * Three numbered big bets — stakes + what success looks like + Read more.
+ * Three numbered big bets - stakes + what success looks like + Read more.
  * Surface matches marketing nav: background, hairline, muted type.
  */
 export function PartnerProgrammeExplainSections({
@@ -68,10 +68,6 @@ export function PartnerProgrammeExplainSections({
                     "text-muted-foreground",
                   )}
                 >
-                  <span className="tabular-nums">{item.number}</span>
-                  <span aria-hidden className="mx-2 text-border">
-                    ·
-                  </span>
                   {item.eyebrow}
                 </p>
                 <h2

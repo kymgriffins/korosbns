@@ -3,8 +3,8 @@
     "seoTitle": "Budget Ndio Story | Follow Kenya's Budget. Find the Story.",
     "seoDescription": "Partner with Budget Ndio Story on national and county budget accountability, newsroom capacity, and evidence production across Kenya's public finance system.",
     "headline": "Follow the budget. Find the story.",
-    "body": "Kenya's public money moves fast, and mostly out of sight. Budget Ndio Story tracks it nationally and in select counties — turning opaque fiscal policy into verified intelligence partners, institutions, and newsrooms can act on.",
-    "subhead": "Three programmes — Connect, Mashinani, and Wanahabari — with evidence captured through BNS Studio.",
+    "body": "Kenya's public money moves fast, and mostly out of sight. Budget Ndio Story tracks it nationally and in select counties - turning opaque fiscal policy into verified intelligence partners, institutions, and newsrooms can act on.",
+    "subhead": "Connect, Mashinani, and Wanahabari, with evidence from BNS Studio.",
     "exploreCta": {
       "label": "Explore Programmes",
       "href": "#programmes-matrix"
@@ -21,7 +21,7 @@
     "featuredIntro": {
       "eyebrow": "Evidence",
       "headline": "Featured projects across the programmes",
-      "lede": "Published YouTube evidence — illicit financial flows, CABRI digital PFM, and Project TERRA — with thumbnails and titles refreshed from the source URLs."
+      "lede": "Published YouTube evidence - illicit financial flows, CABRI digital PFM, and Project TERRA - with thumbnails and titles refreshed from the source URLs."
     },
     "flywheel": {
       "eyebrow": "The Closed-Loop Ecosystem",
@@ -55,7 +55,7 @@
           "icon": "Newspaper",
           "href": "/programmes/wanahabari-lab",
           "role": "Investigates & reports",
-          "description": "Trains 120–200 journalists and creators to report budget stories during the 11 months after Budget Day.",
+          "description": "Trains 120-200 journalists and creators to report budget stories during the 11 months after Budget Day.",
           "feedsTo": "Feeds public demand and investigations into civic town halls and oversight bodies"
         },
         {
@@ -78,9 +78,9 @@
         {
           "step": "01",
           "title": "Ingest & Trace",
-          "subtitle": "PFM Act & Constitution (Art. 201–207)",
+          "subtitle": "PFM Act & Constitution (Art. 201-207)",
           "icon": "Landmark",
-          "description": "We track statutory releases against the budget calendar — Budget Policy Statements (BPS), County Fiscal Strategy Papers (CFSP), and Appropriation Bills.",
+          "description": "We track statutory releases against the budget calendar - Budget Policy Statements (BPS), County Fiscal Strategy Papers (CFSP), and Appropriation Bills.",
           "highlight": "No speculative commentary; anchored in official government gazettes."
         },
         {
@@ -114,13 +114,13 @@
     "connect": "National money, verified and published for institutional and public use.",
     "mashinani": "Four counties lived-in, not fly-over: Kakamega, Kilifi, Nakuru, Wajir.",
     "wanahabari-lab": "A newsroom bench trained for the eleven months after Budget Day.",
-    "studios": "Commissioned craft that funds civic scrutiny — not the other way around."
+    "studios": "Commissioned craft that funds civic scrutiny - not the other way around."
   },
   "closing": {
     "seoTitle": "Partner With BNS | Budget Ndio Story",
     "seoDescription": "Partner with Budget Ndio Story on national and county budget accountability, journalist training, or commissioned impact content.",
     "headline": "Partner with BNS",
-    "body": "Three programmes, one evidence system: BNS Connect monitors the national flow, BNS Mashinani delivers county-level scrutiny, and Wanahabari Lab builds newsroom capacity — with production and commissions captured through BNS Studio.",
+    "body": "Three programmes, one evidence system: BNS Connect monitors the national flow, BNS Mashinani delivers county-level scrutiny, and Wanahabari Lab builds newsroom capacity - with production and commissions captured through BNS Studio.",
     "cta": {
       "label": "Partner with BNS",
       "href": "/contact?intent=partner",
@@ -130,7 +130,7 @@
   "contactIntents": {
     "partner": {
       "title": "Partner with BNS",
-      "blurb": "Tell us whether you're exploring a programme partnership, a Studios commission, or funding support — we'll route your enquiry.",
+      "blurb": "Tell us whether you're exploring a programme partnership, a Studios commission, or funding support - we'll route your enquiry.",
       "messagePrefill": "I'd like to partner with Budget Ndio Story. Enquiry type: [programme / commission / funding]. Details:"
     },
     "budget-tracker": {
@@ -140,12 +140,12 @@
     },
     "wanahabari-lab": {
       "title": "Apply for Wanahabari Lab",
-      "blurb": "Apply for the next Lab cohort — journalists and digital creators welcome.",
+      "blurb": "Apply for the next Lab cohort - journalists and digital creators welcome.",
       "messagePrefill": "I'd like to apply for the next Wanahabari Lab. Role (journalist / creator), outlet or platform, and city:"
     },
     "commission": {
       "title": "Commission BNS Studios",
-      "blurb": "Tell us about your impact story or knowledge product — we'll follow up from info@budgetndiostory.org.",
+      "blurb": "Tell us about your impact story or knowledge product - we'll follow up from info@budgetndiostory.org.",
       "messagePrefill": "I'd like to commission BNS Studios. Organisation, content type (podcast / documentary / campaign / other), and timeline:"
     }
   },
@@ -153,7 +153,7 @@
     {
       "id": "house-of-fiscal-wisdom",
       "name": "House of Fiscal Wisdom",
-      "role": "Partner — fiscal literacy and public finance dialogue",
+      "role": "Partner - fiscal literacy and public finance dialogue",
       "website": "https://house-of-fiscal-wisdom.org/",
       "logo_url": "",
       "is_active": true
@@ -161,7 +161,7 @@
     {
       "id": "committee-on-fiscal-studies",
       "name": "Committee on Fiscal Studies",
-      "role": "Partner — academic and policy research on public finance",
+      "role": "Partner - academic and policy research on public finance",
       "website": "https://cfs.uonbi.ac.ke/",
       "logo_url": "https://cfs.uonbi.ac.ke/sites/default/files/inline-images/UoN_Logo_4.png",
       "is_active": true
@@ -169,7 +169,7 @@
     {
       "id": "tisa",
       "name": "TISA Kenya",
-      "role": "Partner — transparency, integrity and accountability",
+      "role": "Partner - transparency, integrity and accountability",
       "website": "https://newtisa.tisa.co.ke/",
       "logo_url": "https://newtisa.tisa.co.ke/wp-content/uploads/2025/03/New-TISA-logo.svg",
       "is_active": true
@@ -181,10 +181,10 @@
       "name": "BNS Connect",
       "eyebrow": "National Budget ",
       "headline": "The budget lands as a PDF. We break it down for the Locals.",
-      "body": "Every June, Kenya debates a national budget measured in trillions. By July, most of that debate has left the public conversation. BNS Connect is the year-round programme that picks up Treasury releases, verify claims against published documents, and publish what holds up — dashboards, briefing products, and story series partners and institutions can use. .",
-      "highlight": "FY2026/27 national budget: about KSh 4.8 trillion, drawn from published Treasury figures — the scale Connect exists to watch.",
+      "body": "Every June, Kenya debates a national budget measured in trillions. By July, most of that debate has left the public conversation. BNS Connect is the year-round programme that picks up Treasury releases, verify claims against published documents, and publish what holds up - dashboards, briefing products, and story series partners and institutions can use. .",
+      "highlight": "FY2026/27 national budget: about KSh 4.8 trillion, drawn from published Treasury figures - the scale Connect exists to watch.",
       "investorThesis": "Trillions are debated for 48 hours in June, then disbursed and spent in silence for the other eleven months.",
-      "whatWeDo": "We track Kenya's KSh 4.8T national budget from Treasury allocation through ministry execution — verifying statutory releases against Controller of Budget records and publishing actionable intelligence for institutions and newsrooms.",
+      "whatWeDo": "We track Kenya's KSh 4.8T national budget from Treasury allocation through ministry execution - verifying statutory releases against Controller of Budget records and publishing actionable intelligence for institutions and newsrooms.",
       "mandateFit": "Macro-Fiscal Governance · Sovereign Debt Accountability · Youth Civic Technology",
       "deliverables": [
         {
@@ -217,7 +217,7 @@
       "pillars": [
         {
           "title": "Youth Budget Trackers",
-          "body": "A nationwide network of trained young trackers who follow money from Treasury allocation to ministry implementation — and verify what they find before publishing."
+          "body": "A nationwide network of trained young trackers who follow money from Treasury allocation to ministry implementation - and verify what they find before publishing."
         },
         {
           "title": "Live dashboards",
@@ -225,7 +225,7 @@
         },
         {
           "title": "Youth Budget Survey",
-          "body": "An annual pulse-check on what young Kenyans experience of public spending — evidence that anchors advocacy and newsroom coverage."
+          "body": "An annual pulse-check on what young Kenyans experience of public spending - evidence that anchors advocacy and newsroom coverage."
         }
       ],
       "process": [
@@ -235,11 +235,11 @@
         },
         {
           "title": "Verify on the ground",
-          "body": "Claims are checked against documents and lived experience — nothing publishes on vibes. Verified findings only."
+          "body": "Claims are checked against documents and lived experience - nothing publishes on vibes. Verified findings only."
         },
         {
           "title": "Publish for the feed",
-          "body": "Findings ship as dashboards, story series, and social threads in English, Kiswahili, and Sheng — built for sharing."
+          "body": "Findings ship as dashboards, story series, and social threads in English, Kiswahili, and Sheng - built for sharing."
         },
         {
           "title": "Keep scrutiny alive",
@@ -249,7 +249,7 @@
       "faqs": [
         {
           "q": "What does BNS Connect track?",
-          "a": "Kenya's national budget — roughly KSh 4.8 trillion in FY2026/27 — from Treasury allocation through ministry implementation, plus the annual Youth Budget Survey."
+          "a": "Kenya's national budget - roughly KSh 4.8 trillion in FY2026/27 - from Treasury allocation through ministry implementation, plus the annual Youth Budget Survey."
         },
         {
           "q": "Who are Budget Trackers?",
@@ -262,7 +262,7 @@
       ],
       "audience": "Young Kenyans, journalists, and civic partners who need national budget facts in forms people will share.",
       "seoTitle": "BNS Connect | National Budget Tracking for Kenya's Youth",
-      "seoDescription": "A youth-led tracker network following Kenya's KSh 4.8 trillion national budget from Treasury to your feed — dashboards, verified stories, quarterly briefs.",
+      "seoDescription": "A youth-led tracker network following Kenya's KSh 4.8 trillion national budget from Treasury to your feed - dashboards, verified stories, quarterly briefs.",
       "cta": {
         "label": "Become a Budget Tracker",
         "href": "/contact?intent=budget-tracker",
@@ -305,8 +305,8 @@
       "name": "BNS Mashinani",
       "eyebrow": "County accountability",
       "headline": "Kakamega. Kilifi. Nakuru. Wajir. Grassroots agents.",
-      "body": " BNS Mashinani chooses depth: embedded teams in four counties — Kakamega, Kilifi, Nakuru, and Wajir — present for the full budget cycle. We work alongside county governments as accountability partners, not adversaries, and turn what we find into public scorecards, live trackers, and Promise versus Delivery stories rooted in places people actually live.",
-      "highlight": "Four counties. Full-cycle presence. A model built to be copied — not a thin tour of forty-seven.",
+      "body": " BNS Mashinani chooses depth: embedded teams in four counties - Kakamega, Kilifi, Nakuru, and Wajir - present for the full budget cycle. We work alongside county governments as accountability partners, not adversaries, and turn what we find into public scorecards, live trackers, and Promise versus Delivery stories rooted in places people actually live.",
+      "highlight": "Four counties. Full-cycle presence. A model built to be copied - not a thin tour of forty-seven.",
       "investorThesis": "Devolution sent KSh 400B+ to counties, but oversight remained fly-over workshops with zero longitudinal ground truth.",
       "whatWeDo": "Embedded teams in Kakamega, Kilifi, Nakuru, and Wajir track the complete 12-month budget cycle as constructive accountability partners, verifying whether allocated capital actually delivered functional clinics, classrooms, and water infrastructure.",
       "mandateFit": "Sub-National Governance · Devolution Delivery · Public Participation (Art. 196/201)",
@@ -341,7 +341,7 @@
       "pillars": [
         {
           "title": "Embedded county teams",
-          "body": "Teams present in Kakamega, Kilifi, Nakuru, and Wajir for the full budget cycle — not single site visits — working as accountability partners, not adversaries."
+          "body": "Teams present in Kakamega, Kilifi, Nakuru, and Wajir for the full budget cycle - not single site visits - working as accountability partners, not adversaries."
         },
         {
           "title": "County scorecards",
@@ -349,7 +349,7 @@
         },
         {
           "title": "Promise vs. Delivery",
-          "body": "Stories that match what was pledged against what was delivered — plus authentic stories celebrating strides these counties have made."
+          "body": "Stories that match what was pledged against what was delivered - plus authentic stories celebrating strides these counties have made."
         }
       ],
       "process": [
@@ -359,7 +359,7 @@
         },
         {
           "title": "Track the cycle",
-          "body": "From county fiscal strategy papers to approved budgets to execution reports — every stage is monitored and documented."
+          "body": "From county fiscal strategy papers to approved budgets to execution reports - every stage is monitored and documented."
         },
         {
           "title": "Score in public",
@@ -373,11 +373,11 @@
       "faqs": [
         {
           "q": "Which counties does Mashinani cover?",
-          "a": "Kakamega, Kilifi, Nakuru, and Wajir — four diverse counties chosen to build a replicable full-cycle model for the other 43."
+          "a": "Kakamega, Kilifi, Nakuru, and Wajir - four diverse counties chosen to build a replicable full-cycle model for the other 43."
         },
         {
           "q": "Why only four counties instead of all 47?",
-          "a": "Covering all 47 produces thin data and little accountability. Depth in four counties creates a model with real weight — and a template others can copy."
+          "a": "Covering all 47 produces thin data and little accountability. Depth in four counties creates a model with real weight - and a template others can copy."
         },
         {
           "q": "How do counties work with BNS?",
@@ -386,7 +386,7 @@
       ],
       "audience": "County governments, residents of the four focus counties, and partners seeking a proven model for devolved fiscal oversight.",
       "seoTitle": "BNS Mashinani | County Budget Accountability in Kenya",
-      "seoDescription": "Sustained, embedded budget accountability in Kakamega, Kilifi, Nakuru & Wajir — scorecards, live trackers, and community-driven fiscal oversight.",
+      "seoDescription": "Sustained, embedded budget accountability in Kakamega, Kilifi, Nakuru & Wajir - scorecards, live trackers, and community-driven fiscal oversight.",
       "cta": {
         "label": "See your county's scorecard",
         "href": "/reports",
@@ -437,7 +437,7 @@
       "deliverables": [
         {
           "title": "4 Fiscal-Calendar Intensives",
-          "description": "Quarterly hands-on training sessions equipping 120–200 journalists and digital creators annually."
+          "description": "Quarterly hands-on training sessions equipping 120-200 journalists and digital creators annually."
         },
         {
           "title": "Filed Stories & Forensic Toolkits",
@@ -454,7 +454,7 @@
           "label": "Labs anchored to the fiscal calendar"
         },
         {
-          "value": "120–200",
+          "value": "120-200",
           "label": "Journalists and creators trained yearly"
         },
         {
@@ -465,7 +465,7 @@
       "pillars": [
         {
           "title": "Fiscal-calendar anchoring",
-          "body": "Each one-day Lab is timed to a real moment in Kenya's budget cycle — so participants report live stories, not hypotheticals."
+          "body": "Each one-day Lab is timed to a real moment in Kenya's budget cycle - so participants report live stories, not hypotheticals."
         },
         {
           "title": "Journalists + creators, side by side",
@@ -473,13 +473,13 @@
         },
         {
           "title": "Publishable toolkit",
-          "body": "Every participant leaves with stories filed and a full media toolkit — data, contacts, and angles ready for their outlet or platform."
+          "body": "Every participant leaves with stories filed and a full media toolkit - data, contacts, and angles ready for their outlet or platform."
         }
       ],
       "process": [
         {
           "title": "Pick the fiscal moment",
-          "body": "Each quarter, the Lab anchors to what is actually happening — budget estimates, approvals, Coffee Bill debates, audit releases."
+          "body": "Each quarter, the Lab anchors to what is actually happening - budget estimates, approvals, Coffee Bill debates, audit releases."
         },
         {
           "title": "Train on live evidence",
@@ -487,7 +487,7 @@
         },
         {
           "title": "File the story",
-          "body": "Participants produce publishable budget stories during the Lab itself — with editorial support on accuracy."
+          "body": "Participants produce publishable budget stories during the Lab itself - with editorial support on accuracy."
         },
         {
           "title": "Join the alumni bench",
@@ -501,16 +501,16 @@
         },
         {
           "q": "How often do Labs run?",
-          "a": "Quarterly — four one-day Labs a year, each anchored to a real moment in the fiscal calendar. Applications open quarterly."
+          "a": "Quarterly - four one-day Labs a year, each anchored to a real moment in the fiscal calendar. Applications open quarterly."
         },
         {
           "q": "What do participants leave with?",
           "a": "Publishable stories filed during the Lab, plus a full media toolkit: data, contacts, explainers, and story angles for their outlet or platform."
         }
       ],
-      "audience": "Kenyan journalists, editors, and digital creators who want accurate budget reporting eleven months a year — not only on Budget Day.",
+      "audience": "Kenyan journalists, editors, and digital creators who want accurate budget reporting eleven months a year - not only on Budget Day.",
       "seoTitle": "Wanahabari Lab | Budget Journalism Training in Kenya",
-      "seoDescription": "Quarterly training for journalists and digital creators on accurate, evidence-based budget reporting — anchored in live BNS data.",
+      "seoDescription": "Quarterly training for journalists and digital creators on accurate, evidence-based budget reporting - anchored in live BNS data.",
       "cta": {
         "label": "Apply for the next Lab",
         "href": "/contact?intent=wanahabari-lab",
@@ -553,10 +553,10 @@
       "name": "BNS Studios",
       "eyebrow": "Impact content and storytelling",
       "headline": "High-craft media. A civic surplus attached.",
-      "body": "If your impact story only lives in a grant PDF, it never reaches the people who need it. BNS Studios is the production house that turns institutional evidence into podcasts, documentaries, explainers, animations, social series, and facilitated town halls — for governments meeting public participation duties, development partners chasing localisation goals, companies delivering serious commercial work, and CSOs without an in-house crew. We are mission-aligned and editorially independent. A portion of Studios surplus funds Budget Ndio Story's civic work, so every commission carries a second job: keeping public-finance literacy alive beyond the client brief.",
+      "body": "If your impact story only lives in a grant PDF, it never reaches the people who need it. BNS Studios is the production house that turns institutional evidence into podcasts, documentaries, explainers, animations, social series, and facilitated town halls - for governments meeting public participation duties, development partners chasing localisation goals, companies delivering serious commercial work, and CSOs without an in-house crew. We are mission-aligned and editorially independent. A portion of Studios surplus funds Budget Ndio Story's civic work, so every commission carries a second job: keeping public-finance literacy alive beyond the client brief.",
       "highlight": "Commission once: your audience gets the film or forum; civic programmes get sustained fuel from the surplus.",
       "investorThesis": "Impact research trapped in dry 100-page PDFs generates zero political cost or citizen engagement.",
-      "whatWeDo": "BNS Studios is the self-sustaining commercial-grade production house turning institutional evidence into cinema-grade documentaries, animated explainers, podcasts, and facilitated town halls — with production surplus directly funding BNS civic programmes.",
+      "whatWeDo": "BNS Studios is the self-sustaining commercial-grade production house turning institutional evidence into cinema-grade documentaries, animated explainers, podcasts, and facilitated town halls - with production surplus directly funding BNS civic programmes.",
       "mandateFit": "Impact Communications · Civic Media Production · Double-Impact Fiduciary Model",
       "deliverables": [
         {
@@ -589,7 +589,7 @@
       "pillars": [
         {
           "title": "Audio & visuals",
-          "body": "Podcasts, explainers, animations, and documentaries built for reach — not shelfware."
+          "body": "Podcasts, explainers, animations, and documentaries built for reach - not shelfware."
         },
         {
           "title": "Convenings",

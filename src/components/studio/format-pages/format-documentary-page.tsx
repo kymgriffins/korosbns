@@ -81,7 +81,7 @@ export function FormatDocumentaryPage({
                 <blockquote>
                   {voice.quote}
                   <cite>
-                    — {voice.name}
+                    - {voice.name}
                     {voice.role ? ` · ${voice.role}` : ""}
                   </cite>
                 </blockquote>
@@ -106,7 +106,7 @@ export function FormatDocumentaryPage({
 
           <FormatCta
             title="Need film like this?"
-            line="Character-driven documentary, shot on location — tell us whose reality needs a lens."
+            line="Character-driven documentary, shot on location - tell us whose reality needs a lens."
           />
           <FormatRelated project={project} />
         </div>

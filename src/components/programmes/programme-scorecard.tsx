@@ -16,7 +16,7 @@ type ProgrammeScorecardProps = {
 };
 
 /**
- * Programme entry — flat still + caption, matching partner landing language.
+ * Programme entry - flat still + caption, matching partner landing language.
  * No card chrome (border / radius / shadow / bg-card).
  */
 export function ProgrammeScorecard({

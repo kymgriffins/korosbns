@@ -16,7 +16,7 @@ import {
 import { GsapReveal } from "@/motion/gsap";
 import { cn } from "@/utils";
 
-/** Single Studios fold on the homepage — one story, one CTA. */
+/** Single Studios fold on the homepage - one story, one CTA. */
 export function BNSStudioSection() {
   const strip = landingContent.studioStrip;
   const featured = BNS_STUDIO_LANDING_SHOWCASE[0];
@@ -39,7 +39,7 @@ export function BNSStudioSection() {
             <div className="relative aspect-[4/3] overflow-hidden rounded-2xl border border-border/50 md:rounded-[1.5rem]">
               <Image
                 src={featured.image}
-                alt={`${featured.name} — Budget Ndio Story production`}
+                alt={`${featured.name} - Budget Ndio Story production`}
                 fill
                 className="object-cover object-[center_top]"
                 sizes="(max-width: 768px) 100vw, 50vw"

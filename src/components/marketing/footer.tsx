@@ -71,7 +71,7 @@ const Footer = () => {
     config.layout?.footer_note ||
     config.tagline ||
     config.mission ||
-    "Budget Ndio Story — civic fiscal literacy for Kenya.";
+    "Budget Ndio Story - civic fiscal literacy for Kenya.";
   const organizationTitle = config.seo?.title || "Budget Ndio Story";
 
   const handleSubmit = async (e: React.FormEvent) => {

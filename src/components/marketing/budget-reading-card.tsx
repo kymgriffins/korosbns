@@ -15,7 +15,7 @@ export function BudgetReadingCard() {
           <div className="relative aspect-[4/5] sm:aspect-[3/4] md:aspect-[2/3] w-full">
             <Image
               src="/images/treasury/budget-reading-2026.jpg"
-              alt="CS John Mbadi presents the KES 4.82 Trillion national budget at Parliament Buildings, Nairobi — June 11, 2026"
+              alt="CS John Mbadi presents the KES 4.82 Trillion national budget at Parliament Buildings, Nairobi - June 11, 2026"
               fill
               className="object-cover object-[center_25%]"
               sizes="(max-width: 768px) 100vw, (max-width: 1400px) 90vw, 1400px"
@@ -26,7 +26,7 @@ export function BudgetReadingCard() {
               <div className="max-w-3xl space-y-4">
                 <div className="space-y-1">
                   <p className="text-xs sm:text-sm font-semibold uppercase tracking-widest text-amber-400">
-                    Budget Reading — June 11, 2026
+                    Budget Reading - June 11, 2026
                   </p>
                   <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-white leading-tight">
                     CS John Mbadi Presents KES 4.82 Trillion Budget

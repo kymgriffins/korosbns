@@ -41,7 +41,7 @@ export function FormatListeningPage({
             <p className="studio-article-prose">{project.briefChallenge}</p>
           </header>
 
-          {/* Voices — intimate cards */}
+          {/* Voices - intimate cards */}
           <FormatReveal experience="stage" className="fpage-wide">
             <div style={{ padding: "0 1.5rem" }}>
               <p className="fw-eyebrow fw-accent">Voices</p>
@@ -50,7 +50,7 @@ export function FormatListeningPage({
                   <blockquote key={voice.name} className="fw-listen-voice">
                     <p className="fw-listen-voice-quote">&ldquo;{voice.quote}&rdquo;</p>
                     <cite>
-                      — {voice.name}
+                      - {voice.name}
                       {voice.role ? ` · ${voice.role}` : ""}
                     </cite>
                   </blockquote>
@@ -110,7 +110,7 @@ export function FormatListeningPage({
 
           <FormatCta
             title="Need listening like this?"
-            line="Participatory dialogues with evidence dossiers — tell us whose ground truth is missing."
+            line="Participatory dialogues with evidence dossiers - tell us whose ground truth is missing."
           />
           <FormatRelated project={project} />
         </div>

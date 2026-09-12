@@ -32,7 +32,7 @@ const DEFAULT_HERO_VIDEO = {
 };
 
 /**
- * Phone-framed featured TikTok player — used in the landing hero.
+ * Phone-framed featured TikTok player - used in the landing hero.
  * Showcases Calvina Praise public debt story with authentic TikTok controls,
  * and plays Cloudflare MP4 inline when user taps play.
  */
@@ -232,7 +232,7 @@ export function LandingTikTokPhone({ className }: { className?: string }) {
   return (
     <div ref={phoneRef} className={cn("mx-auto flex w-full max-w-[280px] flex-col md:max-w-[320px]", className)}>
       <div className="relative aspect-[9/16] w-full overflow-hidden rounded-[2rem] border-[3px] border-foreground/10 bg-card ring-1 ring-white/10">
-        {/* Native video element — autoplays muted in background first */}
+        {/* Native video element - autoplays muted in background first */}
         <video
           ref={videoRef}
           src={video.video_url}
@@ -260,7 +260,7 @@ export function LandingTikTokPhone({ className }: { className?: string }) {
           <source src={video.video_url} type="video/mp4" />
         </video>
 
-        {/* Thumbnail backdrop for initial load & tests — non-blocking so video streams through */}
+        {/* Thumbnail backdrop for initial load & tests - non-blocking so video streams through */}
         <div
           className={cn(
             "absolute inset-0 z-0 overflow-hidden pointer-events-none transition-opacity duration-700",

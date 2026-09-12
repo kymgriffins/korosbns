@@ -34,7 +34,7 @@ export function FormatExplainerPage({
     <FormatShell project={project}>
       <div className="fworld-explainer">
         <div className="fpage-flow">
-          {/* Hero — copy + video */}
+          {/* Hero - copy + video */}
           <header className="fw-explainer-hero">
             <div className="fw-explainer-hero-copy">
               <p className="fw-eyebrow fw-accent">
@@ -127,7 +127,7 @@ export function FormatExplainerPage({
 
           <FormatCta
             title="Need explainers like this?"
-            line="Presenter-led clarity with motion graphics from published tables — tell us what confuses your audience."
+            line="Presenter-led clarity with motion graphics from published tables - tell us what confuses your audience."
           />
           <FormatRelated project={project} />
         </div>

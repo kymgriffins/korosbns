@@ -78,7 +78,7 @@ export function StudioSiteNav({
         )}
       >
         <nav className="studio-site-nav-inner" aria-label="BNS Studios">
-          {/* Desktop left links — hidden on mobile */}
+          {/* Desktop left links - hidden on mobile */}
           <div className="studio-site-nav-left studio-nav-desktop-only flex items-center gap-3">
             <Link
               href="/"
@@ -107,7 +107,7 @@ export function StudioSiteNav({
             </Link>
           </div>
 
-          {/* Mobile hamburger — visible on mobile only */}
+          {/* Mobile hamburger - visible on mobile only */}
           <div className="studio-nav-mobile-left">
             <button
               type="button"

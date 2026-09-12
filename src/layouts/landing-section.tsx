@@ -10,11 +10,11 @@ import {
   type SectionShellProps,
 } from "@/layouts/section-shell";
 
-/** Canonical landing section surface — breathable, no heavy borders */
+/** Canonical landing section surface - breathable, no heavy borders */
 export const LANDING_SECTION_SURFACE = "bg-background";
 
 type LandingSectionProps = SectionShellProps & {
-  /** @deprecated Motion is opt-in via GSAP primitives — kept for API compat */
+  /** @deprecated Motion is opt-in via GSAP primitives - kept for API compat */
   animateOnMount?: boolean;
 };
 

@@ -19,7 +19,7 @@ const PIPELINE = [
   },
   {
     title: "Storyboard",
-    body: "Every scene boarded before a single frame moves — pacing tuned for retention.",
+    body: "Every scene boarded before a single frame moves - pacing tuned for retention.",
   },
   {
     title: "Animate",
@@ -58,7 +58,7 @@ export function FormatAnimationPage({
             ) : null}
           </header>
 
-          {/* Pipeline — horizontal connected stages */}
+          {/* Pipeline - horizontal connected stages */}
           <FormatReveal experience="cinema" className="fpage-wide">
             <p className="fw-eyebrow fw-accent">The pipeline</p>
             <div className="fw-anim-pipeline">
@@ -119,7 +119,7 @@ export function FormatAnimationPage({
 
           <FormatCta
             title="Need motion like this?"
-            line="High-retention 2D and motion explainers — tell us what words alone can't move."
+            line="High-retention 2D and motion explainers - tell us what words alone can't move."
           />
           <FormatRelated project={project} />
         </div>

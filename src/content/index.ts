@@ -1,6 +1,6 @@
 /**
  * JSON-driven marketing content barrel.
- * Layouts/components should import from here — not hardcode copy or asset paths.
+ * Layouts/components should import from here - not hardcode copy or asset paths.
  */
 
 import mediaJson from "@/content/media.json";
@@ -82,7 +82,7 @@ export type ProgrammeDeliverable = {
 };
 
 export type ProgrammeBlock = {
-  /** Canonical stable id — always mirrors `slug`. */
+  /** Canonical stable id - always mirrors `slug`. */
   id: ProgrammeSlug;
   slug: ProgrammeSlug;
   name: string;
@@ -115,7 +115,7 @@ export type ProgrammeBlock = {
 
 export const PROGRAMMES_LANDING = programmesContent.landing;
 export const PROGRAMMES = programmesContent.items as ProgrammeBlock[];
-/** Civic programmes only — Connect, Mashinani, Wanahabari. BNS Studio is separate. */
+/** Civic programmes only - Connect, Mashinani, Wanahabari. BNS Studio is separate. */
 export const CIVIC_PROGRAMMES = PROGRAMMES.filter((p) => p.slug !== "studios");
 export const PROGRAMMES_CLOSING = programmesContent.closing;
 export const CONTACT_INTENT_COPY = programmesContent.contactIntents as Record<

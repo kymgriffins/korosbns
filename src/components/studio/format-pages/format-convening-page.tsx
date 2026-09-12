@@ -104,7 +104,7 @@ export function FormatConveningPage({
               <blockquote className="studio-article-quote">
                 {voice.quote}
                 <cite>
-                  — {voice.name}
+                  - {voice.name}
                   {voice.role ? ` · ${voice.role}` : ""}
                 </cite>
               </blockquote>
@@ -115,7 +115,7 @@ export function FormatConveningPage({
 
           <FormatCta
             title="Need convenings like this?"
-            line="Designed, facilitated, and documented end to end — tell us which room has to meet."
+            line="Designed, facilitated, and documented end to end - tell us which room has to meet."
           />
           <FormatRelated project={project} />
         </div>

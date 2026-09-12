@@ -140,7 +140,7 @@ export function Header() {
 
   return (
     <div ref={ref}>
-      {/* Fixed at top — light scrim so full-bleed heroes show through */}
+      {/* Fixed at top - light scrim so full-bleed heroes show through */}
       <motion.header
         variants={navbarEnter}
         initial={reduced ? false : "hidden"}

@@ -13,7 +13,7 @@ type Props = {
 const SHOOTER_MS = 2200;
 
 /**
- * Cinematic intro shown while the studio route loads — "shooter" before the reel hero.
+ * Cinematic intro shown while the studio route loads - "shooter" before the reel hero.
  */
 export function StudioReelShooter({ onComplete, className }: Props) {
   const reduceMotion = useReducedMotion();

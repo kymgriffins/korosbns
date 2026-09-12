@@ -35,7 +35,7 @@ const PATHWAYS = [
     title: "Commission BNS Studios",
     audience: "Governments, CSOs & Mission-Aligned Companies",
     description:
-      "Commission cinema-grade documentaries, animated explainers, podcasts, or town hall facilitation — with production surplus directly cross-subsidizing civic scrutiny.",
+      "Commission cinema-grade documentaries, animated explainers, podcasts, or town hall facilitation - with production surplus directly cross-subsidizing civic scrutiny.",
     deliverables: "Broadcast-ready media assets with a built-in 2× civic impact surplus.",
     ctaLabel: "Commission BNS Studios",
     href: "/bns-studio#booking",
@@ -51,7 +51,7 @@ export function ProgrammesInvestorPathways() {
     >
       <div className="mb-10 flex flex-col gap-4 md:mb-14 md:flex-row md:items-end md:justify-between">
         <div className="max-w-2xl space-y-3">
-          <EditorialPill dot pulse variant="default">
+          <EditorialPill variant="default">
             Partnership Pathways
           </EditorialPill>
           <h2 id="pathways-heading" className={T.sectionTitle}>

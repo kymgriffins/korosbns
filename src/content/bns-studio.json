@@ -9,8 +9,7 @@
     {
       "id": "hero-reel",
       "type": "hero-reel",
-      "badge": "National Treasury Explainer Series · 480K+ Views",
-      "swipeHint": "Swipe formats · Scroll for master theatre",
+      "badge": "National Treasury Explainer Series",
       "formatsLabel": "formats",
       "autoPlayMs": 7000,
       "slides": [
@@ -159,7 +158,7 @@
       "variant": "split-image",
       "eyebrow": "Partner With Us",
       "title": "Build civic media that moves policy.",
-      "description": "Whether you are a development partner, newsroom, or citizen — there is a place for you in Kenya's accountability story.",
+      "description": "Whether you are a development partner, newsroom, or citizen - there is a place for you in Kenya's accountability story.",
       "primaryCta": { "label": "Start a Partnership", "href": "/contact" },
       "secondaryCta": { "label": "View Our Work", "href": "/bns-studio" },
       "image": "/images/media/129A3905.jpg",
@@ -180,15 +179,15 @@
       "type": "cta-banner",
       "eyebrow": "Commission the Studio",
       "title": "Commission forensic civic media that moves policy.",
-      "description": "Bilingual podcasts, multi-camera town halls, 2D animations, or nationwide street takeovers — verified scope and production crew within 24 hours.",
+      "description": "Bilingual podcasts, multi-camera town halls, 2D animations, or nationwide street takeovers - verified scope and production crew within 24 hours.",
       "ctaLabel": "Commission BNS Studio",
       "ctaHref": "/contact",
       "theme": "contrast"
     }
   ],
   "seo": {
-    "title": "BNS Studio — Forensic Civic Media Production",
-    "description": "Documentaries, podcasts, animations, town halls, and social reels — verified civic media production from Budget Ndio Story.",
+    "title": "BNS Studio - Forensic Civic Media Production",
+    "description": "Documentaries, podcasts, animations, town halls, and social reels - verified civic media production from Budget Ndio Story.",
     "ogImage": "/images/media/129A3905.jpg"
   }
 }

@@ -34,7 +34,7 @@
       "eyebrow": "The Awakening",
       "title": "From street protests to 365-day institutional oversight.",
       "paragraphs": ["In June 2024, millions of young Kenyans took to the streets to reject punitive tax proposals in the Finance Bill. It was an unprecedented turning point in East African civic history.", "As the teargas cleared, a deeper realization took hold among our founders: protesting after an appropriation bill is gazetted is 12 months too late. Once a budget line is passed by Parliament, the public money is already committed to contractor accounts.", "Budget Ndio Story was founded to dismantle the culture of budget secrecy: intervening upstream from the first drafting sprint in August to final disbursement in June."],
-      "quote": { "text": "Protesting after a bill is gazetted is too late. Citizens must master the budget cycle 12 months in advance — before the money is stolen or misallocated.", "author": "BNS Founding Assembly", "role": "Nairobi" },
+      "quote": { "text": "Protesting after a bill is gazetted is too late. Citizens must master the budget cycle 12 months in advance - before the money is stolen or misallocated.", "author": "BNS Founding Assembly", "role": "Nairobi" },
       "metric": { "value": "KSh 4.82T", "label": "National Budget Tracked Upstream" },
       "imageAlt": "Town hall community forum of young Kenyans interrogating budget figures",
       "imageCaption": "Community budget hearing in Nairobi interrogating the Medium-Term Debt Strategy.",
@@ -44,7 +44,7 @@
   "aboutPartnerCta": {
     "pill": "Civic Collaboration",
     "heading": "Partner with Kenya's leading budget watchdog.",
-    "description": "Whether you are a development partner seeking to fund county accountability, a newsroom looking to co-publish an investigation, or a citizen wanting to bring BNS to your ward — there is a place for you.",
+    "description": "Whether you are a development partner seeking to fund county accountability, a newsroom looking to co-publish an investigation, or a citizen wanting to bring BNS to your ward - there is a place for you.",
     "primaryCta": { "label": "Partner With Us", "href": "/contact" },
     "secondaryCta": { "label": "Join Creative Network", "href": "/careers" }
   },
@@ -104,7 +104,7 @@
     "cards": [
       { "title": "Technical Barrier", "description": "Complex treasury jargon makes the budget inaccessible to over 80% of the population, creating a wall between citizens and their money.", "icon": "BookOpen", "color": "text-blue-500", "bg": "bg-blue-500/10" },
       { "title": "Digital Misinformation", "description": "In the absence of clear data, misinformation spreads faster than facts on social media, leading to confusion and misguided outrage.", "icon": "MessageSquareX", "color": "text-amber-500", "bg": "bg-amber-500/10" },
-      { "title": "The Resulting Crisis", "description": "Political passion without fiscal literacy leads to protests without policy proposals—anger that lacks the answers for real change.", "icon": "ShieldAlert", "color": "text-rose-500", "bg": "bg-rose-500/10" }
+      { "title": "The Resulting Crisis", "description": "Political passion without fiscal literacy leads to protests without policy proposals-anger that lacks the answers for real change.", "icon": "ShieldAlert", "color": "text-rose-500", "bg": "bg-rose-500/10" }
     ]
   },
   "roi": {
@@ -114,7 +114,7 @@
     "ctaText": "Join the movement and write the story of Kenya's fiscal future together.",
     "items": [
       { "title": "Democratic Stability", "description": "Channeling youth frustration away from chaotic protests into constructive, policy-based dialogue and sustainable civic engagement.", "icon": "ShieldCheck", "color": "text-emerald-500", "bg": "bg-emerald-500/10" },
-      { "title": "Data Intelligence", "description": "Access to civic education insights and priority mapping from youth across Kenya — coverage grows as county data is verified.", "icon": "Database", "color": "text-blue-500", "bg": "bg-blue-500/10" },
+      { "title": "Data Intelligence", "description": "Access to civic education insights and priority mapping from youth across Kenya - coverage grows as county data is verified.", "icon": "Database", "color": "text-blue-500", "bg": "bg-blue-500/10" },
       { "title": "Institutional Legacy", "description": "Positioning your organization as the primary architect of Kenya's next generation of informed and responsible civic leadership.", "icon": "Landmark", "color": "text-amber-500", "bg": "bg-amber-500/10" }
     ]
   },
@@ -190,7 +190,7 @@
     "eyebrow": "National Partnership",
     "title": "Decoding the Budget Policy Statement",
     "paragraph1": "Working directly with the National Treasury and Parliament's Budget & Appropriations Committee, we translate the annual Budget Policy Statement into accessible narratives for citizens.",
-    "paragraph2": "Our workshops and explainer series break down fiscal frameworks, revenue projections, and spending priorities — empowering Kenyans to understand where their taxes go."
+    "paragraph2": "Our workshops and explainer series break down fiscal frameworks, revenue projections, and spending priorities - empowering Kenyans to understand where their taxes go."
   },
   "newsletter": {
     "title": "Get budget updates in your inbox",

@@ -138,7 +138,7 @@ export function StudioProductionSpectrum() {
       <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80vw] h-[400px] bg-primary/10 blur-[150px] rounded-full pointer-events-none select-none" />
 
       <div className={SECTION_SHELL_INNER}>
-        {/* 01 — TOP HEADER & CONTROLS */}
+        {/* 01 - TOP HEADER & CONTROLS */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-8 sm:pb-12 border-b border-zinc-800/80">
           <div className="space-y-4 max-w-3xl">
             <div>
@@ -175,7 +175,7 @@ export function StudioProductionSpectrum() {
           </div>
         </div>
 
-        {/* 02 — CATEGORY FILTER TABS */}
+        {/* 02 - CATEGORY FILTER TABS */}
         <div className="flex items-center gap-2 overflow-x-auto scrollbar-none py-6 border-b border-zinc-800/80">
           {DISCIPLINE_TABS.map((tab) => {
             const isSelected = activeTab === tab.id;
@@ -208,7 +208,7 @@ export function StudioProductionSpectrum() {
           })}
         </div>
 
-        {/* 03 — DISCIPLINE CARDS: MOBILE HORIZONTAL SNAP CAROUSEL / DESKTOP BALANCED 3-COL */}
+        {/* 03 - DISCIPLINE CARDS: MOBILE HORIZONTAL SNAP CAROUSEL / DESKTOP BALANCED 3-COL */}
         <div
           ref={scrollRef}
           onScroll={handleScroll}

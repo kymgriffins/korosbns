@@ -40,7 +40,7 @@ export function ProgrammesSection() {
         ))}
       </div>
 
-      {/* Featured programme evidence — Latif / House of Fiscal Wisdom (replaces Budget Mtaani series) */}
+      {/* Featured programme evidence - Latif / House of Fiscal Wisdom (replaces Budget Mtaani series) */}
       <LandingContent className="mt-12 md:mt-14">
         <p className={cn(T.eyebrow, "mb-2 text-muted-foreground")}>
           Featured project

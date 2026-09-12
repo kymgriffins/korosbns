@@ -86,7 +86,7 @@ export function LandingHeroTicker({ className }: { className?: string } = {}) {
                 {item.topic}
               </span>
               <span className="text-muted-foreground">
-                — {item.text}
+                - {item.text}
               </span>
               <ArrowUpRight className="size-3 text-muted-foreground/60 group-hover/item:text-primary transition-colors inline shrink-0" />
             </Link>
