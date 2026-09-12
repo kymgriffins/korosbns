@@ -257,7 +257,11 @@ function DraggableMarquee({ partners }: { partners: Partner[] }) {
   );
 }
 
-export default function PartnersMarquee() {
+export default function PartnersMarquee({
+  eyebrow = "BNS Partners",
+}: {
+  eyebrow?: string;
+} = {}) {
   const { config } = useOrg();
   const [partners, setPartners] = useState<Partner[]>([]);
 
@@ -292,7 +296,7 @@ export default function PartnersMarquee() {
 
   return (
     <LandingSection>
-      <LandingSectionEyebrow muted>BNS Partners</LandingSectionEyebrow>
+      <LandingSectionEyebrow muted>{eyebrow}</LandingSectionEyebrow>
       <LandingContent className="overflow-hidden">
         <DraggableMarquee partners={partners} />
       </LandingContent>

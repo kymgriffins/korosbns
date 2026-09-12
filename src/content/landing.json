@@ -235,7 +235,8 @@
       "caption": "Town hall · Mashinani",
       "programme": "mashinani",
       "storyTitle": "Hall full of questions",
-      "storyLine": "Desks filled, camera rolling — a May town hall listens from the back row."
+      "storyLine": "Desks filled, camera rolling — a May town hall listens from the back row.",
+      "visible": true
     },
     {
       "id": "hall-workshop",
@@ -244,7 +245,8 @@
       "caption": "Convening · Mashinani",
       "programme": "mashinani",
       "storyTitle": "Tables mid-brief",
-      "storyLine": "Small groups lean over phones and notebooks while a facilitator checks in."
+      "storyLine": "Small groups lean over phones and notebooks while a facilitator checks in.",
+      "visible": true
     },
     {
       "id": "townhall-brief",
@@ -253,7 +255,8 @@
       "caption": "Floor briefing · Mashinani",
       "programme": "mashinani",
       "storyTitle": "Mic and estimates",
-      "storyLine": "Papers in hand, mic open — the briefing stays close to the room."
+      "storyLine": "Papers in hand, mic open — the briefing stays close to the room.",
+      "visible": true
     },
     {
       "id": "movine-floor",
@@ -262,7 +265,8 @@
       "caption": "Movine Omondi · Floor",
       "programme": "connect",
       "storyTitle": "Banner and brief",
-      "storyLine": "Movine takes the floor under the Budget Ndio Story banner."
+      "storyLine": "Movine takes the floor under the Budget Ndio Story banner.",
+      "visible": true
     },
     {
       "id": "hall-camera",
@@ -271,7 +275,8 @@
       "caption": "Field capture · Wanahabari",
       "programme": "wanahabari-lab",
       "storyTitle": "Recording the room",
-      "storyLine": "Gimbal up — the convening is filmed as it happens."
+      "storyLine": "Gimbal up — the convening is filmed as it happens.",
+      "visible": true
     },
     {
       "id": "maingi-afrodad",
@@ -280,7 +285,8 @@
       "caption": "James Maingi Mutinda · AFRODAD",
       "programme": "connect",
       "storyTitle": "Debt on the record",
-      "storyLine": "James Maingi Mutinda at AFRODAD — a continental forum, held for the brief."
+      "storyLine": "James Maingi Mutinda at AFRODAD — a continental forum, held for the brief.",
+      "visible": true
     },
     {
       "id": "wajackoyah-afrodad",
@@ -289,7 +295,8 @@
       "caption": "Prof. George Wajackoyah · AFRODAD",
       "programme": "connect",
       "storyTitle": "Panel under the brief",
-      "storyLine": "Wajackoyah on the mic — Read. Understand. Change the outcome."
+      "storyLine": "Wajackoyah on the mic — Read. Understand. Change the outcome.",
+      "visible": true
     },
     {
       "id": "latif-launch",
@@ -298,7 +305,8 @@
       "caption": "Dr. Lyla Latif · Red Flags",
       "programme": "wanahabari-lab",
       "storyTitle": "Red Flags in the room",
-      "storyLine": "Dr. Lyla Latif — AFRODAD week, Red Flags launch, mic still live."
+      "storyLine": "Dr. Lyla Latif — AFRODAD week, Red Flags launch, mic still live.",
+      "visible": true
     },
     {
       "id": "floor-voice",
@@ -307,7 +315,9 @@
       "caption": "Floor mic · Connect",
       "programme": "connect",
       "storyTitle": "A point on the floor",
-      "storyLine": "A speaker takes the mic under the Budget Ndio Story banner."
+      "storyLine": "A speaker takes the mic under the Budget Ndio Story banner.",
+      "visible": true
     }
-  ]
+  ],
+  "partnersEyebrow": "BNS Partners"
 }

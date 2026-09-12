@@ -4,7 +4,9 @@ import Image from "next/image";
 import Link from "next/link";
 import {
   PARTNER_PROGRAMME_EXPLAINS,
+  resolvePartnerProgrammeExplains,
   stillsForIds,
+  type PartnerProgrammeExplain,
 } from "@/content/partner-landing";
 import {
   LandingContent,
@@ -13,14 +15,22 @@ import {
 import { LANDING_TYPOGRAPHY as T } from "@/constants/landing-typography";
 import { cn } from "@/utils";
 
+export interface PartnerProgrammeExplainSectionsProps {
+  explains?: PartnerProgrammeExplain[];
+}
+
 /**
  * Three numbered big bets — stakes + what success looks like + Read more.
  * Surface matches marketing nav: background, hairline, muted type.
  */
-export function PartnerProgrammeExplainSections() {
+export function PartnerProgrammeExplainSections({
+  explains,
+}: PartnerProgrammeExplainSectionsProps = {}) {
+  const items = resolvePartnerProgrammeExplains(explains);
+
   return (
     <>
-      {PARTNER_PROGRAMME_EXPLAINS.map((item, index) => {
+      {items.map((item, index) => {
         const stills = stillsForIds(item.stillIds);
         const reverse = index % 2 === 1;
 

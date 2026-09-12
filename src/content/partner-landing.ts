@@ -17,6 +17,8 @@ export type PartnerLandingStill = {
   storyTitle: string;
   /** One observational line — no investment ask */
   storyLine: string;
+  /** Visibility toggle for public landing carousel — defaults to true */
+  visible?: boolean;
 };
 
 import landingJson from "@/content/landing.json";
@@ -331,8 +333,17 @@ export const PARTNER_PROGRAMME_EXPLAINS: PartnerProgrammeExplain[] =
     ? (rawLanding.programmeExplains as PartnerProgrammeExplain[])
     : DEFAULT_PROGRAMME_EXPLAINS;
 
+export function resolvePartnerProgrammeExplains(
+  override?: PartnerProgrammeExplain[],
+): PartnerProgrammeExplain[] {
+  if (Array.isArray(override) && override.length > 0) {
+    return override;
+  }
+  return PARTNER_PROGRAMME_EXPLAINS;
+}
+
 export function stillsForIds(ids: string[]): PartnerLandingStill[] {
   return ids
     .map((id) => PARTNER_LANDING_STILLS.find((s) => s.id === id))
-    .filter((s): s is PartnerLandingStill => Boolean(s));
+    .filter((s): s is PartnerLandingStill => Boolean(s && s.visible !== false));
 }

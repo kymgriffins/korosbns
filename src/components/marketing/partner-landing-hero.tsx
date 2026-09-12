@@ -40,7 +40,9 @@ export default function PartnerLandingHero({
   heroNarrative,
   stills,
 }: PartnerLandingHeroProps = {}) {
-  const slides = stills && stills.length > 0 ? stills : PARTNER_LANDING_STILLS;
+  const candidateSlides = stills && stills.length > 0 ? stills : PARTNER_LANDING_STILLS;
+  const visibleSlides = candidateSlides.filter((s) => s.visible !== false);
+  const slides = visibleSlides.length > 0 ? visibleSlides : candidateSlides;
   const reduceMotion = useReducedMotion();
   const [index, setIndex] = useState(0);
   const [paused, setPaused] = useState(false);

@@ -13,13 +13,24 @@ type EditorialCtaBandProps = {
   description?: string;
   ctaHref?: string;
   ctaLabel?: string;
+  ctaVariant?: "primary" | "outline" | "secondary";
   onCtaClick?: () => void;
   secondaryHref?: string;
   secondaryLabel?: string;
+  secondaryVariant?: "primary" | "outline" | "secondary";
+  buttonAlign?: "left" | "center" | "right" | "stretch";
+  theme?: "default" | "muted" | "card" | "contrast";
   images?: Array<{ src: string; alt: string }>;
   /** @deprecated Glow backgrounds removed for a quieter band */
   motionBackground?: boolean;
   className?: string;
+};
+
+const THEME_CLASSES: Record<string, string> = {
+  default: "bg-background",
+  muted: "bg-muted/30",
+  card: "bg-card border-border/80 shadow-xs",
+  contrast: "bg-neutral-900 text-white dark:bg-black",
 };
 
 /**
@@ -31,20 +42,35 @@ export function EditorialCtaBand({
   description,
   ctaHref,
   ctaLabel = "Get started",
+  ctaVariant = "primary",
   onCtaClick,
   secondaryHref,
   secondaryLabel,
+  secondaryVariant = "outline",
+  buttonAlign = "right",
+  theme = "muted",
   images,
   motionBackground: _motionBackground = false,
   className,
 }: EditorialCtaBandProps) {
   void _motionBackground;
   const hasImages = Boolean(images && images.length > 0);
+  const themeClass = THEME_CLASSES[theme] || THEME_CLASSES.muted;
+
+  const alignClass =
+    buttonAlign === "left"
+      ? "lg:w-auto lg:justify-start"
+      : buttonAlign === "center"
+      ? "lg:w-auto lg:justify-center"
+      : buttonAlign === "stretch"
+      ? "w-full justify-stretch"
+      : "lg:w-auto lg:justify-end";
 
   return (
     <section
       className={cn(
-        "relative w-full border-y border-border/50 bg-muted/25",
+        "relative w-full border-y border-border/50",
+        themeClass,
         className,
       )}
       aria-label={title}
@@ -78,11 +104,12 @@ export function EditorialCtaBand({
             ) : null}
           </div>
 
-          <div className="flex w-full shrink-0 flex-col gap-3 sm:flex-row sm:items-center lg:w-auto lg:justify-end">
+          <div className={cn("flex w-full shrink-0 flex-col gap-3 sm:flex-row sm:items-center", alignClass)}>
             {onCtaClick ? (
               <PillButton
                 onClick={onCtaClick}
                 label={ctaLabel}
+                variant={ctaVariant}
                 size="default"
                 className="w-full justify-center sm:w-auto"
               />
@@ -90,6 +117,7 @@ export function EditorialCtaBand({
               <PillButtonGroup
                 href={ctaHref}
                 label={ctaLabel}
+                variant={ctaVariant}
                 size="default"
                 className="w-full justify-center sm:w-auto"
               />
@@ -98,7 +126,7 @@ export function EditorialCtaBand({
               <PillButtonGroup
                 href={secondaryHref}
                 label={secondaryLabel}
-                variant="outline"
+                variant={secondaryVariant}
                 size="default"
                 className="w-full justify-center sm:w-auto"
               />

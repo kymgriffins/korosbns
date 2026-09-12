@@ -23,6 +23,8 @@ import {
   Info,
   Play,
   Eye,
+  EyeOff,
+  Palette,
   UploadCloud,
   ArrowUp,
   ArrowDown,
@@ -53,7 +55,7 @@ type PageKey =
   | "featured-blogs"
   | "custom-pages";
 
-type TabKey = "sections" | "hero" | "carousel" | "core" | "deliverables" | "buttons" | "faqs" | "media";
+type TabKey = "sections" | "hero" | "carousel" | "bets" | "core" | "deliverables" | "buttons" | "faqs" | "media";
 
 interface PageMeta {
   key: PageKey;
@@ -324,6 +326,26 @@ export function HeadlessPageStudio() {
     });
 
     setSectionsData(updatedSections);
+    setPreviewRefreshKey((k) => k + 1);
+  };
+
+  const handleUpdateSectionProp = (sectionId: string, prop: string, value: any) => {
+    const pageId = currentPage.sectionPageId;
+    const currentSections = [...(pageSectionsConfig.sections || [])];
+    const updated = currentSections.map((sec: any) =>
+      sec.id === sectionId ? { ...sec, [prop]: value } : sec
+    );
+    setSectionsData({
+      ...sectionsData,
+      pages: {
+        ...(sectionsData.pages || {}),
+        [pageId]: {
+          ...(sectionsData.pages?.[pageId] || {}),
+          sections: updated,
+        },
+      },
+    });
+    setPreviewRefreshKey((k) => k + 1);
   };
 
   // Generic Nested Field Updater
@@ -549,6 +571,26 @@ export function HeadlessPageStudio() {
   const handleUpdateCarouselStill = (index: number, field: string, value: any) => {
     const updated = heroStills.map((still, i) => (i === index ? { ...still, [field]: value } : still));
     setLandingData({ ...landingData, heroReelStills: updated });
+  };
+
+  const handleToggleCarouselStillVisibility = (index: number) => {
+    const updated = heroStills.map((still, i) =>
+      i === index ? { ...still, visible: still.visible === false ? true : false } : still
+    );
+    setLandingData({ ...landingData, heroReelStills: updated });
+    toast.success(
+      updated[index].visible === false
+        ? "Slide hidden from landing carousel (retained safely in library)."
+        : "Slide enabled in landing carousel!"
+    );
+  };
+
+  const updateLandingProgrammeExplain = (index: number, field: string, value: any) => {
+    const explains = (landingData.programmeExplains as any[]) || [];
+    const updated = explains.map((exp: any, i: number) =>
+      i === index ? { ...exp, [field]: value } : exp
+    );
+    setLandingData({ ...landingData, programmeExplains: updated });
   };
 
   const handleAddCarouselStill = () => {
@@ -1623,18 +1665,36 @@ export function HeadlessPageStudio() {
               </button>
 
               {selectedPageKey === "landing" && (
-                <button
-                  type="button"
-                  onClick={() => setActiveTab("carousel")}
-                  className={`flex w-full items-center gap-2 rounded-lg px-3 py-2 text-xs font-medium transition-colors ${
-                    activeTab === "carousel"
-                      ? "bg-primary text-primary-foreground font-semibold"
-                      : "text-muted-foreground hover:bg-muted hover:text-foreground"
-                  }`}
-                >
-                  <ImageIcon className="size-3.5" />
-                  <span>Hero Reel Images</span>
-                </button>
+                <>
+                  <button
+                    type="button"
+                    onClick={() => setActiveTab("bets")}
+                    className={`flex w-full items-center gap-2 rounded-lg px-3 py-2 text-xs font-medium transition-colors ${
+                      activeTab === "bets"
+                        ? "bg-primary text-primary-foreground font-semibold"
+                        : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                    }`}
+                  >
+                    <Layers className="size-3.5" />
+                    <span>Three Big Bets (Programmes)</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setActiveTab("carousel")}
+                    className={`flex w-full items-center gap-2 rounded-lg px-3 py-2 text-xs font-medium transition-colors ${
+                      activeTab === "carousel"
+                        ? "bg-primary text-primary-foreground font-semibold"
+                        : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                    }`}
+                  >
+                    <ImageIcon className="size-3.5" />
+                    <span>Hero Reel Images</span>
+                    <span className="ml-auto font-mono text-[10px] text-muted-foreground">
+                      {heroStills.filter((s: any) => s.visible !== false).length}/{heroStills.length}
+                    </span>
+                  </button>
+                </>
               )}
 
               {selectedPageKey !== "landing" && selectedPageKey !== "programmes" && (
@@ -1720,30 +1780,91 @@ export function HeadlessPageStudio() {
                 {(pageSectionsConfig.sections || []).map((sec: any, idx: number) => (
                   <div
                     key={sec.id}
-                    className="flex items-center justify-between p-3.5 transition-colors hover:bg-muted/40"
+                    className="p-3.5 transition-colors hover:bg-muted/40 space-y-3"
                   >
-                    <div className="space-y-0.5">
-                      <div className="flex items-center gap-2">
-                        <span className="font-medium text-xs text-foreground">{sec.label}</span>
+                    <div className="flex flex-wrap items-center justify-between gap-2">
+                      <div className="flex items-center gap-2.5">
+                        <span className="flex h-5 w-5 items-center justify-center rounded-full bg-primary/10 font-mono text-[10px] font-bold text-primary">
+                          {idx + 1}
+                        </span>
+                        <span className="font-semibold text-xs text-foreground">{sec.label}</span>
                         <code className="rounded bg-muted px-1.5 py-0.5 font-mono text-[10px] text-muted-foreground">
                           id: {sec.id}
                         </code>
                       </div>
+
+                      <div className="flex items-center gap-2">
+                        {/* Reorder Buttons */}
+                        <div className="flex items-center rounded-lg border border-border/60 bg-background p-0.5">
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            disabled={idx === 0}
+                            onClick={() => handleMoveSection(idx, "up")}
+                            className="h-6 px-1.5 text-xs text-muted-foreground hover:text-foreground disabled:opacity-30"
+                            title="Move section higher on page"
+                          >
+                            <ArrowUp className="size-3 mr-1" />
+                            <span className="text-[10px] font-semibold">Up</span>
+                          </Button>
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            disabled={idx === (pageSectionsConfig.sections || []).length - 1}
+                            onClick={() => handleMoveSection(idx, "down")}
+                            className="h-6 px-1.5 text-xs text-muted-foreground hover:text-foreground disabled:opacity-30"
+                            title="Move section lower on page"
+                          >
+                            <ArrowDown className="size-3 mr-1" />
+                            <span className="text-[10px] font-semibold">Down</span>
+                          </Button>
+                        </div>
+
+                        {/* Visibility Toggle Switch */}
+                        <button
+                          type="button"
+                          onClick={() => handleToggleSection(sec.id)}
+                          className={`relative inline-flex h-5 w-10 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
+                            sec.visible ? "bg-emerald-600" : "bg-neutral-300 dark:bg-neutral-700"
+                          }`}
+                          title={sec.visible ? "Section is visible" : "Section is hidden"}
+                        >
+                          <span
+                            className={`pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow-sm ring-0 transition duration-200 ease-in-out ${
+                              sec.visible ? "translate-x-5" : "translate-x-0"
+                            }`}
+                          />
+                        </button>
+                      </div>
                     </div>
 
-                    <button
-                      type="button"
-                      onClick={() => handleToggleSection(sec.id)}
-                      className={`relative inline-flex h-5 w-10 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
-                        sec.visible ? "bg-emerald-600" : "bg-neutral-300 dark:bg-neutral-700"
-                      }`}
-                    >
-                      <span
-                        className={`pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow-sm ring-0 transition duration-200 ease-in-out ${
-                          sec.visible ? "translate-x-5" : "translate-x-0"
-                        }`}
-                      />
-                    </button>
+                    {/* Section customization: Label Override & Background Theme */}
+                    <div className="grid grid-cols-1 sm:grid-cols-12 gap-2.5 pt-1 border-t border-border/30 text-xs">
+                      <div className="sm:col-span-8 flex items-center gap-2">
+                        <label className="text-[10px] font-semibold text-muted-foreground shrink-0">Section Label:</label>
+                        <Input
+                          value={sec.label ?? ""}
+                          onChange={(e) => handleUpdateSectionProp(sec.id, "label", e.target.value)}
+                          className="h-7 text-xs bg-background"
+                          placeholder="Section Title / Heading"
+                        />
+                      </div>
+                      <div className="sm:col-span-4 flex items-center gap-2">
+                        <label className="text-[10px] font-semibold text-muted-foreground shrink-0">Theme:</label>
+                        <select
+                          value={sec.theme ?? "default"}
+                          onChange={(e) => handleUpdateSectionProp(sec.id, "theme", e.target.value)}
+                          className="h-7 w-full rounded-md border border-input bg-background px-2 text-xs text-foreground"
+                        >
+                          <option value="default">Default</option>
+                          <option value="muted">Muted Tint</option>
+                          <option value="card">Card Block</option>
+                          <option value="contrast">High Contrast</option>
+                        </select>
+                      </div>
+                    </div>
                   </div>
                 ))}
               </div>
@@ -1761,9 +1882,16 @@ export function HeadlessPageStudio() {
                       <ImageIcon className="size-4 text-primary" />
                       <span>Landing Hero Reel &amp; Image Carousel ({heroStills.length} Slides)</span>
                     </h2>
-                    <p className="text-xs text-muted-foreground mt-0.5">
-                      Order, select from Cloudflare R2, alter, or delete images that rotate in the partner homepage hero reel.
-                    </p>
+                    <div className="flex items-center gap-2 mt-1">
+                      <Badge variant="outline" className="text-[11px] font-mono border-emerald-500/40 text-emerald-600 dark:text-emerald-400 bg-emerald-500/10">
+                        {heroStills.filter((s: any) => s.visible !== false).length} Active on Homepage
+                      </Badge>
+                      {heroStills.filter((s: any) => s.visible === false).length > 0 && (
+                        <Badge variant="outline" className="text-[11px] font-mono text-muted-foreground bg-muted/50">
+                          {heroStills.filter((s: any) => s.visible === false).length} Hidden (Stored in Library)
+                        </Badge>
+                      )}
+                    </div>
                   </div>
                   <Button
                     type="button"
@@ -1780,7 +1908,11 @@ export function HeadlessPageStudio() {
                   {heroStills.map((slide: any, idx: number) => (
                     <div
                       key={slide.id || idx}
-                      className="rounded-xl border border-border/80 bg-muted/20 p-4 space-y-4 transition-all hover:border-primary/50 shadow-xs"
+                      className={`rounded-xl border p-4 space-y-4 transition-all shadow-xs ${
+                        slide.visible !== false
+                          ? "border-border/80 bg-muted/20 hover:border-primary/50"
+                          : "border-border/50 bg-muted/10 opacity-75"
+                      }`}
                     >
                       {/* Slide Top Bar */}
                       <div className="flex flex-wrap items-center justify-between gap-2 border-b border-border/40 pb-2.5">
@@ -1793,7 +1925,35 @@ export function HeadlessPageStudio() {
                           </span>
                         </div>
 
-                        <div className="flex items-center gap-1.5">
+                        <div className="flex flex-wrap items-center gap-1.5">
+                          {/* Visibility Toggle Button */}
+                          <button
+                            type="button"
+                            onClick={() => handleToggleCarouselStillVisibility(idx)}
+                            className={`flex items-center gap-1.5 rounded-md px-2.5 py-1 text-xs font-semibold transition-colors ${
+                              slide.visible !== false
+                                ? "bg-emerald-500/15 text-emerald-700 dark:text-emerald-400 border border-emerald-500/30"
+                                : "bg-muted text-muted-foreground border border-border"
+                            }`}
+                            title={
+                              slide.visible !== false
+                                ? "Click to hide from homepage reel (retains photo in R2 and library)"
+                                : "Click to show on homepage reel"
+                            }
+                          >
+                            {slide.visible !== false ? (
+                              <>
+                                <Eye className="size-3.5 text-emerald-600 dark:text-emerald-400" />
+                                <span>Visible on Landing</span>
+                              </>
+                            ) : (
+                              <>
+                                <EyeOff className="size-3.5 text-muted-foreground" />
+                                <span>Hidden from Landing</span>
+                              </>
+                            )}
+                          </button>
+
                           {/* Reorder Buttons */}
                           <div className="flex items-center rounded-lg border border-border/60 bg-background p-0.5">
                             <Button
@@ -1939,6 +2099,147 @@ export function HeadlessPageStudio() {
                     <Plus className="size-3.5" />
                     <span>Add Another Slide to Reel</span>
                   </Button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* TAB: THREE BIG BETS (PROGRAMMES) */}
+          {activeTab === "bets" && selectedPageKey === "landing" && (
+            <div className="space-y-6">
+              <div className="rounded-2xl border border-border bg-card p-6 shadow-xs space-y-4">
+                <div className="border-b border-border/50 pb-4">
+                  <h2 className="text-base font-bold text-foreground flex items-center gap-2">
+                    <Layers className="size-4 text-primary" />
+                    <span>Three Big Bets (Programme Explains)</span>
+                  </h2>
+                  <p className="text-xs text-muted-foreground mt-0.5">
+                    Edit the three pillar programme narratives shown on the landing page (Connect, Mashinani, Wanahabari Lab).
+                  </p>
+                </div>
+
+                <div className="space-y-5">
+                  {((landingData.programmeExplains as any[]) || []).map((bet: any, idx: number) => (
+                    <div
+                      key={bet.slug || idx}
+                      className="rounded-xl border border-border/80 bg-muted/20 p-4 space-y-4"
+                    >
+                      <div className="flex items-center justify-between border-b border-border/40 pb-2">
+                        <div className="flex items-center gap-2">
+                          <span className="rounded-md bg-primary/15 px-2 py-0.5 font-mono text-xs font-bold text-primary">
+                            Bet {bet.number || `0${idx + 1}`}
+                          </span>
+                          <span className="font-heading text-xs font-bold text-foreground">
+                            {bet.name || bet.slug}
+                          </span>
+                        </div>
+                        <code className="rounded bg-muted px-1.5 py-0.5 font-mono text-[10px] text-muted-foreground">
+                          slug: {bet.slug}
+                        </code>
+                      </div>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
+                          <label className="text-[11px] font-semibold text-foreground">Eyebrow</label>
+                          <Input
+                            value={bet.eyebrow ?? ""}
+                            onChange={(e) => updateLandingProgrammeExplain(idx, "eyebrow", e.target.value)}
+                            className="mt-1 h-8 text-xs font-medium"
+                            placeholder="e.g. Connect"
+                          />
+                        </div>
+                        <div>
+                          <label className="text-[11px] font-semibold text-foreground">Programme Full Name</label>
+                          <Input
+                            value={bet.name ?? ""}
+                            onChange={(e) => updateLandingProgrammeExplain(idx, "name", e.target.value)}
+                            className="mt-1 h-8 text-xs font-medium"
+                            placeholder="e.g. BNS Connect"
+                          />
+                        </div>
+                      </div>
+
+                      <div>
+                        <label className="text-[11px] font-semibold text-foreground">
+                          Headline / Title (Core Mandate Phrase)
+                        </label>
+                        <Input
+                          value={bet.title ?? ""}
+                          onChange={(e) => updateLandingProgrammeExplain(idx, "title", e.target.value)}
+                          className="mt-1 h-8 text-xs font-semibold"
+                          placeholder="e.g. National budget intelligence"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="text-[11px] font-semibold text-foreground">
+                          Lede (Plain Stakes Narrative)
+                        </label>
+                        <textarea
+                          value={bet.lede ?? ""}
+                          onChange={(e) => updateLandingProgrammeExplain(idx, "lede", e.target.value)}
+                          rows={2}
+                          className="mt-1 w-full rounded-md border border-input bg-background p-2 text-xs text-foreground focus-visible:outline-none"
+                          placeholder="What the programme actually does..."
+                        />
+                      </div>
+
+                      <div>
+                        <label className="text-[11px] font-semibold text-foreground">
+                          Success Statement (Named Proof &amp; Citable Baseline)
+                        </label>
+                        <textarea
+                          value={bet.success ?? ""}
+                          onChange={(e) => updateLandingProgrammeExplain(idx, "success", e.target.value)}
+                          rows={2}
+                          className="mt-1 w-full rounded-md border border-input bg-background p-2 text-xs text-foreground focus-visible:outline-none"
+                          placeholder="What success looks like..."
+                        />
+                      </div>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                        <div>
+                          <label className="text-[11px] font-semibold text-foreground">Lifecycle Whisper</label>
+                          <Input
+                            value={bet.cycle ?? ""}
+                            onChange={(e) => updateLandingProgrammeExplain(idx, "cycle", e.target.value)}
+                            className="mt-1 h-8 text-xs"
+                            placeholder="e.g. Formulation → Budget Day → scrutiny"
+                          />
+                        </div>
+                        <div>
+                          <label className="text-[11px] font-semibold text-foreground">Button Label</label>
+                          <Input
+                            value={bet.ctaLabel ?? ""}
+                            onChange={(e) => updateLandingProgrammeExplain(idx, "ctaLabel", e.target.value)}
+                            className="mt-1 h-8 text-xs"
+                            placeholder="e.g. Read more"
+                          />
+                        </div>
+                        <div>
+                          <label className="text-[11px] font-semibold text-foreground">Target URL</label>
+                          <Input
+                            value={bet.href ?? ""}
+                            onChange={(e) => updateLandingProgrammeExplain(idx, "href", e.target.value)}
+                            className="mt-1 h-8 text-xs font-mono"
+                            placeholder="e.g. /programmes/connect"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-2 pt-1">
+                        <label className="flex items-center gap-2 cursor-pointer text-xs text-muted-foreground">
+                          <input
+                            type="checkbox"
+                            checked={Boolean(bet.hideCta)}
+                            onChange={(e) => updateLandingProgrammeExplain(idx, "hideCta", e.target.checked)}
+                            className="rounded border-input text-primary focus:ring-primary h-3.5 w-3.5"
+                          />
+                          <span>Hide Call to Action button for this bet</span>
+                        </label>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
             </div>
@@ -2599,18 +2900,53 @@ export function HeadlessPageStudio() {
 
               {selectedPageKey === "landing" ? (
                 <div className="space-y-5">
+                  {/* Partners Marquee Eyebrow */}
                   <div className="rounded-xl border border-border/60 bg-muted/20 p-4 space-y-3">
-                    <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
-                      Partner Closing CTA Band
+                    <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
+                      <span>Partners Marquee Section Eyebrow</span>
                     </h3>
-
                     <div>
-                      <label className="text-xs font-semibold text-foreground">CTA Band Eyebrow</label>
+                      <label className="text-xs font-semibold text-foreground">Marquee Header / Eyebrow Text</label>
                       <Input
-                        value={landingData.partnerCta?.eyebrow ?? ""}
-                        onChange={(e) => updateLandingField(["partnerCta", "eyebrow"], e.target.value)}
-                        className="mt-1 h-9 text-xs"
+                        value={landingData.partnersEyebrow ?? "BNS Partners"}
+                        onChange={(e) => updateLandingField(["partnersEyebrow"], e.target.value)}
+                        className="mt-1 h-8 text-xs font-medium"
+                        placeholder="e.g. BNS Partners"
                       />
+                    </div>
+                  </div>
+
+                  {/* Partner Closing CTA Band */}
+                  <div className="rounded-xl border border-border/60 bg-muted/20 p-4 space-y-4">
+                    <div className="flex items-center justify-between border-b border-border/40 pb-2">
+                      <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                        Partner Closing CTA Band
+                      </h3>
+                      <span className="text-[10px] text-muted-foreground">Appears at page footer</span>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      <div>
+                        <label className="text-xs font-semibold text-foreground">CTA Band Eyebrow</label>
+                        <Input
+                          value={landingData.partnerCta?.eyebrow ?? ""}
+                          onChange={(e) => updateLandingField(["partnerCta", "eyebrow"], e.target.value)}
+                          className="mt-1 h-8 text-xs"
+                        />
+                      </div>
+                      <div>
+                        <label className="text-xs font-semibold text-foreground">CTA Band Background Theme</label>
+                        <select
+                          value={landingData.partnerCta?.theme ?? "muted"}
+                          onChange={(e) => updateLandingField(["partnerCta", "theme"], e.target.value)}
+                          className="mt-1 flex h-8 w-full rounded-md border border-input bg-background px-2 text-xs text-foreground"
+                        >
+                          <option value="muted">Muted Surface (Default)</option>
+                          <option value="default">Standard / Clean</option>
+                          <option value="card">Card Shadow Box</option>
+                          <option value="contrast">High Contrast (Dark)</option>
+                        </select>
+                      </div>
                     </div>
 
                     <div>
@@ -2618,7 +2954,7 @@ export function HeadlessPageStudio() {
                       <Input
                         value={landingData.partnerCta?.title ?? ""}
                         onChange={(e) => updateLandingField(["partnerCta", "title"], e.target.value)}
-                        className="mt-1 h-9 text-xs"
+                        className="mt-1 h-8 text-xs font-semibold"
                       />
                     </div>
 
@@ -2632,41 +2968,111 @@ export function HeadlessPageStudio() {
                       />
                     </div>
 
-                    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                      <div>
-                        <label className="text-xs font-semibold text-foreground">Primary Button Label</label>
-                        <Input
-                          value={landingData.partnerCta?.ctaLabel ?? ""}
-                          onChange={(e) => updateLandingField(["partnerCta", "ctaLabel"], e.target.value)}
-                          className="mt-1 h-8 text-xs"
-                        />
+                    <div>
+                      <label className="text-xs font-semibold text-foreground">Buttons Row Alignment</label>
+                      <select
+                        value={landingData.partnerCta?.buttonAlign ?? "right"}
+                        onChange={(e) => updateLandingField(["partnerCta", "buttonAlign"], e.target.value)}
+                        className="mt-1 flex h-8 w-full rounded-md border border-input bg-background px-2 text-xs text-foreground"
+                      >
+                        <option value="right">Align Right (Recommended)</option>
+                        <option value="center">Align Center</option>
+                        <option value="left">Align Left</option>
+                        <option value="stretch">Stretch Full Width</option>
+                      </select>
+                    </div>
+
+                    {/* Primary Button Settings */}
+                    <div className="rounded-lg border border-border/70 bg-background p-3 space-y-3">
+                      <div className="flex items-center justify-between">
+                        <span className="font-semibold text-xs text-foreground">Primary CTA Button</span>
+                        <label className="flex items-center gap-1.5 cursor-pointer text-xs text-muted-foreground">
+                          <input
+                            type="checkbox"
+                            checked={Boolean(landingData.partnerCta?.hidePrimaryButton)}
+                            onChange={(e) => updateLandingField(["partnerCta", "hidePrimaryButton"], e.target.checked)}
+                            className="rounded border-input text-primary focus:ring-primary h-3.5 w-3.5"
+                          />
+                          <span>Hide Primary Button</span>
+                        </label>
                       </div>
-                      <div>
-                        <label className="text-xs font-semibold text-foreground">Primary Button Target URL</label>
-                        <Input
-                          value={landingData.partnerCta?.ctaHref ?? ""}
-                          onChange={(e) => updateLandingField(["partnerCta", "ctaHref"], e.target.value)}
-                          className="mt-1 h-8 text-xs font-mono"
-                        />
+
+                      <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+                        <div className="sm:col-span-1">
+                          <label className="text-[11px] font-semibold text-muted-foreground">Label</label>
+                          <Input
+                            value={landingData.partnerCta?.ctaLabel ?? ""}
+                            onChange={(e) => updateLandingField(["partnerCta", "ctaLabel"], e.target.value)}
+                            className="mt-1 h-8 text-xs"
+                          />
+                        </div>
+                        <div className="sm:col-span-1">
+                          <label className="text-[11px] font-semibold text-muted-foreground">Target URL</label>
+                          <Input
+                            value={landingData.partnerCta?.ctaHref ?? ""}
+                            onChange={(e) => updateLandingField(["partnerCta", "ctaHref"], e.target.value)}
+                            className="mt-1 h-8 text-xs font-mono"
+                          />
+                        </div>
+                        <div className="sm:col-span-1">
+                          <label className="text-[11px] font-semibold text-muted-foreground">Style Variant</label>
+                          <select
+                            value={landingData.partnerCta?.ctaVariant ?? "primary"}
+                            onChange={(e) => updateLandingField(["partnerCta", "ctaVariant"], e.target.value)}
+                            className="mt-1 flex h-8 w-full rounded-md border border-input bg-background px-2 text-xs text-foreground"
+                          >
+                            <option value="primary">Primary (Solid)</option>
+                            <option value="outline">Outline</option>
+                            <option value="secondary">Secondary (Soft)</option>
+                          </select>
+                        </div>
                       </div>
                     </div>
 
-                    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                      <div>
-                        <label className="text-xs font-semibold text-foreground">Secondary Button Label</label>
-                        <Input
-                          value={landingData.partnerCta?.secondaryLabel ?? ""}
-                          onChange={(e) => updateLandingField(["partnerCta", "secondaryLabel"], e.target.value)}
-                          className="mt-1 h-8 text-xs"
-                        />
+                    {/* Secondary Button Settings */}
+                    <div className="rounded-lg border border-border/70 bg-background p-3 space-y-3">
+                      <div className="flex items-center justify-between">
+                        <span className="font-semibold text-xs text-foreground">Secondary CTA Button</span>
+                        <label className="flex items-center gap-1.5 cursor-pointer text-xs text-muted-foreground">
+                          <input
+                            type="checkbox"
+                            checked={Boolean(landingData.partnerCta?.hideSecondaryButton)}
+                            onChange={(e) => updateLandingField(["partnerCta", "hideSecondaryButton"], e.target.checked)}
+                            className="rounded border-input text-primary focus:ring-primary h-3.5 w-3.5"
+                          />
+                          <span>Hide Secondary Button</span>
+                        </label>
                       </div>
-                      <div>
-                        <label className="text-xs font-semibold text-foreground">Secondary Button Target URL</label>
-                        <Input
-                          value={landingData.partnerCta?.secondaryHref ?? ""}
-                          onChange={(e) => updateLandingField(["partnerCta", "secondaryHref"], e.target.value)}
-                          className="mt-1 h-8 text-xs font-mono"
-                        />
+
+                      <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+                        <div className="sm:col-span-1">
+                          <label className="text-[11px] font-semibold text-muted-foreground">Label</label>
+                          <Input
+                            value={landingData.partnerCta?.secondaryLabel ?? ""}
+                            onChange={(e) => updateLandingField(["partnerCta", "secondaryLabel"], e.target.value)}
+                            className="mt-1 h-8 text-xs"
+                          />
+                        </div>
+                        <div className="sm:col-span-1">
+                          <label className="text-[11px] font-semibold text-muted-foreground">Target URL</label>
+                          <Input
+                            value={landingData.partnerCta?.secondaryHref ?? ""}
+                            onChange={(e) => updateLandingField(["partnerCta", "secondaryHref"], e.target.value)}
+                            className="mt-1 h-8 text-xs font-mono"
+                          />
+                        </div>
+                        <div className="sm:col-span-1">
+                          <label className="text-[11px] font-semibold text-muted-foreground">Style Variant</label>
+                          <select
+                            value={landingData.partnerCta?.secondaryVariant ?? "outline"}
+                            onChange={(e) => updateLandingField(["partnerCta", "secondaryVariant"], e.target.value)}
+                            className="mt-1 flex h-8 w-full rounded-md border border-input bg-background px-2 text-xs text-foreground"
+                          >
+                            <option value="outline">Outline (Default)</option>
+                            <option value="secondary">Secondary (Soft)</option>
+                            <option value="primary">Primary (Solid)</option>
+                          </select>
+                        </div>
                       </div>
                     </div>
                   </div>

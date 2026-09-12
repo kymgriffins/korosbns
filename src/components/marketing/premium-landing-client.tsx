@@ -44,63 +44,118 @@ const NewsletterPopup = dynamic(
   { ssr: false },
 );
 
-import type { LandingContent } from "@/lib/cms-live-data";
+import type { LandingContent, PartnerPageSectionsContent } from "@/lib/cms-live-data";
 
 export interface PremiumLandingClientProps {
   landingData?: Partial<LandingContent>;
+  sectionsConfig?: Partial<PartnerPageSectionsContent>;
 }
 
 /**
  * Partner homepage spine (RF-shaped, BNS-honest):
- * Hero reel → thesis/who-how → 3 numbered bets → featured evidence → CTA
- * Learner capture (newsletter popup) muted via SHOW_NEWSLETTER_POPUP.
+ * Dynamic section ordering loaded from CMS (`partner-page-sections.json`).
+ * Every text, button, and image is completely configurable via Headless Page Studio.
  */
-export default function PremiumLandingClient({ landingData }: PremiumLandingClientProps = {}) {
+export default function PremiumLandingClient({
+  landingData,
+  sectionsConfig,
+}: PremiumLandingClientProps = {}) {
   const activeCta = {
     eyebrow: landingData?.partnerCta?.eyebrow ?? PARTNER_LANDING_CTA.eyebrow,
     title: landingData?.partnerCta?.title ?? PARTNER_LANDING_CTA.title,
     description: landingData?.partnerCta?.description ?? PARTNER_LANDING_CTA.description,
     ctaLabel: landingData?.partnerCta?.ctaLabel ?? PARTNER_LANDING_CTA.ctaLabel,
     ctaHref: landingData?.partnerCta?.ctaHref ?? PARTNER_LANDING_CTA.ctaHref,
+    ctaVariant: (landingData?.partnerCta as any)?.ctaVariant ?? "primary",
     secondaryLabel: landingData?.partnerCta?.secondaryLabel ?? PARTNER_LANDING_CTA.secondaryLabel,
     secondaryHref: landingData?.partnerCta?.secondaryHref ?? PARTNER_LANDING_CTA.secondaryHref,
+    secondaryVariant: (landingData?.partnerCta as any)?.secondaryVariant ?? "outline",
+    buttonAlign: (landingData?.partnerCta as any)?.buttonAlign ?? "right",
+    theme: (landingData?.partnerCta as any)?.theme ?? "muted",
     hidePrimaryButton: (landingData?.partnerCta as any)?.hidePrimaryButton ?? PARTNER_LANDING_CTA.hidePrimaryButton,
     hideSecondaryButton: (landingData?.partnerCta as any)?.hideSecondaryButton ?? PARTNER_LANDING_CTA.hideSecondaryButton,
   };
 
+  const homeSections = sectionsConfig?.pages?.home?.sections || [
+    { id: "hero", visible: true },
+    { id: "whoHow", visible: true },
+    { id: "programmeExplains", visible: true },
+    { id: "featuredProjects", visible: true },
+    { id: "partners", visible: false },
+    { id: "cta", visible: true },
+  ];
+
   return (
     <>
-      {isSectionVisible("home", "hero") ? (
-        <PartnerLandingHero
-          heroNarrative={landingData?.heroNarrative}
-          stills={landingData?.heroReelStills as any}
-        />
-      ) : null}
-      {isSectionVisible("home", "whoHow") ? (
-        <PartnerLandingThesis thesis={landingData?.thesis} />
-      ) : null}
-      {isSectionVisible("home", "programmeExplains") ? (
-        <PartnerProgrammeExplainSections />
-      ) : null}
-      {isSectionVisible("home", "featuredProjects") ? (
-        <FeaturedProjectsSection />
-      ) : null}
-      {isSectionVisible("home", "partners") ? <PartnersMarquee /> : null}
-      {isSectionVisible("home", "cta") ? (
-        <EditorialCtaBand
-          eyebrow={activeCta.eyebrow}
-          title={activeCta.title}
-          description={activeCta.description}
-          ctaHref={activeCta.hidePrimaryButton ? undefined : (activeCta.ctaHref || "/contact?intent=partner")}
-          ctaLabel={activeCta.ctaLabel}
-          secondaryHref={activeCta.hideSecondaryButton ? undefined : (activeCta.secondaryHref || "/programmes")}
-          secondaryLabel={activeCta.secondaryLabel}
-          images={CIVIC_PROGRAMMES.slice(0, 2).map((p) => ({
-            src: p.visual.hero,
-            alt: p.visual.heroAlt,
-          }))}
-        />
-      ) : null}
+      {homeSections.map((sec) => {
+        // Respect CMS section visibility
+        const isVisible = sec.visible !== false && isSectionVisible("home", sec.id);
+        if (!isVisible) return null;
+
+        switch (sec.id) {
+          case "hero":
+            return (
+              <PartnerLandingHero
+                key={sec.id}
+                heroNarrative={landingData?.heroNarrative}
+                stills={landingData?.heroReelStills as any}
+              />
+            );
+          case "whoHow":
+            return (
+              <PartnerLandingThesis
+                key={sec.id}
+                thesis={landingData?.thesis}
+              />
+            );
+          case "programmeExplains":
+            return (
+              <PartnerProgrammeExplainSections
+                key={sec.id}
+                explains={landingData?.programmeExplains as any}
+              />
+            );
+          case "featuredProjects":
+            return (
+              <FeaturedProjectsSection
+                key={sec.id}
+                eyebrow={landingData?.featuredIntro?.eyebrow}
+                headline={landingData?.featuredIntro?.headline}
+                lede={landingData?.featuredIntro?.lede}
+              />
+            );
+          case "partners":
+            return (
+              <PartnersMarquee
+                key={sec.id}
+                eyebrow={(landingData as any)?.partnersEyebrow || "BNS Partners"}
+              />
+            );
+          case "cta":
+            return (
+              <EditorialCtaBand
+                key={sec.id}
+                eyebrow={activeCta.eyebrow}
+                title={activeCta.title}
+                description={activeCta.description}
+                ctaHref={activeCta.hidePrimaryButton ? undefined : (activeCta.ctaHref || "/contact?intent=partner")}
+                ctaLabel={activeCta.ctaLabel}
+                ctaVariant={activeCta.ctaVariant}
+                secondaryHref={activeCta.hideSecondaryButton ? undefined : (activeCta.secondaryHref || "/programmes")}
+                secondaryLabel={activeCta.secondaryLabel}
+                secondaryVariant={activeCta.secondaryVariant}
+                buttonAlign={activeCta.buttonAlign}
+                theme={(sec as any)?.theme || activeCta.theme}
+                images={CIVIC_PROGRAMMES.slice(0, 2).map((p) => ({
+                  src: p.visual.hero,
+                  alt: p.visual.heroAlt,
+                }))}
+              />
+            );
+          default:
+            return null;
+        }
+      })}
       {SHOW_NEWSLETTER_POPUP ? <NewsletterPopup /> : null}
     </>
   );
