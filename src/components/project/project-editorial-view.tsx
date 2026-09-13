@@ -28,6 +28,18 @@ export type ProjectEditorialData = {
   hostInstitution?: string;
   tags?: string[];
   metrics?: Array<{ label: string; value: string }>;
+  /** Media type: youtube, reel, audio, image, animation, none */
+  mediaType?: string;
+  /** Reel MP4 URL for vertical player */
+  reelUrl?: string;
+  /** Audio embed URL (Spotify, SoundCloud) */
+  audioUrl?: string;
+  /** Gallery images */
+  gallery?: Array<{ url: string; caption?: string; alt?: string }>;
+  /** Caption text below hero media */
+  mediaCaption?: string;
+  /** Hide caption/helper texts */
+  hideCaptions?: boolean;
 };
 
 export interface ProjectEditorialViewProps {
@@ -164,27 +176,57 @@ export function ProjectEditorialView({
       {/* 2. Media Embed Hero Section */}
       <section className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-8 md:py-12">
         <div className="overflow-hidden rounded-2xl border border-border bg-card shadow-lg">
-          <MediaEmbed
-            src={project.url || (project.videoId ? `https://www.youtube.com/watch?v=${project.videoId}` : "")}
-            title={displayTitle}
-            poster={project.thumbnail}
-            useYoutubeThumbnail={project.useYoutubeThumbnail ?? true}
-            className="w-full aspect-video"
-          />
-          <div className="flex flex-wrap items-center justify-between gap-4 border-t border-border/60 bg-muted/20 px-6 py-3 text-xs text-muted-foreground font-mono">
-            <span>Official Evidence Media · Budget Ndio Story Engine</span>
-            {project.url && (
-              <a
-                href={project.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-1 font-semibold text-primary hover:underline"
+          {/* Reel player — vertical MP4 */}
+          {(project as any).mediaType === "reel" && (project as any).reelUrl ? (
+            <div className="flex justify-center bg-black">
+              <video
+                src={(project as any).reelUrl}
+                controls
+                playsInline
+                preload="metadata"
+                className="w-full max-w-[360px] aspect-[9/16] object-contain"
+                poster={project.thumbnail}
               >
-                <span>Watch on YouTube</span>
-                <ExternalLink className="size-3" />
-              </a>
-            )}
-          </div>
+                <track kind="captions" />
+              </video>
+            </div>
+          ) : (project as any).mediaType === "audio" && (project as any).audioUrl ? (
+            /* Audio embed — Spotify/SoundCloud iframe */
+            <div className="w-full aspect-[16/9] flex items-center justify-center bg-muted p-6">
+              <iframe
+                src={(project as any).audioUrl}
+                className="w-full max-w-lg aspect-[16/9]"
+                allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+                loading="lazy"
+                title={displayTitle}
+              />
+            </div>
+          ) : (
+            /* Default: YouTube/Vimeo/etc via MediaEmbed */
+            <MediaEmbed
+              src={project.url || (project.videoId ? `https://www.youtube.com/watch?v=${project.videoId}` : "")}
+              title={displayTitle}
+              poster={project.thumbnail}
+              useYoutubeThumbnail={project.useYoutubeThumbnail ?? true}
+              className="w-full aspect-video"
+            />
+          )}
+          {!project.hideCaptions && (
+            <div className="flex flex-wrap items-center justify-between gap-4 border-t border-border/60 bg-muted/20 px-6 py-3 text-xs text-muted-foreground font-mono">
+              <span>{(project as any).mediaCaption || "Official Evidence Media · Budget Ndio Story Engine"}</span>
+              {project.url && (project as any).mediaType !== "reel" && (project as any).mediaType !== "audio" && (
+                <a
+                  href={project.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1 font-semibold text-primary hover:underline"
+                >
+                  <span>Watch on YouTube</span>
+                  <ExternalLink className="size-3" />
+                </a>
+              )}
+            </div>
+          )}
         </div>
       </section>
 
@@ -204,6 +246,34 @@ export function ProjectEditorialView({
                   {metric.label}
                 </div>
               </div>
+            ))}
+          </div>
+        </section>
+      ) : null}
+
+      {/* 3b. Project Gallery (if provided) */}
+      {(project as any).gallery && (project as any).gallery.length > 0 ? (
+        <section className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-8">
+          <h2 className="mb-6 text-xl font-bold tracking-tight text-foreground sm:text-2xl">
+            Project Gallery
+          </h2>
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {(project as any).gallery.map((item: { url: string; caption?: string; alt?: string }, idx: number) => (
+              <figure key={idx} className="group overflow-hidden rounded-xl border border-border bg-card">
+                <div className="relative aspect-video overflow-hidden">
+                  <img
+                    src={item.url}
+                    alt={item.alt || `${displayTitle} — gallery ${idx + 1}`}
+                    className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                    loading="lazy"
+                  />
+                </div>
+                {!project.hideCaptions && item.caption ? (
+                  <figcaption className="px-4 py-3 text-xs text-muted-foreground font-mono">
+                    {item.caption}
+                  </figcaption>
+                ) : null}
+              </figure>
             ))}
           </div>
         </section>
