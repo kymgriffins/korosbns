@@ -1,5 +1,6 @@
-import { StudioReelShooter } from "@/components/studio/theatre/studio-reel-shooter";
+import { RouteLoadingGate } from "@/components/global/route-loading-gate";
 
+/** BNS Studio route loader — off unless CMS enables pages.studio.loading. */
 export default function BnsStudioLoading() {
-  return <StudioReelShooter className="studio-reel-shooter" />;
+  return <RouteLoadingGate />;
 }

@@ -2,7 +2,14 @@
   "policy": {
     "maxBlocksPartnerPages": 5,
     "blogLikeExempt": true,
-    "notes": "Partner-attention pages must keep visible sections ≤ maxBlocks. Blog-like / long-form project & article pages are exempt. Flip section.visible - do not delete section composers."
+    "notes": "Partner-attention pages must keep visible sections ≤ maxBlocks. Blog-like / long-form project & article pages are exempt. Flip section.visible - do not delete section composers.",
+    "loadingDefaults": {
+      "globalSplash": false,
+      "globalSplashMinMs": 0,
+      "routeLoadingDefault": false,
+      "routeLoadingVariant": "none",
+      "notes": "Never show cosmetic loaders by default. Opt in per page (studio-reel / spinner / text) only when intentional. Prefer minMs 0."
+    }
   },
   "pages": {
     "home": {
@@ -11,6 +18,7 @@
       "partnerAttention": true,
       "blogLike": false,
       "composer": "src/components/marketing/premium-landing-client.tsx",
+      "loading": { "enabled": false, "minMs": 0, "variant": "none" },
       "sections": [
         { "id": "hero", "label": "Partner hero · project reel backdrop", "visible": true },
         { "id": "whoHow", "label": "Thesis · who we are / how we work", "visible": true },
@@ -63,6 +71,7 @@
       "partnerAttention": true,
       "blogLike": false,
       "composer": "src/components/programmes/programme-landing-layout.tsx",
+      "loading": { "enabled": false, "minMs": 0, "variant": "none" },
       "sections": [
         { "id": "hero", "label": "Landing-format hero", "visible": true },
         { "id": "body", "label": "What this programme does", "visible": true },
@@ -160,6 +169,11 @@
       "partnerAttention": true,
       "blogLike": false,
       "composer": "src/components/studio/BNSStudioPageClient.tsx",
+      "loading": {
+        "enabled": false,
+        "minMs": 0,
+        "variant": "studio-reel"
+      },
       "sections": [
         { "id": "hero-reel", "label": "Hero reel carousel", "visible": true },
         { "id": "screening", "label": "Screening theatre", "visible": true },
@@ -220,6 +234,7 @@
       "partnerAttention": false,
       "blogLike": false,
       "composer": "src/components/learn/LearnHubHome.tsx",
+      "loading": { "enabled": false, "minMs": 0, "variant": "none" },
       "sections": [
         { "id": "hero", "label": "Learn hero", "visible": true },
         { "id": "stats", "label": "Stats strip", "visible": true },

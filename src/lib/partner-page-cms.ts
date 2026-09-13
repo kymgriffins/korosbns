@@ -11,6 +11,20 @@ export type PartnerPageSection = {
   visible: boolean;
 };
 
+export type PageLoadingVariant =
+  | "none"
+  | "spinner"
+  | "text"
+  | "studio-reel";
+
+/** Per-page route loading screen (Next.js `loading.tsx`). Off by default. */
+export type PageLoadingConfig = {
+  enabled: boolean;
+  /** Soft hold while the cosmetic loader plays (ms). Prefer 0. */
+  minMs?: number;
+  variant?: PageLoadingVariant;
+};
+
 export type PartnerPageConfig = {
   route: string;
   title: string;
@@ -18,6 +32,8 @@ export type PartnerPageConfig = {
   blogLike: boolean;
   composer: string;
   sections: PartnerPageSection[];
+  /** Optional route-loading chrome. Omit or enabled:false = no loading page. */
+  loading?: PageLoadingConfig;
 };
 
 export type PartnerPageSectionsCms = {
@@ -25,6 +41,17 @@ export type PartnerPageSectionsCms = {
     maxBlocksPartnerPages: number;
     blogLikeExempt: boolean;
     notes: string;
+    /**
+     * Sitewide loading policy. Keep globalSplash + routeLoadingDefault false
+     * unless an editor intentionally opts into branded chrome.
+     */
+    loadingDefaults?: {
+      globalSplash?: boolean;
+      globalSplashMinMs?: number;
+      routeLoadingDefault?: boolean;
+      routeLoadingVariant?: PageLoadingVariant;
+      notes?: string;
+    };
   };
   pages: Record<string, PartnerPageConfig>;
 };
@@ -35,8 +62,29 @@ export const partnerPageSectionsCms =
 export type PartnerPageId = keyof typeof partnerPageSectionsJson.pages;
 
 export type PartnerPageSectionsLike = {
-  pages?: Record<string, { sections?: Array<{ id: string; visible?: boolean }> }>;
-  policy?: { maxBlocksPartnerPages?: number };
+  pages?: Record<
+    string,
+    {
+      route?: string;
+      sections?: Array<{ id: string; visible?: boolean }>;
+      loading?: {
+        enabled?: boolean;
+        minMs?: number;
+        /** JSON seed types this as string; runtime narrows to PageLoadingVariant */
+        variant?: string;
+      };
+    }
+  >;
+  policy?: {
+    maxBlocksPartnerPages?: number;
+    loadingDefaults?: {
+      globalSplash?: boolean;
+      globalSplashMinMs?: number;
+      routeLoadingDefault?: boolean;
+      routeLoadingVariant?: string;
+      notes?: string;
+    };
+  };
 };
 
 export function getPartnerPage(

@@ -9,6 +9,8 @@ import { cn, generateMetadata } from "@/utils";
 import { SiteAnalytics } from "@/components/analytics/site-analytics";
 import type { Viewport } from "next";
 import Script from "next/script";
+import { getLivePartnerPageSections } from "@/lib/cms-live-data";
+import { getGlobalSplashConfig } from "@/lib/page-loading";
 
 export const metadata = generateMetadata();
 
@@ -133,11 +135,14 @@ const studioSchema = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const sections = await getLivePartnerPageSections();
+  const splash = getGlobalSplashConfig(sections);
+
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
@@ -187,7 +192,9 @@ export default function RootLayout({
       >
         <BrandTokensInjector />
         <Providers>
-          <LoadingScreen />
+          {splash.enabled ? (
+            <LoadingScreen enabled minMs={splash.minMs} />
+          ) : null}
           <WhatsAppSupport />
           {children}
           <CookieConsentWrapper />

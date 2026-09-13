@@ -6,6 +6,11 @@ import {
   partnerPagesOverBudget,
   visibleSectionCount,
 } from "@/lib/partner-page-cms";
+import {
+  getGlobalSplashConfig,
+  resolvePageLoadingById,
+  resolvePageLoadingByPath,
+} from "@/lib/page-loading";
 
 describe("partner-page-cms ≤5 block policy", () => {
   it("keeps every partnerAttention non-blog page at or under maxBlocks", () => {
@@ -56,5 +61,24 @@ describe("partner-page-cms ≤5 block policy", () => {
   it("marks learn as non-partner and forum as muted", () => {
     expect(partnerPageSectionsCms.pages.learn.partnerAttention).toBe(false);
     expect(isSectionVisible("forum", "forum")).toBe(false);
+  });
+});
+
+describe("page loading policy", () => {
+  it("keeps global splash off by default", () => {
+    expect(getGlobalSplashConfig().enabled).toBe(false);
+    expect(partnerPageSectionsCms.policy.loadingDefaults?.globalSplash).toBe(false);
+  });
+
+  it("never shows the fake BNS Studios reel unless opted in", () => {
+    const studio = resolvePageLoadingById("studio");
+    expect(studio.enabled).toBe(false);
+    expect(studio.variant).toBe("studio-reel");
+  });
+
+  it("keeps connect / home / learn without route loading pages", () => {
+    expect(resolvePageLoadingByPath("/programmes/connect").enabled).toBe(false);
+    expect(resolvePageLoadingByPath("/").enabled).toBe(false);
+    expect(resolvePageLoadingByPath("/learn").enabled).toBe(false);
   });
 });

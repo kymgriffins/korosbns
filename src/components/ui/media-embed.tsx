@@ -4,10 +4,12 @@ import React, { useState } from "react";
 import Image from "next/image";
 import { cn } from "@/utils";
 import { Play } from "lucide-react";
+import { TikTokStylePlayer } from "@/components/ui/tiktok-style-player";
+import { sanitizeMediaUrl } from "@/content";
 
 export type MediaEmbedProps = {
   src?: string;
-  type?: "auto" | "video" | "youtube" | "image";
+  type?: "auto" | "video" | "youtube" | "image" | "tiktok";
   alt?: string;
   title?: string;
   caption?: string;
@@ -18,7 +20,7 @@ export type MediaEmbedProps = {
   loop?: boolean;
   muted?: boolean;
   className?: string;
-  aspectRatio?: "video" | "square" | "wide" | "auto";
+  aspectRatio?: "video" | "square" | "wide" | "auto" | "portrait";
 };
 
 export const DEFAULT_MEDIA_FALLBACK_THUMBNAIL = "/images/media/129A4039.jpg";
@@ -88,8 +90,9 @@ export function resolveMediaThumbnail(params: {
   return fallback;
 }
 
-export function detectMediaType(src: string): "youtube" | "vimeo" | "video" | "image" {
+export function detectMediaType(src: string): "youtube" | "vimeo" | "video" | "image" | "tiktok" {
   if (!src) return "image";
+  if (/tiktok\.com/i.test(src)) return "tiktok";
   if (parseYouTubeId(src) || parseYouTubePlaylistId(src)) return "youtube";
   if (parseVimeoId(src)) return "vimeo";
 
@@ -109,6 +112,12 @@ export function detectMediaType(src: string): "youtube" | "vimeo" | "video" | "i
   return "image";
 }
 
+export function parseTikTokVideoId(url: string): string | null {
+  if (!url) return null;
+  const match = url.match(/tiktok\.com\/@[^/]+\/video\/(\d+)/i);
+  return match ? match[1] : null;
+}
+
 export function MediaEmbed({
   src,
   type = "auto",
@@ -124,12 +133,14 @@ export function MediaEmbed({
   className,
   aspectRatio = "video",
 }: MediaEmbedProps) {
-  if (!src) return null;
+  const cleanSrc = sanitizeMediaUrl(src);
+  if (!cleanSrc) return null;
 
-  const resolvedType = type === "auto" ? detectMediaType(src) : type;
+  const resolvedType = type === "auto" ? detectMediaType(cleanSrc) : type;
 
-  const ytId = parseYouTubeId(src);
-  const playlistId = parseYouTubePlaylistId(src);
+  const ytId = parseYouTubeId(cleanSrc);
+  const playlistId = parseYouTubePlaylistId(cleanSrc);
+  const tiktokId = parseTikTokVideoId(cleanSrc);
 
   const aspectClass =
     aspectRatio === "video"
@@ -138,7 +149,9 @@ export function MediaEmbed({
         ? "aspect-21/9"
         : aspectRatio === "square"
           ? "aspect-square"
-          : "";
+          : aspectRatio === "portrait"
+            ? "aspect-[9/16]"
+            : "";
 
   let youtubeEmbedUrl = "";
   if (resolvedType === "youtube") {
@@ -149,8 +162,44 @@ export function MediaEmbed({
     } else if (ytId) {
       youtubeEmbedUrl = `https://www.youtube-nocookie.com/embed/${ytId}?rel=0&modestbranding=1`;
     } else {
-      youtubeEmbedUrl = `https://www.youtube-nocookie.com/embed/${src}?rel=0&modestbranding=1`;
+      youtubeEmbedUrl = `https://www.youtube-nocookie.com/embed/${cleanSrc}?rel=0&modestbranding=1`;
     }
+  }
+
+  if (resolvedType === "tiktok") {
+    // Native TikTok video page → official embed; otherwise vertical MP4 player (R2 reels)
+    if (tiktokId) {
+      return (
+        <figure className={cn("relative w-full overflow-hidden bg-muted/40", className)}>
+          <div className="relative mx-auto aspect-[9/16] w-full max-w-[320px] overflow-hidden rounded-[1.25rem] bg-black">
+            <iframe
+              src={`https://www.tiktok.com/embed/v2/${tiktokId}`}
+              title={title || alt || "TikTok video"}
+              className="absolute inset-0 size-full border-0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+            />
+          </div>
+          {(caption || title) ? (
+            <figcaption className="border-t border-border/40 bg-background/95 p-3 text-xs text-muted-foreground">
+              {title ? <span className="mr-1.5 font-semibold text-foreground">{title}</span> : null}
+              {caption ? <span>{caption}</span> : null}
+            </figcaption>
+          ) : null}
+        </figure>
+      );
+    }
+
+    return (
+      <figure className={cn("relative w-full overflow-hidden bg-muted/40", className)}>
+        <TikTokStylePlayer
+          src={cleanSrc}
+          poster={poster}
+          title={title}
+          caption={caption}
+        />
+      </figure>
+    );
   }
 
   return (
@@ -168,7 +217,7 @@ export function MediaEmbed({
       ) : resolvedType === "vimeo" ? (
         <div className={cn("relative w-full overflow-hidden bg-black", aspectClass || "aspect-video")}>
           <iframe
-            src={`https://player.vimeo.com/video/${parseVimeoId(src) || src}?dnt=1`}
+            src={`https://player.vimeo.com/video/${parseVimeoId(cleanSrc) || cleanSrc}?dnt=1`}
             title={title || alt || "Vimeo video"}
             className="absolute inset-0 size-full border-0"
             allow="autoplay; fullscreen; picture-in-picture"
@@ -176,9 +225,9 @@ export function MediaEmbed({
           />
         </div>
       ) : resolvedType === "video" ? (
-        <div className={cn("relative w-full overflow-hidden bg-black flex items-center justify-center", aspectClass || "aspect-video")}>
+        <div className={cn("relative flex w-full items-center justify-center overflow-hidden bg-black", aspectClass || "aspect-video")}>
           <video
-            src={src}
+            src={cleanSrc}
             poster={poster || (useYoutubeThumbnail && ytId ? `https://img.youtube.com/vi/${ytId}/hqdefault.jpg` : undefined)}
             controls={controls}
             autoPlay={autoPlay}
@@ -189,14 +238,15 @@ export function MediaEmbed({
             className="size-full object-contain"
             aria-label={title || alt}
           >
-            <source src={src} type="video/mp4" />
+            <source src={cleanSrc} type="video/mp4" />
             Your browser does not support the video tag.
           </video>
         </div>
       ) : (
         <div className={cn("relative w-full overflow-hidden", aspectClass || "min-h-[260px]")}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src={src}
+            src={cleanSrc}
             alt={alt}
             className="size-full object-cover"
             loading="lazy"
@@ -205,8 +255,8 @@ export function MediaEmbed({
       )}
 
       {(caption || title) ? (
-        <figcaption className="p-3 text-xs text-muted-foreground border-t border-border/40 bg-background/95">
-          {title ? <span className="font-semibold text-foreground mr-1.5">{title}</span> : null}
+        <figcaption className="border-t border-border/40 bg-background/95 p-3 text-xs text-muted-foreground">
+          {title ? <span className="mr-1.5 font-semibold text-foreground">{title}</span> : null}
           {caption ? <span>{caption}</span> : null}
         </figcaption>
       ) : null}

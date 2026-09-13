@@ -407,7 +407,27 @@ export function HeadlessPageStudio() {
       }
       if (resSec.ok) {
         const json = await resSec.json();
-        setSectionsData(json.data || {});
+        const data = json.data || {};
+        // Ensure loading policy exists even when R2 predates this field
+        if (!data.policy) data.policy = {};
+        if (!data.policy.loadingDefaults) {
+          data.policy.loadingDefaults = {
+            globalSplash: false,
+            globalSplashMinMs: 0,
+            routeLoadingDefault: false,
+            routeLoadingVariant: "none",
+            notes:
+              "Never show cosmetic loaders by default. Opt in per page only when intentional.",
+          };
+        }
+        if (data.pages?.studio && !data.pages.studio.loading) {
+          data.pages.studio.loading = {
+            enabled: false,
+            minMs: 0,
+            variant: "studio-reel",
+          };
+        }
+        setSectionsData(data);
       }
       if (resAbout.ok) {
         const json = await resAbout.json();
@@ -2314,6 +2334,179 @@ export function HeadlessPageStudio() {
                 </Badge>
               </div>
 
+              {/* Loading / splash policy */}
+              <div className="space-y-3 rounded-xl border border-border/60 bg-muted/20 p-4">
+                <div>
+                  <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                    Loading &amp; splash
+                  </h3>
+                  <p className="mt-1 text-[11px] text-muted-foreground">
+                    Default is off — no fake BNS Studios reel, no global splash, no &ldquo;Loading content…&rdquo;.
+                    Opt in only when you want branded chrome.
+                  </p>
+                </div>
+
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <label className="flex items-center gap-2 text-xs text-foreground cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={!!sectionsData?.policy?.loadingDefaults?.globalSplash}
+                      onChange={(e) => {
+                        setSectionsData({
+                          ...sectionsData,
+                          policy: {
+                            ...(sectionsData.policy || {}),
+                            loadingDefaults: {
+                              ...(sectionsData.policy?.loadingDefaults || {}),
+                              globalSplash: e.target.checked,
+                              globalSplashMinMs:
+                                sectionsData.policy?.loadingDefaults?.globalSplashMinMs ?? 0,
+                              routeLoadingDefault:
+                                sectionsData.policy?.loadingDefaults?.routeLoadingDefault ?? false,
+                              routeLoadingVariant:
+                                sectionsData.policy?.loadingDefaults?.routeLoadingVariant ?? "none",
+                            },
+                          },
+                        });
+                      }}
+                      className="h-3.5 w-3.5 rounded border-border text-primary focus:ring-primary"
+                    />
+                    <span>Sitewide logo splash (first paint)</span>
+                  </label>
+                  <div>
+                    <label className="text-[11px] font-semibold text-muted-foreground">
+                      Splash min duration (ms)
+                    </label>
+                    <Input
+                      type="number"
+                      min={0}
+                      step={100}
+                      value={sectionsData?.policy?.loadingDefaults?.globalSplashMinMs ?? 0}
+                      onChange={(e) => {
+                        setSectionsData({
+                          ...sectionsData,
+                          policy: {
+                            ...(sectionsData.policy || {}),
+                            loadingDefaults: {
+                              ...(sectionsData.policy?.loadingDefaults || {}),
+                              globalSplash:
+                                sectionsData.policy?.loadingDefaults?.globalSplash ?? false,
+                              globalSplashMinMs: Number(e.target.value) || 0,
+                              routeLoadingDefault:
+                                sectionsData.policy?.loadingDefaults?.routeLoadingDefault ?? false,
+                              routeLoadingVariant:
+                                sectionsData.policy?.loadingDefaults?.routeLoadingVariant ?? "none",
+                            },
+                          },
+                        });
+                      }}
+                      className="mt-0.5 h-8 text-xs font-mono"
+                      disabled={!sectionsData?.policy?.loadingDefaults?.globalSplash}
+                    />
+                  </div>
+                </div>
+
+                <div className="border-t border-border/40 pt-3 space-y-3">
+                  <p className="text-[11px] font-semibold text-foreground">
+                    This page: {currentPage.label}
+                  </p>
+                  <label className="flex items-center gap-2 text-xs text-foreground cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={!!pageSectionsConfig.loading?.enabled}
+                      onChange={(e) => {
+                        const pageId = currentPage.sectionPageId;
+                        setSectionsData({
+                          ...sectionsData,
+                          pages: {
+                            ...(sectionsData.pages || {}),
+                            [pageId]: {
+                              ...(sectionsData.pages?.[pageId] || {}),
+                              loading: {
+                                enabled: e.target.checked,
+                                minMs: pageSectionsConfig.loading?.minMs ?? 0,
+                                variant:
+                                  pageSectionsConfig.loading?.variant ||
+                                  (pageId === "studio" ? "studio-reel" : "none"),
+                              },
+                            },
+                          },
+                        });
+                      }}
+                      className="h-3.5 w-3.5 rounded border-border text-primary focus:ring-primary"
+                    />
+                    <span>Show a loading page on this route</span>
+                  </label>
+                  <div className="grid gap-3 sm:grid-cols-2">
+                    <div>
+                      <label className="text-[11px] font-semibold text-muted-foreground">
+                        Loading style
+                      </label>
+                      <select
+                        value={pageSectionsConfig.loading?.variant ?? "none"}
+                        onChange={(e) => {
+                          const pageId = currentPage.sectionPageId;
+                          setSectionsData({
+                            ...sectionsData,
+                            pages: {
+                              ...(sectionsData.pages || {}),
+                              [pageId]: {
+                                ...(sectionsData.pages?.[pageId] || {}),
+                                loading: {
+                                  enabled: pageSectionsConfig.loading?.enabled ?? false,
+                                  minMs: pageSectionsConfig.loading?.minMs ?? 0,
+                                  variant: e.target.value,
+                                },
+                              },
+                            },
+                          });
+                        }}
+                        disabled={!pageSectionsConfig.loading?.enabled}
+                        className="mt-0.5 flex h-8 w-full rounded-md border border-input bg-background px-2 text-xs"
+                      >
+                        <option value="none">None</option>
+                        <option value="spinner">Spinner</option>
+                        <option value="text">Text (&ldquo;Loading content…&rdquo;)</option>
+                        <option value="studio-reel">BNS Studios reel shooter</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="text-[11px] font-semibold text-muted-foreground">
+                        Timer / min duration (ms)
+                      </label>
+                      <Input
+                        type="number"
+                        min={0}
+                        step={100}
+                        value={pageSectionsConfig.loading?.minMs ?? 0}
+                        onChange={(e) => {
+                          const pageId = currentPage.sectionPageId;
+                          setSectionsData({
+                            ...sectionsData,
+                            pages: {
+                              ...(sectionsData.pages || {}),
+                              [pageId]: {
+                                ...(sectionsData.pages?.[pageId] || {}),
+                                loading: {
+                                  enabled: pageSectionsConfig.loading?.enabled ?? false,
+                                  variant: pageSectionsConfig.loading?.variant ?? "none",
+                                  minMs: Number(e.target.value) || 0,
+                                },
+                              },
+                            },
+                          });
+                        }}
+                        disabled={!pageSectionsConfig.loading?.enabled}
+                        className="mt-0.5 h-8 text-xs font-mono"
+                      />
+                    </div>
+                  </div>
+                  <p className="text-[10px] text-muted-foreground">
+                    Tip: keep Learn, programmes, and Connect at enabled=false. Only turn on Studio reel if you want that cinematic intro back.
+                  </p>
+                </div>
+              </div>
+
               {isOverBudget && (
                 <div className="flex items-start gap-2.5 rounded-xl border border-rose-500/30 bg-rose-500/10 p-3.5 text-xs text-rose-600 dark:text-rose-400">
                   <AlertTriangle className="size-4 shrink-0 mt-0.5" />
@@ -3450,7 +3643,7 @@ export function HeadlessPageStudio() {
               <div className="border-b border-border/50 pb-3">
                 <h2 className="text-base font-bold text-foreground">Featured Media, Videos &amp; Gallery</h2>
                 <p className="text-xs text-muted-foreground">
-                  Connect Cloudflare R2 videos or YouTube links, then manage the full <code className="font-mono">visual.gallery[]</code> media array for this programme.
+                  Connect Cloudflare R2 videos, YouTube, TikTok-style reels, or a still image. Social reels for this programme also appear in the project grid (play in-app).
                 </p>
               </div>
 
@@ -3460,7 +3653,7 @@ export function HeadlessPageStudio() {
                     <div className="flex items-center justify-between">
                       <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
                         <Film className="size-3.5 text-primary" />
-                        <span>Programme Hero Video / Media</span>
+                        <span>Programme Hero Media</span>
                       </h4>
                       <div className="flex items-center gap-2">
                         {currentProgramme.featuredMedia?.url && (
@@ -3472,7 +3665,7 @@ export function HeadlessPageStudio() {
                             className="h-7 text-xs text-rose-500 hover:text-rose-600 hover:bg-rose-500/10 gap-1"
                           >
                             <Trash2 className="size-3" />
-                            <span>Remove Video</span>
+                            <span>Remove</span>
                           </Button>
                         )}
                         <Button
@@ -3485,10 +3678,19 @@ export function HeadlessPageStudio() {
                               title: `Featured Media for ${currentProgramme.title || "Programme"}`,
                               currentUrl: currentProgramme.featuredMedia?.url,
                               onSelect: (url) => {
+                                const isYt = url.includes("youtube.com") || url.includes("youtu.be");
+                                const isTiktok = url.includes("tiktok.com");
+                                const isImage = /\.(jpg|jpeg|png|webp|gif|avif|svg)(\?|$)/i.test(url);
                                 updateCurrentProgrammeField("featuredMedia", {
                                   ...(currentProgramme.featuredMedia || {}),
                                   url,
-                                  type: url.includes("youtube.com") || url.includes("youtu.be") ? "youtube" : "video",
+                                  type: isYt
+                                    ? "youtube"
+                                    : isTiktok
+                                      ? "tiktok"
+                                      : isImage
+                                        ? "image"
+                                        : currentProgramme.featuredMedia?.type || "video",
                                 });
                               },
                             });
@@ -3501,16 +3703,54 @@ export function HeadlessPageStudio() {
                       </div>
                     </div>
 
+                    <div>
+                      <label className="text-[11px] font-semibold text-muted-foreground">Hero media type</label>
+                      <select
+                        value={currentProgramme.featuredMedia?.type ?? "video"}
+                        onChange={(e) => {
+                          updateCurrentProgrammeField("featuredMedia", {
+                            ...(currentProgramme.featuredMedia || { url: "" }),
+                            type: e.target.value,
+                          });
+                        }}
+                        className="mt-1 flex h-8 w-full rounded-md border border-input bg-background px-2 text-xs"
+                      >
+                        <option value="tiktok">TikTok-style reel (vertical)</option>
+                        <option value="youtube">YouTube embed</option>
+                        <option value="video">Landscape video (MP4)</option>
+                        <option value="image">Still image</option>
+                        <option value="auto">Auto-detect</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="text-[11px] font-semibold text-muted-foreground">
+                        Media URL (R2 / YouTube / TikTok video page)
+                      </label>
+                      <Input
+                        value={currentProgramme.featuredMedia?.url ?? ""}
+                        onChange={(e) => {
+                          updateCurrentProgrammeField("featuredMedia", {
+                            ...(currentProgramme.featuredMedia || {}),
+                            url: e.target.value,
+                          });
+                        }}
+                        className="mt-1 h-8 font-mono text-xs"
+                        placeholder="https://...mp4 or youtube.com/watch?v=..."
+                      />
+                    </div>
+
                     {currentProgramme.featuredMedia?.url ? (
                       <div className="space-y-3">
-                        <div className="rounded-lg overflow-hidden border border-border bg-black max-w-md">
+                        <div className="max-w-md overflow-hidden rounded-lg border border-border bg-black">
                           <MediaEmbed
                             src={currentProgramme.featuredMedia.url}
                             type={currentProgramme.featuredMedia.type}
                             title={currentProgramme.featuredMedia.title}
+                            poster={currentProgramme.featuredMedia.poster}
                           />
                         </div>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                        <div className="grid grid-cols-1 gap-3 text-xs sm:grid-cols-2">
                           <div>
                             <label className="text-[11px] font-semibold text-muted-foreground">Media Title</label>
                             <Input
@@ -3519,7 +3759,7 @@ export function HeadlessPageStudio() {
                                 const fm = { ...(currentProgramme.featuredMedia || {}), title: e.target.value };
                                 updateCurrentProgrammeField("featuredMedia", fm);
                               }}
-                              className="h-7 text-xs mt-0.5"
+                              className="mt-0.5 h-7 text-xs"
                             />
                           </div>
                           <div>
@@ -3530,16 +3770,110 @@ export function HeadlessPageStudio() {
                                 const fm = { ...(currentProgramme.featuredMedia || {}), caption: e.target.value };
                                 updateCurrentProgrammeField("featuredMedia", fm);
                               }}
-                              className="h-7 text-xs mt-0.5"
+                              className="mt-0.5 h-7 text-xs"
                             />
                           </div>
                         </div>
+                        <ImageFieldControl
+                          label="Poster / cover still"
+                          value={currentProgramme.featuredMedia.poster ?? ""}
+                          onChange={(url) => {
+                            updateCurrentProgrammeField("featuredMedia", {
+                              ...(currentProgramme.featuredMedia || {}),
+                              poster: url,
+                            });
+                          }}
+                          onOpenBucket={() => {
+                            setActiveImagePicker({
+                              isOpen: true,
+                              title: "Hero poster image",
+                              currentUrl: currentProgramme.featuredMedia?.poster,
+                              onSelect: (url) => {
+                                updateCurrentProgrammeField("featuredMedia", {
+                                  ...(currentProgramme.featuredMedia || {}),
+                                  poster: url,
+                                });
+                              },
+                            });
+                          }}
+                        />
                       </div>
                     ) : (
-                      <div className="text-center py-5 border border-dashed border-border rounded-lg text-xs text-muted-foreground">
-                        No video or stream attached. The page will display the hero poster image below.
+                      <div className="rounded-lg border border-dashed border-border py-5 text-center text-xs text-muted-foreground">
+                        No hero media yet. Pick an R2 file, paste a YouTube URL, or use a TikTok-style reel MP4.
                       </div>
                     )}
+                  </div>
+
+                  {/* Programme social reels (from programme-reels collection) */}
+                  <div className="rounded-xl border border-border/80 bg-muted/20 p-4 space-y-3">
+                    <div className="flex items-center justify-between gap-2">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
+                        <Film className="size-3.5 text-primary" />
+                        <span>Social reels in project grid</span>
+                      </h4>
+                      <span className="font-mono text-[10px] text-muted-foreground">
+                        desk: Programme Reels
+                      </span>
+                    </div>
+                    <p className="text-[11px] text-muted-foreground">
+                      Reels tagged <code className="font-mono">{currentProgramme.slug}</code> appear inside this programme&apos;s project grid and play in-app. Edit the archive under the{" "}
+                      <strong>Programme Reels</strong> CMS desk, then Save.
+                    </p>
+                    <div className="space-y-2">
+                      {(((programmeReelsData?.reels as any[]) || []).filter(
+                        (r) => r.programmeSlug === currentProgramme.slug,
+                      ).length === 0) ? (
+                        <p className="rounded-lg border border-dashed border-border py-4 text-center text-[11px] text-muted-foreground">
+                          No reels tagged for this programme yet.
+                        </p>
+                      ) : (
+                        ((programmeReelsData?.reels as any[]) || [])
+                          .filter((r) => r.programmeSlug === currentProgramme.slug)
+                          .map((reel) => (
+                            <div
+                              key={reel.id}
+                              className="flex items-center gap-3 rounded-lg border border-border/60 bg-card p-2"
+                            >
+                              <div className="relative size-12 shrink-0 overflow-hidden rounded-md bg-muted">
+                                {reel.posterUrl ? (
+                                  // eslint-disable-next-line @next/next/no-img-element
+                                  <img
+                                    src={reel.posterUrl}
+                                    alt=""
+                                    className="size-full object-cover"
+                                  />
+                                ) : null}
+                              </div>
+                              <div className="min-w-0 flex-1">
+                                <p className="truncate text-xs font-semibold text-foreground">
+                                  {reel.title}
+                                </p>
+                                <p className="truncate font-mono text-[10px] text-muted-foreground">
+                                  {reel.id} · {reel.duration || "reel"}
+                                </p>
+                              </div>
+                              <Button
+                                type="button"
+                                size="sm"
+                                variant="outline"
+                                className="h-7 text-[10px]"
+                                onClick={() => {
+                                  updateCurrentProgrammeField("featuredMedia", {
+                                    type: "tiktok",
+                                    url: reel.videoUrl,
+                                    poster: reel.posterUrl,
+                                    title: reel.title,
+                                    caption: reel.caption,
+                                  });
+                                }}
+                              >
+                                Use as hero
+                              </Button>
+                            </div>
+                          ))
+                      )}
+                    </div>
                   </div>
 
                   {/* Programme Hero Poster / Fallback Visual */}
@@ -4085,10 +4419,40 @@ export function HeadlessPageStudio() {
                           className="mt-0.5 h-8 text-xs"
                         />
                       </div>
+                      <div className="flex flex-wrap gap-4 pt-1">
+                        <label className="flex items-center gap-1.5 text-xs text-muted-foreground cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={currentProgramme.cta?.showOnMobile !== false}
+                            onChange={(e) => {
+                              updateCurrentProgrammeField("cta", {
+                                ...(currentProgramme.cta || {}),
+                                showOnMobile: e.target.checked,
+                              });
+                            }}
+                            className="h-3.5 w-3.5 rounded border-border text-primary focus:ring-primary"
+                          />
+                          <span>Show on mobile</span>
+                        </label>
+                        <label className="flex items-center gap-1.5 text-xs text-muted-foreground cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={currentProgramme.cta?.showOnDesktop !== false}
+                            onChange={(e) => {
+                              updateCurrentProgrammeField("cta", {
+                                ...(currentProgramme.cta || {}),
+                                showOnDesktop: e.target.checked,
+                              });
+                            }}
+                            className="h-3.5 w-3.5 rounded border-border text-primary focus:ring-primary"
+                          />
+                          <span>Show on desktop</span>
+                        </label>
+                      </div>
                     </div>
 
                     {/* Secondary Button */}
-                    <div className="space-y-2 pt-1">
+                    <div className="space-y-2 border-b border-border/40 pb-3 pt-1">
                       <div className="flex items-center justify-between">
                         <div className="text-[11px] font-bold text-foreground">Secondary Action Button (Co-Funding)</div>
                         <label className="flex items-center gap-1.5 text-xs text-muted-foreground cursor-pointer">
@@ -4142,6 +4506,128 @@ export function HeadlessPageStudio() {
                           />
                         </div>
                       </div>
+                      <div className="flex flex-wrap gap-4 pt-1">
+                        <label className="flex items-center gap-1.5 text-xs text-muted-foreground cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={currentProgramme.secondaryCta?.showOnMobile !== false}
+                            onChange={(e) => {
+                              updateCurrentProgrammeField("secondaryCta", {
+                                ...(currentProgramme.secondaryCta || {}),
+                                showOnMobile: e.target.checked,
+                              });
+                            }}
+                            className="h-3.5 w-3.5 rounded border-border text-primary focus:ring-primary"
+                          />
+                          <span>Show on mobile</span>
+                        </label>
+                        <label className="flex items-center gap-1.5 text-xs text-muted-foreground cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={currentProgramme.secondaryCta?.showOnDesktop !== false}
+                            onChange={(e) => {
+                              updateCurrentProgrammeField("secondaryCta", {
+                                ...(currentProgramme.secondaryCta || {}),
+                                showOnDesktop: e.target.checked,
+                              });
+                            }}
+                            className="h-3.5 w-3.5 rounded border-border text-primary focus:ring-primary"
+                          />
+                          <span>Show on desktop</span>
+                        </label>
+                      </div>
+                    </div>
+
+                    {/* All programmes Button */}
+                    <div className="space-y-2 pt-1">
+                      <div className="flex items-center justify-between">
+                        <div className="text-[11px] font-bold text-foreground">All programmes Button</div>
+                        <label className="flex items-center gap-1.5 text-xs text-muted-foreground cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={!!currentProgramme.allProgrammesCta?.hidden}
+                            onChange={(e) => {
+                              updateCurrentProgrammeField("allProgrammesCta", {
+                                label: currentProgramme.allProgrammesCta?.label ?? "All programmes",
+                                href: currentProgramme.allProgrammesCta?.href ?? "/programmes",
+                                ...(currentProgramme.allProgrammesCta || {}),
+                                hidden: e.target.checked,
+                              });
+                            }}
+                            className="rounded border-border text-primary focus:ring-primary h-3.5 w-3.5"
+                          />
+                          <span className={currentProgramme.allProgrammesCta?.hidden ? "text-amber-500 font-semibold" : ""}>
+                            {currentProgramme.allProgrammesCta?.hidden ? "Hidden on page" : "Visible"}
+                          </span>
+                        </label>
+                      </div>
+                      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                        <div>
+                          <label className="text-[11px] font-semibold text-muted-foreground">Label</label>
+                          <Input
+                            value={currentProgramme.allProgrammesCta?.label ?? "All programmes"}
+                            onChange={(e) => {
+                              updateCurrentProgrammeField("allProgrammesCta", {
+                                href: currentProgramme.allProgrammesCta?.href ?? "/programmes",
+                                ...(currentProgramme.allProgrammesCta || {}),
+                                label: e.target.value,
+                              });
+                            }}
+                            className="mt-0.5 h-8 text-xs"
+                          />
+                        </div>
+                        <div>
+                          <label className="text-[11px] font-semibold text-muted-foreground">URL Target</label>
+                          <Input
+                            value={currentProgramme.allProgrammesCta?.href ?? "/programmes"}
+                            onChange={(e) => {
+                              updateCurrentProgrammeField("allProgrammesCta", {
+                                label: currentProgramme.allProgrammesCta?.label ?? "All programmes",
+                                ...(currentProgramme.allProgrammesCta || {}),
+                                href: e.target.value,
+                              });
+                            }}
+                            className="mt-0.5 h-8 text-xs font-mono"
+                          />
+                        </div>
+                      </div>
+                      <div className="flex flex-wrap gap-4 pt-1">
+                        <label className="flex items-center gap-1.5 text-xs text-muted-foreground cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={currentProgramme.allProgrammesCta?.showOnMobile !== false}
+                            onChange={(e) => {
+                              updateCurrentProgrammeField("allProgrammesCta", {
+                                label: currentProgramme.allProgrammesCta?.label ?? "All programmes",
+                                href: currentProgramme.allProgrammesCta?.href ?? "/programmes",
+                                ...(currentProgramme.allProgrammesCta || {}),
+                                showOnMobile: e.target.checked,
+                              });
+                            }}
+                            className="h-3.5 w-3.5 rounded border-border text-primary focus:ring-primary"
+                          />
+                          <span>Show on mobile</span>
+                        </label>
+                        <label className="flex items-center gap-1.5 text-xs text-muted-foreground cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={currentProgramme.allProgrammesCta?.showOnDesktop !== false}
+                            onChange={(e) => {
+                              updateCurrentProgrammeField("allProgrammesCta", {
+                                label: currentProgramme.allProgrammesCta?.label ?? "All programmes",
+                                href: currentProgramme.allProgrammesCta?.href ?? "/programmes",
+                                ...(currentProgramme.allProgrammesCta || {}),
+                                showOnDesktop: e.target.checked,
+                              });
+                            }}
+                            className="h-3.5 w-3.5 rounded border-border text-primary focus:ring-primary"
+                          />
+                          <span>Show on desktop</span>
+                        </label>
+                      </div>
+                      <p className="text-[10px] text-muted-foreground">
+                        Tip: on mobile, keep only the primary CTA. Hide secondary + All programmes to free vertical space.
+                      </p>
                     </div>
                   </div>
                 </div>

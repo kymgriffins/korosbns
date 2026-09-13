@@ -47,7 +47,20 @@ export type ProgrammeCta = {
   label: string;
   href: string;
   note?: string;
+  /** Hide everywhere */
   hidden?: boolean;
+  /** Show on mobile viewports (default true) */
+  showOnMobile?: boolean;
+  /** Show on sm+ viewports (default true) */
+  showOnDesktop?: boolean;
+};
+
+export type ProgrammeFeaturedMedia = {
+  type?: "video" | "youtube" | "image" | "tiktok" | "auto";
+  url: string;
+  title?: string;
+  caption?: string;
+  poster?: string;
 };
 
 export type ProgrammeVisual = {
@@ -100,12 +113,9 @@ export type ProgrammeBlock = {
   secondaryCta?: ProgrammeCta;
   href: string;
   visual: ProgrammeVisual;
-  featuredMedia?: {
-    type?: "video" | "youtube" | "image" | "auto";
-    url: string;
-    title?: string;
-    caption?: string;
-  };
+  featuredMedia?: ProgrammeFeaturedMedia;
+  /** Optional third hero CTA (All programmes) with breakpoint visibility */
+  allProgrammesCta?: ProgrammeCta;
   stats?: ProgrammeStat[];
   pillars?: ProgrammePillar[];
   process?: ProgrammeStep[];
@@ -138,6 +148,26 @@ export function programmeHref(slug: ProgrammeSlug): string {
   if (found?.href) return found.href;
   if (slug === "studios") return "/bns-studio";
   return `/programmes/${slug}`;
+}
+
+/** Visibility classes for programme CTAs (mobile / desktop toggles). */
+export function programmeCtaClassName(
+  cta?: Pick<ProgrammeCta, "hidden" | "showOnMobile" | "showOnDesktop"> | null,
+  base = "w-full sm:w-auto",
+): string {
+  if (!cta || cta.hidden) return "hidden";
+  const mobile = cta.showOnMobile !== false;
+  const desktop = cta.showOnDesktop !== false;
+  if (!mobile && !desktop) return "hidden";
+  if (mobile && !desktop) return `${base} block sm:hidden`;
+  if (!mobile && desktop) return `${base} hidden sm:block`;
+  return base;
+}
+
+/** Fix HTML-escaped ampersands that break R2 public URLs. */
+export function sanitizeMediaUrl(url?: string | null): string {
+  if (!url) return "";
+  return url.replace(/&amp;/g, "&").trim();
 }
 
 export const BNS_MEDIA_IMAGES = mediaContent.media;

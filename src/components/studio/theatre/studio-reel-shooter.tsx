@@ -8,19 +8,25 @@ type Props = {
   /** When true, calls onComplete after the shooter sequence */
   onComplete?: () => void;
   className?: string;
+  /** CMS-controlled duration (ms). Defaults to 2200 when enabled. */
+  durationMs?: number;
 };
 
-const SHOOTER_MS = 2200;
-
 /**
- * Cinematic intro shown while the studio route loads - "shooter" before the reel hero.
+ * Cinematic intro shown only when CMS enables studio-reel loading.
+ * Prefer leaving pages.studio.loading.enabled=false.
  */
-export function StudioReelShooter({ onComplete, className }: Props) {
+export function StudioReelShooter({
+  onComplete,
+  className,
+  durationMs = 2200,
+}: Props) {
   const reduceMotion = useReducedMotion();
   const [progress, setProgress] = useState(0);
+  const shooterMs = Math.max(0, durationMs);
 
   useEffect(() => {
-    if (reduceMotion) {
+    if (reduceMotion || shooterMs <= 0) {
       onComplete?.();
       return;
     }
@@ -30,7 +36,7 @@ export function StudioReelShooter({ onComplete, className }: Props) {
 
     const tick = (now: number) => {
       const elapsed = now - start;
-      const next = Math.min(1, elapsed / SHOOTER_MS);
+      const next = Math.min(1, elapsed / shooterMs);
       setProgress(next);
       if (next < 1) {
         frame = requestAnimationFrame(tick);
@@ -41,7 +47,7 @@ export function StudioReelShooter({ onComplete, className }: Props) {
 
     frame = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(frame);
-  }, [onComplete, reduceMotion]);
+  }, [onComplete, reduceMotion, shooterMs]);
 
   return (
     <div

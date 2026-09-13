@@ -273,7 +273,15 @@
       "secondaryCta": {
         "label": "Discuss Co-Funding",
         "href": "/contact?intent=partner&programme=connect",
-        "note": "Co-funding enquiry for BNS Connect"
+        "note": "Co-funding enquiry for BNS Connect",
+        "showOnMobile": false,
+        "showOnDesktop": true
+      },
+      "allProgrammesCta": {
+        "label": "All programmes",
+        "href": "/programmes",
+        "showOnMobile": false,
+        "showOnDesktop": true
       },
       "href": "/programmes/connect",
       "visual": {
@@ -296,10 +304,11 @@
       },
       "id": "connect",
       "featuredMedia": {
-        "type": "video",
-        "url": "https://pub-96ce2eba58694b1da7f540033bdaa464.r2.dev/Budget%20Day%202026%20%20National%20treasury.mp4",
-        "title": "National Treasury Budget Day Tracking",
-        "caption": "BNS Connect youth trackers monitoring Treasury allocations."
+        "type": "tiktok",
+        "url": "https://pub-96ce2eba58694b1da7f540033bdaa464.r2.dev/Calvina%20Praise%20Sovereign%20debt.mp4",
+        "poster": "/images/reels/reel-01-poster.jpg",
+        "title": "Kenya Owes Over 12 Trillion",
+        "caption": "Calvina Praise breaks down sovereign debt - playable in-app reel for BNS Connect."
       }
     },
     {
@@ -397,7 +406,15 @@
       "secondaryCta": {
         "label": "Discuss Co-Funding",
         "href": "/contact?intent=partner&programme=mashinani",
-        "note": "Co-funding enquiry for BNS Mashinani"
+        "note": "Co-funding enquiry for BNS Mashinani",
+        "showOnMobile": false,
+        "showOnDesktop": true
+      },
+      "allProgrammesCta": {
+        "label": "All programmes",
+        "href": "/programmes",
+        "showOnMobile": false,
+        "showOnDesktop": true
       },
       "href": "/programmes/mashinani",
       "visual": {
@@ -421,7 +438,8 @@
       "id": "mashinani",
       "featuredMedia": {
         "type": "video",
-        "url": "https://pub-96ce2eba58694b1da7f540033bdaa464.r2.dev/county%20&amp;%20budget%20socials%20new.mp4",
+        "url": "https://pub-96ce2eba58694b1da7f540033bdaa464.r2.dev/county%20%26%20budget%20socials%20new.mp4",
+        "poster": "/images/reels/reel-02-poster.jpg",
         "title": "Devolved County Budget Scrutiny",
         "caption": "BNS Mashinani community budget monitors verifying county expenditures."
       }
@@ -521,7 +539,15 @@
       "secondaryCta": {
         "label": "Discuss Co-Funding",
         "href": "/contact?intent=partner&programme=wanahabari-lab",
-        "note": "Co-funding enquiry for Wanahabari Lab"
+        "note": "Co-funding enquiry for Wanahabari Lab",
+        "showOnMobile": false,
+        "showOnDesktop": true
+      },
+      "allProgrammesCta": {
+        "label": "All programmes",
+        "href": "/programmes",
+        "showOnMobile": false,
+        "showOnDesktop": true
       },
       "href": "/programmes/wanahabari-lab",
       "visual": {

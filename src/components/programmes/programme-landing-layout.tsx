@@ -2,7 +2,6 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { Play } from "lucide-react";
 import { ReelPlayer } from "@/components/programmes/reel-player";
 import {
   EditorialCtaBand,
@@ -23,8 +22,11 @@ import {
   CIVIC_PROGRAMMES,
   PROGRAMMES_CLOSING,
   getReelsByProgramme,
+  programmeCtaClassName,
   programmeHref,
+  sanitizeMediaUrl,
   type ProgrammeBlock,
+  type ProgrammeCta,
   type ProgrammeReel,
   type ProgrammeSlug,
 } from "@/content";
@@ -69,12 +71,27 @@ export function ProgrammeLandingLayout({
   const pageId = PAGE_ID_BY_SLUG[programme.slug];
   const others = civicProgrammes.filter((p) => p.slug !== programme.slug);
   const primaryCta = programme.cta;
+  const secondaryCta: ProgrammeCta = programme.secondaryCta ?? {
+    label: "Discuss Co-Funding",
+    href: `/contact?intent=partner&programme=${programme.slug}`,
+    showOnMobile: false,
+    showOnDesktop: true,
+  };
+  const allProgrammesCta: ProgrammeCta = programme.allProgrammesCta ?? {
+    label: "All programmes",
+    href: "/programmes",
+    showOnMobile: false,
+    showOnDesktop: true,
+  };
   const show = (sectionId: string) =>
     isSectionVisible(pageId, sectionId, sectionsConfig);
   const programmeReels =
     reels !== undefined
       ? reels.filter((r) => r.programmeSlug === programme.slug)
       : getReelsByProgramme(programme.slug);
+
+  const heroMediaUrl = sanitizeMediaUrl(programme.featuredMedia?.url);
+  const heroMediaType = programme.featuredMedia?.type;
 
   return (
     <div className="w-full min-h-dvh bg-background overflow-x-clip text-foreground">
@@ -101,41 +118,58 @@ export function ProgrammeLandingLayout({
                 <p className={cn(T.lead, "max-w-md text-foreground/75")}>
                   {programme.body}
                 </p>
-                <div className="flex w-full flex-col gap-3 pt-2 sm:w-auto sm:flex-row sm:items-center">
-                  {!programme.secondaryCta?.hidden && (
-                    <PillButtonGroup
-                      href={programme.secondaryCta?.href ?? `/contact?intent=partner&programme=${programme.slug}`}
-                      label={programme.secondaryCta?.label ?? "Discuss Co-Funding"}
-                      variant="primary"
-                      className="w-full justify-center sm:w-auto"
-                    />
-                  )}
-                  {!primaryCta?.hidden && (
-                    <PillButtonGroup
-                      href={primaryCta.href}
-                      label={primaryCta.label}
-                      variant="outline"
-                      className="w-full justify-center sm:w-auto"
-                    />
-                  )}
-                  <PillButtonGroup
-                    href="/programmes"
-                    label="All programmes"
-                    variant="outline"
-                    className="w-full justify-center sm:w-auto"
-                  />
+                <div className="flex w-full flex-col gap-3 pt-2 sm:w-auto sm:flex-row sm:flex-wrap sm:items-center">
+                  {!secondaryCta.hidden ? (
+                    <div className={programmeCtaClassName(secondaryCta, "w-full sm:w-auto")}>
+                      <PillButtonGroup
+                        href={secondaryCta.href}
+                        label={secondaryCta.label}
+                        variant="primary"
+                        className="w-full justify-center sm:w-auto"
+                      />
+                    </div>
+                  ) : null}
+                  {!primaryCta.hidden ? (
+                    <div className={programmeCtaClassName(primaryCta, "w-full sm:w-auto")}>
+                      <PillButtonGroup
+                        href={primaryCta.href}
+                        label={primaryCta.label}
+                        variant="outline"
+                        className="w-full justify-center sm:w-auto"
+                      />
+                    </div>
+                  ) : null}
+                  {!allProgrammesCta.hidden ? (
+                    <div className={programmeCtaClassName(allProgrammesCta, "w-full sm:w-auto")}>
+                      <PillButtonGroup
+                        href={allProgrammesCta.href}
+                        label={allProgrammesCta.label}
+                        variant="outline"
+                        className="w-full justify-center sm:w-auto"
+                      />
+                    </div>
+                  ) : null}
                 </div>
               </div>
 
               <figure className="space-y-2.5 lg:col-span-7">
-                {programme.featuredMedia?.url ? (
-                  <div className="overflow-hidden rounded-lg border border-border/60 shadow-lg">
+                {heroMediaUrl ? (
+                  <div
+                    className={cn(
+                      "overflow-hidden",
+                      heroMediaType === "tiktok"
+                        ? ""
+                        : "rounded-lg border border-border/60 shadow-lg",
+                    )}
+                  >
                     <MediaEmbed
-                      src={programme.featuredMedia.url}
-                      type={programme.featuredMedia.type}
-                      title={programme.featuredMedia.title}
-                      caption={programme.featuredMedia.caption}
+                      src={heroMediaUrl}
+                      type={heroMediaType}
+                      title={programme.featuredMedia?.title}
+                      caption={programme.featuredMedia?.caption}
+                      poster={programme.featuredMedia?.poster || programme.visual.hero}
                       controls
+                      aspectRatio={heroMediaType === "tiktok" ? "portrait" : "video"}
                     />
                   </div>
                 ) : (
@@ -150,9 +184,11 @@ export function ProgrammeLandingLayout({
                     />
                   </div>
                 )}
-                <figcaption className={cn(T.caption, "text-muted-foreground")}>
-                  {programme.featuredMedia?.caption || programme.visual.heroAlt}
-                </figcaption>
+                {heroMediaType !== "tiktok" ? (
+                  <figcaption className={cn(T.caption, "text-muted-foreground")}>
+                    {programme.featuredMedia?.caption || programme.visual.heroAlt}
+                  </figcaption>
+                ) : null}
               </figure>
             </div>
           </div>
