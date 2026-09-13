@@ -55,6 +55,11 @@ import {
   isCollectionPageKey,
 } from "./CmsCollectionJsonEditor";
 import { BnsStudioSectionsEditor } from "./BnsStudioSectionsEditor";
+import { AboutStudioEditor } from "./AboutStudioEditor";
+import { CareersStudioEditor } from "./CareersStudioEditor";
+import { ImpactStudioEditor } from "./ImpactStudioEditor";
+import { StoriesStudioEditor } from "./StoriesStudioEditor";
+import { FaqStudioEditor } from "./FaqStudioEditor";
 import { listProgrammePresetOptions } from "@/lib/programme-theme";
 
 type PageKey =
@@ -2139,18 +2144,50 @@ export function HeadlessPageStudio() {
         />
       )}
 
-      {/* GENERIC COLLECTION EDITORS (FAQ, stories, careers, etc.) */}
-      {isCollectionPageKey(selectedPageKey) && selectedPageKey !== "bns-studio" && (
+      {/* VISUAL EDITORS FOR SPECIFIC PAGES */}
+      {selectedPageKey === "about" && (
+        <AboutStudioEditor
+          data={aboutData}
+          onChange={setAboutData}
+        />
+      )}
+
+      {selectedPageKey === "careers" && (
+        <CareersStudioEditor
+          data={careersData}
+          onChange={setCareersData}
+        />
+      )}
+
+      {selectedPageKey === "impact" && (
+        <ImpactStudioEditor
+          data={impactData}
+          onChange={setImpactData}
+        />
+      )}
+
+      {selectedPageKey === "stories" && (
+        <StoriesStudioEditor
+          data={storiesData}
+          onChange={setStoriesData}
+        />
+      )}
+
+      {selectedPageKey === "faq" && (
+        <FaqStudioEditor
+          data={faqData}
+          onChange={setFaqData}
+        />
+      )}
+
+      {/* GENERIC COLLECTION EDITORS (consortium, legal, team-initiatives, etc.) */}
+      {isCollectionPageKey(selectedPageKey) && selectedPageKey !== "bns-studio" && selectedPageKey !== "careers" && selectedPageKey !== "impact" && selectedPageKey !== "stories" && selectedPageKey !== "faq" && (
         <CmsCollectionJsonEditor
           title={currentPage.label}
           description={`Edit live CMS collection \`${selectedPageKey}\`. Changes save to R2 and appear on marketing routes after revalidation.`}
           data={
             ({
-              faq: faqData,
-              stories: storiesData,
-              impact: impactData,
               consortium: consortiumData,
-              careers: careersData,
               legal: legalData,
               "team-initiatives": teamInitiativesData,
               "landing-hero": landingHeroData,
@@ -2161,11 +2198,7 @@ export function HeadlessPageStudio() {
           }
           onChange={(next) => {
             const setters: Record<string, (v: Record<string, unknown>) => void> = {
-              faq: setFaqData,
-              stories: setStoriesData,
-              impact: setImpactData,
               consortium: setConsortiumData,
-              careers: setCareersData,
               legal: setLegalData,
               "team-initiatives": setTeamInitiativesData,
               "landing-hero": setLandingHeroData,
@@ -2179,7 +2212,7 @@ export function HeadlessPageStudio() {
       )}
 
       {/* STANDARD MULTI-TAB WORKSPACE (LANDING, PROGRAMMES, & PROGRAMME DETAIL PAGES) */}
-      {selectedPageKey !== "featured-blogs" && selectedPageKey !== "custom-pages" && selectedPageKey !== "about" && selectedPageKey !== "navigation" && selectedPageKey !== "tokens" && selectedPageKey !== "courses" && selectedPageKey !== "contact" && selectedPageKey !== "bns-studio" && !isCollectionPageKey(selectedPageKey) && (
+      {selectedPageKey !== "featured-blogs" && selectedPageKey !== "custom-pages" && selectedPageKey !== "about" && selectedPageKey !== "navigation" && selectedPageKey !== "tokens" && selectedPageKey !== "courses" && selectedPageKey !== "contact" && selectedPageKey !== "bns-studio" && selectedPageKey !== "careers" && selectedPageKey !== "impact" && selectedPageKey !== "stories" && selectedPageKey !== "faq" && !isCollectionPageKey(selectedPageKey) && (
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
         {/* Left Nav: Section Tabs for Selected Page */}
         <div className="space-y-3 lg:col-span-3">

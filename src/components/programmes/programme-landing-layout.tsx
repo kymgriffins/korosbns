@@ -462,6 +462,7 @@ export function ProgrammeLandingLayout({
           programmeSlug={programme.slug}
           openProjectLabel={projectCtaLabels?.openProjectLabel}
           watchReelLabel={projectCtaLabels?.watchReelLabel}
+          showReels={show("reels")}
         />
       ) : null}
 

@@ -2,8 +2,6 @@
 
 import React, { useMemo, useState } from "react";
 import {
-  ArrowDown,
-  ArrowUp,
   Film,
   Image as ImageIcon,
   Layers,
@@ -16,6 +14,7 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { ImageFieldControl } from "./ImageFieldControl";
 import { ColorFieldControl } from "./ColorFieldControl";
+import { DragDropReorder } from "./DragDropReorder";
 
 type StudioSection = Record<string, unknown> & {
   id: string;
@@ -266,6 +265,10 @@ export function BnsStudioSectionsEditor({
     return rows;
   }, [sections]);
 
+  const handleReorder = (reorderedSections: StudioSection[]) => {
+    commitSections(reorderedSections);
+  };
+
   return (
     <div className="space-y-4">
       <div className="rounded-xl border border-primary/20 bg-primary/5 p-4">
@@ -307,85 +310,69 @@ export function BnsStudioSectionsEditor({
               </Badge>
             </div>
             <div className="space-y-1 max-h-[28rem] overflow-y-auto">
-              {sections.map((section, index) => {
-                const vis = visibilityMap.get(section.id);
-                const isOn = vis ? vis.visible !== false : true;
-                const active = (selected?.id || selectedId) === section.id;
-                return (
-                  <div
-                    key={section.id}
-                    className={`rounded-lg border p-2 transition-colors ${
-                      active
-                        ? "border-primary bg-primary/10"
-                        : "border-border/60 hover:bg-muted/40"
-                    }`}
-                  >
-                    <button
-                      type="button"
-                      onClick={() => setSelectedId(section.id)}
-                      className="w-full text-left"
+              <DragDropReorder
+                items={sections}
+                onReorder={handleReorder}
+                keyExtractor={(section) => section.id}
+                renderItem={(section, index) => {
+                  const vis = visibilityMap.get(section.id);
+                  const isOn = vis ? vis.visible !== false : true;
+                  const active = (selected?.id || selectedId) === section.id;
+                  return (
+                    <div
+                      className={`rounded-lg p-2 transition-colors ${
+                        active
+                          ? "border-primary bg-primary/10"
+                          : "border-border/60 hover:bg-muted/40"
+                      }`}
                     >
-                      <div className="flex items-center justify-between gap-2">
-                        <span className="text-xs font-semibold text-foreground truncate">
-                          {String(section.title || section.eyebrow || section.badge || section.id)}
-                        </span>
-                        <span
-                          className={`size-2 rounded-full shrink-0 ${
-                            isOn ? "bg-emerald-500" : "bg-muted-foreground/40"
-                          }`}
-                          title={isOn ? "Visible on page" : "Hidden on page"}
-                        />
-                      </div>
-                      <div className="mt-0.5 font-mono text-[10px] text-muted-foreground">
-                        {section.type} · {section.id}
-                      </div>
-                    </button>
-                    <div className="mt-2 flex items-center gap-1">
-                      <Button
+                      <button
                         type="button"
-                        size="sm"
-                        variant="ghost"
-                        className="h-7 px-2"
-                        onClick={() => moveSection(index, -1)}
-                        aria-label="Move up"
+                        onClick={() => setSelectedId(section.id)}
+                        className="w-full text-left"
                       >
-                        <ArrowUp className="size-3.5" />
-                      </Button>
-                      <Button
-                        type="button"
-                        size="sm"
-                        variant="ghost"
-                        className="h-7 px-2"
-                        onClick={() => moveSection(index, 1)}
-                        aria-label="Move down"
-                      >
-                        <ArrowDown className="size-3.5" />
-                      </Button>
-                      {onToggleVisibility ? (
+                        <div className="flex items-center justify-between gap-2">
+                          <span className="text-xs font-semibold text-foreground truncate">
+                            {String(section.title || section.eyebrow || section.badge || section.id)}
+                          </span>
+                          <span
+                            className={`size-2 rounded-full shrink-0 ${
+                              isOn ? "bg-emerald-500" : "bg-muted-foreground/40"
+                            }`}
+                            title={isOn ? "Visible on page" : "Hidden on page"}
+                          />
+                        </div>
+                        <div className="mt-0.5 font-mono text-[10px] text-muted-foreground">
+                          {section.type} · {section.id}
+                        </div>
+                      </button>
+                      <div className="mt-2 flex items-center gap-1">
+                        {onToggleVisibility ? (
+                          <Button
+                            type="button"
+                            size="sm"
+                            variant="outline"
+                            className="h-7 px-2 text-[10px]"
+                            onClick={() => onToggleVisibility(section.id)}
+                          >
+                            {isOn ? "Hide" : "Show"}
+                          </Button>
+                        ) : null}
                         <Button
                           type="button"
                           size="sm"
-                          variant="outline"
-                          className="h-7 px-2 text-[10px]"
-                          onClick={() => onToggleVisibility(section.id)}
+                          variant="ghost"
+                          className="h-7 px-2 text-destructive ml-auto"
+                          onClick={() => removeSection(section.id)}
+                          aria-label="Delete section"
                         >
-                          {isOn ? "Hide" : "Show"}
+                          <Trash2 className="size-3.5" />
                         </Button>
-                      ) : null}
-                      <Button
-                        type="button"
-                        size="sm"
-                        variant="ghost"
-                        className="h-7 px-2 text-destructive ml-auto"
-                        onClick={() => removeSection(section.id)}
-                        aria-label="Delete section"
-                      >
-                        <Trash2 className="size-3.5" />
-                      </Button>
+                      </div>
                     </div>
-                  </div>
-                );
-              })}
+                  );
+                }}
+              />
             </div>
 
             <div className="border-t border-border/60 pt-3 space-y-2">

@@ -35,6 +35,7 @@ interface ProgrammeProjectGridProps {
   description?: string;
   openProjectLabel?: string;
   watchReelLabel?: string;
+  showReels?: boolean;
   className?: string;
 }
 
@@ -60,6 +61,7 @@ export function ProgrammeProjectGrid({
   description = "Every claim is backed by a published documentary, dataset, explainer, or civic forum.",
   openProjectLabel = SEED_CTA?.openProjectLabel ?? "Open project",
   watchReelLabel = SEED_CTA?.watchReelLabel ?? "Watch reel",
+  showReels = true,
   className,
 }: ProgrammeProjectGridProps) {
   const [selectedFormat, setSelectedFormat] = useState<string>("all");
@@ -90,22 +92,24 @@ export function ProgrammeProjectGrid({
       metric: p.impactEvidence.primaryMetric,
       tags: p.tags,
     }));
-    const reelItems: GridItem[] = reels.map((r) => ({
-      type: "reel" as const,
-      id: r.id,
-      title: r.title,
-      subtitle: r.author,
-      description: r.caption,
-      contentType: "Social Reel",
-      year: new Date().getFullYear().toString(),
-      posterUrl: r.posterUrl,
-      href: r.videoUrl,
-      videoUrl: sanitizeMediaUrl(r.videoUrl),
-      metric: `${(r.plays / 1000).toFixed(0)}K plays`,
-      tags: r.hashtags,
-    }));
+    const reelItems: GridItem[] = showReels
+      ? reels.map((r) => ({
+          type: "reel" as const,
+          id: r.id,
+          title: r.title,
+          subtitle: r.author,
+          description: r.caption,
+          contentType: "Social Reel",
+          year: new Date().getFullYear().toString(),
+          posterUrl: r.posterUrl,
+          href: r.videoUrl,
+          videoUrl: sanitizeMediaUrl(r.videoUrl),
+          metric: `${(r.plays / 1000).toFixed(0)}K plays`,
+          tags: r.hashtags,
+        }))
+      : [];
     return [...projectItems, ...reelItems];
-  }, [projects, reels]);
+  }, [projects, reels, showReels]);
 
   const filteredContent = useMemo(() => {
     let list = allContent;
