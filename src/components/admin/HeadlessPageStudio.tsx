@@ -52,6 +52,7 @@ import {
   CmsCollectionJsonEditor,
   isCollectionPageKey,
 } from "./CmsCollectionJsonEditor";
+import { BnsStudioSectionsEditor } from "./BnsStudioSectionsEditor";
 
 type PageKey =
   | "landing"
@@ -134,8 +135,8 @@ const PAGES: PageMeta[] = [
   },
   {
     key: "studios",
-    label: "BNS Studios",
-    tag: "Impact Production",
+    label: "BNS Studios (Programme)",
+    tag: "Programme row + section visibility",
     route: "/bns-studio",
     sectionPageId: "studio",
     icon: "🎬",
@@ -174,8 +175,8 @@ const PAGES: PageMeta[] = [
   },
   {
     key: "tokens",
-    label: "Design Tokens & Badges",
-    tag: "Global Brand Styles",
+    label: "Design Tokens & Brand Agency",
+    tag: "Colors, radii, button fills",
     route: "/",
     sectionPageId: "tokens",
     icon: "🎨",
@@ -286,10 +287,10 @@ const PAGES: PageMeta[] = [
   },
   {
     key: "bns-studio",
-    label: "BNS Studio Page",
-    tag: "Dynamic Sections & Hero",
+    label: "BNS Studio Landing",
+    tag: "Hero reel, gallery, story, media",
     route: "/bns-studio",
-    sectionPageId: "bns-studio",
+    sectionPageId: "studio",
     icon: "🎞️",
   },
 ];
@@ -2003,8 +2004,62 @@ export function HeadlessPageStudio() {
         />
       )}
 
-      {/* GENERIC COLLECTION EDITORS (FAQ, stories, careers, bns-studio, etc.) */}
-      {isCollectionPageKey(selectedPageKey) && (
+      {/* SPECIAL DESK 8: BNS STUDIO LANDING (type-aware media editor) */}
+      {selectedPageKey === "bns-studio" && (
+        <BnsStudioSectionsEditor
+          data={bnsStudioData}
+          onChange={setBnsStudioData}
+          onOpenMediaPicker={(onSelect, title, currentUrl) => {
+            setActiveImagePicker({
+              isOpen: true,
+              title: title || "Select media from R2 Bucket",
+              currentUrl: currentUrl || "",
+              onSelect: (url) => {
+                onSelect(url);
+                setActiveImagePicker(null);
+              },
+            });
+          }}
+          visibilityRows={
+            (sectionsData?.pages?.studio?.sections as Array<{
+              id: string;
+              label?: string;
+              visible?: boolean;
+            }>) || []
+          }
+          onToggleVisibility={(sectionId) => {
+            const pageId = "studio";
+            const page = sectionsData?.pages?.[pageId] || {};
+            const list = Array.isArray(page.sections) ? [...page.sections] : [];
+            const idx = list.findIndex(
+              (sec: { id: string }) => sec.id === sectionId,
+            );
+            if (idx >= 0) {
+              const current = list[idx] as { id: string; visible?: boolean };
+              list[idx] = { ...current, visible: !current.visible };
+            } else {
+              list.push({
+                id: sectionId,
+                label: sectionId,
+                visible: true,
+              });
+            }
+            setSectionsData({
+              ...sectionsData,
+              pages: {
+                ...(sectionsData.pages || {}),
+                [pageId]: {
+                  ...page,
+                  sections: list,
+                },
+              },
+            });
+          }}
+        />
+      )}
+
+      {/* GENERIC COLLECTION EDITORS (FAQ, stories, careers, etc.) */}
+      {isCollectionPageKey(selectedPageKey) && selectedPageKey !== "bns-studio" && (
         <CmsCollectionJsonEditor
           title={currentPage.label}
           description={`Edit live CMS collection \`${selectedPageKey}\`. Changes save to R2 and appear on marketing routes after revalidation.`}
@@ -2021,7 +2076,6 @@ export function HeadlessPageStudio() {
               "landing-sections": landingSectionsData,
               "programme-reels": programmeReelsData,
               "studios-evidence": studiosEvidenceData,
-              "bns-studio": bnsStudioData,
             }[selectedPageKey] as Record<string, unknown>) || {}
           }
           onChange={(next) => {
@@ -2037,7 +2091,6 @@ export function HeadlessPageStudio() {
               "landing-sections": setLandingSectionsData,
               "programme-reels": setProgrammeReelsData,
               "studios-evidence": setStudiosEvidenceData,
-              "bns-studio": setBnsStudioData,
             };
             setters[selectedPageKey]?.(next);
           }}
@@ -2045,7 +2098,7 @@ export function HeadlessPageStudio() {
       )}
 
       {/* STANDARD MULTI-TAB WORKSPACE (LANDING, PROGRAMMES, & PROGRAMME DETAIL PAGES) */}
-      {selectedPageKey !== "featured-blogs" && selectedPageKey !== "custom-pages" && selectedPageKey !== "about" && selectedPageKey !== "navigation" && selectedPageKey !== "tokens" && selectedPageKey !== "courses" && selectedPageKey !== "contact" && !isCollectionPageKey(selectedPageKey) && (
+      {selectedPageKey !== "featured-blogs" && selectedPageKey !== "custom-pages" && selectedPageKey !== "about" && selectedPageKey !== "navigation" && selectedPageKey !== "tokens" && selectedPageKey !== "courses" && selectedPageKey !== "contact" && selectedPageKey !== "bns-studio" && !isCollectionPageKey(selectedPageKey) && (
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
         {/* Left Nav: Section Tabs for Selected Page */}
         <div className="space-y-3 lg:col-span-3">

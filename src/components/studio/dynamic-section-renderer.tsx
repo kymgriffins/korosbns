@@ -778,6 +778,143 @@ function CtaBannerSection({ section }: CtaBannerSectionProps) {
   );
 }
 
+type InsightsItem = {
+  category?: string;
+  title?: string;
+  summary?: string;
+  image?: string;
+  href?: string;
+  authorName?: string;
+  authorRole?: string;
+  authorAvatar?: string;
+  date?: string;
+  overlayColor?: string;
+};
+
+function InsightsBentoSection({ section }: { section: SectionData }) {
+  const s = section as Record<string, unknown>;
+  const title = str(s.title);
+  const viewAllLabel = str(s.viewAllLabel) || "View All";
+  const viewAllHref = str(s.viewAllHref) || "/stories";
+  const layout = str(s.layout) || "featured-side-list";
+  const featured = obj<InsightsItem>(s.featured);
+  const items = (Array.isArray(s.items) ? s.items : []) as InsightsItem[];
+  const sideLimit = layout === "featured-side-duo" ? 2 : 4;
+  const sideItems = items.slice(0, sideLimit);
+
+  return (
+    <section id={section.id} className="w-full bg-background py-16 md:py-24">
+      <div className={SECTION_SHELL_INNER}>
+        <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
+          {title ? (
+            <h2 className="font-heading text-3xl font-black tracking-tight text-foreground md:text-4xl">
+              {title}
+            </h2>
+          ) : null}
+          <PillButtonGroup
+            href={viewAllHref}
+            label={viewAllLabel}
+            variant="outline"
+            size="sm"
+          />
+        </div>
+
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-12 lg:gap-6">
+          <Link
+            href={str(featured.href) || viewAllHref}
+            className="group relative min-h-[22rem] overflow-hidden rounded-[var(--brand-radius-card,1.5rem)] lg:col-span-5 lg:min-h-[28rem]"
+          >
+            {str(featured.image) ? (
+              <Image
+                src={str(featured.image)}
+                alt={str(featured.title) || "Featured insight"}
+                fill
+                className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                sizes="(max-width: 1024px) 100vw, 40vw"
+              />
+            ) : (
+              <div className="absolute inset-0 bg-muted" />
+            )}
+            <div
+              className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"
+              aria-hidden
+            />
+            <div className="absolute inset-x-0 bottom-0 space-y-3 p-6 md:p-8">
+              {str(featured.category) ? (
+                <p className="text-xs font-medium uppercase tracking-wider text-white/80">
+                  {str(featured.category)}
+                </p>
+              ) : null}
+              <h3 className="max-w-md text-2xl font-bold leading-tight text-white md:text-3xl">
+                {str(featured.title)}
+              </h3>
+              {str(featured.summary) ? (
+                <p className="max-w-md text-sm leading-relaxed text-white/80">
+                  {str(featured.summary)}
+                </p>
+              ) : null}
+              {(str(featured.authorName) || str(featured.date)) && (
+                <div className="flex flex-wrap items-center gap-2 pt-1 text-xs text-white/75">
+                  {str(featured.authorName) ? <span>{str(featured.authorName)}</span> : null}
+                  {str(featured.authorName) && str(featured.date) ? <span aria-hidden>-</span> : null}
+                  {str(featured.date) ? <span>{str(featured.date)}</span> : null}
+                </div>
+              )}
+            </div>
+          </Link>
+
+          <div
+            className={cn(
+              "flex flex-col gap-4 lg:col-span-7",
+              layout === "featured-side-duo" ? "justify-stretch" : "",
+            )}
+          >
+            {sideItems.map((item, index) => (
+              <Link
+                key={`${str(item.title)}-${index}`}
+                href={str(item.href) || viewAllHref}
+                className={cn(
+                  "group flex gap-4 overflow-hidden rounded-[var(--brand-radius-card,1.5rem)] border border-border/60 bg-card p-3 transition-colors hover:border-border md:p-4",
+                  layout === "featured-side-duo" ? "flex-1 items-stretch" : "items-center",
+                )}
+              >
+                <div className="relative size-20 shrink-0 overflow-hidden rounded-[var(--brand-radius-image,1rem)] sm:size-24 md:size-28">
+                  {str(item.image) ? (
+                    <Image
+                      src={str(item.image)}
+                      alt={str(item.title) || "Insight"}
+                      fill
+                      className="object-cover transition-transform duration-500 group-hover:scale-[1.04]"
+                      sizes="112px"
+                    />
+                  ) : (
+                    <div className="absolute inset-0 bg-muted" />
+                  )}
+                </div>
+                <div className="min-w-0 flex-1 space-y-1.5 py-1">
+                  {str(item.category) ? (
+                    <p className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
+                      {str(item.category)}
+                    </p>
+                  ) : null}
+                  <h3 className="text-base font-bold leading-snug text-foreground md:text-lg">
+                    {str(item.title)}
+                  </h3>
+                  <p className="text-xs text-muted-foreground">
+                    {[str(item.authorName), str(item.date), str(item.category)]
+                      .filter(Boolean)
+                      .join(" - ")}
+                  </p>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 const SECTION_RENDERERS: Record<string, React.ComponentType<{ section: SectionData }>> = {
   "hero-reel": HeroReelSection,
   "hero-image": HeroImageSection,
@@ -786,6 +923,7 @@ const SECTION_RENDERERS: Record<string, React.ComponentType<{ section: SectionDa
   "text-with-stats": TextWithStatsSection,
   "partner-with-us": PartnerWithUsSection,
   "cta-banner": CtaBannerSection,
+  "insights-bento": InsightsBentoSection,
 };
 
 type DynamicSectionRendererProps = {

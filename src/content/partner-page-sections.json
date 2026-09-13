@@ -165,9 +165,10 @@
         { "id": "screening", "label": "Screening theatre", "visible": true },
         { "id": "production-spectrum", "label": "Production spectrum", "visible": true },
         { "id": "gallery", "label": "Studio gallery marquee", "visible": false },
-        { "id": "about", "label": "About the studio", "visible": false },
+        { "id": "about", "label": "About the studio / background story", "visible": false },
         { "id": "partner-cta", "label": "Partner with us", "visible": true },
-        { "id": "commission", "label": "Commission CTA", "visible": true }
+        { "id": "commission", "label": "Commission CTA", "visible": true },
+        { "id": "insights", "label": "Insights bento (shadcn-space style)", "visible": false }
       ]
     },
     "work": {

@@ -1,15 +1,12 @@
 "use client";
 
 import React from "react";
-import { Sparkles, Eye, Check } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { Sparkles, Check } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { ColorFieldControl } from "./ColorFieldControl";
 import {
   computeBadgeClasses,
-  type BadgeShape,
-  type BadgeVariant,
-  type BadgeColorScheme,
-  type BadgeTypography,
+  designTokensToCssVars,
   type DesignTokens,
 } from "@/lib/design-tokens";
 
@@ -33,6 +30,35 @@ export function DesignTokensStudioEditor({
   const buttons = data?.buttons || {
     borderRadius: "full",
     defaultElevation: "subtle",
+    primaryBg: "#0055FF",
+    primaryFg: "#FFFFFF",
+    primaryHoverBg: "#0044CC",
+    outlineBg: "#FFFFFF",
+    outlineFg: "#000000",
+    outlineBorder: "rgba(0, 0, 0, 0.12)",
+  };
+
+  const brand = data?.brand || {
+    primary: "#0055FF",
+    primaryForeground: "#FFFFFF",
+    accent: "#0055FF",
+    background: "#FFFFFF",
+    foreground: "#000000",
+    muted: "#F5F5F5",
+    card: "#FFFFFF",
+    border: "rgba(0, 0, 0, 0.12)",
+    surfaceMuted: "#F5F5F5",
+  };
+
+  const radii = data?.radii || {
+    sm: "0.375rem",
+    md: "0.5rem",
+    lg: "1rem",
+    xl: "1.5rem",
+    "2xl": "2rem",
+    card: "1.5rem",
+    button: "9999px",
+    image: "1rem",
   };
 
   const typography = data?.typography || {
@@ -41,42 +67,50 @@ export function DesignTokensStudioEditor({
   };
 
   const updateBadgeField = (field: string, value: any) => {
-    const next = {
+    onChange({
       ...data,
-      badges: {
-        ...(data?.badges || {}),
-        [field]: value,
-      },
-    };
-    onChange(next);
+      badges: { ...(data?.badges || {}), [field]: value },
+    });
   };
 
   const updateButtonField = (field: string, value: any) => {
-    const next = {
+    onChange({
       ...data,
-      buttons: {
-        ...(data?.buttons || {}),
-        [field]: value,
-      },
-    };
-    onChange(next);
+      buttons: { ...(data?.buttons || {}), [field]: value },
+    });
+  };
+
+  const updateBrandField = (field: string, value: string) => {
+    onChange({
+      ...data,
+      brand: { ...(data?.brand || {}), [field]: value },
+    });
+  };
+
+  const updateRadiusField = (field: string, value: string) => {
+    onChange({
+      ...data,
+      radii: { ...(data?.radii || {}), [field]: value },
+    });
   };
 
   const updateTypographyField = (field: string, value: any) => {
-    const next = {
+    onChange({
       ...data,
-      typography: {
-        ...(data?.typography || {}),
-        [field]: value,
-      },
-    };
-    onChange(next);
+      typography: { ...(data?.typography || {}), [field]: value },
+    });
   };
 
   const currentBadgeClasses = computeBadgeClasses(data as DesignTokens);
+  const previewCss = designTokensToCssVars(data as DesignTokens);
 
   return (
     <div className="space-y-6">
+      <style
+        dangerouslySetInnerHTML={{
+          __html: `.cms-token-preview{${previewCss}}`,
+        }}
+      />
       {/* Live Badge Preview Stage */}
       <div className="rounded-2xl border border-primary/20 bg-gradient-to-br from-primary/5 via-card to-card p-6 shadow-sm space-y-4">
         <div className="flex items-center justify-between border-b border-border/50 pb-3">
@@ -294,40 +328,160 @@ export function DesignTokensStudioEditor({
         </div>
       </div>
 
-      {/* Button & Typography Global Tokens */}
+      {/* Brand agency colors */}
       <div className="rounded-2xl border border-border bg-card p-6 shadow-xs space-y-4">
         <div className="border-b border-border/50 pb-3">
-          <h3 className="text-sm font-bold text-foreground">Global Button &amp; Eyebrow Rules</h3>
-          <p className="text-xs text-muted-foreground">Default radius and typography settings for marketing components.</p>
+          <h3 className="text-sm font-bold text-foreground">Brand Agency Colors</h3>
+          <p className="text-xs text-muted-foreground">
+            Hex or CSS color values. Applied sitewide as CSS variables after save.
+          </p>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <ColorFieldControl
+            label="Primary"
+            value={brand.primary ?? "#0055FF"}
+            onChange={(v) => updateBrandField("primary", v)}
+          />
+          <ColorFieldControl
+            label="Primary foreground (text on primary)"
+            value={brand.primaryForeground ?? "#FFFFFF"}
+            onChange={(v) => updateBrandField("primaryForeground", v)}
+          />
+          <ColorFieldControl
+            label="Accent"
+            value={brand.accent ?? brand.primary ?? "#0055FF"}
+            onChange={(v) => updateBrandField("accent", v)}
+          />
+          <ColorFieldControl
+            label="Background"
+            value={brand.background ?? "#FFFFFF"}
+            onChange={(v) => updateBrandField("background", v)}
+          />
+          <ColorFieldControl
+            label="Foreground (body text)"
+            value={brand.foreground ?? "#000000"}
+            onChange={(v) => updateBrandField("foreground", v)}
+          />
+          <ColorFieldControl
+            label="Muted surface"
+            value={brand.muted ?? "#F5F5F5"}
+            onChange={(v) => updateBrandField("muted", v)}
+          />
+          <ColorFieldControl
+            label="Card surface"
+            value={brand.card ?? "#FFFFFF"}
+            onChange={(v) => updateBrandField("card", v)}
+          />
+          <ColorFieldControl
+            label="Border"
+            value={brand.border ?? "rgba(0, 0, 0, 0.12)"}
+            onChange={(v) => updateBrandField("border", v)}
+            description="Supports hex or rgba()"
+          />
+        </div>
+      </div>
+
+      {/* Radii */}
+      <div className="rounded-2xl border border-border bg-card p-6 shadow-xs space-y-4">
+        <div className="border-b border-border/50 pb-3">
+          <h3 className="text-sm font-bold text-foreground">Border Radius Scale</h3>
+          <p className="text-xs text-muted-foreground">
+            Use rem or px values (e.g. 1rem, 16px, 9999px for pills).
+          </p>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
+          {(
+            [
+              ["sm", "Small"],
+              ["md", "Medium"],
+              ["lg", "Large (base)"],
+              ["xl", "XL"],
+              ["2xl", "2XL"],
+              ["card", "Cards"],
+              ["button", "Buttons"],
+              ["image", "Images"],
+            ] as const
+          ).map(([key, label]) => (
+            <div key={key} className="space-y-1">
+              <label className="text-xs font-semibold text-foreground">{label}</label>
+              <Input
+                value={radii[key] ?? ""}
+                onChange={(e) => updateRadiusField(key, e.target.value)}
+                className="h-9 font-mono text-xs"
+                placeholder="1rem"
+              />
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Button fills + typography */}
+      <div className="rounded-2xl border border-border bg-card p-6 shadow-xs space-y-4">
+        <div className="border-b border-border/50 pb-3">
+          <h3 className="text-sm font-bold text-foreground">Button Fills &amp; Eyebrow Rules</h3>
+          <p className="text-xs text-muted-foreground">
+            Primary buttons always get a solid background from these tokens.
+          </p>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <ColorFieldControl
+            label="Primary button background"
+            value={buttons.primaryBg ?? brand.primary ?? "#0055FF"}
+            onChange={(v) => updateButtonField("primaryBg", v)}
+          />
+          <ColorFieldControl
+            label="Primary button text"
+            value={buttons.primaryFg ?? "#FFFFFF"}
+            onChange={(v) => updateButtonField("primaryFg", v)}
+          />
+          <ColorFieldControl
+            label="Primary button hover"
+            value={buttons.primaryHoverBg ?? "#0044CC"}
+            onChange={(v) => updateButtonField("primaryHoverBg", v)}
+          />
+          <ColorFieldControl
+            label="Outline button background"
+            value={buttons.outlineBg ?? "#FFFFFF"}
+            onChange={(v) => updateButtonField("outlineBg", v)}
+          />
           <div>
-            <label className="text-xs font-semibold text-foreground">Default Button Corner Radius</label>
+            <label className="text-xs font-semibold text-foreground">Preset corner radius</label>
             <select
               value={buttons.borderRadius ?? "full"}
               onChange={(e) => updateButtonField("borderRadius", e.target.value)}
               className="w-full mt-1 text-xs rounded-lg border border-border bg-background px-3 py-2"
             >
-              <option value="full">Pill / Fully Rounded (rounded-full)</option>
-              <option value="lg">Soft Rounded (rounded-lg)</option>
-              <option value="md">Subtle Rounded (rounded-md)</option>
-              <option value="none">Sharp / Flat (rounded-none)</option>
+              <option value="full">Pill / Fully Rounded</option>
+              <option value="lg">Soft Rounded</option>
+              <option value="md">Subtle Rounded</option>
+              <option value="none">Sharp / Flat</option>
             </select>
           </div>
-
           <div>
-            <label className="text-xs font-semibold text-foreground">Eyebrow Headline Tracking</label>
+            <label className="text-xs font-semibold text-foreground">Eyebrow tracking</label>
             <select
               value={typography.eyebrowTracking ?? "wider"}
               onChange={(e) => updateTypographyField("eyebrowTracking", e.target.value)}
               className="w-full mt-1 text-xs rounded-lg border border-border bg-background px-3 py-2"
             >
-              <option value="wider">Wider (tracking-wider)</option>
-              <option value="normal">Normal (tracking-normal)</option>
-              <option value="tight">Tight (tracking-tight)</option>
+              <option value="wider">Wider</option>
+              <option value="normal">Normal</option>
+              <option value="tight">Tight</option>
             </select>
           </div>
+        </div>
+
+        <div className="cms-token-preview rounded-xl border border-border/60 bg-muted/20 p-4 flex flex-wrap items-center gap-3">
+          <span className="text-[10px] font-mono uppercase tracking-wider text-muted-foreground w-full">
+            Live button preview
+          </span>
+          <span className="inline-flex items-center justify-center rounded-[var(--brand-button-radius,9999px)] bg-[var(--brand-button-bg,var(--primary))] px-6 py-2.5 text-sm font-semibold text-[var(--brand-button-fg,var(--primary-foreground))]">
+            Primary CTA
+          </span>
+          <span className="inline-flex items-center justify-center rounded-[var(--brand-button-radius,9999px)] border border-[var(--brand-button-outline-border,var(--border))] bg-[var(--brand-button-outline-bg,var(--background))] px-6 py-2.5 text-sm font-semibold text-[var(--brand-button-outline-fg,var(--foreground))]">
+            Outline CTA
+          </span>
         </div>
       </div>
     </div>

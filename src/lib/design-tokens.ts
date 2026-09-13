@@ -6,6 +6,27 @@ export type BadgeColorScheme = "emerald" | "brand" | "amber" | "slate";
 export type BadgeTypography = "uppercase" | "normal" | "mono";
 
 export interface DesignTokens {
+  brand?: {
+    primary?: string;
+    primaryForeground?: string;
+    accent?: string;
+    background?: string;
+    foreground?: string;
+    muted?: string;
+    card?: string;
+    border?: string;
+    surfaceMuted?: string;
+  };
+  radii?: {
+    sm?: string;
+    md?: string;
+    lg?: string;
+    xl?: string;
+    "2xl"?: string;
+    card?: string;
+    button?: string;
+    image?: string;
+  };
   badges?: {
     shape?: BadgeShape;
     variant?: BadgeVariant;
@@ -16,6 +37,12 @@ export interface DesignTokens {
   buttons?: {
     borderRadius?: "full" | "lg" | "md" | "sm" | "none";
     defaultElevation?: "none" | "subtle" | "elevated";
+    primaryBg?: string;
+    primaryFg?: string;
+    primaryHoverBg?: string;
+    outlineBg?: string;
+    outlineFg?: string;
+    outlineBorder?: string;
   };
   typography?: {
     eyebrowTracking?: "wider" | "normal" | "tight";
@@ -23,10 +50,26 @@ export interface DesignTokens {
   };
 }
 
+const RADIUS_PRESET: Record<string, string> = {
+  full: "9999px",
+  lg: "0.75rem",
+  md: "0.5rem",
+  sm: "0.375rem",
+  none: "0px",
+};
+
 export function resolveDesignTokens(override?: DesignTokens | null): DesignTokens {
   return {
     ...defaultTokens,
     ...(override || {}),
+    brand: {
+      ...defaultTokens.brand,
+      ...(override?.brand || {}),
+    },
+    radii: {
+      ...defaultTokens.radii,
+      ...(override?.radii || {}),
+    },
     badges: {
       ...defaultTokens.badges,
       ...(override?.badges || {}),
@@ -40,6 +83,66 @@ export function resolveDesignTokens(override?: DesignTokens | null): DesignToken
       ...(override?.typography || {}),
     },
   } as DesignTokens;
+}
+
+function cssDecl(name: string, value: string | undefined, fallback?: string): string {
+  const v = (value || fallback || "").trim();
+  if (!v) return "";
+  return `${name}:${v};`;
+}
+
+/** Serialize CMS tokens into `:root` CSS custom properties. */
+export function designTokensToCssVars(override?: DesignTokens | null | Record<string, unknown>): string {
+  const t = resolveDesignTokens((override || null) as DesignTokens | null);
+  const buttonRadius =
+    t.radii?.button ||
+    RADIUS_PRESET[t.buttons?.borderRadius || "full"] ||
+    "9999px";
+
+  return [
+    cssDecl("--primary", t.brand?.primary, defaultTokens.brand.primary),
+    cssDecl(
+      "--primary-foreground",
+      t.brand?.primaryForeground,
+      defaultTokens.brand.primaryForeground,
+    ),
+    cssDecl("--accent", t.brand?.accent, t.brand?.primary),
+    cssDecl("--background", t.brand?.background),
+    cssDecl("--foreground", t.brand?.foreground),
+    cssDecl("--muted", t.brand?.muted),
+    cssDecl("--card", t.brand?.card),
+    cssDecl("--border", t.brand?.border),
+    cssDecl("--surface-muted", t.brand?.surfaceMuted, t.brand?.muted),
+    cssDecl("--radius", t.radii?.lg, defaultTokens.radii.lg),
+    cssDecl("--bns-radius-xl", t.radii?.xl, defaultTokens.radii.xl),
+    cssDecl("--bns-radius-2xl", t.radii?.["2xl"], defaultTokens.radii["2xl"]),
+    cssDecl("--brand-radius-sm", t.radii?.sm),
+    cssDecl("--brand-radius-md", t.radii?.md),
+    cssDecl("--brand-radius-card", t.radii?.card, defaultTokens.radii.card),
+    cssDecl("--brand-radius-image", t.radii?.image, defaultTokens.radii.image),
+    cssDecl("--brand-button-radius", buttonRadius),
+    cssDecl("--radius-pill", buttonRadius),
+    cssDecl(
+      "--brand-button-bg",
+      t.buttons?.primaryBg,
+      t.brand?.primary || defaultTokens.buttons.primaryBg,
+    ),
+    cssDecl(
+      "--brand-button-fg",
+      t.buttons?.primaryFg,
+      t.brand?.primaryForeground || defaultTokens.buttons.primaryFg,
+    ),
+    cssDecl(
+      "--brand-button-hover",
+      t.buttons?.primaryHoverBg,
+      defaultTokens.buttons.primaryHoverBg,
+    ),
+    cssDecl("--brand-button-outline-bg", t.buttons?.outlineBg),
+    cssDecl("--brand-button-outline-fg", t.buttons?.outlineFg),
+    cssDecl("--brand-button-outline-border", t.buttons?.outlineBorder),
+  ]
+    .filter(Boolean)
+    .join("");
 }
 
 export function getBadgeShapeClass(shape: BadgeShape = "pill"): string {
@@ -59,7 +162,7 @@ export function getBadgeShapeClass(shape: BadgeShape = "pill"): string {
 
 export function getBadgeColorClass(
   variant: BadgeVariant = "soft",
-  color: BadgeColorScheme = "emerald"
+  color: BadgeColorScheme = "emerald",
 ): string {
   if (variant === "solid") {
     switch (color) {
@@ -91,7 +194,6 @@ export function getBadgeColorClass(
     return "backdrop-blur-md bg-background/50 border-border/60 text-foreground";
   }
 
-  // default: soft
   switch (color) {
     case "emerald":
       return "bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border-emerald-500/25";
@@ -123,4 +225,21 @@ export function computeBadgeClasses(tokens?: DesignTokens | null): string {
   const colorCls = getBadgeColorClass(t.badges?.variant, t.badges?.colorScheme);
   const typoCls = getBadgeTypographyClass(t.badges?.typography);
   return `inline-flex items-center gap-1.5 px-3.5 py-1 border ${shapeCls} ${colorCls} ${typoCls} transition-all duration-200`;
+}
+
+export function getButtonRadiusClass(tokens?: DesignTokens | null): string {
+  const t = resolveDesignTokens(tokens);
+  switch (t.buttons?.borderRadius) {
+    case "lg":
+      return "rounded-lg";
+    case "md":
+      return "rounded-md";
+    case "sm":
+      return "rounded-sm";
+    case "none":
+      return "rounded-none";
+    case "full":
+    default:
+      return "rounded-full";
+  }
 }

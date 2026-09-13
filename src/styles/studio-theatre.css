@@ -844,14 +844,14 @@ html:not(.dark) .studio-work-page,
 .studio-about-cta {
   margin-top: 1rem;
   display: inline-flex;
-  border-radius: 999px;
-  background: var(--studio-theatre-accent);
+  border-radius: var(--brand-button-radius, 999px);
+  background: var(--brand-button-bg, var(--studio-theatre-accent));
   padding: 0.65rem 1.25rem;
   font-size: 0.75rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  color: #000;
+  color: var(--brand-button-fg, #000);
 }
 
 @media (min-width: 768px) {

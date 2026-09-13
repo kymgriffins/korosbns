@@ -111,15 +111,33 @@ select:focus-visible,
 }
 
 .landing-btn-primary {
-  @apply h-auto gap-2 rounded-full bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground hover:bg-primary/90;
+  @apply h-auto gap-2 px-6 py-3 text-sm font-semibold;
+  border-radius: var(--brand-button-radius, 9999px);
+  background: var(--brand-button-bg, var(--primary));
+  color: var(--brand-button-fg, var(--primary-foreground));
+}
+
+.landing-btn-primary:hover {
+  background: var(--brand-button-hover, var(--primary));
 }
 
 .landing-btn-hero {
-  @apply w-full gap-2 rounded-full bg-primary px-8 py-6 text-base font-bold text-primary-foreground hover:bg-primary/90 sm:w-auto;
+  @apply w-full gap-2 px-8 py-6 text-base font-bold sm:w-auto;
+  border-radius: var(--brand-button-radius, 9999px);
+  background: var(--brand-button-bg, var(--primary));
+  color: var(--brand-button-fg, var(--primary-foreground));
+}
+
+.landing-btn-hero:hover {
+  background: var(--brand-button-hover, var(--primary));
 }
 
 .landing-btn-outline {
-  @apply inline-flex items-center gap-2 rounded-full border border-border bg-background px-5 py-2.5 text-sm font-semibold transition-colors hover:bg-muted;
+  @apply inline-flex items-center gap-2 px-5 py-2.5 text-sm font-semibold transition-colors hover:bg-muted;
+  border-radius: var(--brand-button-radius, 9999px);
+  border: 1px solid var(--brand-button-outline-border, var(--border));
+  background: var(--brand-button-outline-bg, var(--background));
+  color: var(--brand-button-outline-fg, var(--foreground));
 }
 
 .landing-media-frame {

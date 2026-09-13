@@ -38,15 +38,15 @@ export type PillButtonProps = {
 
 const VARIANT_CLASSES: Record<PillButtonVariant, string> = {
   primary:
-    "bg-primary text-primary-foreground hover:bg-primary/90 shadow-xs",
+    "bg-[var(--brand-button-bg,var(--primary))] text-[var(--brand-button-fg,var(--primary-foreground))] hover:bg-[var(--brand-button-hover,var(--primary))] shadow-xs rounded-[var(--brand-button-radius,9999px)]",
   outline:
-    "border border-border/80 bg-background text-foreground hover:bg-muted hover:border-foreground/25",
+    "border border-[var(--brand-button-outline-border,var(--border))] bg-[var(--brand-button-outline-bg,var(--background))] text-[var(--brand-button-outline-fg,var(--foreground))] hover:bg-muted hover:border-foreground/25 rounded-[var(--brand-button-radius,9999px)]",
   secondary:
-    "bg-secondary text-secondary-foreground hover:bg-secondary/80",
+    "bg-secondary text-secondary-foreground hover:bg-secondary/80 rounded-[var(--brand-button-radius,9999px)]",
   invert:
-    "border border-white/20 bg-white/10 text-white hover:bg-white/20 backdrop-blur-md",
+    "border border-white/20 bg-white/10 text-white hover:bg-white/20 backdrop-blur-md rounded-[var(--brand-button-radius,9999px)]",
   ghost:
-    "text-foreground hover:bg-muted/70 hover:text-foreground",
+    "text-foreground hover:bg-muted/70 hover:text-foreground rounded-[var(--brand-button-radius,9999px)]",
 };
 
 const SIZE_CLASSES: Record<PillButtonSize, string> = {
@@ -85,7 +85,7 @@ export function PillButtonGroup({
       {...linkProps}
       aria-label={ariaLabel}
       className={cn(
-        "inline-flex items-center justify-center rounded-full transition-all duration-150 outline-none whitespace-nowrap shrink-0",
+        "inline-flex items-center justify-center transition-all duration-150 outline-none whitespace-nowrap shrink-0",
         "focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
         SIZE_CLASSES[size],
         VARIANT_CLASSES[variant],
@@ -128,7 +128,7 @@ export function PillButton({
       disabled={disabled}
       aria-label={ariaLabel}
       className={cn(
-        "inline-flex items-center justify-center rounded-full transition-all duration-150 outline-none cursor-pointer whitespace-nowrap shrink-0 disabled:pointer-events-none disabled:opacity-50",
+        "inline-flex items-center justify-center transition-all duration-150 outline-none cursor-pointer whitespace-nowrap shrink-0 disabled:pointer-events-none disabled:opacity-50",
         "focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
         SIZE_CLASSES[size],
         VARIANT_CLASSES[variant],

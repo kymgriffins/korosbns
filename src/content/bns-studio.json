@@ -183,6 +183,48 @@
       "ctaLabel": "Commission BNS Studio",
       "ctaHref": "/contact",
       "theme": "contrast"
+    },
+    {
+      "id": "insights",
+      "type": "insights-bento",
+      "title": "Latest insights",
+      "viewAllLabel": "View All",
+      "viewAllHref": "/stories",
+      "layout": "featured-side-list",
+      "featured": {
+        "category": "Design Insights",
+        "title": "Explore modern living design ideas",
+        "summary": "Field craft, civic media, and production notes from the BNS Studio floor.",
+        "image": "/images/media/129A3905.jpg",
+        "href": "/stories",
+        "authorName": "BNS Studio",
+        "authorRole": "Production",
+        "authorAvatar": "",
+        "date": "2026",
+        "overlayColor": "#0a2540"
+      },
+      "items": [
+        {
+          "category": "Architecture",
+          "title": "Top living room design trends for modern homes",
+          "image": "/images/media/main media image.jpg",
+          "href": "/stories",
+          "authorName": "BNS Editorial",
+          "authorRole": "Editor",
+          "authorAvatar": "",
+          "date": "2026"
+        },
+        {
+          "category": "Interior",
+          "title": "Smart space planning ideas for urban living",
+          "image": "/images/media/129A3923.jpg",
+          "href": "/stories",
+          "authorName": "BNS Studio",
+          "authorRole": "Producer",
+          "authorAvatar": "",
+          "date": "2026"
+        }
+      ]
     }
   ],
   "seo": {

@@ -1,4 +1,31 @@
 {
+  "provenance": {
+    "source": "Brand agency design tokens (seed)",
+    "note": "CMS-managed brand colors, radii, and button fills. Applied sitewide via CSS variables.",
+    "level": "seed",
+    "lastUpdated": "2026-09-13"
+  },
+  "brand": {
+    "primary": "#0055FF",
+    "primaryForeground": "#FFFFFF",
+    "accent": "#0055FF",
+    "background": "#FFFFFF",
+    "foreground": "#000000",
+    "muted": "#F5F5F5",
+    "card": "#FFFFFF",
+    "border": "rgba(0, 0, 0, 0.12)",
+    "surfaceMuted": "#F5F5F5"
+  },
+  "radii": {
+    "sm": "0.375rem",
+    "md": "0.5rem",
+    "lg": "1rem",
+    "xl": "1.5rem",
+    "2xl": "2rem",
+    "card": "1.5rem",
+    "button": "9999px",
+    "image": "1rem"
+  },
   "badges": {
     "shape": "pill",
     "variant": "soft",
@@ -8,7 +35,13 @@
   },
   "buttons": {
     "borderRadius": "full",
-    "defaultElevation": "subtle"
+    "defaultElevation": "subtle",
+    "primaryBg": "#0055FF",
+    "primaryFg": "#FFFFFF",
+    "primaryHoverBg": "#0044CC",
+    "outlineBg": "#FFFFFF",
+    "outlineFg": "#000000",
+    "outlineBorder": "rgba(0, 0, 0, 0.12)"
   },
   "typography": {
     "eyebrowTracking": "wider",

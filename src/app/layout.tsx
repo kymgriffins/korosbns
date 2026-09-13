@@ -2,6 +2,7 @@ import LoadingScreen from "@/components/global/loading-screen";
 import Providers from "@/components/global/providers";
 import WhatsAppSupport from "@/components/global/whatsapp-support";
 import CookieConsentWrapper from "@/components/global/cookie-consent-wrapper";
+import { BrandTokensInjector } from "@/components/global/brand-tokens-injector";
 import { base, heading } from "@/constants";
 import "@/styles/globals.css";
 import { cn, generateMetadata } from "@/utils";
@@ -184,6 +185,7 @@ export default function RootLayout({
           heading.variable,
         )}
       >
+        <BrandTokensInjector />
         <Providers>
           <LoadingScreen />
           <WhatsAppSupport />
