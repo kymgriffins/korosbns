@@ -14,6 +14,14 @@ import studiosEvidence from "@/data/fallbacks/studios-evidence.json";
 import featuredSeeds from "@/data/fallbacks/featured-projects.json";
 import { withFallback } from "@/data/adapter";
 
+export type ProjectMediaType = "youtube" | "vimeo" | "reel" | "audio" | "image" | "animation" | "none";
+
+export type ProjectGalleryItem = {
+  url: string;
+  caption?: string;
+  alt?: string;
+};
+
 export type CanonicalProject = {
   id: string;
   slug: string;
@@ -27,9 +35,21 @@ export type CanonicalProject = {
   organisationName?: string;
   date: string;
   year: string;
+  /** Media type determines what player/ embed to show */
+  mediaType: ProjectMediaType;
   videoId?: string;
   videoUrl?: string;
+  /** Reel MP4 URL for TikTok-style vertical player */
+  reelUrl?: string;
+  /** Audio embed URL (Spotify, SoundCloud, etc.) */
+  audioUrl?: string;
   thumbnail: string;
+  /** Caption text below the hero media — hideable via CMS */
+  mediaCaption?: string;
+  /** Gallery images shown before commissions/outputs section */
+  gallery: ProjectGalleryItem[];
+  /** Hide helper/caption texts on this project page */
+  hideCaptions?: boolean;
   outputs: string[];
   tags: string[];
   featured: boolean;
@@ -86,11 +106,37 @@ function videoIdFrom(p: StudioProject, featured?: FeaturedSeed): string | undefi
   return undefined;
 }
 
+function resolveMediaType(p: StudioProject): ProjectMediaType {
+  const t = (p.media?.type as string) || "";
+  const platform = (p.media?.platform as string) || "";
+  if (platform === "youtube" || t === "video") return "youtube";
+  if (platform === "vimeo") return "vimeo";
+  if (t === "audio") return "audio";
+  if (t === "animation") return "animation";
+  if (t === "image") return "image";
+  // Check for reel-style URLs (R2 mp4, tiktok)
+  if (p.media?.videoUrl && /\.mp4|\.webm|\.mov/i.test(p.media.videoUrl)) return "reel";
+  if (p.media?.videoUrl) return "youtube"; // default video assumption
+  return "none";
+}
+
+function resolveGallery(p: StudioProject): ProjectGalleryItem[] {
+  if (!p.media?.gallery || !Array.isArray(p.media.gallery)) return [];
+  return p.media.gallery.map((g: { url: string; caption?: string; position?: string }) => ({
+    url: g.url,
+    caption: g.caption,
+    alt: g.caption || p.title,
+  }));
+}
+
 function mergeProject(studio: StudioProject): CanonicalProject {
   const featured = featuredMap.get(studio.id);
   const org = studio.organizationId ? orgMap.get(studio.organizationId) : undefined;
   const videoId = videoIdFrom(studio, featured);
   const programmeSlug = studio.programmeSlug || featured?.programmeSlug || "studios";
+  const mediaType = resolveMediaType(studio);
+  const reelUrl = mediaType === "reel" ? studio.media?.videoUrl : undefined;
+  const audioUrl = mediaType === "audio" ? studio.media?.videoUrl : undefined;
 
   return {
     id: studio.id,
@@ -105,9 +151,15 @@ function mergeProject(studio: StudioProject): CanonicalProject {
     organisationName: org?.name,
     date: studio.date,
     year: studio.year,
+    mediaType,
     videoId,
     videoUrl: studio.media?.videoUrl || (videoId ? `https://www.youtube.com/watch?v=${videoId}` : undefined),
+    reelUrl,
+    audioUrl,
     thumbnail: thumbnailFor(studio, featured),
+    mediaCaption: (studio.media as { caption?: string })?.caption,
+    gallery: resolveGallery(studio),
+    hideCaptions: false,
     outputs: studio.outputs || [],
     tags: studio.tags || [],
     featured: studio.featured || false,

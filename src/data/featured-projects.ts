@@ -1,6 +1,6 @@
 import { withFallback } from "@/data/adapter";
 import featuredFallback from "@/data/fallbacks/featured-projects.json";
-import { projectsData, type CanonicalProject } from "@/data/projects";
+import { projectsData, type CanonicalProject, type ProjectMediaType, type ProjectGalleryItem } from "@/data/projects";
 import {
   BNS_CHANNEL_ID,
   fetchYoutubeChannelRss,
@@ -33,6 +33,18 @@ export type FeaturedProject = {
   wysiwygProse?: string;
   /** CTA chip under each story - defaults to featuredIntro.openProjectLabel */
   ctaLabel?: string;
+  /** Media type: youtube | reel | audio | image | animation | none */
+  mediaType?: ProjectMediaType;
+  /** Reel MP4 for TikTok-style player */
+  reelUrl?: string;
+  /** Audio embed URL */
+  audioUrl?: string;
+  /** Caption below the hero media */
+  mediaCaption?: string;
+  /** Gallery images */
+  gallery?: ProjectGalleryItem[];
+  /** Hide helper/caption texts */
+  hideCaptions?: boolean;
 };
 
 type SeedRow = (typeof featuredFallback.results)[number];
@@ -88,6 +100,12 @@ function fromCanonical(p: CanonicalProject, seed?: SeedRow): FeaturedProject {
     useYoutubeThumbnail: s?.useYoutubeThumbnail ?? false,
     wysiwygProse: p.wysiwygProse || s?.wysiwygProse || p.prose || p.description,
     ctaLabel: s?.ctaLabel,
+    mediaType: p.mediaType,
+    reelUrl: p.reelUrl,
+    audioUrl: p.audioUrl,
+    mediaCaption: p.mediaCaption,
+    gallery: p.gallery,
+    hideCaptions: p.hideCaptions,
   };
 }
 
@@ -212,7 +230,7 @@ export const featuredProjectsData = {
         accept: (result) =>
           Array.isArray(result) &&
           result.length > 0 &&
-          result.every((p) => Boolean(p.videoId && p.thumbnail && p.title)),
+          result.every((p) => Boolean(p.thumbnail && p.title)),
       },
     ),
 };

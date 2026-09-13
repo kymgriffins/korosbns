@@ -1588,6 +1588,150 @@ export function HeadlessPageStudio() {
                     </div>
                   </div>
 
+                  {/* Media Type & Non-YouTube Sources */}
+                  <div className="rounded-xl border border-border/60 bg-muted/20 p-4 space-y-3">
+                    <div className="flex items-center justify-between">
+                      <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                        Media Source
+                      </h3>
+                      <span className="rounded bg-muted px-2 py-0.5 font-mono text-[9px] text-muted-foreground">
+                        {selectedFeaturedStory.mediaType || "youtube"}
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                      <div>
+                        <label className="text-[11px] font-semibold text-foreground">Media Type</label>
+                        <select
+                          value={selectedFeaturedStory.mediaType ?? "youtube"}
+                          onChange={(e) => handleUpdateFeaturedStory(selectedFeaturedStory.id, "mediaType", e.target.value)}
+                          className="mt-1 h-8 w-full rounded-md border border-input bg-background px-2 text-xs"
+                        >
+                          <option value="youtube">YouTube</option>
+                          <option value="vimeo">Vimeo</option>
+                          <option value="reel">Reel (MP4 vertical)</option>
+                          <option value="audio">Audio (Spotify etc.)</option>
+                          <option value="image">Image only</option>
+                          <option value="animation">Animation</option>
+                          <option value="none">No media</option>
+                        </select>
+                      </div>
+                      <div>
+                        <label className="text-[11px] font-semibold text-foreground">Media Caption (below hero)</label>
+                        <Input
+                          value={selectedFeaturedStory.mediaCaption ?? ""}
+                          onChange={(e) => handleUpdateFeaturedStory(selectedFeaturedStory.id, "mediaCaption", e.target.value)}
+                          className="mt-1 h-8 text-xs"
+                          placeholder="Optional caption shown below the hero media"
+                        />
+                      </div>
+                    </div>
+
+                    {(selectedFeaturedStory.mediaType === "reel" || !selectedFeaturedStory.mediaType || selectedFeaturedStory.mediaType === "youtube") && (
+                      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                        <div>
+                          <label className="text-[11px] font-semibold text-foreground">Reel MP4 URL (for reel type)</label>
+                          <Input
+                            value={selectedFeaturedStory.reelUrl ?? ""}
+                            onChange={(e) => handleUpdateFeaturedStory(selectedFeaturedStory.id, "reelUrl", e.target.value)}
+                            className="mt-1 h-8 text-xs font-mono"
+                            placeholder="https://pub-...r2.dev/video.mp4"
+                          />
+                        </div>
+                        <div>
+                          <label className="text-[11px] font-semibold text-foreground">Audio Embed URL (for audio type)</label>
+                          <Input
+                            value={selectedFeaturedStory.audioUrl ?? ""}
+                            onChange={(e) => handleUpdateFeaturedStory(selectedFeaturedStory.id, "audioUrl", e.target.value)}
+                            className="mt-1 h-8 text-xs font-mono"
+                            placeholder="https://open.spotify.com/..."
+                          />
+                        </div>
+                      </div>
+                    )}
+
+                    <label className="flex items-center gap-2 text-[11px] font-semibold text-foreground cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={selectedFeaturedStory.hideCaptions ?? false}
+                        onChange={(e) => handleUpdateFeaturedStory(selectedFeaturedStory.id, "hideCaptions", e.target.checked)}
+                        className="h-3.5 w-3.5 rounded border-input"
+                      />
+                      Hide caption / helper texts on this project page
+                    </label>
+                  </div>
+
+                  {/* Gallery */}
+                  <div className="rounded-xl border border-border/60 bg-muted/20 p-4 space-y-3">
+                    <div className="flex items-center justify-between">
+                      <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                        Project Gallery ({(selectedFeaturedStory.gallery || []).length} images)
+                      </h3>
+                      <Button
+                        type="button"
+                        size="sm"
+                        variant="outline"
+                        className="gap-1 text-xs"
+                        onClick={() => {
+                          const current = selectedFeaturedStory.gallery || [];
+                          handleUpdateFeaturedStory(selectedFeaturedStory.id, "gallery", [
+                            ...current,
+                            { url: "", caption: "", alt: "" },
+                          ]);
+                        }}
+                      >
+                        <Plus className="size-3" />
+                        Add Image
+                      </Button>
+                    </div>
+                    <p className="text-[10px] text-muted-foreground">
+                      Collection of pictures shown before the commissions/outputs section. Leave URL empty to remove.
+                    </p>
+                    {(selectedFeaturedStory.gallery || []).length > 0 && (
+                      <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+                        {(selectedFeaturedStory.gallery || []).map((img: any, idx: number) => (
+                          <div key={idx} className="rounded-lg border border-border/40 bg-background p-2 space-y-1.5">
+                            <div className="flex items-center justify-between">
+                              <span className="font-mono text-[9px] text-muted-foreground">#{idx + 1}</span>
+                              <Button
+                                type="button"
+                                variant="ghost"
+                                size="sm"
+                                className="h-5 w-5 p-0 text-muted-foreground hover:text-rose-500"
+                                onClick={() => {
+                                  const updated = (selectedFeaturedStory.gallery || []).filter((_: any, i: number) => i !== idx);
+                                  handleUpdateFeaturedStory(selectedFeaturedStory.id, "gallery", updated);
+                                }}
+                              >
+                                <Trash2 className="size-3" />
+                              </Button>
+                            </div>
+                            <Input
+                              value={img.url ?? ""}
+                              onChange={(e) => {
+                                const updated = [...(selectedFeaturedStory.gallery || [])];
+                                updated[idx] = { ...updated[idx], url: e.target.value };
+                                handleUpdateFeaturedStory(selectedFeaturedStory.id, "gallery", updated);
+                              }}
+                              className="h-7 text-[10px] font-mono"
+                              placeholder="Image URL (R2 or external)"
+                            />
+                            <Input
+                              value={img.caption ?? ""}
+                              onChange={(e) => {
+                                const updated = [...(selectedFeaturedStory.gallery || [])];
+                                updated[idx] = { ...updated[idx], caption: e.target.value };
+                                handleUpdateFeaturedStory(selectedFeaturedStory.id, "gallery", updated);
+                              }}
+                              className="h-7 text-[10px]"
+                              placeholder="Caption (optional)"
+                            />
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+
                   <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                     <div>
                       <ImageFieldControl

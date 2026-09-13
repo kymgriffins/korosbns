@@ -272,7 +272,12 @@ export function FeaturedProjectsSection({
                     <span aria-hidden className="mx-1.5 text-border">
                       ·
                     </span>
-                    YouTube
+                    {project.mediaType === "reel" ? "Reel" :
+                     project.mediaType === "audio" ? "Audio" :
+                     project.mediaType === "image" ? "Gallery" :
+                     project.mediaType === "animation" ? "Animation" :
+                     project.mediaType === "none" ? "Project" :
+                     "YouTube"}
                   </figcaption>
                 </figure>
 
