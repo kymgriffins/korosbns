@@ -26,6 +26,10 @@ import { isSectionVisible } from "@/lib/partner-page-cms";
 import { cn } from "@/utils";
 import dynamic from "next/dynamic";
 import Image from "next/image";
+import {
+  getHeroAspectClass,
+  getHeroObjectFitClass,
+} from "@/lib/design-tokens";
 
 const PartnersMarquee = dynamic(
   () => import("@/components/marketing/partners-marquee"),
@@ -36,10 +40,29 @@ const PartnersMarquee = dynamic(
 );
 
 type ProgrammesLandingCms = ProgrammesContent["landing"] & {
-  featuredIntro?: { eyebrow?: string; headline?: string; lede?: string };
+  featuredIntro?: {
+    eyebrow?: string;
+    headline?: string;
+    lede?: string;
+    openProjectLabel?: string;
+    layout?: "list" | "grid";
+    columns?: 2 | 3 | 4;
+    projectIds?: string[];
+  };
   flywheel?: FlywheelContent;
   matrix?: MatrixIntro;
   methodology?: MethodologyContent;
+  heroMedia?: {
+    src?: string;
+    alt?: string;
+    aspect?: string;
+    objectFit?: string;
+  };
+  heroText?: {
+    headlineItalic?: boolean;
+    headlineColor?: string;
+    bodyColor?: string;
+  };
 };
 
 export type ProgrammesLandingProps = {
@@ -62,6 +85,16 @@ export function ProgrammesLanding({
   const closing = programmesData.closing;
   const civic = civicProgrammesFromContent(programmesData) as ProgrammeBlock[];
   const featuredIntro = landing.featuredIntro;
+  const heroMedia = landing.heroMedia;
+  const heroText = landing.heroText;
+  const heroSrc =
+    heroMedia?.src || civic[0]?.visual.hero || "/logo.svg";
+  const heroAlt =
+    heroMedia?.alt ||
+    civic[0]?.visual.heroAlt ||
+    "Budget Ndio Story programmes";
+  const heroAspect = getHeroAspectClass(heroMedia?.aspect || "16/10");
+  const heroFit = getHeroObjectFitClass(heroMedia?.objectFit || "cover");
 
   const show = (sectionId: string) =>
     isSectionVisible("programmes", sectionId, sectionsConfig);
@@ -84,11 +117,26 @@ export function ProgrammesLanding({
                 </EditorialPill>
                 <h1
                   id="programmes-hero-heading"
-                  className={cn(T.heroTitle, "text-balance text-foreground")}
+                  className={cn(
+                    T.heroTitle,
+                    "text-balance",
+                    heroText?.headlineItalic && "italic",
+                    !heroText?.headlineColor && "text-foreground",
+                    heroText?.headlineColor === "primary" && "text-primary",
+                    heroText?.headlineColor === "muted" && "text-muted-foreground",
+                  )}
                 >
                   {landing.headline}
                 </h1>
-                <p className={cn(T.lead, "max-w-md text-foreground/75")}>
+                <p
+                  className={cn(
+                    T.lead,
+                    "max-w-md",
+                    !heroText?.bodyColor && "text-foreground/75",
+                    heroText?.bodyColor === "muted" && "text-muted-foreground",
+                    heroText?.bodyColor === "primary" && "text-primary",
+                  )}
+                >
                   {landing.body}
                 </p>
                 {landing.subhead ? (
@@ -119,22 +167,23 @@ export function ProgrammesLanding({
               </div>
 
               <figure className="space-y-2.5 lg:col-span-7">
-                <div className="relative aspect-[4/3] w-full overflow-hidden bg-muted md:aspect-[16/10]">
+                <div
+                  className={cn(
+                    "relative w-full overflow-hidden rounded-none bg-muted",
+                    heroAspect,
+                  )}
+                >
                   <Image
-                    src={civic[0]?.visual.hero ?? "/logo.svg"}
-                    alt={
-                      civic[0]?.visual.heroAlt ??
-                      "Budget Ndio Story programmes"
-                    }
+                    src={heroSrc}
+                    alt={heroAlt}
                     fill
                     priority
-                    className="object-cover object-center"
+                    className={heroFit}
                     sizes="(max-width: 1024px) 100vw, 55vw"
                   />
                 </div>
                 <figcaption className={cn(T.caption, "text-muted-foreground")}>
-                  {civic[0]?.visual.heroAlt ??
-                    "Budget Ndio Story programmes"}
+                  {heroAlt}
                 </figcaption>
               </figure>
             </div>
@@ -164,6 +213,10 @@ export function ProgrammesLanding({
           eyebrow={featuredIntro?.eyebrow}
           headline={featuredIntro?.headline}
           lede={featuredIntro?.lede}
+          openProjectLabel={featuredIntro?.openProjectLabel}
+          layout={featuredIntro?.layout === "list" ? "list" : "grid"}
+          columns={(featuredIntro?.columns as 2 | 3 | 4) || 3}
+          projectIds={featuredIntro?.projectIds}
           initialProjects={
             ((featuredProjects as { results?: unknown[] })?.results ||
               (featuredProjects as { projects?: unknown[] })?.projects) as never

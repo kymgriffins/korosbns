@@ -11,7 +11,6 @@ import { cn } from "@/utils";
 import defaultNavigation from "@/content/navigation.json";
 import { useState, useEffect } from "react";
 
-
 type FooterLogo = {
   id: string;
   name: string;
@@ -114,24 +113,19 @@ export default function Footer() {
   }, [organizationTitle]);
 
   return (
-    <footer className="mt-16 lg:mt-24">
-      {/* Dark editorial band — Marwa-style */}
-      <div className="editorial-surface-invert relative bg-surface-invert">
-        <div
-          className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--surface-invert)_0%,_transparent_70%)] opacity-60"
-          aria-hidden
-        />
-
-        <div className={cn(SECTION_SHELL_INNER, "relative z-10 py-16 md:py-20 lg:py-24")}>
+    <footer className="mt-16 rounded-none lg:mt-24">
+      {/* Brand-agency light grey band — zero radius */}
+      <div className="relative rounded-none border-t border-border bg-muted text-foreground">
+        <div className={cn(SECTION_SHELL_INNER, "relative z-10 py-14 md:py-16 lg:py-20")}>
           <div className="grid gap-12 md:grid-cols-12 md:gap-8">
-            <div className="md:col-span-5 space-y-5">
+            <div className="space-y-5 md:col-span-5">
               <Link href="/" className="inline-block">
-                <span className="font-heading text-2xl font-bold text-surface-invert-foreground md:text-3xl">
+                <span className="font-heading text-2xl font-bold text-foreground md:text-3xl">
                   {organizationTitle}
                 </span>
               </Link>
-              <div className="h-px w-12 bg-surface-invert-foreground/20" />
-              <p className="max-w-sm text-sm leading-relaxed text-surface-invert-foreground/70 md:text-base">
+              <div className="h-px w-12 bg-border" />
+              <p className="max-w-sm text-sm leading-relaxed text-muted-foreground md:text-base">
                 {footerBlurb}
               </p>
 
@@ -180,15 +174,13 @@ export default function Footer() {
             </div>
 
             <div className="md:col-span-3 md:col-start-7">
-              <h3 className="mb-4 text-sm font-semibold text-surface-invert-foreground">
-                Navigation
-              </h3>
+              <h3 className="mb-4 text-sm font-semibold text-foreground">Navigation</h3>
               <ul className="space-y-3">
                 {dynamicNavLinks.map((link: any) => (
                   <li key={link.id || link.href}>
                     <Link
                       href={link.href}
-                      className="text-sm text-surface-invert-foreground/60 transition-colors hover:text-surface-invert-foreground"
+                      className="text-sm text-muted-foreground transition-colors hover:text-foreground"
                     >
                       {link.label}
                     </Link>
@@ -198,9 +190,7 @@ export default function Footer() {
             </div>
 
             <div className="md:col-span-2">
-              <h3 className="mb-4 text-sm font-semibold text-surface-invert-foreground">
-                Social
-              </h3>
+              <h3 className="mb-4 text-sm font-semibold text-foreground">Social</h3>
               <ul className="space-y-3">
                 {displaySocial.map((social) => {
                   const Icon = socialIconComponents[social.icon];
@@ -210,11 +200,9 @@ export default function Footer() {
                         href={social.href}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 text-sm text-surface-invert-foreground/60 transition-colors hover:text-surface-invert-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                        className="inline-flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                       >
-                        {Icon ? (
-                          <Icon className="size-4 shrink-0 opacity-80" aria-hidden />
-                        ) : null}
+                        {Icon ? <Icon className="size-4 shrink-0" aria-hidden /> : null}
                         <span>{social.label}</span>
                       </Link>
                     </li>
@@ -226,8 +214,7 @@ export default function Footer() {
         </div>
       </div>
 
-      {/* Sub-footer utility bar */}
-      <div className="border-t border-border/40 bg-background">
+      <div className="rounded-none border-t border-border/60 bg-background">
         <div
           className={cn(
             SECTION_SHELL_INNER,
@@ -238,16 +225,16 @@ export default function Footer() {
             © {new Date().getFullYear()} {organizationTitle}. All rights reserved.
           </p>
           <div className="flex flex-wrap items-center gap-4">
-            <Link href="/glossary" className="hover:text-foreground transition-colors">
+            <Link href="/glossary" className="transition-colors hover:text-foreground">
               Budget Glossary
             </Link>
-            <Link href="/help" className="hover:text-foreground transition-colors">
+            <Link href="/help" className="transition-colors hover:text-foreground">
               Help & FAQ
             </Link>
-            <Link href="/privacy" className="hover:text-foreground transition-colors">
+            <Link href="/privacy" className="transition-colors hover:text-foreground">
               Privacy Policy
             </Link>
-            <Link href="/terms" className="hover:text-foreground transition-colors">
+            <Link href="/terms" className="transition-colors hover:text-foreground">
               Terms of Service
             </Link>
           </div>

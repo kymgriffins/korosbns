@@ -144,7 +144,7 @@ export default async function RootLayout({
   const splash = getGlobalSplashConfig(sections);
 
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" className="light" suppressHydrationWarning>
       <head>
         <link rel="preconnect" href="https://res.cloudinary.com" />
         <link rel="preconnect" href="https://i.ytimg.com" />

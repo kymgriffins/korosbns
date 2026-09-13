@@ -61,12 +61,38 @@ export type ProgrammeFeaturedMedia = {
   title?: string;
   caption?: string;
   poster?: string;
+  /** Portrait / mobile-safe asset. When set, desktop media can be hidden on small screens. */
+  mobileUrl?: string;
+  mobileType?: "video" | "youtube" | "image" | "tiktok" | "auto";
+  mobilePoster?: string;
+  /** Hide wide desktop hero below `sm` (default true when mobileUrl is set). */
+  hideDesktopOnMobile?: boolean;
 };
 
 export type ProgrammeVisual = {
   hero: string;
   heroAlt: string;
+  /** Optional mobile still when featuredMedia is absent or desktop-only */
+  heroMobile?: string;
   gallery: { src: string; alt: string }[];
+};
+
+export type ProgrammeThemePresetId =
+  | "global"
+  | "connect-blue"
+  | "mashinani-red"
+  | "wanahabari-teal"
+  | "studios-ink"
+  | "custom";
+
+export type ProgrammeTheme = {
+  preset?: ProgrammeThemePresetId;
+  primary?: string;
+  primaryForeground?: string;
+  accent?: string;
+  buttonBg?: string;
+  buttonFg?: string;
+  buttonHoverBg?: string;
 };
 
 export type ProgrammeStat = {
@@ -114,6 +140,8 @@ export type ProgrammeBlock = {
   href: string;
   visual: ProgrammeVisual;
   featuredMedia?: ProgrammeFeaturedMedia;
+  /** Per-programme colour + button theme (Connect blue, Mashinani red, …) */
+  theme?: ProgrammeTheme;
   /** Optional third hero CTA (All programmes) with breakpoint visibility */
   allProgrammesCta?: ProgrammeCta;
   stats?: ProgrammeStat[];

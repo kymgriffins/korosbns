@@ -47,7 +47,29 @@ export interface DesignTokens {
   typography?: {
     eyebrowTracking?: "wider" | "normal" | "tight";
     headlineWeight?: "bold" | "semibold" | "medium";
+    heroHeadlineItalic?: boolean;
+    heroHeadlineColor?: string;
+    heroBodyColor?: string;
+    sectionEyebrowColor?: string;
   };
+  layout?: {
+    heroAspect?: "4/3" | "16/10" | "16/9" | "1/1" | "auto";
+    heroObjectFit?: "cover" | "contain" | "fill";
+    footerRadius?: string;
+    footerBackground?: "muted" | "background" | "card";
+    featuredLayout?: "list" | "grid";
+    featuredColumns?: 2 | 3 | 4;
+  };
+  /** Named colour themes editors can assign per programme / desk */
+  programmePresets?: Record<
+    string,
+    {
+      label: string;
+      description?: string;
+      brand: NonNullable<DesignTokens["brand"]>;
+      buttons: NonNullable<DesignTokens["buttons"]>;
+    }
+  >;
 }
 
 const RADIUS_PRESET: Record<string, string> = {
@@ -81,6 +103,14 @@ export function resolveDesignTokens(override?: DesignTokens | null): DesignToken
     typography: {
       ...defaultTokens.typography,
       ...(override?.typography || {}),
+    },
+    layout: {
+      ...(defaultTokens as DesignTokens).layout,
+      ...(override?.layout || {}),
+    },
+    programmePresets: {
+      ...(defaultTokens as DesignTokens).programmePresets,
+      ...(override?.programmePresets || {}),
     },
   } as DesignTokens;
 }
@@ -241,5 +271,41 @@ export function getButtonRadiusClass(tokens?: DesignTokens | null): string {
     case "full":
     default:
       return "rounded-full";
+  }
+}
+
+export function getHeroAspectClass(
+  aspect?: DesignTokens["layout"] extends infer L
+    ? L extends { heroAspect?: infer A }
+      ? A
+      : string
+    : string,
+): string {
+  switch (aspect) {
+    case "4/3":
+      return "aspect-[4/3]";
+    case "16/9":
+      return "aspect-video";
+    case "1/1":
+      return "aspect-square";
+    case "auto":
+      return "min-h-[240px]";
+    case "16/10":
+    default:
+      return "aspect-[16/10]";
+  }
+}
+
+export function getHeroObjectFitClass(
+  fit?: "cover" | "contain" | "fill" | string,
+): string {
+  switch (fit) {
+    case "contain":
+      return "object-contain";
+    case "fill":
+      return "object-fill";
+    case "cover":
+    default:
+      return "object-cover object-center";
   }
 }

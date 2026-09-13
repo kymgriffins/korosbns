@@ -32,6 +32,7 @@ import {
   Columns,
   Film,
   Sliders,
+  Smartphone,
 } from "lucide-react";
 import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
@@ -43,7 +44,8 @@ import { CustomPageStudioEditor } from "./CustomPageStudioEditor";
 import { WysiwygProseEditor } from "./WysiwygProseEditor";
 import { MediaAssetPicker, type MediaSelection } from "./MediaAssetPicker";
 import { ImageFieldControl } from "./ImageFieldControl";
-import { MediaEmbed } from "@/components/ui/media-embed";
+import { ColorFieldControl } from "./ColorFieldControl";
+import { MediaEmbed, detectMediaType } from "@/components/ui/media-embed";
 import { NavigationStudioEditor } from "./NavigationStudioEditor";
 import { DesignTokensStudioEditor } from "./DesignTokensStudioEditor";
 import { CoursesStudioEditor } from "./CoursesStudioEditor";
@@ -53,6 +55,7 @@ import {
   isCollectionPageKey,
 } from "./CmsCollectionJsonEditor";
 import { BnsStudioSectionsEditor } from "./BnsStudioSectionsEditor";
+import { listProgrammePresetOptions } from "@/lib/programme-theme";
 
 type PageKey =
   | "landing"
@@ -81,7 +84,7 @@ type PageKey =
   | "studios-evidence"
   | "bns-studio";
 
-type TabKey = "sections" | "hero" | "carousel" | "bets" | "core" | "deliverables" | "buttons" | "faqs" | "media";
+type TabKey = "sections" | "hero" | "carousel" | "bets" | "core" | "deliverables" | "buttons" | "faqs" | "media" | "mobile" | "theme";
 
 interface PageMeta {
   key: PageKey;
@@ -336,7 +339,7 @@ export function HeadlessPageStudio() {
   const [selectedCustomPageSlug, setSelectedCustomPageSlug] = useState<string>("");
   const [selectedFeaturedId, setSelectedFeaturedId] = useState<string>("");
   const [isUploading, setIsUploading] = useState(false);
-  const [viewMode, setViewMode] = useState<"split" | "editor" | "preview">("split");
+  const [viewMode, setViewMode] = useState<"split" | "editor" | "preview">("editor");
   const [previewDevice, setPreviewDevice] = useState<DeviceMode>("desktop");
   const [previewRefreshKey, setPreviewRefreshKey] = useState(0);
 
@@ -1596,6 +1599,38 @@ export function HeadlessPageStudio() {
                         }}
                         description="Select an existing image from Cloudflare R2 or upload directly."
                       />
+                      <ImageFieldControl
+                        label="Mobile thumbnail (hide wide 1280px thumbs on phones)"
+                        value={selectedFeaturedStory.thumbnailMobile ?? ""}
+                        onChange={(url) =>
+                          handleUpdateFeaturedStory(selectedFeaturedStory.id, "thumbnailMobile", url)
+                        }
+                        onOpenBucket={() => {
+                          setActiveImagePicker({
+                            isOpen: true,
+                            title: "Mobile story thumbnail",
+                            currentUrl: selectedFeaturedStory.thumbnailMobile,
+                            onSelect: (url) =>
+                              handleUpdateFeaturedStory(selectedFeaturedStory.id, "thumbnailMobile", url),
+                          });
+                        }}
+                        description="Portrait or square crop for mobile cards."
+                      />
+                      <label className="mt-2 flex items-center gap-2 text-xs text-muted-foreground cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={!!selectedFeaturedStory.hideDesktopThumbOnMobile}
+                          onChange={(e) =>
+                            handleUpdateFeaturedStory(
+                              selectedFeaturedStory.id,
+                              "hideDesktopThumbOnMobile",
+                              e.target.checked,
+                            )
+                          }
+                          className="h-3.5 w-3.5 rounded border-border text-primary focus:ring-primary"
+                        />
+                        <span>Hide desktop thumbnail on mobile when mobile thumb is set</span>
+                      </label>
                     </div>
 
                     <div>
@@ -2277,6 +2312,32 @@ export function HeadlessPageStudio() {
                   >
                     <Film className="size-3.5" />
                     <span>Hero Media &amp; Videos</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setActiveTab("mobile")}
+                    className={`flex w-full items-center gap-2 rounded-lg px-3 py-2 text-xs font-medium transition-colors ${
+                      activeTab === "mobile"
+                        ? "bg-primary text-primary-foreground font-semibold"
+                        : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                    }`}
+                  >
+                    <Smartphone className="size-3.5" />
+                    <span>Mobile Design</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setActiveTab("theme")}
+                    className={`flex w-full items-center gap-2 rounded-lg px-3 py-2 text-xs font-medium transition-colors ${
+                      activeTab === "theme"
+                        ? "bg-primary text-primary-foreground font-semibold"
+                        : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                    }`}
+                  >
+                    <Palette className="size-3.5" />
+                    <span>Colour Theme</span>
                   </button>
 
                   <button
@@ -3678,19 +3739,20 @@ export function HeadlessPageStudio() {
                               title: `Featured Media for ${currentProgramme.title || "Programme"}`,
                               currentUrl: currentProgramme.featuredMedia?.url,
                               onSelect: (url) => {
-                                const isYt = url.includes("youtube.com") || url.includes("youtu.be");
-                                const isTiktok = url.includes("tiktok.com");
-                                const isImage = /\.(jpg|jpeg|png|webp|gif|avif|svg)(\?|$)/i.test(url);
+                                const detected = detectMediaType(url);
+                                const type =
+                                  detected === "vimeo"
+                                    ? "video"
+                                    : detected === "image" ||
+                                        detected === "youtube" ||
+                                        detected === "tiktok" ||
+                                        detected === "video"
+                                      ? detected
+                                      : "image";
                                 updateCurrentProgrammeField("featuredMedia", {
                                   ...(currentProgramme.featuredMedia || {}),
                                   url,
-                                  type: isYt
-                                    ? "youtube"
-                                    : isTiktok
-                                      ? "tiktok"
-                                      : isImage
-                                        ? "image"
-                                        : currentProgramme.featuredMedia?.type || "video",
+                                  type,
                                 });
                               },
                             });
@@ -3706,7 +3768,7 @@ export function HeadlessPageStudio() {
                     <div>
                       <label className="text-[11px] font-semibold text-muted-foreground">Hero media type</label>
                       <select
-                        value={currentProgramme.featuredMedia?.type ?? "video"}
+                        value={currentProgramme.featuredMedia?.type ?? "auto"}
                         onChange={(e) => {
                           updateCurrentProgrammeField("featuredMedia", {
                             ...(currentProgramme.featuredMedia || { url: "" }),
@@ -3715,10 +3777,10 @@ export function HeadlessPageStudio() {
                         }}
                         className="mt-1 flex h-8 w-full rounded-md border border-input bg-background px-2 text-xs"
                       >
+                        <option value="image">Still image</option>
                         <option value="tiktok">TikTok-style reel (vertical)</option>
                         <option value="youtube">YouTube embed</option>
                         <option value="video">Landscape video (MP4)</option>
-                        <option value="image">Still image</option>
                         <option value="auto">Auto-detect</option>
                       </select>
                     </div>
@@ -3730,13 +3792,25 @@ export function HeadlessPageStudio() {
                       <Input
                         value={currentProgramme.featuredMedia?.url ?? ""}
                         onChange={(e) => {
+                          const url = e.target.value;
+                          const detected = url ? detectMediaType(url) : "image";
+                          const inferred =
+                            detected === "vimeo"
+                              ? "video"
+                              : detected;
+                          const keepManual =
+                            currentProgramme.featuredMedia?.type &&
+                            currentProgramme.featuredMedia.type !== "auto";
                           updateCurrentProgrammeField("featuredMedia", {
                             ...(currentProgramme.featuredMedia || {}),
-                            url: e.target.value,
+                            url,
+                            type: keepManual
+                              ? currentProgramme.featuredMedia?.type
+                              : inferred,
                           });
                         }}
                         className="mt-1 h-8 font-mono text-xs"
-                        placeholder="https://...mp4 or youtube.com/watch?v=..."
+                        placeholder="https://...jpg / .mp4 / youtube.com/watch?v=..."
                       />
                     </div>
 
@@ -4062,6 +4136,309 @@ export function HeadlessPageStudio() {
             </div>
           )}
 
+          {/* TAB: MOBILE DESIGN */}
+          {activeTab === "mobile" && (
+            <div className="space-y-5 rounded-2xl border border-border bg-card p-6 shadow-xs">
+              <div className="border-b border-border/50 pb-3">
+                <h2 className="text-base font-bold text-foreground">Mobile Design</h2>
+                <p className="text-xs text-muted-foreground">
+                  Wide desktop heroes (e.g. 1280px landscape) often crop badly on phones. Set a mobile-only image or reel here — desktop media stays for tablet+.
+                </p>
+              </div>
+
+              {currentProgramme ? (
+                <div className="space-y-4">
+                  <label className="flex items-center gap-2 text-xs text-foreground cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={
+                        currentProgramme.featuredMedia?.hideDesktopOnMobile ??
+                        Boolean(currentProgramme.featuredMedia?.mobileUrl || currentProgramme.visual?.heroMobile)
+                      }
+                      onChange={(e) => {
+                        updateCurrentProgrammeField("featuredMedia", {
+                          ...(currentProgramme.featuredMedia || { url: currentProgramme.featuredMedia?.url || "" }),
+                          hideDesktopOnMobile: e.target.checked,
+                        });
+                      }}
+                      className="h-3.5 w-3.5 rounded border-border text-primary focus:ring-primary"
+                    />
+                    <span>Hide wide desktop hero on mobile (show mobile asset instead)</span>
+                  </label>
+
+                  <div className="rounded-xl border border-border/80 bg-muted/20 p-4 space-y-3">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                      Mobile hero media
+                    </h4>
+                    <div>
+                      <label className="text-[11px] font-semibold text-muted-foreground">Mobile media type</label>
+                      <select
+                        value={currentProgramme.featuredMedia?.mobileType ?? "image"}
+                        onChange={(e) => {
+                          updateCurrentProgrammeField("featuredMedia", {
+                            ...(currentProgramme.featuredMedia || { url: "" }),
+                            mobileType: e.target.value,
+                          });
+                        }}
+                        className="mt-1 flex h-8 w-full rounded-md border border-input bg-background px-2 text-xs"
+                      >
+                        <option value="image">Still image (recommended)</option>
+                        <option value="tiktok">TikTok-style reel</option>
+                        <option value="youtube">YouTube</option>
+                        <option value="video">MP4 video</option>
+                        <option value="auto">Auto-detect</option>
+                      </select>
+                    </div>
+                    <ImageFieldControl
+                      label="Mobile media URL (portrait / square works best)"
+                      value={currentProgramme.featuredMedia?.mobileUrl ?? ""}
+                      onChange={(url) => {
+                        const detected = url ? detectMediaType(url) : "image";
+                        updateCurrentProgrammeField("featuredMedia", {
+                          ...(currentProgramme.featuredMedia || { url: "" }),
+                          mobileUrl: url,
+                          mobileType:
+                            currentProgramme.featuredMedia?.mobileType &&
+                            currentProgramme.featuredMedia.mobileType !== "auto"
+                              ? currentProgramme.featuredMedia.mobileType
+                              : detected === "vimeo"
+                                ? "video"
+                                : detected,
+                          hideDesktopOnMobile: true,
+                        });
+                      }}
+                      onOpenBucket={() => {
+                        setActiveImagePicker({
+                          isOpen: true,
+                          title: "Mobile hero media",
+                          currentUrl: currentProgramme.featuredMedia?.mobileUrl,
+                          onSelect: (url) => {
+                            const detected = detectMediaType(url);
+                            updateCurrentProgrammeField("featuredMedia", {
+                              ...(currentProgramme.featuredMedia || { url: "" }),
+                              mobileUrl: url,
+                              mobileType: detected === "vimeo" ? "video" : detected,
+                              hideDesktopOnMobile: true,
+                            });
+                          },
+                        });
+                      }}
+                    />
+                    <ImageFieldControl
+                      label="Mobile poster / cover still"
+                      value={currentProgramme.featuredMedia?.mobilePoster ?? ""}
+                      onChange={(url) => {
+                        updateCurrentProgrammeField("featuredMedia", {
+                          ...(currentProgramme.featuredMedia || { url: "" }),
+                          mobilePoster: url,
+                        });
+                      }}
+                      onOpenBucket={() => {
+                        setActiveImagePicker({
+                          isOpen: true,
+                          title: "Mobile poster",
+                          currentUrl: currentProgramme.featuredMedia?.mobilePoster,
+                          onSelect: (url) => {
+                            updateCurrentProgrammeField("featuredMedia", {
+                              ...(currentProgramme.featuredMedia || { url: "" }),
+                              mobilePoster: url,
+                            });
+                          },
+                        });
+                      }}
+                    />
+                    {currentProgramme.featuredMedia?.mobileUrl ? (
+                      <div className="mx-auto max-w-[220px] overflow-hidden rounded-xl border border-border bg-black">
+                        <MediaEmbed
+                          src={currentProgramme.featuredMedia.mobileUrl}
+                          type={currentProgramme.featuredMedia.mobileType || "image"}
+                          poster={currentProgramme.featuredMedia.mobilePoster}
+                          aspectRatio={
+                            currentProgramme.featuredMedia.mobileType === "tiktok"
+                              ? "portrait"
+                              : currentProgramme.featuredMedia.mobileType === "image" ||
+                                  !currentProgramme.featuredMedia.mobileType
+                                ? "auto"
+                                : "video"
+                          }
+                        />
+                      </div>
+                    ) : null}
+                  </div>
+
+                  <div className="rounded-xl border border-border/80 bg-muted/20 p-4 space-y-3">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                      Fallback mobile still (when no featured media)
+                    </h4>
+                    <ImageFieldControl
+                      label="visual.heroMobile"
+                      value={currentProgramme.visual?.heroMobile ?? ""}
+                      onChange={(url) => {
+                        updateCurrentProgrammeField("visual", {
+                          ...(currentProgramme.visual || {}),
+                          heroMobile: url,
+                        });
+                      }}
+                      onOpenBucket={() => {
+                        setActiveImagePicker({
+                          isOpen: true,
+                          title: "Mobile hero still",
+                          currentUrl: currentProgramme.visual?.heroMobile,
+                          onSelect: (url) => {
+                            updateCurrentProgrammeField("visual", {
+                              ...(currentProgramme.visual || {}),
+                              heroMobile: url,
+                            });
+                          },
+                        });
+                      }}
+                    />
+                  </div>
+
+                  <p className="text-[11px] text-muted-foreground">
+                    Tip: Button mobile/desktop visibility lives under the Buttons tab. Use Preview → phone width to check this page.
+                  </p>
+                </div>
+              ) : (
+                <p className="text-xs text-muted-foreground">Select a programme desk to edit mobile media.</p>
+              )}
+            </div>
+          )}
+
+          {/* TAB: COLOUR THEME */}
+          {activeTab === "theme" && (
+            <div className="space-y-5 rounded-2xl border border-border bg-card p-6 shadow-xs">
+              <div className="border-b border-border/50 pb-3">
+                <h2 className="text-base font-bold text-foreground">Programme Colour Theme</h2>
+                <p className="text-xs text-muted-foreground">
+                  Pick a preset (Connect blue, Mashinani red, …) or custom colours. Buttons and primary accents update on this page only — not the whole site.
+                </p>
+              </div>
+
+              {currentProgramme ? (
+                <div className="space-y-4">
+                  <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                    {listProgrammePresetOptions(designTokensData).map((preset) => {
+                      const selected =
+                        (currentProgramme.theme?.preset || "global") === preset.id;
+                      return (
+                        <button
+                          key={preset.id}
+                          type="button"
+                          onClick={() => {
+                            updateCurrentProgrammeField("theme", {
+                              ...(currentProgramme.theme || {}),
+                              preset: preset.id,
+                            });
+                          }}
+                          className={`flex items-start gap-3 rounded-xl border p-3 text-left transition-all ${
+                            selected
+                              ? "border-primary bg-primary/10 ring-1 ring-primary"
+                              : "border-border/60 bg-muted/20 hover:bg-muted/50"
+                          }`}
+                        >
+                          <input
+                            type="color"
+                            value={/^#[0-9A-Fa-f]{6}$/.test(preset.swatch) ? preset.swatch : "#0055FF"}
+                            readOnly
+                            tabIndex={-1}
+                            aria-hidden
+                            className="mt-0.5 size-8 shrink-0 cursor-pointer rounded-full border border-border bg-transparent p-0"
+                          />
+                          <span className="min-w-0">
+                            <span className="block text-xs font-bold text-foreground">
+                              {preset.label}
+                            </span>
+                            {preset.description ? (
+                              <span className="mt-0.5 block text-[11px] text-muted-foreground">
+                                {preset.description}
+                              </span>
+                            ) : null}
+                          </span>
+                        </button>
+                      );
+                    })}
+                  </div>
+
+                  {(currentProgramme.theme?.preset === "custom" ||
+                    currentProgramme.theme?.primary ||
+                    currentProgramme.theme?.buttonBg) && (
+                    <div className="grid grid-cols-1 gap-3 rounded-xl border border-border/60 bg-muted/20 p-4 sm:grid-cols-2">
+                      <ColorFieldControl
+                        label="Primary"
+                        value={currentProgramme.theme?.primary ?? "#0055FF"}
+                        onChange={(v) =>
+                          updateCurrentProgrammeField("theme", {
+                            ...(currentProgramme.theme || {}),
+                            preset: currentProgramme.theme?.preset || "custom",
+                            primary: v,
+                          })
+                        }
+                      />
+                      <ColorFieldControl
+                        label="Primary text"
+                        value={currentProgramme.theme?.primaryForeground ?? "#FFFFFF"}
+                        onChange={(v) =>
+                          updateCurrentProgrammeField("theme", {
+                            ...(currentProgramme.theme || {}),
+                            primaryForeground: v,
+                          })
+                        }
+                      />
+                      <ColorFieldControl
+                        label="Accent"
+                        value={currentProgramme.theme?.accent ?? currentProgramme.theme?.primary ?? "#0055FF"}
+                        onChange={(v) =>
+                          updateCurrentProgrammeField("theme", {
+                            ...(currentProgramme.theme || {}),
+                            accent: v,
+                          })
+                        }
+                      />
+                      <ColorFieldControl
+                        label="Button fill"
+                        value={currentProgramme.theme?.buttonBg ?? currentProgramme.theme?.primary ?? "#0055FF"}
+                        onChange={(v) =>
+                          updateCurrentProgrammeField("theme", {
+                            ...(currentProgramme.theme || {}),
+                            buttonBg: v,
+                          })
+                        }
+                      />
+                      <ColorFieldControl
+                        label="Button text"
+                        value={currentProgramme.theme?.buttonFg ?? "#FFFFFF"}
+                        onChange={(v) =>
+                          updateCurrentProgrammeField("theme", {
+                            ...(currentProgramme.theme || {}),
+                            buttonFg: v,
+                          })
+                        }
+                      />
+                      <ColorFieldControl
+                        label="Button hover"
+                        value={currentProgramme.theme?.buttonHoverBg ?? "#0044CC"}
+                        onChange={(v) =>
+                          updateCurrentProgrammeField("theme", {
+                            ...(currentProgramme.theme || {}),
+                            buttonHoverBg: v,
+                          })
+                        }
+                      />
+                    </div>
+                  )}
+
+                  <p className="text-[11px] text-muted-foreground">
+                    Edit preset definitions (swatches used across desks) under the global{" "}
+                    <strong>Design Tokens</strong> CMS desk. Save this programme after picking a theme.
+                  </p>
+                </div>
+              ) : (
+                <p className="text-xs text-muted-foreground">Select a programme desk to assign a theme.</p>
+              )}
+            </div>
+          )}
+
           {/* TAB 5: BUTTONS & LINKS */}
           {activeTab === "buttons" && (
             <div className="space-y-5 rounded-2xl border border-border bg-card p-6 shadow-xs">
@@ -4330,6 +4707,185 @@ export function HeadlessPageStudio() {
                           }
                           className="mt-1 h-8 text-xs font-semibold"
                         />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="rounded-xl border border-border/60 bg-muted/20 p-4 space-y-3">
+                    <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                      Featured evidence layout (Stories behind the evidence)
+                    </h3>
+                    <p className="text-[11px] text-muted-foreground">
+                      Pick layout + how many tiles per row. Leave project IDs blank to show all Featured Blogs; or paste comma-separated IDs from the Featured Blogs desk.
+                    </p>
+                    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                      <div>
+                        <label className="text-xs font-semibold text-foreground">Layout</label>
+                        <select
+                          value={programmesData.landing?.featuredIntro?.layout ?? "grid"}
+                          onChange={(e) =>
+                            updateProgrammesLandingField(["featuredIntro", "layout"], e.target.value)
+                          }
+                          className="mt-1 flex h-8 w-full rounded-md border border-input bg-background px-2 text-xs"
+                        >
+                          <option value="grid">Tile grid</option>
+                          <option value="list">Editorial list</option>
+                        </select>
+                      </div>
+                      <div>
+                        <label className="text-xs font-semibold text-foreground">Columns (grid)</label>
+                        <select
+                          value={String(programmesData.landing?.featuredIntro?.columns ?? 3)}
+                          onChange={(e) =>
+                            updateProgrammesLandingField(
+                              ["featuredIntro", "columns"],
+                              Number(e.target.value),
+                            )
+                          }
+                          className="mt-1 flex h-8 w-full rounded-md border border-input bg-background px-2 text-xs"
+                        >
+                          <option value="2">2 per row</option>
+                          <option value="3">3 per row</option>
+                          <option value="4">4 per row</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div>
+                      <label className="text-xs font-semibold text-foreground">
+                        Featured project IDs (optional)
+                      </label>
+                      <Input
+                        value={(programmesData.landing?.featuredIntro?.projectIds || []).join(", ")}
+                        onChange={(e) => {
+                          const ids = e.target.value
+                            .split(",")
+                            .map((s) => s.trim())
+                            .filter(Boolean);
+                          updateProgrammesLandingField(["featuredIntro", "projectIds"], ids);
+                        }}
+                        className="mt-1 h-8 font-mono text-xs"
+                        placeholder="iff-kenya, cabri-pfm, project-terra"
+                      />
+                    </div>
+                    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                      <div>
+                        <label className="text-xs font-semibold text-foreground">Section eyebrow</label>
+                        <Input
+                          value={programmesData.landing?.featuredIntro?.eyebrow ?? ""}
+                          onChange={(e) =>
+                            updateProgrammesLandingField(["featuredIntro", "eyebrow"], e.target.value)
+                          }
+                          className="mt-1 h-8 text-xs"
+                        />
+                      </div>
+                      <div>
+                        <label className="text-xs font-semibold text-foreground">Section headline</label>
+                        <Input
+                          value={programmesData.landing?.featuredIntro?.headline ?? ""}
+                          onChange={(e) =>
+                            updateProgrammesLandingField(["featuredIntro", "headline"], e.target.value)
+                          }
+                          className="mt-1 h-8 text-xs"
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="rounded-xl border border-border/60 bg-muted/20 p-4 space-y-3">
+                    <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                      Hub hero image &amp; text
+                    </h3>
+                    <ImageFieldControl
+                      label="Hero image (leave blank to use first programme still)"
+                      value={programmesData.landing?.heroMedia?.src ?? ""}
+                      onChange={(url) =>
+                        updateProgrammesLandingField(["heroMedia", "src"], url)
+                      }
+                      onOpenBucket={() => {
+                        setActiveImagePicker({
+                          isOpen: true,
+                          title: "Programmes hub hero",
+                          currentUrl: programmesData.landing?.heroMedia?.src,
+                          onSelect: (url) =>
+                            updateProgrammesLandingField(["heroMedia", "src"], url),
+                        });
+                      }}
+                    />
+                    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                      <div>
+                        <label className="text-xs font-semibold text-foreground">Aspect ratio</label>
+                        <select
+                          value={programmesData.landing?.heroMedia?.aspect ?? "16/10"}
+                          onChange={(e) =>
+                            updateProgrammesLandingField(["heroMedia", "aspect"], e.target.value)
+                          }
+                          className="mt-1 flex h-8 w-full rounded-md border border-input bg-background px-2 text-xs"
+                        >
+                          <option value="16/10">16:10 landscape</option>
+                          <option value="16/9">16:9 video</option>
+                          <option value="4/3">4:3</option>
+                          <option value="1/1">1:1 square</option>
+                          <option value="auto">Auto height</option>
+                        </select>
+                      </div>
+                      <div>
+                        <label className="text-xs font-semibold text-foreground">Image fit</label>
+                        <select
+                          value={programmesData.landing?.heroMedia?.objectFit ?? "cover"}
+                          onChange={(e) =>
+                            updateProgrammesLandingField(["heroMedia", "objectFit"], e.target.value)
+                          }
+                          className="mt-1 flex h-8 w-full rounded-md border border-input bg-background px-2 text-xs"
+                        >
+                          <option value="cover">Cover (crop)</option>
+                          <option value="contain">Contain (letterbox)</option>
+                          <option value="fill">Fill / stretch</option>
+                        </select>
+                      </div>
+                      <label className="flex items-center gap-2 text-xs text-foreground cursor-pointer sm:col-span-2">
+                        <input
+                          type="checkbox"
+                          checked={!!programmesData.landing?.heroText?.headlineItalic}
+                          onChange={(e) =>
+                            updateProgrammesLandingField(
+                              ["heroText", "headlineItalic"],
+                              e.target.checked,
+                            )
+                          }
+                          className="h-3.5 w-3.5 rounded border-border text-primary focus:ring-primary"
+                        />
+                        <span>Italic headline</span>
+                      </label>
+                      <div>
+                        <label className="text-xs font-semibold text-foreground">Headline colour</label>
+                        <select
+                          value={programmesData.landing?.heroText?.headlineColor || ""}
+                          onChange={(e) =>
+                            updateProgrammesLandingField(
+                              ["heroText", "headlineColor"],
+                              e.target.value,
+                            )
+                          }
+                          className="mt-1 flex h-8 w-full rounded-md border border-input bg-background px-2 text-xs"
+                        >
+                          <option value="">Default foreground</option>
+                          <option value="primary">Brand primary</option>
+                          <option value="muted">Muted</option>
+                        </select>
+                      </div>
+                      <div>
+                        <label className="text-xs font-semibold text-foreground">Body colour</label>
+                        <select
+                          value={programmesData.landing?.heroText?.bodyColor || ""}
+                          onChange={(e) =>
+                            updateProgrammesLandingField(["heroText", "bodyColor"], e.target.value)
+                          }
+                          className="mt-1 flex h-8 w-full rounded-md border border-input bg-background px-2 text-xs"
+                        >
+                          <option value="">Default</option>
+                          <option value="muted">Muted</option>
+                          <option value="primary">Brand primary</option>
+                        </select>
                       </div>
                     </div>
                   </div>

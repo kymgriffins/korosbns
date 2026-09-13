@@ -45,6 +45,80 @@
   },
   "typography": {
     "eyebrowTracking": "wider",
-    "headlineWeight": "bold"
+    "headlineWeight": "bold",
+    "heroHeadlineItalic": false,
+    "heroHeadlineColor": "",
+    "heroBodyColor": "",
+    "sectionEyebrowColor": ""
+  },
+  "layout": {
+    "heroAspect": "16/10",
+    "heroObjectFit": "cover",
+    "footerRadius": "0",
+    "footerBackground": "muted",
+    "featuredLayout": "grid",
+    "featuredColumns": 3
+  },
+  "programmePresets": {
+    "connect-blue": {
+      "label": "Connect Blue",
+      "description": "National tracker — BNS blue",
+      "brand": {
+        "primary": "#0055FF",
+        "primaryForeground": "#FFFFFF",
+        "accent": "#0055FF"
+      },
+      "buttons": {
+        "borderRadius": "full",
+        "primaryBg": "#0055FF",
+        "primaryFg": "#FFFFFF",
+        "primaryHoverBg": "#0044CC"
+      }
+    },
+    "mashinani-red": {
+      "label": "Mashinani Red",
+      "description": "County accountability — warm crimson",
+      "brand": {
+        "primary": "#C41E3A",
+        "primaryForeground": "#FFFFFF",
+        "accent": "#E85D4C"
+      },
+      "buttons": {
+        "borderRadius": "full",
+        "primaryBg": "#C41E3A",
+        "primaryFg": "#FFFFFF",
+        "primaryHoverBg": "#9E1830"
+      }
+    },
+    "wanahabari-teal": {
+      "label": "Wanahabari Teal",
+      "description": "Newsroom lab — deep teal",
+      "brand": {
+        "primary": "#0F766E",
+        "primaryForeground": "#FFFFFF",
+        "accent": "#14B8A6"
+      },
+      "buttons": {
+        "borderRadius": "full",
+        "primaryBg": "#0F766E",
+        "primaryFg": "#FFFFFF",
+        "primaryHoverBg": "#0D5F59"
+      }
+    },
+    "studios-ink": {
+      "label": "Studios Ink",
+      "description": "Production house — near-black ink",
+      "brand": {
+        "primary": "#111827",
+        "primaryForeground": "#FFFFFF",
+        "accent": "#374151"
+      },
+      "buttons": {
+        "borderRadius": "full",
+        "primaryBg": "#111827",
+        "primaryFg": "#FFFFFF",
+        "primaryHoverBg": "#030712"
+      }
+    }
   }
 }

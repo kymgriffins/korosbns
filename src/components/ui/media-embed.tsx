@@ -243,7 +243,12 @@ export function MediaEmbed({
           </video>
         </div>
       ) : (
-        <div className={cn("relative w-full overflow-hidden", aspectClass || "min-h-[260px]")}>
+        <div
+          className={cn(
+            "relative w-full overflow-hidden bg-muted",
+            aspectClass || "aspect-[4/3]",
+          )}
+        >
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={cleanSrc}

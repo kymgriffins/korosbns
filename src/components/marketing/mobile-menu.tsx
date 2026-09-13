@@ -4,7 +4,10 @@ import { motion, AnimatePresence } from "motion/react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React from "react";
-import { NAV_LINKS, Routes } from "@/constants";
+import {
+  NAV_LINKS,
+  Routes,
+} from "@/constants";
 import { cn } from "@/utils";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/auth-context";
@@ -27,9 +30,34 @@ import {
   Home,
   CircleDot,
   XIcon,
+  Compass,
+  MapPin,
 } from "lucide-react";
 import { ease } from "@/motion/variants";
 import { SHOW_MARKETING_SIGN_IN } from "@/lib/marketing-chrome";
+import { MEGA_MENU_DATA } from "@/components/marketing/mega-menu";
+
+const PROGRAMME_MOBILE_ITEMS =
+  MEGA_MENU_DATA.find((s) => s.id === "programmes")?.items ?? [
+    {
+      title: "BNS Connect",
+      href: "/programmes/connect",
+      description: "National budget tracking and public finance scrutiny.",
+      icon: Compass,
+    },
+    {
+      title: "BNS Mashinani",
+      href: "/programmes/mashinani",
+      description: "County-level budget tracking in focus hubs.",
+      icon: MapPin,
+    },
+    {
+      title: "Wanahabari Lab",
+      href: "/programmes/wanahabari-lab",
+      description: "Newsroom training and fiscal reporting.",
+      icon: Newspaper,
+    },
+  ];
 
 interface Props {
   isOpen: boolean;
@@ -40,6 +68,71 @@ interface Props {
 function isActiveNav(pathname: string, href: string) {
   if (href === "/") return pathname === "/";
   return pathname === href || pathname.startsWith(`${href}/`);
+}
+
+function isProgrammesLink(item: { label?: string; href?: string }) {
+  const label = (item.label || "").toLowerCase();
+  return label === "programmes" || item.href === "/programmes";
+}
+
+function ProgrammeLinksBlock({
+  onNavigate,
+  pathname,
+}: {
+  onNavigate: () => void;
+  pathname: string;
+}) {
+  return (
+    <div className="space-y-1 border-y border-border/40 py-2">
+      <Link
+        href="/programmes"
+        onClick={onNavigate}
+        className={cn(
+          "group flex w-full items-center justify-between px-4 py-2.5 text-sm font-semibold transition-colors",
+          isActiveNav(pathname, "/programmes")
+            ? "text-primary"
+            : "text-foreground hover:text-primary",
+        )}
+      >
+        <span className="flex items-center gap-3">
+          <Layers className={ICON_CLS} aria-hidden />
+          Programmes
+        </span>
+        <ArrowUpRight className="size-3.5 opacity-40" />
+      </Link>
+      <ul className="space-y-0.5 pb-1 pl-2">
+        {PROGRAMME_MOBILE_ITEMS.map((prog) => {
+          const Icon = prog.icon;
+          return (
+            <li key={prog.href}>
+              <Link
+                href={prog.href}
+                onClick={onNavigate}
+                className={cn(
+                  "block rounded-lg px-3 py-2.5 transition-colors",
+                  isActiveNav(pathname, prog.href)
+                    ? "bg-primary/10 text-primary"
+                    : "hover:bg-foreground/[0.04]",
+                )}
+              >
+                <span className="flex items-start gap-2.5">
+                  <Icon className="mt-0.5 size-4 shrink-0 text-muted-foreground" aria-hidden />
+                  <span className="min-w-0">
+                    <span className="block text-sm font-medium text-foreground">
+                      {prog.title}
+                    </span>
+                    <span className="mt-0.5 block text-[11px] leading-snug text-muted-foreground">
+                      {prog.description}
+                    </span>
+                  </span>
+                </span>
+              </Link>
+            </li>
+          );
+        })}
+      </ul>
+    </div>
+  );
 }
 
 const ICON_CLS =
@@ -138,7 +231,25 @@ function MenuPanel({ isOpen, setIsOpen, navConfig }: Props) {
             </div>
             <div className="flex-1 overflow-y-auto px-4 py-6">
               <ul className="flex flex-col space-y-1">
-                {links.map((item: any, index: number) => (
+                {links.map((item: any, index: number) =>
+                  isProgrammesLink(item) ? (
+                    <motion.li
+                      key={`programmes-${index}`}
+                      initial={{ opacity: 0, x: 20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{
+                        delay: 0.05 + index * 0.06,
+                        duration: 0.35,
+                        ease: ease.expo,
+                      }}
+                      className="w-full"
+                    >
+                      <ProgrammeLinksBlock
+                        pathname={pathname}
+                        onNavigate={() => setIsOpen(false)}
+                      />
+                    </motion.li>
+                  ) : (
                   <motion.li
                     key={index}
                     initial={{ opacity: 0, x: 20 }}
@@ -170,7 +281,8 @@ function MenuPanel({ isOpen, setIsOpen, navConfig }: Props) {
                       <ArrowUpRight className="size-4 opacity-30 transition-opacity duration-200 group-hover:opacity-80" />
                     </Link>
                   </motion.li>
-                ))}
+                  ),
+                )}
               </ul>
               {(SHOW_MARKETING_SIGN_IN || isLoggedIn) ? (
                 <motion.div
@@ -223,7 +335,25 @@ function MenuPanel({ isOpen, setIsOpen, navConfig }: Props) {
             </div>
             <div className="flex-1 overflow-y-auto px-4 pb-6 pt-2">
               <ul className="flex flex-col space-y-1">
-                {links.map((item: any, index: number) => (
+                {links.map((item: any, index: number) =>
+                  isProgrammesLink(item) ? (
+                    <motion.li
+                      key={`programmes-m-${index}`}
+                      initial={{ opacity: 0, y: 16 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{
+                        delay: 0.06 + index * 0.05,
+                        duration: 0.3,
+                        ease: ease.expo,
+                      }}
+                      className="w-full"
+                    >
+                      <ProgrammeLinksBlock
+                        pathname={pathname}
+                        onNavigate={() => setIsOpen(false)}
+                      />
+                    </motion.li>
+                  ) : (
                   <motion.li
                     key={index}
                     initial={{ opacity: 0, y: 16 }}
@@ -255,7 +385,8 @@ function MenuPanel({ isOpen, setIsOpen, navConfig }: Props) {
                       <ArrowUpRight className="size-4 opacity-30 transition-opacity duration-200 group-hover:opacity-80" />
                     </Link>
                   </motion.li>
-                ))}
+                  ),
+                )}
               </ul>
               {(SHOW_MARKETING_SIGN_IN || isLoggedIn) ? (
                 <motion.div

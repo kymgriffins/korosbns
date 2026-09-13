@@ -9,10 +9,11 @@ import {
   PillButtonGroup,
 } from "@/components/ui/editorial";
 import { ProgrammeProjectGrid } from "@/components/programmes/programme-project-grid";
+import { ProgrammeThemeScope } from "@/components/programmes/programme-theme-scope";
 import {
   LandingSection,
 } from "@/layouts/landing-section";
-import { MediaEmbed } from "@/components/ui/media-embed";
+import { MediaEmbed, detectMediaType } from "@/components/ui/media-embed";
 import {
   HERO_SECTION_PADDING,
   SECTION_SHELL_INNER,
@@ -91,9 +92,36 @@ export function ProgrammeLandingLayout({
       : getReelsByProgramme(programme.slug);
 
   const heroMediaUrl = sanitizeMediaUrl(programme.featuredMedia?.url);
-  const heroMediaType = programme.featuredMedia?.type;
+  const resolvedHeroType =
+    !programme.featuredMedia?.type || programme.featuredMedia.type === "auto"
+      ? heroMediaUrl
+        ? detectMediaType(heroMediaUrl)
+        : undefined
+      : programme.featuredMedia.type;
+  const heroMediaType =
+    resolvedHeroType === "vimeo" ? "video" : resolvedHeroType;
+  const mobileMediaUrl = sanitizeMediaUrl(programme.featuredMedia?.mobileUrl);
+  const resolvedMobileType =
+    !programme.featuredMedia?.mobileType || programme.featuredMedia.mobileType === "auto"
+      ? mobileMediaUrl
+        ? detectMediaType(mobileMediaUrl)
+        : undefined
+      : programme.featuredMedia.mobileType;
+  const mobileMediaType =
+    resolvedMobileType === "vimeo" ? "video" : resolvedMobileType;
+  const hideDesktopOnMobile =
+    programme.featuredMedia?.hideDesktopOnMobile ?? Boolean(mobileMediaUrl);
+  const mobileStill = programme.visual.heroMobile;
+
+  const heroAspect =
+    heroMediaType === "tiktok"
+      ? "portrait"
+      : heroMediaType === "image"
+        ? "auto"
+        : "video";
 
   return (
+    <ProgrammeThemeScope theme={programme.theme}>
     <div className="w-full min-h-dvh bg-background overflow-x-clip text-foreground">
       {show("hero") ? (
         <section
@@ -153,25 +181,88 @@ export function ProgrammeLandingLayout({
               </div>
 
               <figure className="space-y-2.5 lg:col-span-7">
-                {heroMediaUrl ? (
-                  <div
-                    className={cn(
-                      "overflow-hidden",
-                      heroMediaType === "tiktok"
-                        ? ""
-                        : "rounded-lg border border-border/60 shadow-lg",
-                    )}
-                  >
-                    <MediaEmbed
-                      src={heroMediaUrl}
-                      type={heroMediaType}
-                      title={programme.featuredMedia?.title}
-                      caption={programme.featuredMedia?.caption}
-                      poster={programme.featuredMedia?.poster || programme.visual.hero}
-                      controls
-                      aspectRatio={heroMediaType === "tiktok" ? "portrait" : "video"}
-                    />
-                  </div>
+                {heroMediaUrl || mobileMediaUrl || mobileStill ? (
+                  <>
+                    {/* Desktop / wide hero — optionally hidden on mobile when a mobile asset exists */}
+                    {heroMediaUrl ? (
+                      <div
+                        className={cn(
+                          "overflow-hidden",
+                          hideDesktopOnMobile ? "hidden sm:block" : "",
+                          heroMediaType === "tiktok"
+                            ? ""
+                            : "rounded-lg border border-border/60 shadow-lg",
+                        )}
+                      >
+                        <MediaEmbed
+                          src={heroMediaUrl}
+                          type={heroMediaType}
+                          title={programme.featuredMedia?.title}
+                          caption={programme.featuredMedia?.caption}
+                          poster={programme.featuredMedia?.poster || programme.visual.hero}
+                          controls
+                          aspectRatio={heroAspect}
+                        />
+                      </div>
+                    ) : null}
+
+                    {/* Mobile-specific media */}
+                    {mobileMediaUrl ? (
+                      <div
+                        className={cn(
+                          "overflow-hidden sm:hidden",
+                          mobileMediaType === "tiktok"
+                            ? ""
+                            : "rounded-lg border border-border/60 shadow-lg",
+                        )}
+                      >
+                        <MediaEmbed
+                          src={mobileMediaUrl}
+                          type={mobileMediaType}
+                          title={programme.featuredMedia?.title}
+                          caption={programme.featuredMedia?.caption}
+                          poster={
+                            programme.featuredMedia?.mobilePoster ||
+                            programme.featuredMedia?.poster ||
+                            mobileStill ||
+                            programme.visual.hero
+                          }
+                          controls
+                          aspectRatio={
+                            mobileMediaType === "tiktok"
+                              ? "portrait"
+                              : mobileMediaType === "image"
+                                ? "auto"
+                                : "video"
+                          }
+                        />
+                      </div>
+                    ) : mobileStill && hideDesktopOnMobile ? (
+                      <div className="relative aspect-[4/5] w-full overflow-hidden bg-muted sm:hidden">
+                        <Image
+                          src={mobileStill}
+                          alt={programme.visual.heroAlt}
+                          fill
+                          priority
+                          className="object-cover object-center"
+                          sizes="100vw"
+                        />
+                      </div>
+                    ) : null}
+
+                    {!heroMediaUrl && !mobileMediaUrl ? (
+                      <div className="relative aspect-[4/3] w-full overflow-hidden bg-muted md:aspect-[16/10]">
+                        <Image
+                          src={mobileStill && hideDesktopOnMobile ? programme.visual.hero : programme.visual.hero}
+                          alt={programme.visual.heroAlt}
+                          fill
+                          priority
+                          className="object-cover object-center"
+                          sizes="(max-width: 1024px) 100vw, 55vw"
+                        />
+                      </div>
+                    ) : null}
+                  </>
                 ) : (
                   <div className="relative aspect-[4/3] w-full overflow-hidden bg-muted md:aspect-[16/10]">
                     <Image
@@ -184,7 +275,7 @@ export function ProgrammeLandingLayout({
                     />
                   </div>
                 )}
-                {heroMediaType !== "tiktok" ? (
+                {heroMediaType !== "tiktok" && mobileMediaType !== "tiktok" ? (
                   <figcaption className={cn(T.caption, "text-muted-foreground")}>
                     {programme.featuredMedia?.caption || programme.visual.heroAlt}
                   </figcaption>
@@ -445,6 +536,7 @@ export function ProgrammeLandingLayout({
         />
       ) : null}
     </div>
+    </ProgrammeThemeScope>
   );
 }
 

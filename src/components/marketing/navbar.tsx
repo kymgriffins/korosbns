@@ -11,7 +11,6 @@ import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { useClickOutside } from "@/hooks";
 import { useAuth } from "@/contexts/auth-context";
-import { ThemeToggle } from "./theme-toggle";
 import { motion, AnimatePresence, useScroll, useMotionValueEvent } from "motion/react";
 import { navbarEnter } from "@/motion/variants";
 import { toast } from "sonner";
@@ -131,7 +130,6 @@ const Navbar = () => {
           </nav>
 
           <div className="flex shrink-0 items-center gap-1.5 md:gap-2">
-            <ThemeToggle />
             {navConfig.actions?.cta?.show !== false && (
               <Link
                 href={navConfig.actions?.cta?.href || "/contact?intent=partner"}

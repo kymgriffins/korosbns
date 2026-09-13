@@ -23,7 +23,21 @@
       "headline": "Featured projects across the programmes",
       "lede": "Published YouTube evidence - illicit financial flows, CABRI digital PFM, and Project TERRA - with thumbnails and titles refreshed from the source URLs.",
       "openProjectLabel": "Open project",
-      "watchReelLabel": "Watch reel"
+      "watchReelLabel": "Watch reel",
+      "layout": "grid",
+      "columns": 3,
+      "projectIds": []
+    },
+    "heroMedia": {
+      "src": "",
+      "alt": "Budget Ndio Story programmes",
+      "aspect": "16/10",
+      "objectFit": "cover"
+    },
+    "heroText": {
+      "headlineItalic": false,
+      "headlineColor": "",
+      "bodyColor": ""
     },
     "flywheel": {
       "eyebrow": "The Closed-Loop Ecosystem",
@@ -303,6 +317,9 @@
         ]
       },
       "id": "connect",
+      "theme": {
+        "preset": "connect-blue"
+      },
       "featuredMedia": {
         "type": "tiktok",
         "url": "https://pub-96ce2eba58694b1da7f540033bdaa464.r2.dev/Calvina%20Praise%20Sovereign%20debt.mp4",
@@ -436,6 +453,9 @@
         ]
       },
       "id": "mashinani",
+      "theme": {
+        "preset": "mashinani-red"
+      },
       "featuredMedia": {
         "type": "video",
         "url": "https://pub-96ce2eba58694b1da7f540033bdaa464.r2.dev/county%20%26%20budget%20socials%20new.mp4",
@@ -569,6 +589,9 @@
         ]
       },
       "id": "wanahabari-lab",
+      "theme": {
+        "preset": "wanahabari-teal"
+      },
       "featuredMedia": {
         "type": "video",
         "url": "https://pub-96ce2eba58694b1da7f540033bdaa464.r2.dev/uon%20cohort%20001%20.mp4",
@@ -661,6 +684,9 @@
         ]
       },
       "id": "studios",
+      "theme": {
+        "preset": "studios-ink"
+      },
       "featuredMedia": {
         "type": "video",
         "url": "https://pub-96ce2eba58694b1da7f540033bdaa464.r2.dev/BNS%20Studio%20%20MYTH%20or%20FACT%20%20game%20on%20budget.mp4",

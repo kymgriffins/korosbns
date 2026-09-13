@@ -4,6 +4,7 @@ import React from "react";
 import { Sparkles, Check } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { ColorFieldControl } from "./ColorFieldControl";
+import defaultTokens from "@/content/design-tokens.json";
 import {
   computeBadgeClasses,
   designTokensToCssVars,
@@ -103,6 +104,10 @@ export function DesignTokensStudioEditor({
 
   const currentBadgeClasses = computeBadgeClasses(data as DesignTokens);
   const previewCss = designTokensToCssVars(data as DesignTokens);
+  const programmePresets = {
+    ...((defaultTokens as DesignTokens).programmePresets || {}),
+    ...(data?.programmePresets || {}),
+  };
 
   return (
     <div className="space-y-6">
@@ -482,6 +487,178 @@ export function DesignTokensStudioEditor({
           <span className="inline-flex items-center justify-center rounded-[var(--brand-button-radius,9999px)] border border-[var(--brand-button-outline-border,var(--border))] bg-[var(--brand-button-outline-bg,var(--background))] px-6 py-2.5 text-sm font-semibold text-[var(--brand-button-outline-fg,var(--foreground))]">
             Outline CTA
           </span>
+        </div>
+      </div>
+
+      {/* Programme colour themes — assign per Connect / Mashinani / etc. */}
+      {/* Programme colour themes — assign per Connect / Mashinani / etc. */}
+      <div className="rounded-2xl border border-border bg-card p-6 shadow-xs space-y-4">
+        <div className="border-b border-border/50 pb-3">
+          <h3 className="text-sm font-bold text-foreground">Layout tokens</h3>
+          <p className="text-xs text-muted-foreground">
+            Default hero sizing and featured evidence layout. Programme desks can still override per page.
+          </p>
+        </div>
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+          <div>
+            <label className="text-xs font-semibold text-foreground">Default hero aspect</label>
+            <select
+              value={data?.layout?.heroAspect ?? "16/10"}
+              onChange={(e) =>
+                onChange({
+                  ...data,
+                  layout: { ...(data?.layout || {}), heroAspect: e.target.value },
+                })
+              }
+              className="mt-1 flex h-8 w-full rounded-md border border-input bg-background px-2 text-xs"
+            >
+              <option value="16/10">16:10</option>
+              <option value="16/9">16:9</option>
+              <option value="4/3">4:3</option>
+              <option value="1/1">1:1</option>
+              <option value="auto">Auto</option>
+            </select>
+          </div>
+          <div>
+            <label className="text-xs font-semibold text-foreground">Default featured layout</label>
+            <select
+              value={data?.layout?.featuredLayout ?? "grid"}
+              onChange={(e) =>
+                onChange({
+                  ...data,
+                  layout: { ...(data?.layout || {}), featuredLayout: e.target.value },
+                })
+              }
+              className="mt-1 flex h-8 w-full rounded-md border border-input bg-background px-2 text-xs"
+            >
+              <option value="grid">Tile grid</option>
+              <option value="list">Editorial list</option>
+            </select>
+          </div>
+          <div>
+            <label className="text-xs font-semibold text-foreground">Featured columns</label>
+            <select
+              value={String(data?.layout?.featuredColumns ?? 3)}
+              onChange={(e) =>
+                onChange({
+                  ...data,
+                  layout: {
+                    ...(data?.layout || {}),
+                    featuredColumns: Number(e.target.value),
+                  },
+                })
+              }
+              className="mt-1 flex h-8 w-full rounded-md border border-input bg-background px-2 text-xs"
+            >
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+            </select>
+          </div>
+          <div>
+            <label className="text-xs font-semibold text-foreground">Footer background</label>
+            <select
+              value={data?.layout?.footerBackground ?? "muted"}
+              onChange={(e) =>
+                onChange({
+                  ...data,
+                  layout: { ...(data?.layout || {}), footerBackground: e.target.value },
+                })
+              }
+              className="mt-1 flex h-8 w-full rounded-md border border-input bg-background px-2 text-xs"
+            >
+              <option value="muted">Grey (muted)</option>
+              <option value="background">Background</option>
+              <option value="card">Card</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div className="rounded-2xl border border-border bg-card p-6 shadow-xs space-y-4">
+        <div className="border-b border-border/50 pb-3">
+          <h3 className="text-sm font-bold text-foreground flex items-center gap-2">
+            <Sparkles className="size-4 text-primary" />
+            Programme colour themes
+          </h3>
+          <p className="text-xs text-muted-foreground">
+            Named palettes you can assign on each programme desk (Colour Theme tab). Edit swatches here, then open Connect / Mashinani / Wanahabari to apply.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+          {Object.entries(programmePresets).map(([id, preset]: [string, any]) => (
+            <div key={id} className="space-y-3 rounded-xl border border-border/60 bg-muted/20 p-4">
+              <div className="flex items-center justify-between gap-2">
+                <Input
+                  value={preset.label ?? id}
+                  onChange={(e) => {
+                    onChange({
+                      ...data,
+                      programmePresets: {
+                        ...programmePresets,
+                        [id]: { ...preset, label: e.target.value },
+                      },
+                    });
+                  }}
+                  className="h-8 text-xs font-bold"
+                />
+                <span className="font-mono text-[10px] text-muted-foreground">{id}</span>
+              </div>
+              <Input
+                value={preset.description ?? ""}
+                onChange={(e) => {
+                  onChange({
+                    ...data,
+                    programmePresets: {
+                      ...programmePresets,
+                      [id]: { ...preset, description: e.target.value },
+                    },
+                  });
+                }}
+                className="h-7 text-[11px]"
+                placeholder="Short description"
+              />
+              <div className="grid grid-cols-2 gap-2">
+                <ColorFieldControl
+                  label="Primary"
+                  value={preset.brand?.primary ?? "#0055FF"}
+                  onChange={(v) => {
+                    onChange({
+                      ...data,
+                      programmePresets: {
+                        ...programmePresets,
+                        [id]: {
+                          ...preset,
+                          brand: { ...(preset.brand || {}), primary: v, accent: v },
+                          buttons: {
+                            ...(preset.buttons || {}),
+                            primaryBg: v,
+                          },
+                        },
+                      },
+                    });
+                  }}
+                />
+                <ColorFieldControl
+                  label="Button hover"
+                  value={preset.buttons?.primaryHoverBg ?? "#0044CC"}
+                  onChange={(v) => {
+                    onChange({
+                      ...data,
+                      programmePresets: {
+                        ...programmePresets,
+                        [id]: {
+                          ...preset,
+                          buttons: { ...(preset.buttons || {}), primaryHoverBg: v },
+                        },
+                      },
+                    });
+                  }}
+                />
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     </div>

@@ -11,7 +11,6 @@ import {
   MessagesSquare, Calendar, ListChecks
 } from "lucide-react";
 import { cn } from "@/utils";
-import { ThemeToggle } from "@/components/marketing/theme-toggle";
 import { LearnProvider, useLearn, type LearnTab } from "@/contexts/learn-context";
 import { LearnTabSync } from "@/components/learn/learn-tab-sync";
 import { learnTabToHref } from "@/lib/learn-nav";
@@ -395,7 +394,6 @@ function LearnAppShell({ children }: { children: React.ReactNode }) {
               >
                 <ExternalLink className="size-4" />
               </a>
-              <ThemeToggle />
             </div>
           </header>
           <main className="flex-1 overflow-y-auto">{children}</main>

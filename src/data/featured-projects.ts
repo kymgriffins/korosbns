@@ -19,6 +19,9 @@ export type FeaturedProject = {
   subtitle?: string;
   prose: string;
   thumbnail: string;
+  /** Optional mobile-safe crop; used below `sm` when hideDesktopThumbOnMobile */
+  thumbnailMobile?: string;
+  hideDesktopThumbOnMobile?: boolean;
   authorName: string;
   programmeSlug: ProgrammeSlug | "studios";
   programmeLabel: string;
@@ -43,6 +46,9 @@ function fromSeed(row: SeedRow): FeaturedProject {
     subtitle: (row as { subtitle?: string }).subtitle,
     prose: row.prose,
     thumbnail: row.thumbnail,
+    thumbnailMobile: (row as { thumbnailMobile?: string }).thumbnailMobile,
+    hideDesktopThumbOnMobile: (row as { hideDesktopThumbOnMobile?: boolean })
+      .hideDesktopThumbOnMobile,
     authorName: row.authorName,
     programmeSlug: row.programmeSlug as FeaturedProject["programmeSlug"],
     programmeLabel: row.programmeLabel,
