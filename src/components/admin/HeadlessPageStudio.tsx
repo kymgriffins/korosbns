@@ -3631,6 +3631,79 @@ export function HeadlessPageStudio() {
                             />
                           </div>
                         </div>
+
+                        <div className="flex items-center gap-4">
+                          <label className="flex items-center gap-2 text-[11px] font-semibold text-foreground">
+                            <input
+                              type="checkbox"
+                              checked={bet.hideCycle ?? false}
+                              onChange={(e) => {
+                                const explains = [...(landingData.programmeExplains || [])];
+                                explains[i] = { ...explains[i], hideCycle: e.target.checked };
+                                updateLandingField(["programmeExplains"], explains);
+                              }}
+                              className="h-3.5 w-3.5 rounded border-input"
+                            />
+                            Hide lifecycle text
+                          </label>
+                          <label className="flex items-center gap-2 text-[11px] font-semibold text-foreground">
+                            <input
+                              type="checkbox"
+                              checked={bet.hideCta ?? false}
+                              onChange={(e) => {
+                                const explains = [...(landingData.programmeExplains || [])];
+                                explains[i] = { ...explains[i], hideCta: e.target.checked };
+                                updateLandingField(["programmeExplains"], explains);
+                              }}
+                              className="h-3.5 w-3.5 rounded border-input"
+                            />
+                            Hide CTA link
+                          </label>
+                        </div>
+
+                        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                          <div>
+                            <label className="text-[11px] font-semibold text-foreground">Button Style</label>
+                            <select
+                              value={bet.ctaVariant ?? "outline"}
+                              onChange={(e) => {
+                                const explains = [...(landingData.programmeExplains || [])];
+                                explains[i] = { ...explains[i], ctaVariant: e.target.value };
+                                updateLandingField(["programmeExplains"], explains);
+                              }}
+                              className="mt-1 h-8 w-full rounded-md border border-input bg-background px-2 text-xs"
+                            >
+                              <option value="outline">Outline</option>
+                              <option value="primary">Primary (filled)</option>
+                              <option value="secondary">Secondary</option>
+                            </select>
+                          </div>
+                          <div>
+                            <label className="text-[11px] font-semibold text-foreground">Button Colour</label>
+                            <div className="mt-1 flex items-center gap-2">
+                              <input
+                                type="color"
+                                value={bet.ctaColor ?? "#000000"}
+                                onChange={(e) => {
+                                  const explains = [...(landingData.programmeExplains || [])];
+                                  explains[i] = { ...explains[i], ctaColor: e.target.value };
+                                  updateLandingField(["programmeExplains"], explains);
+                                }}
+                                className="h-8 w-8 cursor-pointer rounded border border-input"
+                              />
+                              <Input
+                                value={bet.ctaColor ?? ""}
+                                placeholder="auto"
+                                onChange={(e) => {
+                                  const explains = [...(landingData.programmeExplains || [])];
+                                  explains[i] = { ...explains[i], ctaColor: e.target.value || undefined };
+                                  updateLandingField(["programmeExplains"], explains);
+                                }}
+                                className="h-8 flex-1 text-xs font-mono"
+                              />
+                            </div>
+                          </div>
+                        </div>
                       </div>
                     ))}
                   </div>
@@ -4787,6 +4860,45 @@ export function HeadlessPageStudio() {
                       <label className="text-xs font-semibold text-foreground">
                         Featured project IDs (optional)
                       </label>
+                      <p className="text-[10px] text-muted-foreground mb-2">
+                        Pick from the canonical project database. Uncheck all to show all projects.
+                      </p>
+                      <div className="max-h-48 overflow-y-auto rounded-md border border-input bg-background p-2 space-y-1">
+                        {(() => {
+                          // Canonical project list from studios-evidence
+                          const allProjects = [
+                            { id: "cabri-digital-pfm-reforms", title: "Digital PFM Reform Stories" },
+                            { id: "illicit-financial-flows-benin-cabo-verde", title: "Illicit Financial Flows" },
+                            { id: "project-terra", title: "Project TERRA" },
+                            { id: "afrodad-debt-conference", title: "AFRODAD Debt Conference" },
+                            { id: "red-flags-book-launch", title: "Red Flags Book Launch" },
+                            { id: "uon-cohort-001", title: "UON Cohort 001" },
+                            { id: "budget-day-2026", title: "Budget Day 2026" },
+                          ];
+                          const selected = new Set(programmesData.landing?.featuredIntro?.projectIds || []);
+                          return allProjects.map((proj) => (
+                            <label key={proj.id} className="flex items-center gap-2 text-xs cursor-pointer hover:bg-muted/50 rounded px-1 py-0.5">
+                              <input
+                                type="checkbox"
+                                checked={selected.size === 0 || selected.has(proj.id)}
+                                onChange={(e) => {
+                                  const current = [...(programmesData.landing?.featuredIntro?.projectIds || [])];
+                                  let updated: string[];
+                                  if (e.target.checked) {
+                                    updated = [...current, proj.id];
+                                  } else {
+                                    updated = current.filter((id) => id !== proj.id);
+                                  }
+                                  updateProgrammesLandingField(["featuredIntro", "projectIds"], updated);
+                                }}
+                                className="h-3 w-3 rounded border-input"
+                              />
+                              <span className="font-mono text-[10px] text-muted-foreground">{proj.id}</span>
+                              <span className="text-foreground">{proj.title}</span>
+                            </label>
+                          ));
+                        })()}
+                      </div>
                       <Input
                         value={(programmesData.landing?.featuredIntro?.projectIds || []).join(", ")}
                         onChange={(e) => {
@@ -4797,7 +4909,7 @@ export function HeadlessPageStudio() {
                           updateProgrammesLandingField(["featuredIntro", "projectIds"], ids);
                         }}
                         className="mt-1 h-8 font-mono text-xs"
-                        placeholder="iff-kenya, cabri-pfm, project-terra"
+                        placeholder="All projects (leave empty)"
                       />
                     </div>
                     <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">

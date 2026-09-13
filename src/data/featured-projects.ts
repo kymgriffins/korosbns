@@ -1,5 +1,6 @@
 import { withFallback } from "@/data/adapter";
 import featuredFallback from "@/data/fallbacks/featured-projects.json";
+import { projectsData, type CanonicalProject } from "@/data/projects";
 import {
   BNS_CHANNEL_ID,
   fetchYoutubeChannelRss,
@@ -61,15 +62,58 @@ function fromSeed(row: SeedRow): FeaturedProject {
   };
 }
 
+/**
+ * Convert a canonical project from the unified database into a FeaturedProject.
+ * Uses editorial overrides from featured-projects.json where available.
+ */
+function fromCanonical(p: CanonicalProject, seed?: SeedRow): FeaturedProject {
+  const s = seed as (SeedRow & { thumbnailMobile?: string; hideDesktopThumbOnMobile?: boolean; ctaLabel?: string }) | undefined;
+  return {
+    id: p.id,
+    slug: p.slug,
+    videoId: p.videoId || s?.videoId || "",
+    url: p.videoUrl || s?.url || "",
+    title: p.title,
+    subtitle: p.subtitle,
+    prose: p.prose || s?.prose || p.description,
+    thumbnail: p.thumbnail,
+    thumbnailMobile: s?.thumbnailMobile,
+    hideDesktopThumbOnMobile: s?.hideDesktopThumbOnMobile,
+    authorName: p.authorName || s?.authorName || p.organisationName || "Budget Ndio Story",
+    programmeSlug: p.programmeSlug as FeaturedProject["programmeSlug"],
+    programmeLabel: p.programmeLabel,
+    href: p.href,
+    publishedAt: p.publishedAt || s?.publishedAt || p.date,
+    channelHandle: p.channelHandle || s?.channelHandle,
+    useYoutubeThumbnail: s?.useYoutubeThumbnail ?? false,
+    wysiwygProse: p.wysiwygProse || s?.wysiwygProse || p.prose || p.description,
+    ctaLabel: s?.ctaLabel,
+  };
+}
+
 const DEFAULT_PROJECTS: FeaturedProject[] = (featuredFallback.results ?? []).map(
   fromSeed,
 );
 
 let _projects: FeaturedProject[] | null = null;
 
+/**
+ * Build featured list from canonical project database.
+ * Falls back to seed data if canonical store is empty.
+ */
+function buildFeaturedFromCanonical(): FeaturedProject[] {
+  const canonical = projectsData.getFeatured();
+  if (canonical.length === 0) return DEFAULT_PROJECTS;
+
+  return canonical.map((p) => {
+    const seed = featuredFallback.results.find((s) => s.id === p.id);
+    return fromCanonical(p, seed);
+  });
+}
+
 export function getFeaturedProjects(): FeaturedProject[] {
   if (_projects) return _projects;
-  _projects = [...DEFAULT_PROJECTS];
+  _projects = buildFeaturedFromCanonical();
   return _projects;
 }
 
@@ -160,7 +204,7 @@ export const featuredProjectsData = {
         return live;
       },
       () => {
-        const seed = [...DEFAULT_PROJECTS];
+        const seed = buildFeaturedFromCanonical();
         setFeaturedProjects(seed);
         return seed;
       },

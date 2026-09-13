@@ -43,6 +43,7 @@ export function LandingTikTokPhone({ className }: { className?: string }) {
   const [isMuted, setIsMuted] = useState(true);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isReady, setIsReady] = useState(false);
+  const [loadError, setLoadError] = useState(false);
   const [liked, setLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(DEFAULT_HERO_VIDEO.like_count);
   const [video, setVideo] = useState(DEFAULT_HERO_VIDEO);
@@ -64,6 +65,7 @@ export function LandingTikTokPhone({ className }: { className?: string }) {
     if (!node) return;
     node.muted = true;
     setIsMuted(true);
+    setLoadError(false);
     node
       .play()
       .then(() => {
@@ -73,6 +75,14 @@ export function LandingTikTokPhone({ className }: { className?: string }) {
       .catch(() => {
         // Handled by intersection observer or user gesture
       });
+
+    // Safety net: if video never fires canplay within 4s, show play button anyway
+    const timeout = setTimeout(() => {
+      if (!node.readyState || node.readyState < 2) {
+        setLoadError(true);
+      }
+    }, 4000);
+    return () => clearTimeout(timeout);
   }, [video.video_url]);
 
   useEffect(() => {
@@ -132,6 +142,12 @@ export function LandingTikTokPhone({ className }: { className?: string }) {
       const node = videoRef.current;
       if (!node) return;
       userInteractedRef.current = true;
+      setLoadError(false);
+
+      // If video had a load error, try reloading
+      if (node.error || !node.currentSrc) {
+        node.load();
+      }
 
       // If already playing and muted, a click on play should unmute
       if (!node.paused && isMuted) {
@@ -253,7 +269,10 @@ export function LandingTikTokPhone({ className }: { className?: string }) {
           }}
           onPause={() => setIsPlaying(false)}
           onCanPlay={() => setIsReady(true)}
-          onError={() => setIsReady(false)}
+          onError={() => {
+            setLoadError(true);
+            setIsReady(false);
+          }}
           className="absolute inset-0 size-full object-cover cursor-pointer z-0"
           aria-label="Calvina Praise debt explanation video"
         >
@@ -281,17 +300,25 @@ export function LandingTikTokPhone({ className }: { className?: string }) {
 
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-black/20 z-10" />
 
-        {/* Center Play Button if video is paused */}
-        {!isPlaying ? (
+        {/* Center Play Button if video is paused or failed to load */}
+        {(!isPlaying || loadError) ? (
           <button
             type="button"
-            onClick={togglePlay}
+            onClick={() => {
+              setLoadError(false);
+              togglePlay();
+            }}
             className="absolute inset-0 z-20 flex items-center justify-center cursor-pointer"
             aria-label="Play video"
           >
             <span className="flex size-16 items-center justify-center rounded-full bg-black/60 text-white backdrop-blur-sm transition-transform hover:scale-110 shadow-lg border border-white/20">
               <Play className="size-8 fill-white text-white ml-0.5" />
             </span>
+            {loadError && (
+              <span className="absolute bottom-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-black/70 px-3 py-1 text-[10px] text-white/80 backdrop-blur-sm">
+                Tap to play
+              </span>
+            )}
           </button>
         ) : null}
 

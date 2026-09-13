@@ -285,8 +285,11 @@ export type PartnerProgrammeExplain = {
   success: string;
   /** Quiet lifecycle whisper */
   cycle: string;
+  hideCycle?: boolean;
   href: string;
   ctaLabel: string;
+  ctaVariant?: "primary" | "outline" | "secondary";
+  ctaColor?: string;
   hideCta?: boolean;
   stillIds: string[];
   images?: Array<{ src: string; alt: string; caption?: string }>;

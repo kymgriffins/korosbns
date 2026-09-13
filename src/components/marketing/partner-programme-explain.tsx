@@ -82,19 +82,27 @@ export function PartnerProgrammeExplainSections({
                 <p className={cn(T.body, "max-w-md text-foreground/70")}>
                   {item.success}
                 </p>
-                <p className="text-xs font-medium tracking-wide text-muted-foreground md:text-sm">
-                  {item.cycle}
-                </p>
+                {!item.hideCycle && (
+                  <p className="text-xs font-medium tracking-wide text-muted-foreground md:text-sm">
+                    {item.cycle}
+                  </p>
+                )}
                 {!item.hideCta && (
                   <LandingContent className="pt-2">
                     <Link
                       href={item.href}
-                      className="group inline-flex items-center text-sm font-medium text-foreground outline-none transition-colors hover:text-primary focus-visible:ring-2 focus-visible:ring-ring"
+                      className={cn(
+                        "group inline-flex items-center rounded-md px-4 py-2 text-sm font-medium outline-none transition-colors focus-visible:ring-2 focus-visible:ring-ring",
+                        item.ctaVariant === "primary" && "bg-primary text-primary-foreground hover:bg-primary/90",
+                        item.ctaVariant === "secondary" && "bg-secondary text-secondary-foreground hover:bg-secondary/80",
+                        (!item.ctaVariant || item.ctaVariant === "outline") && "border border-input bg-background hover:bg-accent hover:text-accent-foreground",
+                      )}
+                      style={item.ctaColor ? { backgroundColor: item.ctaVariant !== "outline" ? item.ctaColor : undefined, borderColor: item.ctaColor, color: item.ctaVariant !== "outline" ? "#fff" : item.ctaColor } : undefined}
                     >
                       {item.ctaLabel}
                       <span
                         aria-hidden
-                        className="ml-1 transition-transform duration-150 group-hover:translate-x-0.5"
+                        className="ml-1.5 transition-transform duration-150 group-hover:translate-x-0.5"
                       >
                         →
                       </span>
