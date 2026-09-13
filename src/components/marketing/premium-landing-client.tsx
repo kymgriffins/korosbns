@@ -111,6 +111,9 @@ export default function PremiumLandingClient({
                   label: activeCta.secondaryLabel,
                   href: activeCta.secondaryHref || "/programmes",
                 }}
+                heroCta={(landingData as { heroCta?: unknown })?.heroCta as never}
+                heroColors={(landingData as { heroColors?: unknown })?.heroColors as never}
+                fontFamily={(landingData as { fontFamily?: unknown })?.fontFamily as string}
               />
             );
           case "whoHow":

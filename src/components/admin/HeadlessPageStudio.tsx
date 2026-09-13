@@ -3339,6 +3339,182 @@ export function HeadlessPageStudio() {
                     />
                   </div>
 
+                  {/* Hero CTA Button Styling */}
+                  <div className="rounded-xl border border-border/70 p-4 space-y-3 bg-muted/10">
+                    <div className="flex items-center justify-between border-b border-border/40 pb-2">
+                      <div>
+                        <h4 className="text-xs font-bold uppercase tracking-wider text-foreground">
+                          Hero CTA Buttons
+                        </h4>
+                        <p className="text-[11px] text-muted-foreground">
+                          Style the primary and secondary buttons in the hero.
+                        </p>
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      <div className="space-y-1.5">
+                        <span className="text-[10px] font-semibold text-muted-foreground">Primary Style</span>
+                        <select
+                          value={landingData.heroCta?.primaryVariant ?? "white"}
+                          onChange={(e) => updateLandingField(["heroCta", "primaryVariant"], e.target.value)}
+                          className="h-8 w-full rounded-md border border-input bg-background px-2 text-xs"
+                        >
+                          <option value="white">White (default)</option>
+                          <option value="outline">Outline</option>
+                          <option value="primary">Brand Primary</option>
+                          <option value="secondary">Brand Secondary</option>
+                        </select>
+                        <div className="flex items-center gap-2">
+                          <input
+                            type="color"
+                            value={landingData.heroCta?.primaryColor ?? "#ffffff"}
+                            onChange={(e) => updateLandingField(["heroCta", "primaryColor"], e.target.value)}
+                            className="h-7 w-7 cursor-pointer rounded border border-input"
+                          />
+                          <Input
+                            value={landingData.heroCta?.primaryColor ?? ""}
+                            placeholder="auto"
+                            onChange={(e) => updateLandingField(["heroCta", "primaryColor"], e.target.value || undefined)}
+                            className="h-7 flex-1 text-[11px] font-mono"
+                          />
+                        </div>
+                      </div>
+                      <div className="space-y-1.5">
+                        <span className="text-[10px] font-semibold text-muted-foreground">Secondary Style</span>
+                        <select
+                          value={landingData.heroCta?.secondaryVariant ?? "outline"}
+                          onChange={(e) => updateLandingField(["heroCta", "secondaryVariant"], e.target.value)}
+                          className="h-8 w-full rounded-md border border-input bg-background px-2 text-xs"
+                        >
+                          <option value="white">White</option>
+                          <option value="outline">Outline (default)</option>
+                          <option value="primary">Brand Primary</option>
+                          <option value="secondary">Brand Secondary</option>
+                        </select>
+                        <div className="flex items-center gap-2">
+                          <input
+                            type="color"
+                            value={landingData.heroCta?.secondaryColor ?? "#ffffff"}
+                            onChange={(e) => updateLandingField(["heroCta", "secondaryColor"], e.target.value)}
+                            className="h-7 w-7 cursor-pointer rounded border border-input"
+                          />
+                          <Input
+                            value={landingData.heroCta?.secondaryColor ?? ""}
+                            placeholder="auto"
+                            onChange={(e) => updateLandingField(["heroCta", "secondaryColor"], e.target.value || undefined)}
+                            className="h-7 flex-1 text-[11px] font-mono"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Hero Text Colours */}
+                  <div className="rounded-xl border border-border/70 p-4 space-y-3 bg-muted/10">
+                    <div className="flex items-center justify-between border-b border-border/40 pb-2">
+                      <div>
+                        <h4 className="text-xs font-bold uppercase tracking-wider text-foreground">
+                          Hero Text Colours
+                        </h4>
+                        <p className="text-[11px] text-muted-foreground">
+                          Text colours for the hero overlay (dark background).
+                        </p>
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                      <div className="space-y-1.5">
+                        <span className="text-[10px] font-semibold text-muted-foreground">Title</span>
+                        <div className="flex items-center gap-2">
+                          <input
+                            type="color"
+                            value={landingData.heroColors?.title ?? "#ffffff"}
+                            onChange={(e) => updateLandingField(["heroColors", "title"], e.target.value)}
+                            className="h-7 w-7 cursor-pointer rounded border border-input"
+                          />
+                          <Input
+                            value={landingData.heroColors?.title ?? ""}
+                            placeholder="#fff"
+                            onChange={(e) => updateLandingField(["heroColors", "title"], e.target.value || undefined)}
+                            className="h-7 flex-1 text-[11px] font-mono"
+                          />
+                        </div>
+                      </div>
+                      <div className="space-y-1.5">
+                        <span className="text-[10px] font-semibold text-muted-foreground">Lede</span>
+                        <div className="flex items-center gap-2">
+                          <input
+                            type="color"
+                            value={landingData.heroColors?.lede ?? "#d1d5db"}
+                            onChange={(e) => updateLandingField(["heroColors", "lede"], e.target.value)}
+                            className="h-7 w-7 cursor-pointer rounded border border-input"
+                          />
+                          <Input
+                            value={landingData.heroColors?.lede ?? ""}
+                            placeholder="rgba(255,255,255,0.82)"
+                            onChange={(e) => updateLandingField(["heroColors", "lede"], e.target.value || undefined)}
+                            className="h-7 flex-1 text-[11px] font-mono"
+                          />
+                        </div>
+                      </div>
+                      <div className="space-y-1.5">
+                        <span className="text-[10px] font-semibold text-muted-foreground">Eyebrow</span>
+                        <div className="flex items-center gap-2">
+                          <input
+                            type="color"
+                            value={landingData.heroColors?.eyebrow ?? "#9ca3af"}
+                            onChange={(e) => updateLandingField(["heroColors", "eyebrow"], e.target.value)}
+                            className="h-7 w-7 cursor-pointer rounded border border-input"
+                          />
+                          <Input
+                            value={landingData.heroColors?.eyebrow ?? ""}
+                            placeholder="rgba(255,255,255,0.62)"
+                            onChange={(e) => updateLandingField(["heroColors", "eyebrow"], e.target.value || undefined)}
+                            className="h-7 flex-1 text-[11px] font-mono"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Google Font Family */}
+                  <div className="rounded-xl border border-border/70 p-4 space-y-3 bg-muted/10">
+                    <div className="flex items-center justify-between border-b border-border/40 pb-2">
+                      <div>
+                        <h4 className="text-xs font-bold uppercase tracking-wider text-foreground">
+                          Typography
+                        </h4>
+                        <p className="text-[11px] text-muted-foreground">
+                          Select a Google Font for hero text. Applied via CSS variable.
+                        </p>
+                      </div>
+                    </div>
+                    <select
+                      value={landingData.fontFamily ?? ""}
+                      onChange={(e) => updateLandingField(["fontFamily"], e.target.value || undefined)}
+                      className="h-9 w-full rounded-md border border-input bg-background px-3 text-xs"
+                    >
+                      <option value="">Default (Neue Montreal)</option>
+                      <option value="Inter, sans-serif">Inter</option>
+                      <option value="Roboto, sans-serif">Roboto</option>
+                      <option value="Open Sans, sans-serif">Open Sans</option>
+                      <option value="Lato, sans-serif">Lato</option>
+                      <option value="Poppins, sans-serif">Poppins</option>
+                      <option value="Nunito, sans-serif">Nunito</option>
+                      <option value="Work Sans, sans-serif">Work Sans</option>
+                      <option value="DM Sans, sans-serif">DM Sans</option>
+                      <option value="Plus Jakarta Sans, sans-serif">Plus Jakarta Sans</option>
+                      <option value="Space Grotesk, sans-serif">Space Grotesk</option>
+                      <option value="Outfit, sans-serif">Outfit</option>
+                      <option value="Manrope, sans-serif">Manrope</option>
+                      <option value="Sora, sans-serif">Sora</option>
+                    </select>
+                    {landingData.fontFamily && (
+                      <p className="text-[10px] text-muted-foreground font-mono">
+                        {landingData.fontFamily}
+                      </p>
+                    )}
+                  </div>
+
                   {/* Hero Bottom-Left Programme Lines */}
                   <div className="rounded-xl border border-border/70 p-4 space-y-3 bg-muted/10">
                     <div className="flex items-center justify-between border-b border-border/40 pb-2">

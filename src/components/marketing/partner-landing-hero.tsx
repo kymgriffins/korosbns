@@ -10,6 +10,23 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+
+/** Map font family strings to their Google Fonts CSS import names. */
+const GOOGLE_FONT_MAP: Record<string, string> = {
+  "Inter, sans-serif": "Inter:wght@400;500;600;700",
+  "Roboto, sans-serif": "Roboto:wght@400;500;700",
+  "Open Sans, sans-serif": "Open+Sans:wght@400;600;700",
+  "Lato, sans-serif": "Lato:wght@400;700;900",
+  "Poppins, sans-serif": "Poppins:wght@400;500;600;700",
+  "Nunito, sans-serif": "Nunito:wght@400;600;700",
+  "Work Sans, sans-serif": "Work+Sans:wght@400;500;600;700",
+  "DM Sans, sans-serif": "DM+Sans:wght@400;500;700",
+  "Plus Jakarta Sans, sans-serif": "Plus+Jakarta+Sans:wght@400;500;600;700",
+  "Space Grotesk, sans-serif": "Space+Grotesk:wght@400;500;600;700",
+  "Outfit, sans-serif": "Outfit:wght@400;500;600;700",
+  "Manrope, sans-serif": "Manrope:wght@400;500;600;700",
+  "Sora, sans-serif": "Sora:wght@400;500;600;700",
+};
 import {
   PARTNER_HERO_NARRATIVE,
   PARTNER_HERO_PROGRAMME_LINES,
@@ -35,6 +52,21 @@ export interface PartnerLandingHeroProps {
   programmeLines?: Array<{ slug: string; label: string; href: string }>;
   primaryCta?: { label: string; href: string };
   secondaryCta?: { label: string; href: string };
+  /** Hero CTA button styling */
+  heroCta?: {
+    primaryVariant?: "white" | "outline" | "primary" | "secondary";
+    primaryColor?: string;
+    secondaryVariant?: "white" | "outline" | "primary" | "secondary";
+    secondaryColor?: string;
+  };
+  /** Hero text colours (for dark backgrounds) */
+  heroColors?: {
+    title?: string;
+    lede?: string;
+    eyebrow?: string;
+  };
+  /** Google Font family override */
+  fontFamily?: string;
 }
 
 /**
@@ -47,6 +79,9 @@ export default function PartnerLandingHero({
   programmeLines,
   primaryCta,
   secondaryCta,
+  heroCta,
+  heroColors,
+  fontFamily,
 }: PartnerLandingHeroProps = {}) {
   const activeProgrammeLines =
     programmeLines && programmeLines.length > 0
@@ -100,6 +135,20 @@ export default function PartnerLandingHero({
     return () => window.clearTimeout(id);
   }, [index, next, paused, canAnimate]);
 
+  // Load Google Font if fontFamily is set
+  useEffect(() => {
+    if (!fontFamily || typeof document === "undefined") return;
+    const fontSpec = GOOGLE_FONT_MAP[fontFamily];
+    if (!fontSpec) return;
+    const id = `google-font-${fontSpec.replace(/[^a-z0-9]/gi, "-")}`;
+    if (document.getElementById(id)) return;
+    const link = document.createElement("link");
+    link.id = id;
+    link.rel = "stylesheet";
+    link.href = `https://fonts.googleapis.com/css2?family=${fontSpec}&display=swap`;
+    document.head.appendChild(link);
+  }, [fontFamily]);
+
   const onPointerDown = (e: ReactPointerEvent) => {
     pointerStart.current = { x: e.clientX, y: e.clientY };
     setPaused(true);
@@ -128,6 +177,43 @@ export default function PartnerLandingHero({
   if (!current) return null;
 
   const { eyebrow, title, lede } = resolvePartnerHeroNarrative(heroNarrative);
+
+  const primaryBtnStyle: React.CSSProperties = {};
+  const secondaryBtnStyle: React.CSSProperties = {};
+  const titleStyle: React.CSSProperties = {};
+  const ledeStyle: React.CSSProperties = {};
+  const eyebrowStyle: React.CSSProperties = {};
+
+  if (fontFamily) {
+    (primaryBtnStyle as any).fontFamily = fontFamily;
+    (secondaryBtnStyle as any).fontFamily = fontFamily;
+    (titleStyle as any).fontFamily = fontFamily;
+    (ledeStyle as any).fontFamily = fontFamily;
+    (eyebrowStyle as any).fontFamily = fontFamily;
+  }
+
+  if (heroColors?.title) (titleStyle as any).color = heroColors.title;
+  if (heroColors?.lede) (ledeStyle as any).color = heroColors.lede;
+  if (heroColors?.eyebrow) (eyebrowStyle as any).color = heroColors.eyebrow;
+
+  const pVariant = heroCta?.primaryVariant ?? "white";
+  const sVariant = heroCta?.secondaryVariant ?? "outline";
+  const pColor = heroCta?.primaryColor;
+  const sColor = heroCta?.secondaryColor;
+
+  if (pVariant === "primary" && pColor) (primaryBtnStyle as any).backgroundColor = pColor;
+  if (pVariant === "primary" && !pColor) (primaryBtnStyle as any).backgroundColor = "hsl(var(--primary))";
+  if (pVariant === "primary") (primaryBtnStyle as any).color = "hsl(var(--primary-foreground))";
+  if (pVariant === "secondary" && pColor) (primaryBtnStyle as any).backgroundColor = pColor;
+  if (pVariant === "secondary" && !pColor) (primaryBtnStyle as any).backgroundColor = "hsl(var(--secondary))";
+  if (pVariant === "secondary") (primaryBtnStyle as any).color = "hsl(var(--secondary-foreground))";
+
+  if (sVariant === "primary" && sColor) (secondaryBtnStyle as any).backgroundColor = sColor;
+  if (sVariant === "primary" && !sColor) (secondaryBtnStyle as any).backgroundColor = "hsl(var(--primary))";
+  if (sVariant === "primary") (secondaryBtnStyle as any).color = "hsl(var(--primary-foreground))";
+  if (sVariant === "secondary" && sColor) (secondaryBtnStyle as any).backgroundColor = sColor;
+  if (sVariant === "secondary" && !sColor) (secondaryBtnStyle as any).backgroundColor = "hsl(var(--secondary))";
+  if (sVariant === "secondary") (secondaryBtnStyle as any).color = "hsl(var(--secondary-foreground))";
 
   return (
     <section
@@ -171,13 +257,14 @@ export default function PartnerLandingHero({
         role="presentation"
       >
         <div className={styles["partner-reel-narrative"]}>
-          <p className={styles["partner-reel-eyebrow"]}>{eyebrow}</p>
-          <h1 className={styles["partner-reel-title"]}>{title}</h1>
-          <p className={styles["partner-reel-lede"]}>{lede}</p>
+          <p className={styles["partner-reel-eyebrow"]} style={eyebrowStyle}>{eyebrow}</p>
+          <h1 className={styles["partner-reel-title"]} style={titleStyle}>{title}</h1>
+          <p className={styles["partner-reel-lede"]} style={ledeStyle}>{lede}</p>
           <div className={styles["partner-reel-cta"]}>
             <Link
               href={primary.href}
               className={styles["partner-reel-cta-primary"]}
+              style={pVariant === "white" ? undefined : primaryBtnStyle}
               onClick={(e) => e.stopPropagation()}
             >
               {primary.label}
@@ -185,6 +272,7 @@ export default function PartnerLandingHero({
             <Link
               href={secondary.href}
               className={styles["partner-reel-cta-secondary"]}
+              style={sVariant === "outline" && !sColor ? undefined : secondaryBtnStyle}
               onClick={(e) => e.stopPropagation()}
             >
               {secondary.label}

@@ -29,6 +29,18 @@ const rawLanding = landingJson as {
     title: string;
     lede: string;
   };
+  heroCta?: {
+    primaryVariant?: "white" | "outline" | "primary" | "secondary";
+    primaryColor?: string;
+    secondaryVariant?: "white" | "outline" | "primary" | "secondary";
+    secondaryColor?: string;
+  };
+  heroColors?: {
+    title?: string;
+    lede?: string;
+    eyebrow?: string;
+  };
+  fontFamily?: string;
   thesis?: {
     eyebrow: string;
     title: string;
@@ -105,6 +117,24 @@ export function resolvePartnerHeroNarrative(override?: {
     lede: override?.lede || PARTNER_HERO_NARRATIVE.lede,
   };
 }
+
+/** Hero CTA button styling — defaults to classic white-on-dark. */
+export const PARTNER_HERO_CTA = {
+  primaryVariant: (rawLanding.heroCta?.primaryVariant as "white" | "outline" | "primary" | "secondary") ?? "white",
+  primaryColor: rawLanding.heroCta?.primaryColor,
+  secondaryVariant: (rawLanding.heroCta?.secondaryVariant as "white" | "outline" | "primary" | "secondary") ?? "outline",
+  secondaryColor: rawLanding.heroCta?.secondaryColor,
+};
+
+/** Hero text colours — all default to white for dark hero backgrounds. */
+export const PARTNER_HERO_COLORS = {
+  title: rawLanding.heroColors?.title ?? "#fff",
+  lede: rawLanding.heroColors?.lede ?? "rgba(255,255,255,0.82)",
+  eyebrow: rawLanding.heroColors?.eyebrow ?? "rgba(255,255,255,0.62)",
+};
+
+/** Google Font family override — applies to hero text + buttons. */
+export const PARTNER_FONT_FAMILY = rawLanding.fontFamily ?? "";
 
 /**
  * Brand-level promise + who/how - first text band after the hero reel.
