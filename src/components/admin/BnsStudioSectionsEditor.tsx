@@ -237,6 +237,35 @@ export function BnsStudioSectionsEditor({
     onOpenMediaPicker(onSelect, title, currentUrl);
   };
 
+  const mediaInventory = useMemo(() => {
+    const rows: { sectionId: string; kind: string; count: number }[] = [];
+    sections.forEach((section) => {
+      if (Array.isArray(section.slides)) {
+        rows.push({ sectionId: section.id, kind: "slides (image + video)", count: section.slides.length });
+      }
+      if (Array.isArray(section.images)) {
+        rows.push({ sectionId: section.id, kind: "gallery images", count: section.images.length });
+      }
+      if (Array.isArray(section.partnerLogos)) {
+        rows.push({ sectionId: section.id, kind: "partner logos", count: section.partnerLogos.length });
+      }
+      if (section.type === "insights-bento" && Array.isArray(section.items)) {
+        rows.push({
+          sectionId: section.id,
+          kind: "insights cards",
+          count: section.items.length + (section.featured ? 1 : 0),
+        });
+      }
+      if (typeof section.image === "string" && section.image) {
+        rows.push({ sectionId: section.id, kind: "single image", count: 1 });
+      }
+      if (typeof section.videoUrl === "string" && section.videoUrl) {
+        rows.push({ sectionId: section.id, kind: "video / YouTube", count: 1 });
+      }
+    });
+    return rows;
+  }, [sections]);
+
   return (
     <div className="space-y-4">
       <div className="rounded-xl border border-primary/20 bg-primary/5 p-4">
@@ -245,11 +274,25 @@ export function BnsStudioSectionsEditor({
           BNS Studio landing sections
         </h2>
         <p className="mt-1 text-xs text-muted-foreground leading-relaxed">
-          Edit the live <code className="font-mono">/bns-studio</code> page: hero reel images/videos,
-          screening theatre, gallery, about story, partner CTA, and insights bento packs.
-          Visibility toggles sync with partner-page-sections (<span className="font-medium">studio</span> page).
-          Brand colors and button fills live under <span className="font-medium">Design Tokens &amp; Badges</span>.
+          Edit the live <code className="font-mono">/bns-studio</code> page: hero reel slides, screening video,
+          gallery images, about story, partner logos, and insights bento packs.
+          Programme-level <code className="font-mono">visual.gallery[]</code> lives under{" "}
+          <span className="font-medium">BNS Studios (Programme) → Media</span>.
         </p>
+        {mediaInventory.length > 0 ? (
+          <div className="mt-3 flex flex-wrap gap-2">
+            {mediaInventory.map((row) => (
+              <button
+                key={`${row.sectionId}-${row.kind}`}
+                type="button"
+                onClick={() => setSelectedId(row.sectionId)}
+                className="rounded-full border border-border/70 bg-card px-2.5 py-1 text-[10px] font-medium text-foreground hover:border-primary"
+              >
+                {row.sectionId}: {row.kind} ({row.count})
+              </button>
+            ))}
+          </div>
+        ) : null}
       </div>
 
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-12">
@@ -1057,6 +1100,78 @@ function InsightsBentoFields({ section, onChange, openMedia }: FieldProps) {
   );
 }
 
+function PartnerLogosFields({ section, onChange, openMedia }: FieldProps) {
+  const logos = (Array.isArray(section.partnerLogos) ? section.partnerLogos : []) as Record<
+    string,
+    unknown
+  >[];
+
+  return (
+    <div className="space-y-2">
+      <div className="flex items-center justify-between">
+        <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+          Partner logos array
+        </h4>
+        <Button
+          type="button"
+          size="sm"
+          variant="outline"
+          className="h-7 text-[10px]"
+          onClick={() => onChange({ partnerLogos: [...logos, { src: "", alt: "" }] })}
+        >
+          <Plus className="size-3 mr-1" />
+          Logo
+        </Button>
+      </div>
+      {logos.length === 0 ? (
+        <p className="text-[11px] text-muted-foreground">No logos yet. Add partner mark media here.</p>
+      ) : null}
+      {logos.map((logo, index) => (
+        <div key={index} className="rounded-xl border border-border/70 p-3 space-y-2">
+          <div className="flex justify-between">
+            <span className="text-xs font-semibold">Logo {index + 1}</span>
+            <Button
+              type="button"
+              size="sm"
+              variant="ghost"
+              className="h-7 text-destructive"
+              onClick={() => onChange({ partnerLogos: logos.filter((_, i) => i !== index) })}
+            >
+              <Trash2 className="size-3.5" />
+            </Button>
+          </div>
+          <ImageFieldControl
+            label="Logo image"
+            value={String(logo.src || "")}
+            onChange={(url) => {
+              const next = logos.map((row, i) => (i === index ? { ...row, src: url } : row));
+              onChange({ partnerLogos: next });
+            }}
+            onOpenBucket={() =>
+              openMedia(
+                (url) => {
+                  const next = logos.map((row, i) => (i === index ? { ...row, src: url } : row));
+                  onChange({ partnerLogos: next });
+                },
+                "Partner logo",
+                String(logo.src || ""),
+              )
+            }
+          />
+          <TextInput
+            label="Alt text"
+            value={String(logo.alt || "")}
+            onChange={(v) => {
+              const next = logos.map((row, i) => (i === index ? { ...row, alt: v } : row));
+              onChange({ partnerLogos: next });
+            }}
+          />
+        </div>
+      ))}
+    </div>
+  );
+}
+
 function GenericCopyFields({ section, onChange, openMedia }: FieldProps) {
   return (
     <div className="space-y-3">
@@ -1093,26 +1208,29 @@ function GenericCopyFields({ section, onChange, openMedia }: FieldProps) {
         />
       ) : null}
       {section.type === "partner-with-us" ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <TextInput
-            label="Primary CTA label"
-            value={String((section.primaryCta as any)?.label || "")}
-            onChange={(v) =>
-              onChange({
-                primaryCta: { ...((section.primaryCta as object) || {}), label: v },
-              })
-            }
-          />
-          <TextInput
-            label="Primary CTA href"
-            value={String((section.primaryCta as any)?.href || "")}
-            onChange={(v) =>
-              onChange({
-                primaryCta: { ...((section.primaryCta as object) || {}), href: v },
-              })
-            }
-          />
-        </div>
+        <>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <TextInput
+              label="Primary CTA label"
+              value={String((section.primaryCta as any)?.label || "")}
+              onChange={(v) =>
+                onChange({
+                  primaryCta: { ...((section.primaryCta as object) || {}), label: v },
+                })
+              }
+            />
+            <TextInput
+              label="Primary CTA href"
+              value={String((section.primaryCta as any)?.href || "")}
+              onChange={(v) =>
+                onChange({
+                  primaryCta: { ...((section.primaryCta as object) || {}), href: v },
+                })
+              }
+            />
+          </div>
+          <PartnerLogosFields section={section} onChange={onChange} openMedia={openMedia} />
+        </>
       ) : null}
       {section.type === "feature-grid" ? (
         <p className="text-[11px] text-muted-foreground">

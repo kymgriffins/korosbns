@@ -18,12 +18,17 @@ export function ProgrammeDetail({
   closing = PROGRAMMES_CLOSING,
   sectionsConfig,
   reels,
+  projectCtaLabels,
 }: {
   programme: ProgrammeBlock;
   civicProgrammes?: ProgrammeBlock[];
   closing?: ProgrammesContent["closing"];
   sectionsConfig?: PartnerPageSectionsContent | null;
   reels?: ProgrammeReel[];
+  projectCtaLabels?: {
+    openProjectLabel?: string;
+    watchReelLabel?: string;
+  };
 }) {
   return (
     <ProgrammeLandingLayout
@@ -32,6 +37,7 @@ export function ProgrammeDetail({
       closing={closing}
       sectionsConfig={sectionsConfig}
       reels={reels}
+      projectCtaLabels={projectCtaLabels}
     />
   );
 }

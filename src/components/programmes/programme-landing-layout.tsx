@@ -50,12 +50,17 @@ export function ProgrammeLandingLayout({
   closing = PROGRAMMES_CLOSING,
   sectionsConfig,
   reels,
+  projectCtaLabels,
 }: {
   programme: ProgrammeBlock;
   civicProgrammes?: ProgrammeBlock[];
   closing?: ProgrammesContent["closing"];
   sectionsConfig?: PartnerPageSectionsContent | null;
   reels?: ProgrammeReel[];
+  projectCtaLabels?: {
+    openProjectLabel?: string;
+    watchReelLabel?: string;
+  };
 }) {
   if (programme.slug === "studios") {
     return null;
@@ -326,7 +331,11 @@ export function ProgrammeLandingLayout({
       ) : null}
 
       {show("projects") ? (
-        <ProgrammeProjectGrid programmeSlug={programme.slug} />
+        <ProgrammeProjectGrid
+          programmeSlug={programme.slug}
+          openProjectLabel={projectCtaLabels?.openProjectLabel}
+          watchReelLabel={projectCtaLabels?.watchReelLabel}
+        />
       ) : null}
 
       {show("reels") ? (

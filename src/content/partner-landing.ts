@@ -142,6 +142,9 @@ export const PARTNER_FEATURED_INTRO = {
   lede:
     rawLanding.featuredIntro?.lede ??
     "Published films and convenings - AFRODAD debt forums, Red Flags, and Project TERRA - with local event photography as cover art. Titles stay fresh from YouTube; reach claims stay off the page.",
+  openProjectLabel:
+    (rawLanding.featuredIntro as { openProjectLabel?: string } | undefined)?.openProjectLabel ??
+    "Open project",
 };
 
 /** Closing partnership band - invest against the three phrases. */

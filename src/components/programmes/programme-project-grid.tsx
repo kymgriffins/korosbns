@@ -16,16 +16,25 @@ import {
 } from "@/data/studios-evidence";
 import {
   getReelsByProgramme,
+  programmesContent,
   type ProgrammeSlug,
   type ProgrammeReel,
 } from "@/content";
 import { cn } from "@/utils";
+
+const SEED_CTA = (
+  programmesContent as {
+    landing?: { featuredIntro?: { openProjectLabel?: string; watchReelLabel?: string } };
+  }
+).landing?.featuredIntro;
 
 interface ProgrammeProjectGridProps {
   programmeSlug: ProgrammeSlug;
   eyebrow?: string;
   headline?: string;
   description?: string;
+  openProjectLabel?: string;
+  watchReelLabel?: string;
   className?: string;
 }
 
@@ -34,6 +43,8 @@ export function ProgrammeProjectGrid({
   eyebrow = "Verified outputs",
   headline = "Tangible projects from this programme",
   description = "Every claim is backed by a published documentary, dataset, explainer, or civic forum.",
+  openProjectLabel = SEED_CTA?.openProjectLabel ?? "Open project",
+  watchReelLabel = SEED_CTA?.watchReelLabel ?? "Watch reel",
   className,
 }: ProgrammeProjectGridProps) {
   const [selectedFormat, setSelectedFormat] = useState<string>("all");
@@ -255,12 +266,15 @@ export function ProgrammeProjectGrid({
               ) : null}
               <Link
                 href={item.href}
-                className="inline-flex items-center pt-1 text-sm font-medium text-foreground outline-none transition-colors hover:text-primary focus-visible:ring-2 focus-visible:ring-ring"
+                className="group inline-flex items-center pt-1 text-sm font-medium text-foreground outline-none transition-colors hover:text-primary focus-visible:ring-2 focus-visible:ring-ring"
                 target={item.type === "reel" ? "_blank" : undefined}
                 rel={item.type === "reel" ? "noopener noreferrer" : undefined}
               >
-                {item.type === "reel" ? "Watch reel" : "Open project"}
-                <span aria-hidden className="ml-1">
+                {item.type === "reel" ? watchReelLabel : openProjectLabel}
+                <span
+                  aria-hidden
+                  className="ml-1 transition-transform duration-150 group-hover:translate-x-0.5"
+                >
                   →
                 </span>
               </Link>

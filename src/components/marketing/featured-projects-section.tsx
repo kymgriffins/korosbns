@@ -19,6 +19,7 @@ type FeaturedProjectsSectionProps = {
   eyebrow?: string;
   headline?: string;
   lede?: string;
+  openProjectLabel?: string;
   className?: string;
   initialProjects?: FeaturedProject[];
 };
@@ -31,6 +32,7 @@ export function FeaturedProjectsSection({
   eyebrow = PARTNER_FEATURED_INTRO.eyebrow,
   headline = PARTNER_FEATURED_INTRO.headline,
   lede = PARTNER_FEATURED_INTRO.lede,
+  openProjectLabel = PARTNER_FEATURED_INTRO.openProjectLabel,
   className,
   initialProjects,
 }: FeaturedProjectsSectionProps) {
@@ -156,6 +158,9 @@ export function FeaturedProjectsSection({
                     {project.title}
                   </Link>
                 </h3>
+                {project.subtitle ? (
+                  <p className={cn(T.caption, "text-muted-foreground")}>{project.subtitle}</p>
+                ) : null}
                 <LandingContent>
                   <p className={cn(T.lead, "max-w-xl text-foreground/75 md:text-base")}>
                     {project.prose}
@@ -163,10 +168,13 @@ export function FeaturedProjectsSection({
                 </LandingContent>
                 <Link
                   href={projectHref}
-                  className="inline-flex items-center pt-1 text-sm font-medium text-foreground outline-none transition-colors hover:text-primary focus-visible:ring-2 focus-visible:ring-ring"
+                  className="group inline-flex items-center pt-1 text-sm font-medium text-foreground outline-none transition-colors hover:text-primary focus-visible:ring-2 focus-visible:ring-ring"
                 >
-                  Open project
-                  <span aria-hidden className="ml-1">
+                  {project.ctaLabel || openProjectLabel}
+                  <span
+                    aria-hidden
+                    className="ml-1 transition-transform duration-150 group-hover:translate-x-0.5"
+                  >
                     →
                   </span>
                 </Link>

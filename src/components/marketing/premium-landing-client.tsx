@@ -134,6 +134,10 @@ export default function PremiumLandingClient({
                 eyebrow={landingData?.featuredIntro?.eyebrow}
                 headline={landingData?.featuredIntro?.headline}
                 lede={landingData?.featuredIntro?.lede}
+                openProjectLabel={
+                  (landingData?.featuredIntro as { openProjectLabel?: string } | undefined)
+                    ?.openProjectLabel
+                }
                 initialProjects={((featuredProjects as { results?: unknown[] })?.results || (featuredProjects as { projects?: unknown[] })?.projects) as never}
               />
             );

@@ -89,10 +89,13 @@ export function PartnerProgrammeExplainSections({
                   <LandingContent className="pt-2">
                     <Link
                       href={item.href}
-                      className="inline-flex items-center text-sm font-medium text-foreground outline-none transition-colors hover:text-primary focus-visible:ring-2 focus-visible:ring-ring"
+                      className="group inline-flex items-center text-sm font-medium text-foreground outline-none transition-colors hover:text-primary focus-visible:ring-2 focus-visible:ring-ring"
                     >
                       {item.ctaLabel}
-                      <span aria-hidden className="ml-1">
+                      <span
+                        aria-hidden
+                        className="ml-1 transition-transform duration-150 group-hover:translate-x-0.5"
+                      >
                         →
                       </span>
                     </Link>

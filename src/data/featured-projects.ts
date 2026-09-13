@@ -16,6 +16,7 @@ export type FeaturedProject = {
   videoId: string;
   url: string;
   title: string;
+  subtitle?: string;
   prose: string;
   thumbnail: string;
   authorName: string;
@@ -26,6 +27,8 @@ export type FeaturedProject = {
   channelHandle?: string;
   useYoutubeThumbnail?: boolean;
   wysiwygProse?: string;
+  /** CTA chip under each story - defaults to featuredIntro.openProjectLabel */
+  ctaLabel?: string;
 };
 
 type SeedRow = (typeof featuredFallback.results)[number];
@@ -37,6 +40,7 @@ function fromSeed(row: SeedRow): FeaturedProject {
     videoId: row.videoId,
     url: row.url,
     title: row.title,
+    subtitle: (row as { subtitle?: string }).subtitle,
     prose: row.prose,
     thumbnail: row.thumbnail,
     authorName: row.authorName,
@@ -47,6 +51,7 @@ function fromSeed(row: SeedRow): FeaturedProject {
     channelHandle: row.channelHandle,
     useYoutubeThumbnail: (row as any).useYoutubeThumbnail ?? true,
     wysiwygProse: (row as any).wysiwygProse || row.prose,
+    ctaLabel: (row as { ctaLabel?: string }).ctaLabel,
   };
 }
 

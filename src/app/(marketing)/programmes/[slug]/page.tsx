@@ -78,6 +78,18 @@ export default async function ProgrammeSlugPage({ params }: PageProps) {
       closing={programmesData.closing}
       sectionsConfig={sectionsConfig}
       reels={(reelsData as { reels?: unknown[] }).reels as never}
+      projectCtaLabels={{
+        openProjectLabel: (
+          programmesData as {
+            landing?: { featuredIntro?: { openProjectLabel?: string; watchReelLabel?: string } };
+          }
+        ).landing?.featuredIntro?.openProjectLabel,
+        watchReelLabel: (
+          programmesData as {
+            landing?: { featuredIntro?: { openProjectLabel?: string; watchReelLabel?: string } };
+          }
+        ).landing?.featuredIntro?.watchReelLabel,
+      }}
     />
   );
 }

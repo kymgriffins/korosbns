@@ -21,7 +21,9 @@
     "featuredIntro": {
       "eyebrow": "Evidence",
       "headline": "Featured projects across the programmes",
-      "lede": "Published YouTube evidence - illicit financial flows, CABRI digital PFM, and Project TERRA - with thumbnails and titles refreshed from the source URLs."
+      "lede": "Published YouTube evidence - illicit financial flows, CABRI digital PFM, and Project TERRA - with thumbnails and titles refreshed from the source URLs.",
+      "openProjectLabel": "Open project",
+      "watchReelLabel": "Watch reel"
     },
     "flywheel": {
       "eyebrow": "The Closed-Loop Ecosystem",

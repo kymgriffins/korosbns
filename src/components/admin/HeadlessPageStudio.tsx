@@ -1474,6 +1474,18 @@ export function HeadlessPageStudio() {
                   </div>
 
                   <div>
+                    <label className="text-xs font-semibold text-foreground">Subtitle (optional)</label>
+                    <Input
+                      value={selectedFeaturedStory.subtitle ?? ""}
+                      onChange={(e) =>
+                        handleUpdateFeaturedStory(selectedFeaturedStory.id, "subtitle", e.target.value)
+                      }
+                      className="mt-1 h-8 text-xs"
+                      placeholder="Short supporting line under the title"
+                    />
+                  </div>
+
+                  <div>
                     <label className="text-xs font-semibold text-foreground">
                       Editorial Description / Prose (Summary for Investors &amp; Public)
                     </label>
@@ -1483,6 +1495,20 @@ export function HeadlessPageStudio() {
                       rows={4}
                       className="mt-1 w-full rounded-md border border-input bg-background p-2.5 text-xs text-foreground focus-visible:outline-none"
                       placeholder="Concise overview explaining who leads this, what was investigated, and the civic impact..."
+                    />
+                  </div>
+
+                  <div>
+                    <label className="text-xs font-semibold text-foreground">
+                      CTA button label (e.g. Open project)
+                    </label>
+                    <Input
+                      value={selectedFeaturedStory.ctaLabel ?? ""}
+                      onChange={(e) =>
+                        handleUpdateFeaturedStory(selectedFeaturedStory.id, "ctaLabel", e.target.value)
+                      }
+                      className="mt-1 h-8 text-xs font-semibold"
+                      placeholder="Leave blank to use landing default (Open project)"
                     />
                   </div>
 
@@ -2729,11 +2755,13 @@ export function HeadlessPageStudio() {
                           />
                         </div>
                         <div>
-                          <label className="text-[11px] font-semibold text-foreground">Button Label</label>
+                          <label className="text-[11px] font-semibold text-foreground">
+                            Read more CTA label
+                          </label>
                           <Input
                             value={bet.ctaLabel ?? ""}
                             onChange={(e) => updateLandingProgrammeExplain(idx, "ctaLabel", e.target.value)}
-                            className="mt-1 h-8 text-xs"
+                            className="mt-1 h-8 text-xs font-semibold"
                             placeholder="e.g. Read more"
                           />
                         </div>
@@ -3098,13 +3126,29 @@ export function HeadlessPageStudio() {
                       </div>
                     </div>
                     <div>
-                      <label className="text-xs font-semibold text-foreground">Intro Lede</label>
+                      <label className="text-xs font-semibold text-foreground">Intro Lede / Description</label>
                       <textarea
                         value={landingData.featuredIntro?.lede ?? ""}
                         onChange={(e) => updateLandingField(["featuredIntro", "lede"], e.target.value)}
                         rows={2}
                         className="mt-1 w-full rounded-md border border-input bg-background p-2.5 text-xs text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                       />
+                    </div>
+                    <div>
+                      <label className="text-xs font-semibold text-foreground">
+                        Default project CTA label
+                      </label>
+                      <Input
+                        value={landingData.featuredIntro?.openProjectLabel ?? "Open project"}
+                        onChange={(e) =>
+                          updateLandingField(["featuredIntro", "openProjectLabel"], e.target.value)
+                        }
+                        className="mt-1 h-9 text-xs font-semibold"
+                        placeholder="e.g. Open project"
+                      />
+                      <p className="mt-1 text-[10px] text-muted-foreground">
+                        Used under each featured story unless a story sets its own CTA label.
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -3404,9 +3448,9 @@ export function HeadlessPageStudio() {
           {activeTab === "media" && (
             <div className="space-y-5 rounded-2xl border border-border bg-card p-6 shadow-xs">
               <div className="border-b border-border/50 pb-3">
-                <h2 className="text-base font-bold text-foreground">Featured Media, Videos &amp; Streams</h2>
+                <h2 className="text-base font-bold text-foreground">Featured Media, Videos &amp; Gallery</h2>
                 <p className="text-xs text-muted-foreground">
-                  Connect Cloudflare R2 videos or YouTube links to this programme or page.
+                  Connect Cloudflare R2 videos or YouTube links, then manage the full <code className="font-mono">visual.gallery[]</code> media array for this programme.
                 </p>
               </div>
 
@@ -3528,11 +3572,157 @@ export function HeadlessPageStudio() {
                       }}
                       description="Displayed as the primary visual on programme cards and hero header."
                     />
+                    <div>
+                      <label className="text-xs font-semibold text-foreground">Hero alt text</label>
+                      <Input
+                        value={currentProgramme.visual?.heroAlt ?? ""}
+                        onChange={(e) => {
+                          updateCurrentProgrammeField("visual", {
+                            ...(currentProgramme.visual || {}),
+                            heroAlt: e.target.value,
+                          });
+                        }}
+                        className="mt-1 h-8 text-xs"
+                        placeholder="Describe the hero image"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Programme media gallery array */}
+                  <div className="rounded-xl border border-border/80 bg-muted/20 p-4 space-y-3">
+                    <div className="flex items-center justify-between gap-2">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
+                        <ImageIcon className="size-3.5 text-primary" />
+                        <span>Media gallery array</span>
+                      </h4>
+                      <Button
+                        type="button"
+                        size="sm"
+                        variant="outline"
+                        className="h-7 text-xs gap-1.5"
+                        onClick={() => {
+                          const gallery = [
+                            ...((currentProgramme.visual?.gallery as Array<{ src?: string; alt?: string }>) || []),
+                            { src: "", alt: "" },
+                          ];
+                          updateCurrentProgrammeField("visual", {
+                            ...(currentProgramme.visual || {}),
+                            gallery,
+                          });
+                        }}
+                      >
+                        <Plus className="size-3.5" />
+                        Add media
+                      </Button>
+                    </div>
+                    <p className="text-[11px] text-muted-foreground">
+                      Edits <code className="font-mono">visual.gallery[]</code> - the multi-image media strip used on programme and studio surfaces.
+                    </p>
+                    {(((currentProgramme.visual?.gallery as Array<{ src?: string; alt?: string }>) || []).length === 0) ? (
+                      <div className="rounded-lg border border-dashed border-border py-6 text-center text-xs text-muted-foreground">
+                        No gallery items yet. Add media to capture the array in CMS.
+                      </div>
+                    ) : (
+                      <div className="space-y-3">
+                        {((currentProgramme.visual?.gallery as Array<{ src?: string; alt?: string }>) || []).map(
+                          (item, index) => (
+                            <div
+                              key={`gallery-${index}`}
+                              className="rounded-lg border border-border/70 bg-card p-3 space-y-2"
+                            >
+                              <div className="flex items-center justify-between">
+                                <span className="text-xs font-semibold text-foreground">
+                                  Media {index + 1}
+                                </span>
+                                <Button
+                                  type="button"
+                                  size="sm"
+                                  variant="ghost"
+                                  className="h-7 text-rose-500 hover:text-rose-600 hover:bg-rose-500/10"
+                                  onClick={() => {
+                                    const gallery = [
+                                      ...((currentProgramme.visual?.gallery as Array<{
+                                        src?: string;
+                                        alt?: string;
+                                      }>) || []),
+                                    ];
+                                    gallery.splice(index, 1);
+                                    updateCurrentProgrammeField("visual", {
+                                      ...(currentProgramme.visual || {}),
+                                      gallery,
+                                    });
+                                  }}
+                                >
+                                  <Trash2 className="size-3.5" />
+                                </Button>
+                              </div>
+                              <ImageFieldControl
+                                label="Image / video URL"
+                                value={item.src ?? ""}
+                                onChange={(url) => {
+                                  const gallery = [
+                                    ...((currentProgramme.visual?.gallery as Array<{
+                                      src?: string;
+                                      alt?: string;
+                                    }>) || []),
+                                  ];
+                                  gallery[index] = { ...gallery[index], src: url };
+                                  updateCurrentProgrammeField("visual", {
+                                    ...(currentProgramme.visual || {}),
+                                    gallery,
+                                  });
+                                }}
+                                onOpenBucket={() => {
+                                  setActiveImagePicker({
+                                    isOpen: true,
+                                    title: `Gallery media ${index + 1}`,
+                                    currentUrl: item.src,
+                                    onSelect: (url) => {
+                                      const gallery = [
+                                        ...((currentProgramme.visual?.gallery as Array<{
+                                          src?: string;
+                                          alt?: string;
+                                        }>) || []),
+                                      ];
+                                      gallery[index] = { ...gallery[index], src: url };
+                                      updateCurrentProgrammeField("visual", {
+                                        ...(currentProgramme.visual || {}),
+                                        gallery,
+                                      });
+                                    },
+                                  });
+                                }}
+                              />
+                              <div>
+                                <label className="text-xs font-semibold text-foreground">Alt text</label>
+                                <Input
+                                  value={item.alt ?? ""}
+                                  onChange={(e) => {
+                                    const gallery = [
+                                      ...((currentProgramme.visual?.gallery as Array<{
+                                        src?: string;
+                                        alt?: string;
+                                      }>) || []),
+                                    ];
+                                    gallery[index] = { ...gallery[index], alt: e.target.value };
+                                    updateCurrentProgrammeField("visual", {
+                                      ...(currentProgramme.visual || {}),
+                                      gallery,
+                                    });
+                                  }}
+                                  className="mt-1 h-8 text-xs"
+                                />
+                              </div>
+                            </div>
+                          ),
+                        )}
+                      </div>
+                    )}
                   </div>
                 </div>
               ) : (
                 <div className="text-xs text-muted-foreground">
-                  Select a programme to manage its hero videos and stream assets.
+                  Select a programme to manage its hero videos, gallery array, and stream assets.
                 </div>
               )}
             </div>
@@ -3768,6 +3958,43 @@ export function HeadlessPageStudio() {
                           value={programmesData.landing?.partnerCta?.href ?? ""}
                           onChange={(e) => updateProgrammesLandingField(["partnerCta", "href"], e.target.value)}
                           className="mt-1 h-8 text-xs font-mono"
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="rounded-xl border border-border/60 bg-muted/20 p-4 space-y-3">
+                    <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                      Project grid CTA labels
+                    </h3>
+                    <p className="text-[11px] text-muted-foreground">
+                      Enforced on programme project cards - no hardcoded Open project / Watch reel.
+                    </p>
+                    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                      <div>
+                        <label className="text-xs font-semibold text-foreground">Open project label</label>
+                        <Input
+                          value={programmesData.landing?.featuredIntro?.openProjectLabel ?? "Open project"}
+                          onChange={(e) =>
+                            updateProgrammesLandingField(
+                              ["featuredIntro", "openProjectLabel"],
+                              e.target.value,
+                            )
+                          }
+                          className="mt-1 h-8 text-xs font-semibold"
+                        />
+                      </div>
+                      <div>
+                        <label className="text-xs font-semibold text-foreground">Watch reel label</label>
+                        <Input
+                          value={programmesData.landing?.featuredIntro?.watchReelLabel ?? "Watch reel"}
+                          onChange={(e) =>
+                            updateProgrammesLandingField(
+                              ["featuredIntro", "watchReelLabel"],
+                              e.target.value,
+                            )
+                          }
+                          className="mt-1 h-8 text-xs font-semibold"
                         />
                       </div>
                     </div>
