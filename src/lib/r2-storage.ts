@@ -21,6 +21,17 @@ export type R2ObjectItem = {
   mediaType: "video" | "image" | "document" | "other";
 };
 
+/** Public CDN URL with each path segment encoded (spaces, unicode, #, etc.). */
+export function buildR2PublicUrl(key: string): string {
+  const base = R2_CONFIG.publicDomain.replace(/\/$/, "");
+  const path = key
+    .split("/")
+    .filter((segment) => segment.length > 0)
+    .map((segment) => encodeURIComponent(segment))
+    .join("/");
+  return `${base}/${path}`;
+}
+
 export function getMediaTypeFromKey(key: string): { mimeType: string; mediaType: "video" | "image" | "document" | "other" } {
   const ext = key.split(".").pop()?.toLowerCase() || "";
   if (["mp4", "webm", "mov", "m4v", "ogv"].includes(ext)) {
@@ -29,9 +40,20 @@ export function getMediaTypeFromKey(key: string): { mimeType: string; mediaType:
       mediaType: "video",
     };
   }
-  if (["jpg", "jpeg", "png", "webp", "gif", "svg", "avif"].includes(ext)) {
+  if (["jpg", "jpeg", "png", "webp", "gif", "svg", "avif", "bmp", "heic", "heif", "tif", "tiff"].includes(ext)) {
     return {
-      mimeType: ext === "png" ? "image/png" : ext === "svg" ? "image/svg+xml" : ext === "webp" ? "image/webp" : "image/jpeg",
+      mimeType:
+        ext === "png"
+          ? "image/png"
+          : ext === "svg"
+            ? "image/svg+xml"
+            : ext === "webp"
+              ? "image/webp"
+              : ext === "gif"
+                ? "image/gif"
+                : ext === "avif"
+                  ? "image/avif"
+                  : "image/jpeg",
       mediaType: "image",
     };
   }
@@ -152,7 +174,7 @@ export async function uploadToR2(
     throw new Error(`R2 upload failed (${res.status}): ${errText}`);
   }
 
-  const publicUrl = `${R2_CONFIG.publicDomain.replace(/\/$/, "")}/${encodeURI(key)}`;
+  const publicUrl = buildR2PublicUrl(key);
   return { url: publicUrl, key };
 }
 
@@ -233,7 +255,7 @@ export async function listR2Objects(prefix = ""): Promise<R2ObjectItem[]> {
         key: rawKey,
         size,
         lastModified,
-        url: `${R2_CONFIG.publicDomain.replace(/\/$/, "")}/${encodeURI(rawKey)}`,
+        url: buildR2PublicUrl(rawKey),
         mimeType,
         mediaType,
       });
@@ -311,7 +333,7 @@ export async function saveJsonToR2(
  */
 export async function getJsonFromR2<T = unknown>(key: string): Promise<T | null> {
   // 1. Try fetching via public domain first (fastest CDN edge route)
-  const publicUrl = `${R2_CONFIG.publicDomain.replace(/\/$/, "")}/${encodeURI(key)}`;
+  const publicUrl = buildR2PublicUrl(key);
   try {
     const res = await fetch(publicUrl, {
       cache: "no-store",
@@ -369,6 +391,79 @@ export async function getJsonFromR2<T = unknown>(key: string): Promise<T | null>
     return null;
   } catch (err) {
     console.warn(`[Cloudflare R2] Failed to fetch key ${key}:`, err);
+    return null;
+  }
+}
+
+/**
+ * Fetch an object body from R2 (public CDN first, then signed GET).
+ * Used for CMS thumbnail previews so editors always see visuals.
+ */
+export async function fetchR2Object(
+  key: string,
+): Promise<{ body: ArrayBuffer; contentType: string } | null> {
+  const { mimeType } = getMediaTypeFromKey(key);
+  const publicUrl = buildR2PublicUrl(key);
+
+  try {
+    const res = await fetch(publicUrl, {
+      cache: "force-cache",
+      headers: { Accept: "image/*,video/*,*/*" },
+    });
+    if (res.ok) {
+      const body = await res.arrayBuffer();
+      const contentType =
+        res.headers.get("content-type") || mimeType || "application/octet-stream";
+      return { body, contentType };
+    }
+  } catch {
+    // fall through to signed GET
+  }
+
+  try {
+    const bucket = R2_CONFIG.bucketName;
+    const canonicalUri = `/${bucket}/${encodeURIComponent(key).replace(/%2F/g, "/")}`;
+    const host = `${R2_CONFIG.accountId}.r2.cloudflarestorage.com`;
+
+    const now = new Date();
+    const amzDate = now.toISOString().replace(/[:-]|\.\d{3}/g, "");
+    const dateStamp = amzDate.substring(0, 8);
+    const emptyHash = crypto.createHash("sha256").update("").digest("hex");
+
+    const headers = {
+      host,
+      "x-amz-content-sha256": emptyHash,
+      "x-amz-date": amzDate,
+    };
+
+    const { authHeader } = createSignature(
+      "GET",
+      canonicalUri,
+      "",
+      headers,
+      emptyHash,
+      amzDate,
+      dateStamp,
+    );
+
+    const getEndpoint = `https://${host}${canonicalUri}`;
+    const res = await fetch(getEndpoint, {
+      method: "GET",
+      headers: {
+        Host: host,
+        "x-amz-date": amzDate,
+        "x-amz-content-sha256": emptyHash,
+        Authorization: authHeader,
+      },
+    });
+
+    if (!res.ok) return null;
+    const body = await res.arrayBuffer();
+    const contentType =
+      res.headers.get("content-type") || mimeType || "application/octet-stream";
+    return { body, contentType };
+  } catch (err) {
+    console.warn(`[Cloudflare R2] Failed to fetch object ${key}:`, err);
     return null;
   }
 }

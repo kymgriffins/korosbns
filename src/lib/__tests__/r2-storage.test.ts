@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { R2_CONFIG } from "@/lib/r2-storage";
+import { R2_CONFIG, buildR2PublicUrl, getMediaTypeFromKey } from "@/lib/r2-storage";
 
 describe("Cloudflare R2 Storage Configuration", () => {
   it("has valid Cloudflare account and bucket defaults", () => {
@@ -8,5 +8,12 @@ describe("Cloudflare R2 Storage Configuration", () => {
     expect(R2_CONFIG.publicDomain).toBe("https://pub-96ce2eba58694b1da7f540033bdaa464.r2.dev");
     expect(R2_CONFIG.accessKeyId.length).toBeGreaterThan(10);
     expect(R2_CONFIG.secretAccessKey.length).toBeGreaterThan(20);
+  });
+
+  it("encodes each path segment in public URLs for previews", () => {
+    expect(buildR2PublicUrl("folder/my photo.jpg")).toBe(
+      "https://pub-96ce2eba58694b1da7f540033bdaa464.r2.dev/folder/my%20photo.jpg",
+    );
+    expect(getMediaTypeFromKey("stills/cover.WEBP").mediaType).toBe("image");
   });
 });
