@@ -1,4 +1,14 @@
 {
+  "dials": {
+    "DESIGN_VARIANCE": 3,
+    "MOTION_INTENSITY": 2,
+    "VISUAL_DENSITY": 3
+  },
+  "seo": {
+    "title": "About | Budget Ndio Story",
+    "description": "Budget Ndio Story was founded by young Kenyans to dismantle the culture of budget secrecy. We track KSh 4.82 Trillion in national and county spending.",
+    "canonical": "https://budgetndiostory.org/about"
+  },
   "hero": {
     "eyebrow": "About",
     "title": "Youth-led transparency for Kenya's budget",

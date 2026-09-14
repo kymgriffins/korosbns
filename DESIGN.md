@@ -198,6 +198,14 @@ Shadows appear only as interactive responses:
 
 These are intentional deviations from the core tokens for specific visual contexts. They are documented here so they remain deliberate choices, not drift.
 
+### Motif System (Layer 3 — Theme Presets)
+
+Motif is a **preset slot**, not a code component. Each preset picks one motif from an allowlist of 3–4 options. The constraint:
+
+- **Two presets cannot share both motif AND color family.** If Preset A uses "gradient-wash" motif with blue family, no other preset can use "gradient-wash" with blue.
+- Motif selection is code-only (PR required). Editors choose from existing presets.
+- The allowlist of motifs is defined in `src/lib/presets.ts` (to be created in Step 3).
+
 ### Day/Night Switch (`day-night-switch.tsx`)
 A thematic toggle with a sky-atmosphere metaphor. Colors represent sky, sun, and ambient light at different times of day — not general UI tokens.
 

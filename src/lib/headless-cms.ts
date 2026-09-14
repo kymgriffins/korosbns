@@ -52,6 +52,7 @@ import landingSectionsContent from "@/content/landing-sections.json";
 import programmeReelsContent from "@/content/programme-reels.json";
 import studiosEvidenceContent from "@/data/fallbacks/studios-evidence.json";
 import bnsStudioContent from "@/content/bns-studio.json";
+import redirectsContent from "@/content/redirects.json";
 
 // Optional imports for budgethub datasets
 let budgetFyEpisodesContent: unknown = {};
@@ -123,7 +124,8 @@ export type CmsCollectionSlug =
   | "landing-sections"
   | "programme-reels"
   | "studios-evidence"
-  | "bns-studio";
+  | "bns-studio"
+  | "redirects";
 
 export type CmsCategory =
   | "Marketing & Site Copy"
@@ -597,6 +599,18 @@ export const CMS_COLLECTIONS_CATALOG: Record<CmsCollectionSlug, CmsCollectionMet
     lastUpdated: new Date().toISOString(),
     schemaKeys: ["hero", "screening", "productionSpectrum", "commission", "about", "images", "featuredWork", "seo"],
   },
+  redirects: {
+    slug: "redirects",
+    name: "URL Redirects",
+    description: "From/to URL redirect mappings. Required on every slug change. No silent 404s.",
+    category: "Platform Config & Documents",
+    filePath: "src/content/redirects.json",
+    itemCount: Array.isArray((redirectsContent as { redirects?: unknown[] }).redirects)
+      ? (redirectsContent as { redirects: unknown[] }).redirects.length
+      : 0,
+    lastUpdated: new Date().toISOString(),
+    schemaKeys: ["redirects", "from", "to", "status", "reason"],
+  },
 };
 
 // In-memory collection storage cache
@@ -643,6 +657,7 @@ const _cmsDataCache: Record<CmsCollectionSlug, Record<string, unknown>> = {
   "programme-reels": programmeReelsContent as Record<string, unknown>,
   "studios-evidence": studiosEvidenceContent as unknown as Record<string, unknown>,
   "bns-studio": bnsStudioContent as Record<string, unknown>,
+  redirects: redirectsContent as Record<string, unknown>,
 };
 
 function getFormattedDate() {

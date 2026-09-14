@@ -1,4 +1,15 @@
 {
+  "dials": {
+    "DESIGN_VARIANCE": 4,
+    "MOTION_INTENSITY": 4,
+    "VISUAL_DENSITY": 3
+  },
+  "seo": {
+    "title": "BNS Studio - Forensic Civic Media Production",
+    "description": "Documentaries, podcasts, animations, town halls, and social reels - verified civic media production from Budget Ndio Story.",
+    "canonical": "https://budgetndiostory.org/bns-studio",
+    "ogImage": "/images/media/129A3905.jpg"
+  },
   "provenance": {
     "source": "BNS Studio page content (seed)",
     "note": "CMS-managed page sections, images, and configuration for the BNS Studio page. Add/remove/reorder sections in the 'sections' array.",
@@ -226,10 +237,5 @@
         }
       ]
     }
-  ],
-  "seo": {
-    "title": "BNS Studio - Forensic Civic Media Production",
-    "description": "Documentaries, podcasts, animations, town halls, and social reels - verified civic media production from Budget Ndio Story.",
-    "ogImage": "/images/media/129A3905.jpg"
-  }
+  ]
 }

@@ -1,0 +1,200 @@
+{
+  "capturedAt": "2026-09-14T00:00:00Z",
+  "source": "budgetndiostory.org live homepage + sitemap.ts + CMS collections",
+  "note": "Frozen preservation baseline. Every field here must survive the redesign unchanged unless a redirect entry or approved change record exists.",
+
+  "urls": {
+    "static": [
+      "/",
+      "/bns-studio",
+      "/bns-studio/work",
+      "/work",
+      "/bns-studio/about",
+      "/programmes",
+      "/programmes/connect",
+      "/programmes/mashinani",
+      "/programmes/wanahabari-lab",
+      "/programmes/studios",
+      "/about",
+      "/learn",
+      "/learn/podcasts",
+      "/reports",
+      "/budgetnews",
+      "/learn/articles",
+      "/learn/stories",
+      "/learn/videos",
+      "/learn/documents",
+      "/events",
+      "/surveys",
+      "/faq",
+      "/help",
+      "/glossary",
+      "/contact",
+      "/privacy",
+      "/terms",
+      "/analytics",
+      "/security",
+      "/weekly-notes",
+      "/weekly-notes/manage",
+      "/weekly-notes/audit",
+      "/bns-project",
+      "/bns-project/terra"
+    ],
+    "dynamicPrefixes": [
+      "/team/{slug}",
+      "/learn/{article-slug}",
+      "/learn/{story-slug}",
+      "/learn/modules/{module-slug}",
+      "/reports/{report-slug}",
+      "/bns-studio/{project-slug}",
+      "/bns-studio/work?format={format}"
+    ],
+    "studioFormatQueries": [
+      "Podcast & Audio",
+      "Animations",
+      "Explainer Videos",
+      "Research Spotlights",
+      "Documentaries",
+      "Social Media Series",
+      "Town Hall Design & Facilitation",
+      "Community Listening Sessions"
+    ]
+  },
+
+  "navigation": {
+    "logo": {
+      "src": "/logo.svg",
+      "alt": "Budget Ndio Story",
+      "href": "/"
+    },
+    "navLinks": [
+      { "id": "programmes", "label": "Programmes", "href": "/programmes" },
+      { "id": "about", "label": "About", "href": "/about" },
+      { "id": "studios", "label": "BNS Studios", "href": "/bns-studio" },
+      { "id": "contact", "label": "+254 790 631 623", "href": "/contact" }
+    ],
+    "actions": {
+      "signInLabel": "Sign in",
+      "signInHref": "/login",
+      "ctaLabel": "Discuss Partnership",
+      "ctaHref": "/contact?intent=partner"
+    },
+    "footerColumns": {
+      "product": ["Programmes", "Studios", "Explainers", "Get Involved"],
+      "resources": ["Budget Glossary", "Help & FAQ", "Contact"],
+      "company": ["About BNS", "Team", "Careers", "Media", "Partners", "BNS Studios"]
+    }
+  },
+
+  "formFields": {
+    "contact": {
+      "fields": ["email", "phone", "whatsapp", "prompt"],
+      "socials": ["X", "YouTube", "Instagram", "LinkedIn", "WhatsApp", "TikTok", "Facebook"]
+    },
+    "contactIntents": ["partner", "budget-tracker", "wanahabari-lab", "commission"],
+    "note": "No HTML form definitions exist in CMS. Contact is email/WhatsApp/phone links only. If forms are added later, freeze name attributes here."
+  },
+
+  "legalCopy": {
+    "security": {
+      "title": "Security",
+      "sectionCount": 6,
+      "firstSectionTitle": "Encryption in Transit"
+    },
+    "privacy": {
+      "title": "Privacy Policy",
+      "lastUpdated": "June 2026",
+      "sectionCount": 6,
+      "firstSectionTitle": "Data We Collect"
+    },
+    "terms": {
+      "title": "Terms of Service",
+      "lastUpdated": "April 2026",
+      "sectionCount": 8,
+      "firstHeading": "1. Acceptance of Terms"
+    }
+  },
+
+  "logo": {
+    "src": "/logo.svg",
+    "alt": "Budget Ndio Story",
+    "treatment": "object-contain, 28x28 inside rounded border"
+  },
+
+  "seoBaseline": {
+    "homepage": {
+      "title": "Budget Ndio Story | Follow Kenya's Budget. Find the Story.",
+      "description": "Budget Ndio Story is a youth-led initiative in Kenya that translates public budgets into accessible, actionable information to promote civic engagement and accountability."
+    },
+    "programmes": {
+      "title": "Budget Ndio Story | Follow Kenya's Budget. Find the Story.",
+      "description": "Partner with Budget Ndio Story on national and county budget accountability, newsroom capacity, and evidence production across Kenya's public finance system."
+    },
+    "bnsStudio": {
+      "title": "BNS Studio - Forensic Civic Media Production",
+      "description": "Documentaries, podcasts, animations, town halls, and social reels - verified civic media production from Budget Ndio Story."
+    }
+  },
+
+  "jsonLd": {
+    "organization": {
+      "@type": "Organization",
+      "name": "Budget Ndio Story",
+      "alternateName": "BNS",
+      "url": "https://budgetndiostory.org",
+      "logo": "https://budgetndiostory.org/logo.svg",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Nairobi",
+        "addressCountry": "KE"
+      },
+      "areaServed": "Kenya",
+      "sameAs": [
+        "https://twitter.com/budgetndiostory",
+        "https://youtube.com/@budgetndiostory",
+        "https://instagram.com/budgetndiostory",
+        "https://linkedin.com/company/budget-ndio-story/"
+      ]
+    },
+    "breadcrumbList": {
+      "@type": "BreadcrumbList",
+      "items": ["Home", "BNS Studios", "Work", "Programmes", "Learn", "Reports", "About"]
+    },
+    "service": {
+      "@type": "Service",
+      "name": "Budget Ndio Story",
+      "serviceType": [
+        "Explainer Videos & Forensic Visual Memos",
+        "Town Hall Convening & Citizen Barazas",
+        "County Budget Scorecards",
+        "Civic Education & Learning Modules"
+      ]
+    }
+  },
+
+  "brandTokens": {
+    "primary": "#0055FF",
+    "accent": "#0055FF",
+    "background": "#FFFFFF",
+    "foreground": "#000000",
+    "muted": "#F5F5F5",
+    "border": "rgba(0, 0, 0, 0.12)"
+  },
+
+  "motionBaseline": {
+    "lenisSmoothScroll": true,
+    "lenisClassOnHtml": true,
+    "scrollTriggerAnimations": "none detected in static source",
+    "parallaxEffects": "none detected in static source",
+    "motionIntensityInferred": 3,
+    "note": "Lenis is present. No GSAP ScrollTrigger or Framer Motion scroll-linked animations detected in HTML source. Motion dial starts at 3."
+  },
+
+  "dialsBaseline": {
+    "homepage": {
+      "DESIGN_VARIANCE": 3,
+      "MOTION_INTENSITY": 3,
+      "VISUAL_DENSITY": 4
+    }
+  }
+}

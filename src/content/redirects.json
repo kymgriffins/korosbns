@@ -1,0 +1,9 @@
+{
+  "provenance": {
+    "source": "CMS redirects collection",
+    "note": "Every URL change must have a redirect entry. No silent 404s.",
+    "level": "authoritative",
+    "lastUpdated": "2026-09-14"
+  },
+  "redirects": []
+}

@@ -1,4 +1,23 @@
 {
+  "dials": {
+    "DESIGN_VARIANCE": 3,
+    "MOTION_INTENSITY": 3,
+    "VISUAL_DENSITY": 4
+  },
+  "seo": {
+    "title": "Budget Ndio Story | Follow Kenya's Budget. Find the Story.",
+    "description": "Budget Ndio Story is a youth-led initiative in Kenya that translates public budgets into accessible, actionable information to promote civic engagement and accountability.",
+    "canonical": "https://budgetndiostory.org/",
+    "jsonLd": {
+      "@type": "Organization",
+      "name": "Budget Ndio Story",
+      "alternateName": "BNS",
+      "url": "https://budgetndiostory.org",
+      "logo": "https://budgetndiostory.org/logo.svg",
+      "address": { "@type": "PostalAddress", "addressLocality": "Nairobi", "addressCountry": "KE" },
+      "areaServed": "Kenya"
+    }
+  },
   "badges": [
     { "text": "Budget Stories 🎭", "top": "15%", "left": "5%" },
     { "text": "County Spending 📊", "top": "25%", "right": "8%" },

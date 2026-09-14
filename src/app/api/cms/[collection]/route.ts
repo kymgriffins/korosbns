@@ -13,6 +13,7 @@ import {
   getJsonFromR2,
   purgeCloudflareEdgeCache,
 } from "@/lib/r2-storage";
+import { validateCollection, checkLockedFields } from "@/lib/cms-validators";
 
 async function findValidDiskPath(slug: CmsCollectionSlug): Promise<string | null> {
   const meta = CMS_COLLECTIONS_CATALOG[slug];
@@ -139,6 +140,42 @@ export async function POST(
         { error: "Missing JSON data body payload" },
         { status: 400 },
       );
+    }
+
+    // 0. Run Section 11 validators — reject publish on fail
+    const validation = validateCollection(slug, body.data);
+    if (!validation.passed) {
+      const failures = validation.results.filter((r) => !r.pass);
+      return NextResponse.json(
+        {
+          error: "Validation failed. Fix the following before publishing:",
+          validationFailures: failures.map((f) => ({
+            rule: f.rule,
+            message: f.message,
+            count: f.count,
+            limit: f.limit,
+          })),
+        },
+        { status: 422 },
+      );
+    }
+
+    // 0b. Enforce locked fields — reject edits to locked content
+    const existingData = headlessCmsApi.getCollectionData(slug);
+    if (existingData) {
+      const lockedPaths = checkLockedFields(
+        existingData as Record<string, unknown>,
+        body.data,
+      );
+      if (lockedPaths.length > 0) {
+        return NextResponse.json(
+          {
+            error: "Locked fields cannot be edited:",
+            lockedPaths,
+          },
+          { status: 422 },
+        );
+      }
     }
 
     // 1. Update in-memory data cache and permissions

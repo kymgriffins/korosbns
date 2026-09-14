@@ -1,4 +1,14 @@
 {
+  "dials": {
+    "DESIGN_VARIANCE": 3,
+    "MOTION_INTENSITY": 3,
+    "VISUAL_DENSITY": 4
+  },
+  "seo": {
+    "title": "Programmes | Budget Ndio Story",
+    "description": "Partner with Budget Ndio Story on national and county budget accountability, newsroom capacity, and evidence production across Kenya's public finance system.",
+    "canonical": "https://budgetndiostory.org/programmes"
+  },
   "landing": {
     "seoTitle": "Budget Ndio Story | Follow Kenya's Budget. Find the Story.",
     "seoDescription": "Partner with Budget Ndio Story on national and county budget accountability, newsroom capacity, and evidence production across Kenya's public finance system.",

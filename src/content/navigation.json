@@ -2,32 +2,45 @@
   "logo": {
     "src": "/logo.svg",
     "alt": "Budget Ndio Story",
-    "href": "/"
+    "href": "/",
+    "locked": true
   },
   "navLinks": [
     {
       "id": "programmes",
       "label": "Programmes",
       "href": "/programmes",
-      "badge": ""
+      "badge": "",
+      "locked": true,
+      "order": 1,
+      "parent": null
     },
     {
       "id": "about",
       "label": "About",
       "href": "/about",
-      "badge": ""
+      "badge": "",
+      "locked": true,
+      "order": 2,
+      "parent": null
     },
     {
       "id": "studios",
       "label": "BNS Studios",
       "href": "/bns-studio",
-      "badge": "Studio"
+      "badge": "Studio",
+      "locked": true,
+      "order": 3,
+      "parent": null
     },
     {
       "id": "contact",
       "label": "+254 790 631 623",
       "href": "/contact",
-      "badge": ""
+      "badge": "",
+      "locked": true,
+      "order": 4,
+      "parent": null
     }
   ],
   "actions": {
