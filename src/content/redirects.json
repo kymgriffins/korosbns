@@ -1,9 +1,28 @@
 {
   "provenance": {
     "source": "CMS redirects collection",
-    "note": "Every URL change must have a redirect entry. No silent 404s.",
+    "note": "Every URL change must have a redirect entry. No silent 404s. Static pages handled by middleware; dynamic slugs by next.config.ts.",
     "level": "authoritative",
     "lastUpdated": "2026-09-14"
   },
-  "redirects": []
+  "redirects": [
+    {
+      "from": "/work",
+      "to": "/programmes/",
+      "status": 301,
+      "reason": "Dead-end listing page killed. Projects live under /projects/[slug]; programme context via /programmes/."
+    },
+    {
+      "from": "/bns-studio/work",
+      "to": "/programmes/",
+      "status": 301,
+      "reason": "Duplicate of /work killed. Projects live under /projects/[slug]."
+    },
+    {
+      "from": "/bns-project",
+      "to": "/programmes/",
+      "status": 301,
+      "reason": "Hardcoded 6-item index killed. Projects live under /projects/[slug]; programme context via /programmes/."
+    }
+  ]
 }

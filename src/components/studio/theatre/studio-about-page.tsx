@@ -50,7 +50,7 @@ export function StudioAboutPage() {
             >
               Commission the studio
             </button>
-            <Link href="/bns-studio/work" className="studio-about-ghost">
+            <Link href="/programmes/" className="studio-about-ghost">
               See featured work
               <ArrowUpRight className="size-4" aria-hidden />
             </Link>
@@ -211,7 +211,7 @@ export function StudioAboutPage() {
             >
               Open enquiry form
             </button>
-            <Link href="/bns-studio/work" className="studio-about-ghost">
+            <Link href="/programmes/" className="studio-about-ghost">
               See featured work
               <ArrowUpRight className="size-4" aria-hidden />
             </Link>

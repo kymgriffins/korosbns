@@ -12,14 +12,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const routes = [
     { path: "", priority: 1.0, frequency: "weekly" as const },
     { path: "/bns-studio", priority: 1.0, frequency: "weekly" as const },
-    { path: "/bns-studio/work", priority: 0.95, frequency: "weekly" as const },
-    { path: "/work", priority: 0.95, frequency: "weekly" as const },
     { path: "/bns-studio/about", priority: 0.85, frequency: "monthly" as const },
     { path: "/programmes", priority: 0.9, frequency: "monthly" as const },
     { path: "/programmes/connect", priority: 0.85, frequency: "monthly" as const },
     { path: "/programmes/mashinani", priority: 0.85, frequency: "monthly" as const },
     { path: "/programmes/wanahabari-lab", priority: 0.85, frequency: "monthly" as const },
-    { path: "/programmes/studios", priority: 0.9, frequency: "monthly" as const },
     { path: "/about", priority: 0.85, frequency: "monthly" as const },
     { path: "/learn", priority: 0.9, frequency: "weekly" as const },
     { path: "/learn/podcasts", priority: 0.85, frequency: "weekly" as const },
@@ -42,8 +39,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { path: "/weekly-notes", priority: 0.7, frequency: "weekly" as const },
     { path: "/weekly-notes/manage", priority: 0.3, frequency: "monthly" as const },
     { path: "/weekly-notes/audit", priority: 0.3, frequency: "monthly" as const },
-    { path: "/bns-project", priority: 0.7, frequency: "monthly" as const },
-    { path: "/bns-project/terra", priority: 0.9, frequency: "weekly" as const },
   ];
 
   const sitemapEntries: MetadataRoute.Sitemap = routes.map((route) => ({
@@ -154,7 +149,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   STUDIO_FORMATS.forEach((format) => {
     sitemapEntries.push({
-      url: canonicalUrl(`/bns-studio/work?format=${encodeURIComponent(format)}`),
+      url: canonicalUrl(`/bns-studio?format=${encodeURIComponent(format)}`),
       lastModified: new Date(),
       changeFrequency: "weekly",
       priority: 0.8,

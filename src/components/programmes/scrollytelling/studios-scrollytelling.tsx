@@ -321,7 +321,7 @@ export function StudiosScrollytelling() {
                   className="w-full sm:w-auto justify-center"
                 />
                 <PillButtonGroup
-                  href="/work"
+                  href="/programmes/"
                   label="Explore Production Archive"
                   variant="outline"
                   className="hidden sm:inline-flex w-full sm:w-auto justify-center border-zinc-700 text-white hover:bg-zinc-900"

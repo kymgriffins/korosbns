@@ -88,7 +88,7 @@ export function StudioSiteNav({
             </Link>
             <span className="text-muted-foreground/40 text-xs">/</span>
             <Link
-              href="/bns-studio/work"
+              href="/programmes/"
               className={cn(
                 "studio-site-nav-link",
                 resolvedActive === "work" && "studio-site-nav-link-active",
@@ -162,7 +162,7 @@ export function StudioSiteNav({
               </button>
             ) : (
               <Link
-                href="/bns-studio/work"
+                href="/programmes/"
                 className="studio-site-nav-search"
                 aria-label="Search productions"
               >

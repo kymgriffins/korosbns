@@ -147,7 +147,7 @@ export function ProjectDetailClient() {
           <h2 className="text-3xl font-bold mb-3">Project Not Found</h2>
           <p className="text-muted-foreground mb-8">The project you are looking for does not exist.</p>
           <Link
-            href="/bns-project"
+            href="/programmes/"
             className="inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline"
           >
             <ArrowLeft className="size-4" />
@@ -165,7 +165,7 @@ export function ProjectDetailClient() {
         <div className="absolute inset-0 bg-gradient-to-b from-primary/5 via-transparent to-background pointer-events-none" />
         <div className="relative z-10">
           <Link
-            href="/bns-project"
+            href="/programmes/"
             className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground mb-8 transition-colors"
           >
             <ArrowLeft className="size-4" />

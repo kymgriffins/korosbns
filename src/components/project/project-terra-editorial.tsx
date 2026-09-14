@@ -51,7 +51,7 @@ export function ProjectTerraEditorial({ project }: ProjectTerraEditorialProps = 
             </Link>
             <span aria-hidden>/</span>
             <Link
-              href="/bns-project"
+              href="/programmes/"
               className="transition-colors hover:text-primary"
             >
               Projects
@@ -296,7 +296,7 @@ export function ProjectTerraEditorial({ project }: ProjectTerraEditorialProps = 
               <ArrowRight className="size-3.5" aria-hidden />
             </Link>
             <Link
-              href="/work"
+              href="/programmes/"
               className="inline-flex items-center gap-1.5 rounded-full border border-border/80 px-4 py-2 text-xs font-medium outline-none transition-colors hover:border-primary/50 focus-visible:ring-2 focus-visible:ring-ring"
             >
               All work

@@ -255,13 +255,40 @@ const nextConfig: NextConfig = {
       },
       {
         source: "/projects",
-        destination: "/work",
-        permanent: false,
+        destination: "/programmes/",
+        permanent: true,
       },
       {
         source: "/projects/",
-        destination: "/work",
-        permanent: false,
+        destination: "/programmes/",
+        permanent: true,
+      },
+      // Legacy project routes → canonical /projects/[slug]
+      {
+        source: "/bns-project/:slug*",
+        destination: "/projects/:slug*",
+        permanent: true,
+      },
+      {
+        source: "/bns-studio/:slug*",
+        destination: "/projects/:slug*",
+        permanent: true,
+      },
+      // Project TERRA aliases → canonical /projects/project-terra
+      {
+        source: "/projects/terra",
+        destination: "/projects/project-terra",
+        permanent: true,
+      },
+      {
+        source: "/bns-project/terra",
+        destination: "/projects/project-terra",
+        permanent: true,
+      },
+      {
+        source: "/bns-project/project-terra",
+        destination: "/projects/project-terra",
+        permanent: true,
       },
       {
         source: "/programmes/bns-connect",

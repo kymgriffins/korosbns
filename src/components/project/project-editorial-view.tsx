@@ -320,7 +320,7 @@ export function ProjectEditorialView({
               </a>
             </Button>
             <Button asChild variant="outline" size="lg">
-              <Link href="/bns-project">Explore All Projects</Link>
+              <Link href="/programmes/">Explore All Projects</Link>
             </Button>
           </div>
 

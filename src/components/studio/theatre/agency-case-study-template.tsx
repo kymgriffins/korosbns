@@ -68,7 +68,7 @@ export function AgencyCaseStudyTemplate({ project }: { project: StudioProjectEvi
           {/* Breadcrumb back to repository */}
           <nav aria-label="Breadcrumb" className="mb-6">
             <Link
-              href="/work"
+              href="/programmes/"
               className="inline-flex items-center gap-1.5 text-xs font-semibold text-muted-foreground transition-colors hover:text-foreground"
             >
               <ArrowLeft className="size-3.5" />
@@ -369,7 +369,7 @@ export function AgencyCaseStudyTemplate({ project }: { project: StudioProjectEvi
                   icon={<Send className="size-4" />}
                 />
                 <PillButtonGroup
-                  href="/work"
+                  href="/programmes/"
                   label="All Work & Evidence"
                   variant="outline"
                   size="lg"

@@ -44,7 +44,7 @@ export function FormatShell({
       )}
     >
       <div className="fpage-wrap">
-        <Link href="/bns-studio/work" className="studio-article-back">
+        <Link href="/programmes/" className="studio-article-back">
           <ArrowLeft className="size-4" aria-hidden />
           All work
         </Link>
@@ -75,7 +75,7 @@ export function FormatCta({
         <Link href="/bns-studio/about#contact" className="studio-about-cta">
           Commission BNS Studios
         </Link>
-        <Link href="/bns-studio/work" className="studio-about-ghost">
+        <Link href="/programmes/" className="studio-about-ghost">
           Back to all work
           <ArrowUpRight className="size-4" aria-hidden />
         </Link>
