@@ -33,15 +33,13 @@ describe("Studio SEO & Commercial Indexing (P0 Priority)", () => {
     expect(studioEntry?.changeFrequency).toBe("weekly");
   });
 
-  it("sitemap lists /bns-studio/work and /work with 0.95 priority", async () => {
+  it("sitemap does NOT list dead pages /bns-studio/work, /work, /bns-project", async () => {
     const { default: sitemap } = await import("@/app/sitemap");
     const entries = await sitemap();
-    const studioWork = entries.find((e) => e.url === "https://budgetndiostory.org/bns-studio/work");
-    const unifiedWork = entries.find((e) => e.url === "https://budgetndiostory.org/work");
-    expect(studioWork).toBeDefined();
-    expect(studioWork?.priority).toBe(0.95);
-    expect(unifiedWork).toBeDefined();
-    expect(unifiedWork?.priority).toBe(0.95);
+    const urls = entries.map((e) => e.url);
+    expect(urls).not.toContain("https://budgetndiostory.org/bns-studio/work");
+    expect(urls).not.toContain("https://budgetndiostory.org/work");
+    expect(urls).not.toContain("https://budgetndiostory.org/bns-project");
   });
 
   it("sitemap lists all verified studio project dossiers with >= 0.85 priority", async () => {
@@ -67,10 +65,10 @@ describe("Studio SEO & Commercial Indexing (P0 Priority)", () => {
     const entries = await sitemap();
     const urls = entries.map((e) => e.url);
 
-    expect(urls).toContain("https://budgetndiostory.org/bns-studio/work?format=Podcast%20%26%20Audio");
-    expect(urls).toContain("https://budgetndiostory.org/bns-studio/work?format=Animations");
-    expect(urls).toContain("https://budgetndiostory.org/bns-studio/work?format=Explainer%20Videos");
-    expect(urls).toContain("https://budgetndiostory.org/bns-studio/work?format=Documentaries");
+    expect(urls).toContain("https://budgetndiostory.org/bns-studio?format=Podcast%20%26%20Audio");
+    expect(urls).toContain("https://budgetndiostory.org/bns-studio?format=Animations");
+    expect(urls).toContain("https://budgetndiostory.org/bns-studio?format=Explainer%20Videos");
+    expect(urls).toContain("https://budgetndiostory.org/bns-studio?format=Documentaries");
   });
 
   it("robots.ts allows AI search crawlers on public studio pages while protecting private routes", async () => {
