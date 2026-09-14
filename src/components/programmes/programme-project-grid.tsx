@@ -6,7 +6,7 @@ import Link from "next/link";
 import { Play, Search, X } from "lucide-react";
 import { LandingSection } from "@/layouts/landing-section";
 import { LANDING_TYPOGRAPHY as T } from "@/constants/landing-typography";
-import { studiosEvidenceData } from "@/data/studios-evidence";
+import { studiosEvidenceData, type ProjectFormat } from "@/data/studios-evidence";
 import {
   getReelsByProgramme,
   programmesContent,
@@ -29,7 +29,8 @@ const SEED_CTA = (
 ).landing?.featuredIntro;
 
 interface ProgrammeProjectGridProps {
-  programmeSlug: ProgrammeSlug;
+  programmeSlug?: ProgrammeSlug;
+  format?: ProjectFormat;
   eyebrow?: string;
   headline?: string;
   description?: string;
@@ -56,6 +57,7 @@ type GridItem = {
 
 export function ProgrammeProjectGrid({
   programmeSlug,
+  format,
   eyebrow = "Verified outputs",
   headline = "Tangible projects from this programme",
   description = "Every claim is backed by a published documentary, dataset, explainer, or civic forum.",
@@ -69,12 +71,16 @@ export function ProgrammeProjectGrid({
   const [activeReel, setActiveReel] = useState<GridItem | null>(null);
 
   const projects = useMemo(
-    () => studiosEvidenceData.getProjectsByProgramme(programmeSlug),
-    [programmeSlug],
+    () => format
+      ? studiosEvidenceData.getProjectsByFormat(format)
+      : programmeSlug
+        ? studiosEvidenceData.getProjectsByProgramme(programmeSlug)
+        : [],
+    [programmeSlug, format],
   );
 
   const reels = useMemo(
-    () => getReelsByProgramme(programmeSlug),
+    () => programmeSlug ? getReelsByProgramme(programmeSlug) : [],
     [programmeSlug],
   );
 

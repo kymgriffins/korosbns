@@ -138,7 +138,7 @@ function mergeProject(studio: StudioProject): CanonicalProject {
   const featured = featuredMap.get(studio.id);
   const org = studio.organizationId ? orgMap.get(studio.organizationId) : undefined;
   const videoId = videoIdFrom(studio, featured);
-  const programmeSlug = studio.programmeSlug || featured?.programmeSlug || "studios";
+  const programmeSlug = studio.programmeSlug || featured?.programmeSlug || "connect";
   const mediaType = resolveMediaType(studio);
   const reelUrl = mediaType === "reel" ? studio.media?.videoUrl : undefined;
   const audioUrl = mediaType === "audio" ? studio.media?.videoUrl : undefined;
@@ -200,7 +200,7 @@ function getAll(): CanonicalProject[] {
 /** Projects marked as featured in studios-evidence OR present in featured-projects.json */
 function getFeatured(): CanonicalProject[] {
   return getAll().filter(
-    (p) => p.featured || _featuredIds.has(p.id),
+    (p) => (p.featured || _featuredIds.has(p.id)) && p.visible,
   );
 }
 

@@ -188,8 +188,10 @@ const STUDIO_PROJECTS: StudioProjectEvidence[] = hydrateProjects(
 export { STUDIO_ORGANIZATIONS, STUDIO_PROJECTS };
 
 export const studiosEvidenceData = {
-  getAllProjects: () => STUDIO_PROJECTS.filter((p) => p.visible !== false),
-  getFeaturedProjects: () => STUDIO_PROJECTS.filter((p) => p.featured && p.visible !== false),
+  getAllProjects: () => STUDIO_PROJECTS.filter((p) => p.visible !== false)
+    .sort((a, b) => (a.order ?? 999) - (b.order ?? 999)),
+  getFeaturedProjects: () => STUDIO_PROJECTS.filter((p) => p.featured && p.visible !== false)
+    .sort((a, b) => (a.order ?? 999) - (b.order ?? 999)),
   getProjectBySlug: (slug: string) => {
     const canonical = resolveProjectId(slug);
     return STUDIO_PROJECTS.find(
@@ -203,15 +205,18 @@ export const studiosEvidenceData = {
     );
   },
   getProjectsByContentType: (contentType: StudioContentType) =>
-    STUDIO_PROJECTS.filter((p) => p.contentType === contentType && p.visible !== false),
+    STUDIO_PROJECTS.filter((p) => p.contentType === contentType && p.visible !== false)
+      .sort((a, b) => (a.order ?? 999) - (b.order ?? 999)),
   getProjectsByProgramme: (programmeSlug: ProgrammeSlug) =>
-    STUDIO_PROJECTS.filter((p) => p.programmeSlug === programmeSlug && p.visible !== false),
+    STUDIO_PROJECTS.filter((p) => p.programmeSlug === programmeSlug && p.visible !== false)
+      .sort((a, b) => (a.order ?? 999) - (b.order ?? 999)),
   getProjectsByOrgSlug: (orgSlug: string) =>
     STUDIO_PROJECTS.filter(
       (p) => p.organization.slug === resolveOrganizationId(orgSlug) && p.visible !== false,
-    ),
+    ).sort((a, b) => (a.order ?? 999) - (b.order ?? 999)),
   getProjectsBySector: (sector: StudioSectorType) =>
-    STUDIO_PROJECTS.filter((p) => p.organization.sector === sector && p.visible !== false),
+    STUDIO_PROJECTS.filter((p) => p.organization.sector === sector && p.visible !== false)
+      .sort((a, b) => (a.order ?? 999) - (b.order ?? 999)),
   getAllOrganizations: () => STUDIO_ORGANIZATIONS,
   getOrganizationsWithProjects: () => {
     const slugsWithWork = new Set(
@@ -231,7 +236,8 @@ export const studiosEvidenceData = {
     const current = STUDIO_PROJECTS.find(
       (p) => p.id === canonical || p.slug === canonical,
     );
-    const visible = STUDIO_PROJECTS.filter((p) => p.visible !== false);
+    const visible = STUDIO_PROJECTS.filter((p) => p.visible !== false)
+      .sort((a, b) => (a.order ?? 999) - (b.order ?? 999));
     if (!current) return visible.slice(0, limit);
     return visible.filter(
       (p) =>
@@ -241,11 +247,12 @@ export const studiosEvidenceData = {
     ).slice(0, limit);
   },
   getBnsLedProjects: () =>
-    STUDIO_PROJECTS.filter((p) => p.deliveryMode === "bns-led" && p.visible !== false),
+    STUDIO_PROJECTS.filter((p) => p.deliveryMode === "bns-led" && p.visible !== false)
+      .sort((a, b) => (a.order ?? 999) - (b.order ?? 999)),
   getPartnerCorridors: (): StudioPartnerCorridor[] => {
     const partnerProjects = STUDIO_PROJECTS.filter(
       (p) => p.deliveryMode !== "bns-led" && p.visible !== false,
-    );
+    ).sort((a, b) => (a.order ?? 999) - (b.order ?? 999));
     const byOrg = new Map<string, StudioProjectEvidence[]>();
     for (const project of partnerProjects) {
       const key = project.organization.slug;
@@ -273,13 +280,16 @@ export const studiosEvidenceData = {
     ];
     return slugs.map((programmeSlug) => ({
       programmeSlug,
-      projects: STUDIO_PROJECTS.filter((p) => p.programmeSlug === programmeSlug && p.visible !== false),
+      projects: STUDIO_PROJECTS.filter((p) => p.programmeSlug === programmeSlug && p.visible !== false)
+        .sort((a, b) => (a.order ?? 999) - (b.order ?? 999)),
     }));
   },
   getProjectsByFormat: (format: ProjectFormat) =>
-    STUDIO_PROJECTS.filter((p) => p.format === format && p.visible !== false),
+    STUDIO_PROJECTS.filter((p) => p.format === format && p.visible !== false)
+      .sort((a, b) => (a.order ?? 999) - (b.order ?? 999)),
   getStudioProjects: () =>
-    STUDIO_PROJECTS.filter((p) => p.format === "studio-production" && p.visible !== false),
+    STUDIO_PROJECTS.filter((p) => p.format === "studio-production" && p.visible !== false)
+      .sort((a, b) => (a.order ?? 999) - (b.order ?? 999)),
   getMissionStats: () => {
     const visible = STUDIO_PROJECTS.filter((p) => p.visible !== false);
     return {

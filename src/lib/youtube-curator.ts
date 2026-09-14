@@ -22,7 +22,7 @@ export interface CuratedProductProject {
   wysiwygProse?: string;
   thumbnail: string;
   authorName: string;
-  programmeSlug: "connect" | "mashinani" | "wanahabari-lab" | "studios";
+  programmeSlug: "connect" | "mashinani" | "wanahabari-lab";
   programmeLabel: string;
   href: string;
   publishedAt: string;
@@ -42,18 +42,18 @@ export function cleanProductTitle(rawTitle: string): string {
 }
 
 export function inferProgrammeFromTitle(title: string): {
-  slug: "connect" | "mashinani" | "wanahabari-lab" | "studios";
+  slug: "connect" | "mashinani" | "wanahabari-lab";
   label: string;
 } {
   const t = title.toLowerCase();
   if (t.includes("county") || t.includes("mashinani") || t.includes("devolved")) {
     return { slug: "mashinani", label: "BNS Mashinani" };
   }
-  if (t.includes("wanahabari") || t.includes("investigation") || t.includes("illicit") || t.includes("red flags")) {
+  if (t.includes("wanahabari") || t.includes("investigation") || t.includes("illicit") || t.includes("red flags") || t.includes("terra")) {
     return { slug: "wanahabari-lab", label: "Wanahabari" };
   }
-  if (t.includes("studio") || t.includes("terra") || t.includes("cabri") || t.includes("podcast")) {
-    return { slug: "studios", label: "BNS Studio" };
+  if (t.includes("cabri") || t.includes("podcast") || t.includes("studio")) {
+    return { slug: "connect", label: "BNS Connect" };
   }
   return { slug: "connect", label: "BNS Connect" };
 }

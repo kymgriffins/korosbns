@@ -24,7 +24,7 @@ export type FeaturedProject = {
   thumbnailMobile?: string;
   hideDesktopThumbOnMobile?: boolean;
   authorName: string;
-  programmeSlug: ProgrammeSlug | "studios";
+  programmeSlug: ProgrammeSlug;
   programmeLabel: string;
   href: string;
   publishedAt: string;

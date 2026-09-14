@@ -205,7 +205,8 @@
       "programmeSlug": "wanahabari-lab",
       "featured": true,
       "visible": true,
-      "order": 203
+      "order": 203,
+      "format": "investigation"
     },
     {
       "id": "project-terra",
@@ -293,7 +294,8 @@
       "programmeSlug": "connect",
       "featured": true,
       "visible": true,
-      "order": 1
+      "order": 1,
+      "format": "explainer"
     },
     {
       "id": "budget-ndio-story-podcast",
@@ -390,7 +392,8 @@
       "programmeSlug": "mashinani",
       "featured": false,
       "visible": true,
-      "order": 101
+      "order": 101,
+      "format": "event"
     },
     {
       "id": "finance-bill-motion-explainer",
@@ -430,7 +433,8 @@
       "programmeSlug": "connect",
       "featured": true,
       "visible": true,
-      "order": 2
+      "order": 2,
+      "format": "explainer"
     },
     {
       "id": "mashinani-field-documentary",
@@ -471,7 +475,8 @@
       "programmeSlug": "mashinani",
       "featured": false,
       "visible": true,
-      "order": 102
+      "order": 102,
+      "format": "field-report"
     },
     {
       "id": "cra-formula-research-spotlight",
@@ -512,7 +517,8 @@
       "programmeSlug": "wanahabari-lab",
       "featured": false,
       "visible": true,
-      "order": 201
+      "order": 201,
+      "format": "investigation"
     },
     {
       "id": "budget-tiktok-vertical-series",
@@ -553,7 +559,8 @@
       "programmeSlug": "connect",
       "featured": true,
       "visible": true,
-      "order": 3
+      "order": 3,
+      "format": "field-report"
     },
     {
       "id": "wajir-community-listening",
@@ -612,7 +619,8 @@
       "programmeSlug": "mashinani",
       "featured": false,
       "visible": true,
-      "order": 103
+      "order": 103,
+      "format": "event"
     },
     {
       "id": "bps-2026-reading-coverage",
@@ -653,7 +661,8 @@
       "programmeSlug": "wanahabari-lab",
       "featured": false,
       "visible": true,
-      "order": 202
+      "order": 202,
+      "format": "investigation"
     },
     {
       "id": "stakeholder-forum-production",

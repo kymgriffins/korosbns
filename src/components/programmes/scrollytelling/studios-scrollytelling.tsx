@@ -290,7 +290,7 @@ export function StudiosScrollytelling() {
       </section>
 
       <ProgrammeProjectGrid
-        programmeSlug="studios"
+        format="studio-production"
         eyebrow="BNS Studios Outputs"
         headline="Commissioned Storytelling, Documentaries & Broadcasts"
         description="Pan-African documentaries, podcast seasons, and broadcast event coverage supporting public-interest civic tracking."

@@ -23,7 +23,7 @@ export interface HelpFaqItem {
   answer: string;
   topicId: HelpTopicId;
   tags: string[];
-  programmeSlug?: "mashinani" | "connect" | "wanahabari-lab" | "studios";
+  programmeSlug?: "mashinani" | "connect" | "wanahabari-lab";
   actionLink?: {
     label: string;
     href: string;

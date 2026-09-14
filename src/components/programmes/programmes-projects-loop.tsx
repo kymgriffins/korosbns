@@ -27,7 +27,7 @@ type DeskFilter =
   | "connect"
   | "mashinani"
   | "wanahabari-lab"
-  | "studios";
+  | "studio-production";
 
 interface FilterTab {
   id: DeskFilter;
@@ -65,13 +65,6 @@ const PROGRAMME_CONFIG: Record<
     pillClass: "bg-rose-600/90 text-white",
     accentClass: "text-rose-400",
     href: "/programmes/wanahabari-lab",
-  },
-  studios: {
-    name: "BNS Studio",
-    number: "Studio",
-    pillClass: "bg-primary text-primary-foreground",
-    accentClass: "text-primary",
-    href: "/bns-studio",
   },
 };
 
@@ -146,9 +139,9 @@ export function ProgrammesProjectsLoop({ className }: { className?: string }) {
           .length,
       },
       {
-        id: "studios",
-        label: " Studios",
-        count: allProjects.filter((p) => p.programmeSlug === "studios").length,
+        id: "studio-production",
+        label: " Studio Productions",
+        count: allProjects.filter((p) => p.format === "studio-production").length,
       },
     ];
   }, [allProjects]);
@@ -313,7 +306,7 @@ export function ProgrammesProjectsLoop({ className }: { className?: string }) {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {filteredProjects.map((project, idx) => {
                 const programmeMeta =
-                  PROGRAMME_CONFIG[project.programmeSlug] || PROGRAMME_CONFIG.studios;
+                  PROGRAMME_CONFIG[project.programmeSlug] || PROGRAMME_CONFIG.connect;
                 const href = programmeMeta.href;
 
                 return (
@@ -407,7 +400,7 @@ export function ProgrammesProjectsLoop({ className }: { className?: string }) {
           >
             {filteredProjects.map((project, idx) => {
               const programmeMeta =
-                PROGRAMME_CONFIG[project.programmeSlug] || PROGRAMME_CONFIG.studios;
+                PROGRAMME_CONFIG[project.programmeSlug] || PROGRAMME_CONFIG.connect;
               const href = programmeMeta.href;
 
               return (
