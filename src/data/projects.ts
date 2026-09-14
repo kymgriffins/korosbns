@@ -53,6 +53,12 @@ export type CanonicalProject = {
   outputs: string[];
   tags: string[];
   featured: boolean;
+  /** Global visibility toggle — false hides from /work, landing, programme grids, search */
+  visible: boolean;
+  /** Production format — replaces studios-as-programme */
+  format?: string;
+  /** Sort order within programme — lower numbers appear first */
+  order: number;
   /** Editorial prose override from featured-projects.json */
   prose?: string;
   wysiwygProse?: string;
@@ -81,7 +87,6 @@ function programmeLabelFor(slug: string): string {
     connect: "BNS Connect",
     mashinani: "BNS Mashinani",
     "wanahabari-lab": "Wanahabari Lab",
-    studios: "BNS Studio",
   };
   return labels[slug] || slug;
 }
@@ -163,6 +168,9 @@ function mergeProject(studio: StudioProject): CanonicalProject {
     outputs: studio.outputs || [],
     tags: studio.tags || [],
     featured: studio.featured || false,
+    visible: studio.visible !== false,
+    format: (studio as { format?: string }).format,
+    order: (studio as { order?: number }).order ?? 999,
     prose: featured?.prose,
     wysiwygProse: featured?.wysiwygProse,
     href: featured?.href || `/bns-project/${studio.slug}`,
@@ -183,7 +191,9 @@ let _cache: CanonicalProject[] | null = null;
 
 function getAll(): CanonicalProject[] {
   if (_cache) return _cache;
-  _cache = ALL_PROJECTS;
+  _cache = ALL_PROJECTS
+    .filter((p) => p.visible)
+    .sort((a, b) => a.order - b.order);
   return _cache;
 }
 
@@ -194,9 +204,9 @@ function getFeatured(): CanonicalProject[] {
   );
 }
 
-/** Find a single project by id or slug */
+/** Find a single project by id or slug — returns hidden projects too (direct URL access) */
 function getById(id: string): CanonicalProject | undefined {
-  return getAll().find((p) => p.id === id || p.slug === id);
+  return ALL_PROJECTS.find((p) => p.id === id || p.slug === id);
 }
 
 /** Projects filtered by programme */

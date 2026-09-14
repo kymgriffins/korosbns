@@ -45,6 +45,8 @@ export type FeaturedProject = {
   gallery?: ProjectGalleryItem[];
   /** Hide helper/caption texts */
   hideCaptions?: boolean;
+  /** Global visibility toggle — false hides from landing, programme grids, search */
+  visible?: boolean;
 };
 
 type SeedRow = (typeof featuredFallback.results)[number];
@@ -106,6 +108,7 @@ function fromCanonical(p: CanonicalProject, seed?: SeedRow): FeaturedProject {
     mediaCaption: p.mediaCaption,
     gallery: p.gallery,
     hideCaptions: p.hideCaptions,
+    visible: p.visible,
   };
 }
 

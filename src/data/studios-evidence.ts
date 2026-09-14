@@ -10,6 +10,14 @@ export type { StudioContentType };
 
 export type StudioDeliveryMode = "bns-led" | "co-produced" | "commissioned";
 
+export type ProjectFormat =
+  | "studio-production"
+  | "field-report"
+  | "investigation"
+  | "explainer"
+  | "podcast"
+  | "event";
+
 export type StudioSectorType = StudioOrganizationType;
 
 export interface StudioPartnerOrg {
@@ -116,6 +124,12 @@ export interface StudioProjectEvidence {
   };
   tags: string[];
   featured?: boolean;
+  /** Global visibility toggle — false hides from /work, landing, programme grids, search */
+  visible?: boolean;
+  /** Production format — replaces studios-as-programme. Studio page queries this. */
+  format?: ProjectFormat;
+  /** Sort order within programme — lower numbers appear first */
+  order?: number;
   deliveryMode: StudioDeliveryMode;
   programmeSlug: ProgrammeSlug;
   formatDetails?: StudioFormatDetails;
@@ -174,8 +188,8 @@ const STUDIO_PROJECTS: StudioProjectEvidence[] = hydrateProjects(
 export { STUDIO_ORGANIZATIONS, STUDIO_PROJECTS };
 
 export const studiosEvidenceData = {
-  getAllProjects: () => STUDIO_PROJECTS,
-  getFeaturedProjects: () => STUDIO_PROJECTS.filter((p) => p.featured),
+  getAllProjects: () => STUDIO_PROJECTS.filter((p) => p.visible !== false),
+  getFeaturedProjects: () => STUDIO_PROJECTS.filter((p) => p.featured && p.visible !== false),
   getProjectBySlug: (slug: string) => {
     const canonical = resolveProjectId(slug);
     return STUDIO_PROJECTS.find(
@@ -189,19 +203,19 @@ export const studiosEvidenceData = {
     );
   },
   getProjectsByContentType: (contentType: StudioContentType) =>
-    STUDIO_PROJECTS.filter((p) => p.contentType === contentType),
+    STUDIO_PROJECTS.filter((p) => p.contentType === contentType && p.visible !== false),
   getProjectsByProgramme: (programmeSlug: ProgrammeSlug) =>
-    STUDIO_PROJECTS.filter((p) => p.programmeSlug === programmeSlug),
+    STUDIO_PROJECTS.filter((p) => p.programmeSlug === programmeSlug && p.visible !== false),
   getProjectsByOrgSlug: (orgSlug: string) =>
     STUDIO_PROJECTS.filter(
-      (p) => p.organization.slug === resolveOrganizationId(orgSlug),
+      (p) => p.organization.slug === resolveOrganizationId(orgSlug) && p.visible !== false,
     ),
   getProjectsBySector: (sector: StudioSectorType) =>
-    STUDIO_PROJECTS.filter((p) => p.organization.sector === sector),
+    STUDIO_PROJECTS.filter((p) => p.organization.sector === sector && p.visible !== false),
   getAllOrganizations: () => STUDIO_ORGANIZATIONS,
   getOrganizationsWithProjects: () => {
     const slugsWithWork = new Set(
-      STUDIO_PROJECTS.map((p) => p.organization.slug),
+      STUDIO_PROJECTS.filter((p) => p.visible !== false).map((p) => p.organization.slug),
     );
     return STUDIO_ORGANIZATIONS.filter((org) => slugsWithWork.has(org.slug));
   },
@@ -217,8 +231,9 @@ export const studiosEvidenceData = {
     const current = STUDIO_PROJECTS.find(
       (p) => p.id === canonical || p.slug === canonical,
     );
-    if (!current) return STUDIO_PROJECTS.slice(0, limit);
-    return STUDIO_PROJECTS.filter(
+    const visible = STUDIO_PROJECTS.filter((p) => p.visible !== false);
+    if (!current) return visible.slice(0, limit);
+    return visible.filter(
       (p) =>
         p.id !== current.id &&
         (p.contentType === current.contentType ||
@@ -226,10 +241,10 @@ export const studiosEvidenceData = {
     ).slice(0, limit);
   },
   getBnsLedProjects: () =>
-    STUDIO_PROJECTS.filter((p) => p.deliveryMode === "bns-led"),
+    STUDIO_PROJECTS.filter((p) => p.deliveryMode === "bns-led" && p.visible !== false),
   getPartnerCorridors: (): StudioPartnerCorridor[] => {
     const partnerProjects = STUDIO_PROJECTS.filter(
-      (p) => p.deliveryMode !== "bns-led",
+      (p) => p.deliveryMode !== "bns-led" && p.visible !== false,
     );
     const byOrg = new Map<string, StudioProjectEvidence[]>();
     for (const project of partnerProjects) {
@@ -255,22 +270,28 @@ export const studiosEvidenceData = {
       "connect",
       "mashinani",
       "wanahabari-lab",
-      "studios",
     ];
     return slugs.map((programmeSlug) => ({
       programmeSlug,
-      projects: STUDIO_PROJECTS.filter((p) => p.programmeSlug === programmeSlug),
+      projects: STUDIO_PROJECTS.filter((p) => p.programmeSlug === programmeSlug && p.visible !== false),
     }));
   },
-  getMissionStats: () => ({
-    productionCount: STUDIO_PROJECTS.length,
-    partnerCount: new Set(
-      STUDIO_PROJECTS.filter((p) => p.deliveryMode !== "bns-led").map(
-        (p) => p.organization.slug,
-      ),
-    ).size,
-    programmeCount: new Set(STUDIO_PROJECTS.map((p) => p.programmeSlug)).size,
-    bnsLedCount: STUDIO_PROJECTS.filter((p) => p.deliveryMode === "bns-led")
-      .length,
-  }),
+  getProjectsByFormat: (format: ProjectFormat) =>
+    STUDIO_PROJECTS.filter((p) => p.format === format && p.visible !== false),
+  getStudioProjects: () =>
+    STUDIO_PROJECTS.filter((p) => p.format === "studio-production" && p.visible !== false),
+  getMissionStats: () => {
+    const visible = STUDIO_PROJECTS.filter((p) => p.visible !== false);
+    return {
+      productionCount: visible.length,
+      partnerCount: new Set(
+        visible.filter((p) => p.deliveryMode !== "bns-led").map(
+          (p) => p.organization.slug,
+        ),
+      ).size,
+      programmeCount: new Set(visible.map((p) => p.programmeSlug)).size,
+      bnsLedCount: visible.filter((p) => p.deliveryMode === "bns-led")
+        .length,
+    };
+  },
 };

@@ -157,8 +157,11 @@
         "bilingual"
       ],
       "deliveryMode": "co-produced",
-      "programmeSlug": "studios",
-      "featured": true
+      "programmeSlug": "connect",
+      "format": "studio-production",
+      "featured": true,
+      "visible": true,
+      "order": 301
     },
     {
       "id": "illicit-financial-flows-benin-cabo-verde",
@@ -200,7 +203,9 @@
       ],
       "deliveryMode": "commissioned",
       "programmeSlug": "wanahabari-lab",
-      "featured": true
+      "featured": true,
+      "visible": true,
+      "order": 203
     },
     {
       "id": "project-terra",
@@ -242,8 +247,11 @@
         "house-of-fiscal-wisdom"
       ],
       "deliveryMode": "co-produced",
-      "programmeSlug": "studios",
-      "featured": true
+      "programmeSlug": "wanahabari-lab",
+      "format": "investigation",
+      "featured": true,
+      "visible": true,
+      "order": 204
     },
     {
       "id": "budget-sasa-ni-delivery-explainer",
@@ -283,7 +291,9 @@
       ],
       "deliveryMode": "co-produced",
       "programmeSlug": "connect",
-      "featured": true
+      "featured": true,
+      "visible": true,
+      "order": 1
     },
     {
       "id": "budget-ndio-story-podcast",
@@ -321,8 +331,11 @@
         "scrutiny"
       ],
       "deliveryMode": "co-produced",
-      "programmeSlug": "studios",
-      "featured": true
+      "programmeSlug": "connect",
+      "format": "podcast",
+      "featured": true,
+      "visible": true,
+      "order": 4
     },
     {
       "id": "nakuru-citizen-baraza",
@@ -375,7 +388,9 @@
       ],
       "deliveryMode": "commissioned",
       "programmeSlug": "mashinani",
-      "featured": false
+      "featured": false,
+      "visible": true,
+      "order": 101
     },
     {
       "id": "finance-bill-motion-explainer",
@@ -413,7 +428,9 @@
       ],
       "deliveryMode": "co-produced",
       "programmeSlug": "connect",
-      "featured": true
+      "featured": true,
+      "visible": true,
+      "order": 2
     },
     {
       "id": "mashinani-field-documentary",
@@ -452,7 +469,9 @@
       ],
       "deliveryMode": "bns-led",
       "programmeSlug": "mashinani",
-      "featured": false
+      "featured": false,
+      "visible": true,
+      "order": 102
     },
     {
       "id": "cra-formula-research-spotlight",
@@ -491,7 +510,9 @@
       ],
       "deliveryMode": "co-produced",
       "programmeSlug": "wanahabari-lab",
-      "featured": false
+      "featured": false,
+      "visible": true,
+      "order": 201
     },
     {
       "id": "budget-tiktok-vertical-series",
@@ -530,7 +551,9 @@
       ],
       "deliveryMode": "bns-led",
       "programmeSlug": "connect",
-      "featured": true
+      "featured": true,
+      "visible": true,
+      "order": 3
     },
     {
       "id": "wajir-community-listening",
@@ -587,7 +610,9 @@
       ],
       "deliveryMode": "bns-led",
       "programmeSlug": "mashinani",
-      "featured": false
+      "featured": false,
+      "visible": true,
+      "order": 103
     },
     {
       "id": "bps-2026-reading-coverage",
@@ -626,7 +651,9 @@
       ],
       "deliveryMode": "co-produced",
       "programmeSlug": "wanahabari-lab",
-      "featured": false
+      "featured": false,
+      "visible": true,
+      "order": 202
     },
     {
       "id": "stakeholder-forum-production",
@@ -679,8 +706,11 @@
         "stakeholders"
       ],
       "deliveryMode": "commissioned",
-      "programmeSlug": "studios",
-      "featured": false
+      "programmeSlug": "mashinani",
+      "format": "event",
+      "featured": false,
+      "visible": true,
+      "order": 104
     }
   ]
 }
