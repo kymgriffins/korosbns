@@ -6,7 +6,8 @@ import { BrandTokensInjector } from "@/components/global/brand-tokens-injector";
 import { base, heading } from "@/constants";
 import "@/styles/globals.css";
 import { cn, generateMetadata } from "@/utils";
-import { SiteAnalytics } from "@/components/analytics/site-analytics";
+import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import type { Viewport } from "next";
 import Script from "next/script";
 import { getLivePartnerPageSections } from "@/lib/cms-live-data";
@@ -199,7 +200,8 @@ export default async function RootLayout({
           {children}
           <CookieConsentWrapper />
         </Providers>
-        <SiteAnalytics />
+        <Analytics />
+        <SpeedInsights />
         <Script id="microsoft-clarity" strategy="afterInteractive">
           {`(function(c,l,a,r,i,t,y){
         c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
