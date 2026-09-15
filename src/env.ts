@@ -7,20 +7,23 @@ const booleanFromEnv = z.preprocess((value) => {
   return normalized === "1" || normalized === "true" || normalized === "yes";
 }, z.boolean());
 
+const optionalString = z.preprocess((val) => (val === "" ? undefined : val), z.string().optional());
 const optionalUrl = z.preprocess((val) => (val === "" ? undefined : val), z.string().url().optional());
 const defaultUrl = (defaultVal: string) =>
   z.preprocess((val) => (val === "" ? undefined : val), z.string().url().default(defaultVal));
+const defaultString = (defaultVal: string) =>
+  z.preprocess((val) => (val === "" ? undefined : val), z.string().min(1).default(defaultVal));
 
 const envSchema = z.object({
   NODE_ENV: z.enum(["development", "test", "production"]).default("development"),
   NEXT_PUBLIC_API_BASE_URL: defaultUrl("https://bnske.budgetndiostory.org"),
   API_PROXY_TARGET: optionalUrl,
   NEXT_PUBLIC_SITE_URL: defaultUrl("https://budgetndiostory.org"),
-  NEXT_PUBLIC_DEFAULT_ORG_SLUG: z.string().min(1).default("bns-default"),
+  NEXT_PUBLIC_DEFAULT_ORG_SLUG: defaultString("bns-default"),
   NEXT_PUBLIC_ALLOW_ADMIN_SIGNUP: booleanFromEnv.default(false),
   NEXT_PUBLIC_ENABLE_WIP: booleanFromEnv.default(false),
   NEXT_PUBLIC_DEBUG_LOGS: booleanFromEnv.default(false),
-  NEXT_PUBLIC_SENTRY_DSN: z.string().optional(),
+  NEXT_PUBLIC_SENTRY_DSN: optionalString,
   // Cloudflare R2 & Edge Storage
   R2_ACCOUNT_ID: z.string().optional(),
   R2_ACCESS_KEY_ID: z.string().optional(),

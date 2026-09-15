@@ -11,7 +11,7 @@
     "prepare": "husky",
     "dev": "next dev --webpack",
     "prebuild": "node scripts/link-budgethub.mjs",
-    "build": "next build",
+    "build": "next build --webpack",
     "build:cloudflare": "npx @cloudflare/next-on-pages",
     "start": "next start",
     "typecheck": "tsc --noEmit",
