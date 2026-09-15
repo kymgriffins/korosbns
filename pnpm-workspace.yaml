@@ -2,4 +2,6 @@ allowBuilds:
   '@sentry/cli': true
   '@vercel/speed-insights': true
   core-js: true
+  esbuild: true
   sharp: true
+  workerd: true

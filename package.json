@@ -12,6 +12,7 @@
     "dev": "next dev --webpack",
     "prebuild": "node scripts/link-budgethub.mjs",
     "build": "next build",
+    "build:cloudflare": "npx @cloudflare/next-on-pages",
     "start": "next start",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
@@ -109,6 +110,7 @@
     "zustand": "5.0.14"
   },
   "devDependencies": {
+    "@cloudflare/next-on-pages": "^1.13.16",
     "@playwright/test": "^1.52.0",
     "@tailwindcss/postcss": "^4",
     "@testing-library/jest-dom": "^6.9.1",
