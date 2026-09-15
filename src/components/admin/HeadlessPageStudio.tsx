@@ -33,6 +33,15 @@ import {
   Film,
   Sliders,
   Smartphone,
+  Search,
+  SlidersHorizontal,
+  VolumeX,
+  Volume2,
+  Database,
+  ChevronDown,
+  ChevronUp,
+  Filter,
+  Building2,
 } from "lucide-react";
 import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
@@ -60,6 +69,7 @@ import { CareersStudioEditor } from "./CareersStudioEditor";
 import { ImpactStudioEditor } from "./ImpactStudioEditor";
 import { StoriesStudioEditor } from "./StoriesStudioEditor";
 import { FaqStudioEditor } from "./FaqStudioEditor";
+import { AllProjectsStudioEditor } from "./AllProjectsStudioEditor";
 import { listProgrammePresetOptions } from "@/lib/programme-theme";
 
 type PageKey =
@@ -91,111 +101,46 @@ type PageKey =
 
 type TabKey = "sections" | "hero" | "carousel" | "bets" | "core" | "deliverables" | "buttons" | "faqs" | "media" | "mobile" | "theme";
 
-interface PageMeta {
+export type CmsPageCategory = "pages" | "programmes" | "projects" | "system";
+
+export interface PageMeta {
   key: PageKey;
   label: string;
   tag: string;
   route: string;
   sectionPageId: string;
   icon: string;
+  category: CmsPageCategory;
 }
 
 const PAGES: PageMeta[] = [
+  // 1. CORE PAGES
   {
     key: "landing",
     label: "Landing Page",
-    tag: "Homepage Spine",
+    tag: "Homepage Spine & Layout",
     route: "/",
     sectionPageId: "home",
     icon: "🌐",
+    category: "pages",
   },
   {
     key: "programmes",
     label: "Programmes Hub",
-    tag: "All Programmes",
+    tag: "All Programmes Overview",
     route: "/programmes",
     sectionPageId: "programmes",
     icon: "📊",
-  },
-  {
-    key: "connect",
-    label: "BNS Connect",
-    tag: "National Money",
-    route: "/programmes/connect",
-    sectionPageId: "programmeConnect",
-    icon: "🔍",
-  },
-  {
-    key: "mashinani",
-    label: "BNS Mashinani",
-    tag: "County Scrutiny",
-    route: "/programmes/mashinani",
-    sectionPageId: "programmeMashinani",
-    icon: "🌾",
-  },
-  {
-    key: "wanahabari-lab",
-    label: "Wanahabari Lab",
-    tag: "Newsroom Bench",
-    route: "/programmes/wanahabari-lab",
-    sectionPageId: "programmeWanahabari",
-    icon: "🎙️",
-  },
-  {
-    key: "studios",
-    label: "BNS Studios (Programme)",
-    tag: "Programme row + section visibility",
-    route: "/bns-studio",
-    sectionPageId: "studio",
-    icon: "🎬",
+    category: "pages",
   },
   {
     key: "about",
     label: "About Us",
-    tag: "Organization & Team",
+    tag: "Organization, Mandate & Team",
     route: "/about",
     sectionPageId: "about",
     icon: "🏢",
-  },
-  {
-    key: "featured-blogs",
-    label: "Featured Blogs & Evidence",
-    tag: "Editorial Stories",
-    route: "/#featured-projects",
-    sectionPageId: "featured-blogs",
-    icon: "📰",
-  },
-  {
-    key: "custom-pages",
-    label: "Custom Pages Builder",
-    tag: "Create New Pages",
-    route: "/pages",
-    sectionPageId: "custom-pages",
-    icon: "📄",
-  },
-  {
-    key: "navigation",
-    label: "Navbar & Footer",
-    tag: "Global Navigation & Chrome",
-    route: "/",
-    sectionPageId: "navigation",
-    icon: "🧭",
-  },
-  {
-    key: "tokens",
-    label: "Design Tokens & Brand Agency",
-    tag: "Colors, radii, button fills",
-    route: "/",
-    sectionPageId: "tokens",
-    icon: "🎨",
-  },
-  {
-    key: "courses",
-    label: "Learning Courses (BNSKE)",
-    tag: "Civic Projects & Curriculum",
-    route: "/learn",
-    sectionPageId: "courses",
-    icon: "🎓",
+    category: "pages",
   },
   {
     key: "contact",
@@ -204,6 +149,7 @@ const PAGES: PageMeta[] = [
     route: "/contact",
     sectionPageId: "contact",
     icon: "📬",
+    category: "pages",
   },
   {
     key: "faq",
@@ -212,30 +158,7 @@ const PAGES: PageMeta[] = [
     route: "/faq",
     sectionPageId: "faq",
     icon: "❓",
-  },
-  {
-    key: "stories",
-    label: "Budget Stories",
-    tag: "Explainers & Deep Dives",
-    route: "/stories",
-    sectionPageId: "stories",
-    icon: "📖",
-  },
-  {
-    key: "impact",
-    label: "Impact Metrics",
-    tag: "Metrics & Testimonials",
-    route: "/impact",
-    sectionPageId: "impact",
-    icon: "📊",
-  },
-  {
-    key: "consortium",
-    label: "Consortium Partners",
-    tag: "Partner Profiles & Activities",
-    route: "/consortium",
-    sectionPageId: "consortium",
-    icon: "🤝",
+    category: "pages",
   },
   {
     key: "careers",
@@ -244,14 +167,166 @@ const PAGES: PageMeta[] = [
     route: "/careers",
     sectionPageId: "careers",
     icon: "💼",
+    category: "pages",
   },
   {
     key: "legal",
-    label: "Legal Pages",
+    label: "Legal & Security",
     tag: "Security, Privacy & Terms",
     route: "/security",
     sectionPageId: "legal",
     icon: "📜",
+    category: "pages",
+  },
+
+  // 2. CIVIC PROGRAMMES
+  {
+    key: "connect",
+    label: "BNS Connect",
+    tag: "National Money Tracker",
+    route: "/programmes/connect",
+    sectionPageId: "programmeConnect",
+    icon: "🔍",
+    category: "programmes",
+  },
+  {
+    key: "mashinani",
+    label: "BNS Mashinani",
+    tag: "County Devolved Scrutiny",
+    route: "/programmes/mashinani",
+    sectionPageId: "programmeMashinani",
+    icon: "🌾",
+    category: "programmes",
+  },
+  {
+    key: "wanahabari-lab",
+    label: "Wanahabari Lab",
+    tag: "Newsroom Investigations Bench",
+    route: "/programmes/wanahabari-lab",
+    sectionPageId: "programmeWanahabari",
+    icon: "🎙️",
+    category: "programmes",
+  },
+  {
+    key: "bns-studio",
+    label: "BNS Studio",
+    tag: "Production House & Impact Films",
+    route: "/bns-studio",
+    sectionPageId: "studio",
+    icon: "🎬",
+    category: "programmes",
+  },
+
+  // 3. PROJECTS & MEDIA
+  {
+    key: "studios-evidence",
+    label: "All Projects Database",
+    tag: "Canonical Master Portfolio (20+ Projects)",
+    route: "/work",
+    sectionPageId: "studios-evidence",
+    icon: "🗄️",
+    category: "projects",
+  },
+  {
+    key: "featured-blogs",
+    label: "Featured Projects (Spotlight)",
+    tag: "Homepage Curated Spotlight Cards",
+    route: "/#featured-projects",
+    sectionPageId: "featured-blogs",
+    icon: "⭐",
+    category: "projects",
+  },
+  {
+    key: "programme-reels",
+    label: "Programme Social Reels",
+    tag: "Vertical R2 Video Archive (8 Reels)",
+    route: "/programmes",
+    sectionPageId: "programme-reels",
+    icon: "📱",
+    category: "projects",
+  },
+  {
+    key: "stories",
+    label: "Budget Stories",
+    tag: "Deep Dive Articles & Explainers",
+    route: "/stories",
+    sectionPageId: "stories",
+    icon: "📖",
+    category: "projects",
+  },
+  {
+    key: "courses",
+    label: "Learning Curriculum",
+    tag: "Civic Training & Modules",
+    route: "/learn",
+    sectionPageId: "courses",
+    icon: "🎓",
+    category: "projects",
+  },
+
+  // 4. DESIGN & GLOBAL SYSTEM
+  {
+    key: "tokens",
+    label: "Design Tokens & Brand Agency",
+    tag: "Colors, typography, 4px radii, buttons",
+    route: "/",
+    sectionPageId: "tokens",
+    icon: "🎨",
+    category: "system",
+  },
+  {
+    key: "navigation",
+    label: "Navbar & Footer",
+    tag: "Global Navigation & Chrome",
+    route: "/",
+    sectionPageId: "navigation",
+    icon: "🧭",
+    category: "system",
+  },
+  {
+    key: "landing-hero",
+    label: "Landing Hero Component",
+    tag: "Homepage Headline & Subtitle",
+    route: "/",
+    sectionPageId: "landing-hero",
+    icon: "🎯",
+    category: "system",
+  },
+  {
+    key: "landing-sections",
+    label: "Landing Sections Matrix",
+    tag: "Homepage Section Structure",
+    route: "/",
+    sectionPageId: "landing-sections",
+    icon: "📐",
+    category: "system",
+  },
+  {
+    key: "custom-pages",
+    label: "Custom Pages Builder",
+    tag: "Create New Dynamic Pages",
+    route: "/pages",
+    sectionPageId: "custom-pages",
+    icon: "📄",
+    category: "system",
+  },
+  {
+    key: "impact",
+    label: "Impact Metrics",
+    tag: "Public Scorecard & Metrics",
+    route: "/impact",
+    sectionPageId: "impact",
+    icon: "📊",
+    category: "system",
+  },
+  {
+    key: "consortium",
+    label: "Consortium Partners",
+    tag: "Partner Profiles & Activities",
+    route: "/consortium",
+    sectionPageId: "consortium",
+    icon: "🤝",
+    category: "system",
   },
   {
     key: "team-initiatives",
@@ -260,46 +335,7 @@ const PAGES: PageMeta[] = [
     route: "/team",
     sectionPageId: "team-initiatives",
     icon: "👥",
-  },
-  {
-    key: "landing-hero",
-    label: "Landing Hero",
-    tag: "Homepage Hero Section",
-    route: "/",
-    sectionPageId: "landing-hero",
-    icon: "🎯",
-  },
-  {
-    key: "landing-sections",
-    label: "Landing Sections",
-    tag: "All Homepage Sections",
-    route: "/",
-    sectionPageId: "landing-sections",
-    icon: "📐",
-  },
-  {
-    key: "programme-reels",
-    label: "Programme Reels",
-    tag: "R2 Social Reels Archive",
-    route: "/programmes",
-    sectionPageId: "programme-reels",
-    icon: "🎬",
-  },
-  {
-    key: "studios-evidence",
-    label: "Studios Evidence",
-    tag: "Verified Output Projects",
-    route: "/bns-studio",
-    sectionPageId: "studios-evidence",
-    icon: "🎥",
-  },
-  {
-    key: "bns-studio",
-    label: "BNS Studio Landing",
-    tag: "Hero reel, gallery, story, media",
-    route: "/bns-studio",
-    sectionPageId: "studio",
-    icon: "🎞️",
+    category: "system",
   },
 ];
 
@@ -347,6 +383,15 @@ export function HeadlessPageStudio() {
   const [viewMode, setViewMode] = useState<"split" | "editor" | "preview">("editor");
   const [previewDevice, setPreviewDevice] = useState<DeviceMode>("desktop");
   const [previewRefreshKey, setPreviewRefreshKey] = useState(0);
+
+  // Category & Search State for Pages Menu
+  const [selectedCategory, setSelectedCategory] = useState<"all" | CmsPageCategory>("all");
+  const [pageSearchQuery, setPageSearchQuery] = useState("");
+  const [showSectionSwitchboard, setShowSectionSwitchboard] = useState(false);
+  const [sectionSearchQuery, setSectionSearchQuery] = useState("");
+  const [projectsViewMode, setProjectsViewMode] = useState<"cards" | "json">("cards");
+  const [projectProgrammeFilter, setProjectProgrammeFilter] = useState<string>("all");
+  const [projectSearchQuery, setProjectSearchQuery] = useState("");
 
   const handleFileUploadToR2 = async (file: File, onSuccess: (url: string) => void) => {
     setIsUploading(true);
@@ -606,6 +651,109 @@ export function HeadlessPageStudio() {
     setSectionsData(updatedSections);
     setPreviewRefreshKey((k) => k + 1);
   };
+
+  const toggleSectionForPage = (pageId: string, sectionId: string) => {
+    const updatedSections = { ...sectionsData };
+    const pageObj = updatedSections.pages?.[pageId];
+    if (!pageObj || !pageObj.sections) return;
+
+    pageObj.sections = pageObj.sections.map((sec: any) => {
+      if (sec.id === sectionId) {
+        return { ...sec, visible: !sec.visible };
+      }
+      return sec;
+    });
+
+    setSectionsData(updatedSections);
+    setPreviewRefreshKey((k) => k + 1);
+    toast.success(`Updated section visibility for ${pageId}!`);
+  };
+
+  const areAllPartnersMuted = useMemo(() => {
+    const homeSec = sectionsData.pages?.home?.sections?.find((s: any) => s.id === "partners");
+    const progSec = sectionsData.pages?.programmes?.sections?.find((s: any) => s.id === "partners");
+    return homeSec?.visible === false && progSec?.visible === false;
+  }, [sectionsData]);
+
+  const areAllReelsMuted = useMemo(() => {
+    const connectReel = sectionsData.pages?.programmeConnect?.sections?.find((s: any) => s.id === "reels");
+    const mashinaniReel = sectionsData.pages?.programmeMashinani?.sections?.find((s: any) => s.id === "reels");
+    const wanahabariReel = sectionsData.pages?.programmeWanahabari?.sections?.find((s: any) => s.id === "reels");
+    const studioReel = sectionsData.pages?.studio?.sections?.find((s: any) => s.id === "hero-reel");
+    return (
+      connectReel?.visible === false &&
+      mashinaniReel?.visible === false &&
+      wanahabariReel?.visible === false &&
+      studioReel?.visible === false
+    );
+  }, [sectionsData]);
+
+  const toggleAllPartnerAssets = (visible: boolean) => {
+    const updated = { ...sectionsData };
+    if (!updated.pages) updated.pages = {};
+    ["home", "programmes"].forEach((pageId) => {
+      if (updated.pages[pageId]?.sections) {
+        updated.pages[pageId].sections = updated.pages[pageId].sections.map((s: any) =>
+          s.id === "partners" ? { ...s, visible } : s
+        );
+      }
+    });
+    setSectionsData(updated);
+    setPreviewRefreshKey((k) => k + 1);
+    toast.success(
+      visible
+        ? "Partner assets enabled on Homepage and Programmes Hub!"
+        : "Partner assets muted across Homepage and Programmes Hub!"
+    );
+  };
+
+  const toggleAllSocialReels = (visible: boolean) => {
+    const updated = { ...sectionsData };
+    if (!updated.pages) updated.pages = {};
+    ["programmeConnect", "programmeMashinani", "programmeWanahabari"].forEach((pageId) => {
+      if (updated.pages[pageId]?.sections) {
+        updated.pages[pageId].sections = updated.pages[pageId].sections.map((s: any) =>
+          s.id === "reels" ? { ...s, visible } : s
+        );
+      }
+    });
+    if (updated.pages.studio?.sections) {
+      updated.pages.studio.sections = updated.pages.studio.sections.map((s: any) =>
+        s.id === "hero-reel" ? { ...s, visible } : s
+      );
+    }
+    setSectionsData(updated);
+    setPreviewRefreshKey((k) => k + 1);
+    toast.success(
+      visible
+        ? "Social video reels enabled across all civic programme pages!"
+        : "Social video reels muted across all civic programme pages!"
+    );
+  };
+
+  const categoryCounts = useMemo(() => {
+    const counts: Record<string, number> = { all: PAGES.length, pages: 0, programmes: 0, projects: 0, system: 0 };
+    for (const page of PAGES) {
+      if (counts[page.category] !== undefined) {
+        counts[page.category]++;
+      }
+    }
+    return counts;
+  }, []);
+
+  const filteredPages = useMemo(() => {
+    return PAGES.filter((page) => {
+      const matchesCategory =
+        selectedCategory === "all" || page.category === selectedCategory;
+      const q = pageSearchQuery.toLowerCase().trim();
+      const matchesSearch =
+        !q ||
+        page.label.toLowerCase().includes(q) ||
+        page.route.toLowerCase().includes(q) ||
+        page.tag.toLowerCase().includes(q);
+      return matchesCategory && matchesSearch;
+    });
+  }, [selectedCategory, pageSearchQuery]);
 
   const handleUpdateSectionProp = (sectionId: string, prop: string, value: any) => {
     const pageId = currentPage.sectionPageId;
@@ -1304,29 +1452,310 @@ export function HeadlessPageStudio() {
           </div>
         </div>
 
-        {/* Page Selector Tabs */}
-        <div className="mt-5 flex flex-wrap gap-2 border-t border-border/50 pt-4">
-          {PAGES.map((page) => {
-            const isSelected = selectedPageKey === page.key;
-            return (
-              <button
-                key={page.key}
+        {/* Page Selector Tabs & Category Navigation */}
+        <div className="mt-5 space-y-3 border-t border-border/50 pt-4">
+          {/* Category Filter Pills, Search Bar, & Switchboard Button */}
+          <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+            {/* Category Pills */}
+            <div className="flex flex-wrap items-center gap-1.5">
+              {[
+                { id: "all", label: "All Collections", count: categoryCounts.all, icon: "✦" },
+                { id: "pages", label: "Core Pages", count: categoryCounts.pages, icon: "📄" },
+                { id: "programmes", label: "Civic Programmes", count: categoryCounts.programmes, icon: "🏛️" },
+                { id: "projects", label: "Projects & Media", count: categoryCounts.projects, icon: "📂" },
+                { id: "system", label: "Design & Global", count: categoryCounts.system, icon: "⚙️" },
+              ].map((cat) => {
+                const isActive = selectedCategory === cat.id;
+                return (
+                  <button
+                    key={cat.id}
+                    type="button"
+                    onClick={() => setSelectedCategory(cat.id as any)}
+                    className={`flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-xs font-semibold transition-all ${
+                      isActive
+                        ? "bg-primary text-primary-foreground shadow-xs font-bold"
+                        : "bg-muted/40 text-muted-foreground hover:bg-muted hover:text-foreground border border-border/50"
+                    }`}
+                  >
+                    <span>{cat.icon}</span>
+                    <span>{cat.label}</span>
+                    <span
+                      className={`rounded-full px-1.5 py-0.2 text-[10px] font-mono ${
+                        isActive
+                          ? "bg-primary-foreground/20 text-primary-foreground"
+                          : "bg-background text-muted-foreground"
+                      }`}
+                    >
+                      {cat.count}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Search Input & Switchboard Toggle */}
+            <div className="flex items-center gap-2">
+              <div className="relative min-w-[200px] flex-1 sm:w-64">
+                <Search className="absolute left-2.5 top-1/2 size-3.5 -translate-y-1/2 text-muted-foreground" />
+                <Input
+                  value={pageSearchQuery}
+                  onChange={(e) => setPageSearchQuery(e.target.value)}
+                  placeholder="Filter pages by name, route..."
+                  className="h-8 pl-8 text-xs"
+                />
+                {pageSearchQuery && (
+                  <button
+                    type="button"
+                    onClick={() => setPageSearchQuery("")}
+                    className="absolute right-2 top-1/2 -translate-y-1/2 text-[10px] text-muted-foreground hover:text-foreground"
+                  >
+                    ✕
+                  </button>
+                )}
+              </div>
+
+              <Button
                 type="button"
-                onClick={() => setSelectedPageKey(page.key)}
-                className={`flex items-center gap-2 rounded-xl border px-3 py-2 text-xs font-medium transition-all ${
-                  isSelected
-                    ? "border-primary bg-primary/10 font-bold text-foreground shadow-xs"
-                    : "border-border/60 bg-muted/40 text-muted-foreground hover:bg-muted hover:text-foreground"
+                variant="outline"
+                size="sm"
+                onClick={() => setShowSectionSwitchboard((prev) => !prev)}
+                className={`h-8 gap-1.5 text-xs font-semibold transition-all ${
+                  showSectionSwitchboard
+                    ? "bg-primary/10 border-primary/30 text-primary"
+                    : "bg-muted/40 hover:bg-muted text-foreground"
                 }`}
+                title="Open Global Section Visibility Switchboard"
               >
-                <span className="text-base">{page.icon}</span>
-                <div className="text-left">
-                  <div className="leading-tight">{page.label}</div>
-                  <div className="font-mono text-[10px] text-muted-foreground">{page.route}</div>
+                <SlidersHorizontal className="size-3.5 text-primary" />
+                <span>Section Switchboard</span>
+                {(areAllPartnersMuted || areAllReelsMuted) && (
+                  <span className="flex h-2 w-2 rounded-full bg-amber-500" title="Mute filters active" />
+                )}
+                {showSectionSwitchboard ? (
+                  <ChevronUp className="size-3 text-muted-foreground" />
+                ) : (
+                  <ChevronDown className="size-3 text-muted-foreground" />
+                )}
+              </Button>
+            </div>
+          </div>
+
+          {/* Expandable Section Switchboard Drawer */}
+          {showSectionSwitchboard && (
+            <div className="rounded-xl border border-primary/20 bg-primary/[0.03] p-4 space-y-4 shadow-xs">
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between border-b border-border/50 pb-3">
+                <div className="space-y-0.5">
+                  <div className="flex items-center gap-2">
+                    <span className="font-bold text-xs text-foreground flex items-center gap-1.5">
+                      <SlidersHorizontal className="size-3.5 text-primary" />
+                      Global Section Visibility Switchboard
+                    </span>
+                    <Badge variant="outline" className="text-[10px] font-mono text-primary bg-primary/5">
+                      Live Controls
+                    </Badge>
+                  </div>
+                  <p className="text-[11px] text-muted-foreground">
+                    Instantly toggle visibility for any section across any page. Changes persist on &ldquo;Save &amp; Publish&rdquo;.
+                  </p>
                 </div>
-              </button>
-            );
-          })}
+
+                <div className="relative w-full sm:w-56">
+                  <Search className="absolute left-2.5 top-1/2 size-3.5 -translate-y-1/2 text-muted-foreground" />
+                  <Input
+                    value={sectionSearchQuery}
+                    onChange={(e) => setSectionSearchQuery(e.target.value)}
+                    placeholder="Search sections (e.g. reels, partners)..."
+                    className="h-7 pl-8 text-xs bg-background"
+                  />
+                </div>
+              </div>
+
+              {/* Quick Mute Action Cards */}
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                {/* Partner Assets Quick Mute Card */}
+                <div className="rounded-lg border border-border bg-card p-3 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-1.5">
+                      <Building2 className="size-3.5 text-primary" />
+                      <span className="text-xs font-semibold text-foreground">Partner Assets &amp; Marquee</span>
+                    </div>
+                    <Badge
+                      variant="outline"
+                      className={`text-[10px] ${
+                        areAllPartnersMuted
+                          ? "bg-rose-500/10 text-rose-600 border-rose-500/20"
+                          : "bg-emerald-500/10 text-emerald-600 border-emerald-500/20"
+                      }`}
+                    >
+                      {areAllPartnersMuted ? "Muted Everywhere" : "Active on Site"}
+                    </Badge>
+                  </div>
+                  <p className="text-[11px] text-muted-foreground">
+                    Controls partner logos marquee on Homepage (<code className="font-mono text-[10px]">home.partners</code>) and Programmes Hub (<code className="font-mono text-[10px]">programmes.partners</code>).
+                  </p>
+                  <div className="flex items-center gap-2 pt-1">
+                    <Button
+                      type="button"
+                      size="sm"
+                      variant={areAllPartnersMuted ? "default" : "outline"}
+                      onClick={() => toggleAllPartnerAssets(areAllPartnersMuted)}
+                      className="h-7 text-xs font-semibold gap-1.5"
+                    >
+                      {areAllPartnersMuted ? (
+                        <>
+                          <Volume2 className="size-3" />
+                          <span>Enable Partner Assets</span>
+                        </>
+                      ) : (
+                        <>
+                          <VolumeX className="size-3 text-rose-500" />
+                          <span>Mute Partner Assets Everywhere</span>
+                        </>
+                      )}
+                    </Button>
+                  </div>
+                </div>
+
+                {/* Social Video Reels Quick Mute Card */}
+                <div className="rounded-lg border border-border bg-card p-3 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-1.5">
+                      <Film className="size-3.5 text-primary" />
+                      <span className="text-xs font-semibold text-foreground">Social Video Reels</span>
+                    </div>
+                    <Badge
+                      variant="outline"
+                      className={`text-[10px] ${
+                        areAllReelsMuted
+                          ? "bg-rose-500/10 text-rose-600 border-rose-500/20"
+                          : "bg-emerald-500/10 text-emerald-600 border-emerald-500/20"
+                      }`}
+                    >
+                      {areAllReelsMuted ? "Muted Everywhere" : "Active on Site"}
+                    </Badge>
+                  </div>
+                  <p className="text-[11px] text-muted-foreground">
+                    Controls TikTok-style vertical reels across BNS Connect, Mashinani, Wanahabari Lab, and Studio Screening Reel.
+                  </p>
+                  <div className="flex items-center gap-2 pt-1">
+                    <Button
+                      type="button"
+                      size="sm"
+                      variant={areAllReelsMuted ? "default" : "outline"}
+                      onClick={() => toggleAllSocialReels(areAllReelsMuted)}
+                      className="h-7 text-xs font-semibold gap-1.5"
+                    >
+                      {areAllReelsMuted ? (
+                        <>
+                          <Volume2 className="size-3" />
+                          <span>Enable All Social Reels</span>
+                        </>
+                      ) : (
+                        <>
+                          <VolumeX className="size-3 text-rose-500" />
+                          <span>Mute All Social Reels</span>
+                        </>
+                      )}
+                    </Button>
+                  </div>
+                </div>
+              </div>
+
+              {/* Individual Section Toggles by Page */}
+              <div className="space-y-2 pt-2 border-t border-border/40">
+                <div className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+                  Individual Section Toggles by Page
+                </div>
+                <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3 max-h-56 overflow-y-auto pr-1">
+                  {Object.entries(sectionsData.pages || {}).flatMap(([pageId, pData]: [string, any]) => {
+                    const sections = pData?.sections || [];
+                    return sections
+                      .filter((s: any) => {
+                        const q = sectionSearchQuery.toLowerCase().trim();
+                        if (!q) return true;
+                        return (
+                          s.id?.toLowerCase().includes(q) ||
+                          s.label?.toLowerCase().includes(q) ||
+                          pageId.toLowerCase().includes(q)
+                        );
+                      })
+                      .map((sec: any) => {
+                        const isVisible = sec.visible !== false;
+                        return (
+                          <div
+                            key={`${pageId}-${sec.id}`}
+                            className="flex items-center justify-between rounded-md border border-border/70 bg-card px-2.5 py-1.5 text-xs shadow-2xs"
+                          >
+                            <div className="min-w-0 pr-2">
+                              <div className="flex items-center gap-1 font-semibold truncate text-[11px] text-foreground">
+                                <span className="truncate">{sec.label || sec.id}</span>
+                              </div>
+                              <div className="font-mono text-[9px] text-muted-foreground truncate">
+                                {pageId} · <span className="text-primary">{sec.id}</span>
+                              </div>
+                            </div>
+                            <button
+                              type="button"
+                              onClick={() => toggleSectionForPage(pageId, sec.id)}
+                              className={`shrink-0 rounded px-2 py-0.5 text-[10px] font-semibold transition-all ${
+                                isVisible
+                                  ? "bg-emerald-500/10 text-emerald-600 hover:bg-emerald-500/20"
+                                  : "bg-muted text-muted-foreground hover:bg-muted/80 line-through"
+                              }`}
+                            >
+                              {isVisible ? "Visible" : "Muted"}
+                            </button>
+                          </div>
+                        );
+                      });
+                  })}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Categorized Page Grid */}
+          <div className="flex flex-wrap gap-2 pt-1">
+            {filteredPages.map((page) => {
+              const isSelected = selectedPageKey === page.key;
+              return (
+                <button
+                  key={page.key}
+                  type="button"
+                  onClick={() => setSelectedPageKey(page.key)}
+                  className={`flex items-center gap-2 rounded-lg border px-3 py-2 text-xs font-medium transition-all ${
+                    isSelected
+                      ? "border-primary bg-primary/10 font-bold text-foreground shadow-xs"
+                      : "border-border/60 bg-muted/40 text-muted-foreground hover:bg-muted hover:text-foreground"
+                  }`}
+                >
+                  <span className="text-base">{page.icon}</span>
+                  <div className="text-left">
+                    <div className="leading-tight">{page.label}</div>
+                    <div className="font-mono text-[10px] text-muted-foreground">{page.route}</div>
+                  </div>
+                </button>
+              );
+            })}
+
+            {filteredPages.length === 0 && (
+              <div className="flex w-full items-center justify-between rounded-lg border border-dashed border-border p-4 text-xs text-muted-foreground">
+                <span>No CMS collections match &ldquo;{pageSearchQuery}&rdquo;</span>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => {
+                    setPageSearchQuery("");
+                    setSelectedCategory("all");
+                  }}
+                  className="h-7 text-xs"
+                >
+                  Clear Filters
+                </Button>
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
@@ -2324,8 +2753,16 @@ export function HeadlessPageStudio() {
         />
       )}
 
+      {/* ALL PROJECTS MASTER DATABASE (studios-evidence.json) */}
+      {selectedPageKey === "studios-evidence" && (
+        <AllProjectsStudioEditor
+          data={studiosEvidenceData}
+          onChange={setStudiosEvidenceData}
+        />
+      )}
+
       {/* GENERIC COLLECTION EDITORS (consortium, legal, team-initiatives, etc.) */}
-      {isCollectionPageKey(selectedPageKey) && selectedPageKey !== "bns-studio" && selectedPageKey !== "careers" && selectedPageKey !== "impact" && selectedPageKey !== "stories" && selectedPageKey !== "faq" && (
+      {isCollectionPageKey(selectedPageKey) && selectedPageKey !== "bns-studio" && selectedPageKey !== "careers" && selectedPageKey !== "impact" && selectedPageKey !== "stories" && selectedPageKey !== "faq" && selectedPageKey !== "studios-evidence" && (
         <CmsCollectionJsonEditor
           title={currentPage.label}
           description={`Edit live CMS collection \`${selectedPageKey}\`. Changes save to R2 and appear on marketing routes after revalidation.`}
@@ -2337,7 +2774,6 @@ export function HeadlessPageStudio() {
               "landing-hero": landingHeroData,
               "landing-sections": landingSectionsData,
               "programme-reels": programmeReelsData,
-              "studios-evidence": studiosEvidenceData,
             }[selectedPageKey] as Record<string, unknown>) || {}
           }
           onChange={(next) => {
@@ -2348,7 +2784,6 @@ export function HeadlessPageStudio() {
               "landing-hero": setLandingHeroData,
               "landing-sections": setLandingSectionsData,
               "programme-reels": setProgrammeReelsData,
-              "studios-evidence": setStudiosEvidenceData,
             };
             setters[selectedPageKey]?.(next);
           }}
