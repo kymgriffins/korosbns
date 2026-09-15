@@ -2,13 +2,13 @@
   "policy": {
     "maxBlocksPartnerPages": 5,
     "blogLikeExempt": true,
-    "notes": "Partner-attention pages must keep visible sections ≤ maxBlocks. Blog-like / long-form project & article pages are exempt. Flip section.visible - do not delete section composers.",
+    "notes": "Partner-attention pages must keep visible sections ≤ maxBlocks. Blog-like / long-form project & article pages are exempt. Flip section.visible  --  do not delete section composers.",
     "loadingDefaults": {
       "globalSplash": false,
       "globalSplashMinMs": 0,
       "routeLoadingDefault": false,
       "routeLoadingVariant": "none",
-      "notes": "Never show cosmetic loaders by default. Opt in per page (studio-reel / spinner / text) only when intentional. Prefer minMs 0."
+      "notes": "Never show cosmetic loaders by default. Opt in per page only when intentional."
     }
   },
   "pages": {
@@ -18,20 +18,67 @@
       "partnerAttention": true,
       "blogLike": false,
       "composer": "src/components/marketing/premium-landing-client.tsx",
-      "loading": { "enabled": false, "minMs": 0, "variant": "none" },
       "sections": [
-        { "id": "hero", "label": "Partner hero · project reel backdrop", "visible": true },
-        { "id": "whoHow", "label": "Thesis · who we are / how we work", "visible": true },
-        { "id": "programmeExplains", "label": "Three numbered big bets", "visible": true },
-        { "id": "featuredProjects", "label": "Featured projects · evidence stories", "visible": true },
-        { "id": "partners", "label": "Partners marquee", "visible": false },
-        { "id": "cta", "label": "Editorial CTA band", "visible": true },
-        { "id": "storyNearYou", "label": "Legacy story / YouTube block", "visible": false },
-        { "id": "programmes", "label": "Legacy scorecard strip", "visible": false },
-        { "id": "team", "label": "Team preview", "visible": false },
-        { "id": "budgetCycle", "label": "FY Budget Cycle", "visible": false },
-        { "id": "testimonials", "label": "Testimonials", "visible": false },
-        { "id": "socials", "label": "Socials strip", "visible": false }
+        {
+          "id": "hero",
+          "label": "Partner hero · project reel backdrop",
+          "visible": true
+        },
+        {
+          "id": "whoHow",
+          "label": "Thesis · who we are / how we work",
+          "visible": true
+        },
+        {
+          "id": "programmeExplains",
+          "label": "Three numbered big bets",
+          "visible": true
+        },
+        {
+          "id": "featuredProjects",
+          "label": "Featured projects · evidence stories",
+          "visible": true
+        },
+        {
+          "id": "partners",
+          "label": "Partners marquee",
+          "visible": false
+        },
+        {
+          "id": "cta",
+          "label": "Editorial CTA band",
+          "visible": true
+        },
+        {
+          "id": "storyNearYou",
+          "label": "Legacy story / YouTube block",
+          "visible": false
+        },
+        {
+          "id": "programmes",
+          "label": "Legacy scorecard strip",
+          "visible": false
+        },
+        {
+          "id": "team",
+          "label": "Team preview",
+          "visible": false
+        },
+        {
+          "id": "budgetCycle",
+          "label": "FY Budget Cycle",
+          "visible": false
+        },
+        {
+          "id": "testimonials",
+          "label": "Testimonials",
+          "visible": false
+        },
+        {
+          "id": "socials",
+          "label": "Socials strip",
+          "visible": false
+        }
       ]
     },
     "about": {
@@ -41,12 +88,36 @@
       "blogLike": false,
       "composer": "src/components/marketing/about.tsx",
       "sections": [
-        { "id": "hero", "label": "Hero & credo", "visible": true },
-        { "id": "originStory", "label": "Origin story scrollytelling", "visible": false },
-        { "id": "theoryOfChange", "label": "Theory of change cycle", "visible": false },
-        { "id": "integrityCharter", "label": "Integrity charter", "visible": false },
-        { "id": "team", "label": "Team roster", "visible": true },
-        { "id": "partnerCta", "label": "Partnership CTA", "visible": true }
+        {
+          "id": "hero",
+          "label": "Hero & credo",
+          "visible": true
+        },
+        {
+          "id": "originStory",
+          "label": "Origin story scrollytelling",
+          "visible": false
+        },
+        {
+          "id": "theoryOfChange",
+          "label": "Theory of change cycle",
+          "visible": false
+        },
+        {
+          "id": "integrityCharter",
+          "label": "Integrity charter",
+          "visible": false
+        },
+        {
+          "id": "team",
+          "label": "Team roster",
+          "visible": true
+        },
+        {
+          "id": "partnerCta",
+          "label": "Partnership CTA",
+          "visible": true
+        }
       ]
     },
     "programmes": {
@@ -56,13 +127,41 @@
       "blogLike": false,
       "composer": "src/components/programmes/programmes-landing.tsx",
       "sections": [
-        { "id": "hero", "label": "Landing-format hero", "visible": true },
-        { "id": "flywheel", "label": "Closed-loop ecosystem flywheel", "visible": true },
-        { "id": "programmesMap", "label": "Three big bets investor matrix", "visible": true },
-        { "id": "featuredProjects", "label": "Featured projects · YouTube evidence", "visible": true },
-        { "id": "partners", "label": "Partners marquee", "visible": false },
-        { "id": "projectsLoop", "label": "Projects loop", "visible": false },
-        { "id": "cta", "label": "Editorial CTA band", "visible": true }
+        {
+          "id": "hero",
+          "label": "Landing-format hero",
+          "visible": true
+        },
+        {
+          "id": "flywheel",
+          "label": "Closed-loop ecosystem flywheel",
+          "visible": true
+        },
+        {
+          "id": "programmesMap",
+          "label": "Three big bets investor matrix",
+          "visible": true
+        },
+        {
+          "id": "featuredProjects",
+          "label": "Featured projects · YouTube evidence",
+          "visible": true
+        },
+        {
+          "id": "partners",
+          "label": "Partners marquee",
+          "visible": false
+        },
+        {
+          "id": "projectsLoop",
+          "label": "Projects loop",
+          "visible": false
+        },
+        {
+          "id": "cta",
+          "label": "Editorial CTA band",
+          "visible": true
+        }
       ]
     },
     "programmeConnect": {
@@ -71,14 +170,32 @@
       "partnerAttention": true,
       "blogLike": false,
       "composer": "src/components/programmes/programme-landing-layout.tsx",
-      "loading": { "enabled": false, "minMs": 0, "variant": "none" },
       "sections": [
-        { "id": "hero", "label": "Landing-format hero", "visible": true },
-        { "id": "body", "label": "What this programme does", "visible": true },
-        { "id": "projects", "label": "Project grid", "visible": true },
-        { "id": "reels", "label": "Programme social reels", "visible": false },
-        { "id": "otherProgrammes", "label": "Other programmes", "visible": true },
-        { "id": "cta", "label": "Editorial CTA", "visible": true }
+        {
+          "id": "hero",
+          "label": "Landing-format hero",
+          "visible": true
+        },
+        {
+          "id": "body",
+          "label": "What this programme does",
+          "visible": true
+        },
+        {
+          "id": "projects",
+          "label": "Project grid",
+          "visible": true
+        },
+        {
+          "id": "otherProgrammes",
+          "label": "Other programmes",
+          "visible": true
+        },
+        {
+          "id": "cta",
+          "label": "Editorial CTA",
+          "visible": true
+        }
       ]
     },
     "programmeMashinani": {
@@ -88,12 +205,31 @@
       "blogLike": false,
       "composer": "src/components/programmes/programme-landing-layout.tsx",
       "sections": [
-        { "id": "hero", "label": "Landing-format hero", "visible": true },
-        { "id": "body", "label": "What this programme does", "visible": true },
-        { "id": "projects", "label": "Project grid", "visible": true },
-        { "id": "reels", "label": "Programme social reels", "visible": false },
-        { "id": "otherProgrammes", "label": "Other programmes", "visible": true },
-        { "id": "cta", "label": "Editorial CTA", "visible": true }
+        {
+          "id": "hero",
+          "label": "Landing-format hero",
+          "visible": true
+        },
+        {
+          "id": "body",
+          "label": "What this programme does",
+          "visible": true
+        },
+        {
+          "id": "projects",
+          "label": "Project grid",
+          "visible": true
+        },
+        {
+          "id": "otherProgrammes",
+          "label": "Other programmes",
+          "visible": true
+        },
+        {
+          "id": "cta",
+          "label": "Editorial CTA",
+          "visible": true
+        }
       ]
     },
     "programmeWanahabari": {
@@ -103,12 +239,31 @@
       "blogLike": false,
       "composer": "src/components/programmes/programme-landing-layout.tsx",
       "sections": [
-        { "id": "hero", "label": "Landing-format hero", "visible": true },
-        { "id": "body", "label": "What this programme does", "visible": true },
-        { "id": "projects", "label": "Project grid", "visible": true },
-        { "id": "reels", "label": "Programme social reels", "visible": false },
-        { "id": "otherProgrammes", "label": "Other programmes", "visible": true },
-        { "id": "cta", "label": "Editorial CTA", "visible": true }
+        {
+          "id": "hero",
+          "label": "Landing-format hero",
+          "visible": true
+        },
+        {
+          "id": "body",
+          "label": "What this programme does",
+          "visible": true
+        },
+        {
+          "id": "projects",
+          "label": "Project grid",
+          "visible": true
+        },
+        {
+          "id": "otherProgrammes",
+          "label": "Other programmes",
+          "visible": true
+        },
+        {
+          "id": "cta",
+          "label": "Editorial CTA",
+          "visible": true
+        }
       ]
     },
     "programmeStudios": {
@@ -118,7 +273,11 @@
       "blogLike": false,
       "composer": "redirect → /bns-studio",
       "sections": [
-        { "id": "redirect", "label": "Redirect only", "visible": false }
+        {
+          "id": "redirect",
+          "label": "Redirect only",
+          "visible": false
+        }
       ]
     },
     "contact": {
@@ -128,8 +287,16 @@
       "blogLike": false,
       "composer": "src/layouts/ContactPage.tsx",
       "sections": [
-        { "id": "hero", "label": "Page hero", "visible": true },
-        { "id": "form", "label": "Form / socials body", "visible": true }
+        {
+          "id": "hero",
+          "label": "Page hero",
+          "visible": true
+        },
+        {
+          "id": "form",
+          "label": "Form / socials body",
+          "visible": true
+        }
       ]
     },
     "reports": {
@@ -139,14 +306,46 @@
       "blogLike": false,
       "composer": "src/components/reports-bulletin/reports-hub-client.tsx",
       "sections": [
-        { "id": "hero", "label": "Reports hero statement", "visible": true },
-        { "id": "nationalPicture", "label": "National picture spread", "visible": true },
-        { "id": "countyIntelligence", "label": "County intelligence", "visible": true },
-        { "id": "followTheMoney", "label": "Follow the money pipeline", "visible": false },
-        { "id": "featuredInvestigations", "label": "Featured investigations", "visible": false },
-        { "id": "citizenSearch", "label": "Citizen intelligence search", "visible": false },
-        { "id": "libraryArchive", "label": "Report library archive", "visible": true },
-        { "id": "cta", "label": "Editorial CTA", "visible": true }
+        {
+          "id": "hero",
+          "label": "Reports hero statement",
+          "visible": true
+        },
+        {
+          "id": "nationalPicture",
+          "label": "National picture spread",
+          "visible": true
+        },
+        {
+          "id": "countyIntelligence",
+          "label": "County intelligence",
+          "visible": true
+        },
+        {
+          "id": "followTheMoney",
+          "label": "Follow the money pipeline",
+          "visible": false
+        },
+        {
+          "id": "featuredInvestigations",
+          "label": "Featured investigations",
+          "visible": false
+        },
+        {
+          "id": "citizenSearch",
+          "label": "Citizen intelligence search",
+          "visible": false
+        },
+        {
+          "id": "libraryArchive",
+          "label": "Report library archive",
+          "visible": true
+        },
+        {
+          "id": "cta",
+          "label": "Editorial CTA",
+          "visible": true
+        }
       ]
     },
     "careers": {
@@ -156,11 +355,31 @@
       "blogLike": false,
       "composer": "src/components/marketing/careers-landing.tsx",
       "sections": [
-        { "id": "hero", "label": "Hero", "visible": true },
-        { "id": "whyJoin", "label": "Why join", "visible": false },
-        { "id": "openRoles", "label": "Open roles", "visible": true },
-        { "id": "howItWorks", "label": "How it works", "visible": false },
-        { "id": "cta", "label": "Closing CTA", "visible": true }
+        {
+          "id": "hero",
+          "label": "Hero",
+          "visible": true
+        },
+        {
+          "id": "whyJoin",
+          "label": "Why join",
+          "visible": false
+        },
+        {
+          "id": "openRoles",
+          "label": "Open roles",
+          "visible": true
+        },
+        {
+          "id": "howItWorks",
+          "label": "How it works",
+          "visible": false
+        },
+        {
+          "id": "cta",
+          "label": "Closing CTA",
+          "visible": true
+        }
       ]
     },
     "studio": {
@@ -169,21 +388,58 @@
       "partnerAttention": true,
       "blogLike": false,
       "composer": "src/components/studio/BNSStudioPageClient.tsx",
+      "sections": [
+        {
+          "id": "reelHero",
+          "label": "Viewport video hero",
+          "visible": true
+        },
+        {
+          "id": "screening",
+          "label": "Screening theatre",
+          "visible": false
+        },
+        {
+          "id": "spectrum",
+          "label": "Production spectrum",
+          "visible": false
+        },
+        {
+          "id": "commissionCta",
+          "label": "Commission CTA",
+          "visible": false
+        },
+        {
+          "id": "hero-reel",
+          "label": "hero-reel",
+          "visible": true
+        },
+        {
+          "id": "production-spectrum",
+          "label": "production-spectrum",
+          "visible": false
+        },
+        {
+          "id": "gallery",
+          "label": "gallery",
+          "visible": true
+        },
+        {
+          "id": "partner-cta",
+          "label": "partner-cta",
+          "visible": false
+        },
+        {
+          "id": "commission",
+          "label": "commission",
+          "visible": false
+        }
+      ],
       "loading": {
         "enabled": false,
         "minMs": 0,
         "variant": "studio-reel"
-      },
-      "sections": [
-        { "id": "hero-reel", "label": "Hero reel carousel", "visible": true },
-        { "id": "screening", "label": "Screening theatre", "visible": true },
-        { "id": "production-spectrum", "label": "Production spectrum", "visible": true },
-        { "id": "gallery", "label": "Studio gallery marquee", "visible": false },
-        { "id": "about", "label": "About the studio / background story", "visible": false },
-        { "id": "partner-cta", "label": "Partner with us", "visible": true },
-        { "id": "commission", "label": "Commission CTA", "visible": true },
-        { "id": "insights", "label": "Insights bento (shadcn-space style)", "visible": false }
-      ]
+      }
     },
     "work": {
       "route": "/work",
@@ -192,9 +448,21 @@
       "blogLike": false,
       "composer": "src/components/studio/theatre/studio-featured-work-page.tsx",
       "sections": [
-        { "id": "hero", "label": "Hero + programme filters", "visible": true },
-        { "id": "filters", "label": "Search / filter bar", "visible": true },
-        { "id": "grid", "label": "Project grid", "visible": true }
+        {
+          "id": "hero",
+          "label": "Hero + programme filters",
+          "visible": true
+        },
+        {
+          "id": "filters",
+          "label": "Search / filter bar",
+          "visible": true
+        },
+        {
+          "id": "grid",
+          "label": "Project grid",
+          "visible": true
+        }
       ]
     },
     "projectIndex": {
@@ -204,8 +472,16 @@
       "blogLike": true,
       "composer": "src/components/project/BNSProjectClient.tsx",
       "sections": [
-        { "id": "header", "label": "Index header", "visible": true },
-        { "id": "grid", "label": "Project cards", "visible": true }
+        {
+          "id": "header",
+          "label": "Index header",
+          "visible": true
+        },
+        {
+          "id": "grid",
+          "label": "Project cards",
+          "visible": true
+        }
       ]
     },
     "projectDetail": {
@@ -215,7 +491,11 @@
       "blogLike": true,
       "composer": "src/components/project/ProjectDetailClient.tsx",
       "sections": [
-        { "id": "longForm", "label": "Long-form editorial body", "visible": true }
+        {
+          "id": "longForm",
+          "label": "Long-form editorial body",
+          "visible": true
+        }
       ]
     },
     "reportDetail": {
@@ -225,7 +505,11 @@
       "blogLike": true,
       "composer": "src/components/reports-bulletin/report-detail-view.tsx",
       "sections": [
-        { "id": "article", "label": "Article shells", "visible": true }
+        {
+          "id": "article",
+          "label": "Article shells",
+          "visible": true
+        }
       ]
     },
     "learn": {
@@ -234,11 +518,22 @@
       "partnerAttention": false,
       "blogLike": false,
       "composer": "src/components/learn/LearnHubHome.tsx",
-      "loading": { "enabled": false, "minMs": 0, "variant": "none" },
       "sections": [
-        { "id": "hero", "label": "Learn hero", "visible": true },
-        { "id": "stats", "label": "Stats strip", "visible": true },
-        { "id": "catalogue", "label": "Catalogue", "visible": true }
+        {
+          "id": "hero",
+          "label": "Learn hero",
+          "visible": true
+        },
+        {
+          "id": "stats",
+          "label": "Stats strip",
+          "visible": true
+        },
+        {
+          "id": "catalogue",
+          "label": "Catalogue",
+          "visible": true
+        }
       ]
     },
     "forum": {
@@ -248,7 +543,11 @@
       "blogLike": false,
       "composer": "learn forum",
       "sections": [
-        { "id": "forum", "label": "Forum surface", "visible": false }
+        {
+          "id": "forum",
+          "label": "Forum surface",
+          "visible": false
+        }
       ]
     }
   }

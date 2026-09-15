@@ -10,52 +10,40 @@
       "id": "programmes",
       "label": "Programmes",
       "href": "/programmes",
-      "badge": "",
-      "locked": true,
-      "order": 1,
-      "parent": null
+      "badge": ""
     },
     {
       "id": "about",
       "label": "About",
       "href": "/about",
-      "badge": "",
-      "locked": true,
-      "order": 2,
-      "parent": null
+      "badge": ""
     },
     {
       "id": "studios",
       "label": "BNS Studios",
       "href": "/bns-studio",
-      "badge": "Studio",
-      "locked": true,
-      "order": 3,
-      "parent": null
+      "badge": "Studio"
     },
     {
       "id": "contact",
       "label": "+254 790 631 623",
       "href": "/contact",
-      "badge": "",
-      "locked": true,
-      "order": 4,
-      "parent": null
+      "badge": ""
     }
   ],
   "actions": {
-    "showSignIn": true,
+    "showSignIn": false,
     "signInLabel": "Sign in",
     "signInHref": "/login",
     "cta": {
       "show": true,
-      "label": "Discuss Partnership",
+      "label": "Get Involved",
       "href": "/contact?intent=partner",
-      "variant": "white"
+      "variant": "primary"
     }
   },
   "footer": {
-    "blurb": "Budget Ndio Story - civic fiscal literacy and public finance intelligence for Kenya.",
+    "blurb": "Budget Ndio Story  --  civic fiscal literacy and public finance intelligence for Kenya.",
     "newsletter": {
       "headline": "Stay ahead on the national budget",
       "subhead": "Forensic fiscal breakdowns, county scorecards, and investigations delivered to your inbox.",

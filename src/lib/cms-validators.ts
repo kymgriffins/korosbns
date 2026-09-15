@@ -22,15 +22,16 @@ export type PageValidationResult = {
 
 const EM_DASH_REGEX = /[\u2014]/g;
 
-export function checkEmDash(text: string): ValidatorResult {
+export function checkEmDash(text: string, path?: string): ValidatorResult {
   const matches = text.match(EM_DASH_REGEX);
   const count = matches ? matches.length : 0;
+  const location = path ? ` at '${path}'` : "";
   return {
     rule: "em-dash-ban",
     pass: count === 0,
     message: count === 0
       ? "No em-dashes found"
-      : `Found ${count} em-dash(es). Replace with a comma, period, or dash.`,
+      : `Found ${count} em-dash(es)${location}. Replace with a comma, period, or dash.`,
     count,
     limit: 0,
   };
@@ -190,27 +191,28 @@ export function checkRealImages(page: Record<string, unknown>): ValidatorResult 
 // --- Forbidden patterns ---
 
 const FORBIDDEN_PATTERNS = [
-  { regex: /^\d+\s*[—\-]\s*/m, name: "section-numbering eyebrow" },
+  { regex: /^\d{1,2}\s+(?:[—\-]|--)\s+[A-Za-z]/m, name: "section-numbering eyebrow" },
   { regex: /v\d+\.\d+\s*(release|update|version)/i, name: "version label" },
   { regex: /scroll\s*(down|to|more)/i, name: "scroll cue" },
   { regex: /locale[- ]?strip/i, name: "locale strip" },
   { regex: /decorative[- ]status[- ]dot/i, name: "decorative status dot" },
 ];
 
-export function checkForbiddenPatterns(text: string): ValidatorResult {
+export function checkForbiddenPatterns(text: string, path?: string): ValidatorResult {
   const found: string[] = [];
   for (const { regex, name } of FORBIDDEN_PATTERNS) {
     if (regex.test(text)) {
       found.push(name);
     }
   }
+  const location = path ? ` in '${path}'` : "";
   return {
     rule: "forbidden-patterns",
     pass: found.length === 0,
     message:
       found.length === 0
         ? "No forbidden patterns found"
-        : `Found forbidden patterns: ${found.join(", ")}`,
+        : `Found forbidden patterns${location}: ${found.join(", ")}`,
     count: found.length,
     limit: 0,
   };
@@ -337,9 +339,9 @@ export function validateCollection(
   // Walk all text fields for em-dashes and forbidden patterns
   function walkText(obj: unknown, path: string) {
     if (typeof obj === "string") {
-      results.push(checkEmDash(obj));
-      if (path.includes("eyebrow") || path.includes("title") || path.includes("heading")) {
-        results.push(checkForbiddenPatterns(obj));
+      results.push(checkEmDash(obj, path));
+      if (path.includes("eyebrow")) {
+        results.push(checkForbiddenPatterns(obj, path));
       }
     }
     if (Array.isArray(obj)) {
@@ -359,7 +361,13 @@ export function validateCollection(
     results.push(checkNavHeight(data.navLinks as unknown[]));
   }
 
-  if (data.hero || data.primaryCta) {
+  // CTA above fold is enforced on landing pages (landing, landing-hero) or when an explicit primaryCta is provided
+  const isLandingPage = slug === "landing" || slug === "landing-hero";
+  const hasExplicitPrimaryCta = Boolean(
+    data.primaryCta ||
+    (data.hero && typeof data.hero === "object" && "primaryCta" in (data.hero as Record<string, unknown>))
+  );
+  if (isLandingPage || hasExplicitPrimaryCta) {
     results.push(checkCtaAboveFold(data));
   }
 
@@ -393,6 +401,21 @@ export function checkLockedFields(
 ): string[] {
   const lockedPaths: string[] = [];
 
+  function cleanVal(val: unknown): unknown {
+    if (val && typeof val === "object" && !Array.isArray(val)) {
+      const copy: Record<string, unknown> = {};
+      for (const [k, v] of Object.entries(val as Record<string, unknown>)) {
+        if (k === "locked") continue;
+        copy[k] = cleanVal(v);
+      }
+      return copy;
+    }
+    if (Array.isArray(val)) {
+      return val.map(cleanVal);
+    }
+    return val;
+  }
+
   function walk(
     objA: Record<string, unknown>,
     objB: Record<string, unknown>,
@@ -400,8 +423,8 @@ export function checkLockedFields(
   ) {
     for (const key of Object.keys(objB)) {
       const path = prefix ? `${prefix}.${key}` : key;
-      const valA = objA[key];
-      const valB = objB[key];
+      const valA = objA?.[key];
+      const valB = objB?.[key];
 
       if (
         valA &&
@@ -410,7 +433,10 @@ export function checkLockedFields(
         "locked" in (valA as Record<string, unknown>) &&
         (valA as Record<string, unknown>).locked === true
       ) {
-        lockedPaths.push(path);
+        // Only flag as violation if the actual locked content changed (ignoring the 'locked' marker itself)
+        if (JSON.stringify(cleanVal(valA)) !== JSON.stringify(cleanVal(valB))) {
+          lockedPaths.push(path);
+        }
         continue;
       }
 

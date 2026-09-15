@@ -157,11 +157,8 @@
         "bilingual"
       ],
       "deliveryMode": "co-produced",
-      "programmeSlug": "connect",
-      "format": "studio-production",
-      "featured": true,
-      "visible": true,
-      "order": 301
+      "programmeSlug": "studios",
+      "featured": true
     },
     {
       "id": "illicit-financial-flows-benin-cabo-verde",
@@ -203,10 +200,7 @@
       ],
       "deliveryMode": "commissioned",
       "programmeSlug": "wanahabari-lab",
-      "featured": true,
-      "visible": true,
-      "order": 203,
-      "format": "investigation"
+      "featured": true
     },
     {
       "id": "project-terra",
@@ -248,11 +242,8 @@
         "house-of-fiscal-wisdom"
       ],
       "deliveryMode": "co-produced",
-      "programmeSlug": "wanahabari-lab",
-      "format": "investigation",
-      "featured": true,
-      "visible": true,
-      "order": 204
+      "programmeSlug": "studios",
+      "featured": true
     },
     {
       "id": "budget-sasa-ni-delivery-explainer",
@@ -265,7 +256,7 @@
       "year": "2025",
       "briefChallenge": "Translate FY2026/27 national budget priorities into language young citizens could share on social feeds without losing fiscal accuracy.",
       "whatWeProduced": "A presenter-led explainer package with bilingual cut-downs, chapter markers, and caption-ready vertical exports.",
-      "description": "BNS Studios produced a flagship explainer anchoring Treasury's 'delivery' narrative to verifiable allocation lines. Field segments from town halls were intercut with motion graphics built from National Treasury published tables — no synthetic scaling of figures.",
+      "description": "BNS Studios produced a flagship explainer anchoring Treasury's 'delivery' narrative to verifiable allocation lines. Field segments from town halls were intercut with motion graphics built from National Treasury published tables  --  no synthetic scaling of figures.",
       "media": {
         "type": "video",
         "posterUrl": "/images/treasury/budget sasa ni delivery.jpg",
@@ -292,16 +283,13 @@
       ],
       "deliveryMode": "co-produced",
       "programmeSlug": "connect",
-      "featured": true,
-      "visible": true,
-      "order": 1,
-      "format": "explainer"
+      "featured": true
     },
     {
       "id": "budget-ndio-story-podcast",
       "slug": "budget-ndio-story-podcast",
       "title": "Budget Ndio Story Podcast",
-      "subtitle": "Season 1 — fiscal deep-dives",
+      "subtitle": "Season 1  --  fiscal deep-dives",
       "contentType": "Podcast & Audio",
       "organizationId": "tisa-kenya",
       "date": "2025-09-01",
@@ -333,11 +321,8 @@
         "scrutiny"
       ],
       "deliveryMode": "co-produced",
-      "programmeSlug": "connect",
-      "format": "podcast",
-      "featured": true,
-      "visible": true,
-      "order": 4
+      "programmeSlug": "studios",
+      "featured": true
     },
     {
       "id": "nakuru-citizen-baraza",
@@ -390,10 +375,7 @@
       ],
       "deliveryMode": "commissioned",
       "programmeSlug": "mashinani",
-      "featured": false,
-      "visible": true,
-      "order": 101,
-      "format": "event"
+      "featured": false
     },
     {
       "id": "finance-bill-motion-explainer",
@@ -431,10 +413,7 @@
       ],
       "deliveryMode": "co-produced",
       "programmeSlug": "connect",
-      "featured": true,
-      "visible": true,
-      "order": 2,
-      "format": "explainer"
+      "featured": true
     },
     {
       "id": "mashinani-field-documentary",
@@ -473,10 +452,7 @@
       ],
       "deliveryMode": "bns-led",
       "programmeSlug": "mashinani",
-      "featured": false,
-      "visible": true,
-      "order": 102,
-      "format": "field-report"
+      "featured": false
     },
     {
       "id": "cra-formula-research-spotlight",
@@ -515,10 +491,7 @@
       ],
       "deliveryMode": "co-produced",
       "programmeSlug": "wanahabari-lab",
-      "featured": false,
-      "visible": true,
-      "order": 201,
-      "format": "investigation"
+      "featured": false
     },
     {
       "id": "budget-tiktok-vertical-series",
@@ -557,10 +530,7 @@
       ],
       "deliveryMode": "bns-led",
       "programmeSlug": "connect",
-      "featured": true,
-      "visible": true,
-      "order": 3,
-      "format": "field-report"
+      "featured": true
     },
     {
       "id": "wajir-community-listening",
@@ -617,10 +587,7 @@
       ],
       "deliveryMode": "bns-led",
       "programmeSlug": "mashinani",
-      "featured": false,
-      "visible": true,
-      "order": 103,
-      "format": "event"
+      "featured": false
     },
     {
       "id": "bps-2026-reading-coverage",
@@ -631,7 +598,7 @@
       "organizationId": "national-treasury",
       "date": "2026-02-14",
       "year": "2026",
-      "briefChallenge": "Give journalists a same-day toolkit when the BPS dropped — charts, quotes, and b-roll they could air immediately.",
+      "briefChallenge": "Give journalists a same-day toolkit when the BPS dropped  --  charts, quotes, and b-roll they could air immediately.",
       "whatWeProduced": "Same-day explainer, clean b-roll package, and slide deck synced to Treasury tables.",
       "description": "Produced in 36-hour sprint with Wanahabari Lab alumni. All figures matched Treasury PDF line items.",
       "media": {
@@ -659,10 +626,7 @@
       ],
       "deliveryMode": "co-produced",
       "programmeSlug": "wanahabari-lab",
-      "featured": false,
-      "visible": true,
-      "order": 202,
-      "format": "investigation"
+      "featured": false
     },
     {
       "id": "stakeholder-forum-production",
@@ -715,11 +679,8 @@
         "stakeholders"
       ],
       "deliveryMode": "commissioned",
-      "programmeSlug": "mashinani",
-      "format": "event",
-      "featured": false,
-      "visible": true,
-      "order": 104
+      "programmeSlug": "studios",
+      "featured": false
     }
   ]
 }

@@ -1,4 +1,4 @@
-import crypto from "node:crypto";
+import crypto from "crypto";
 
 export const R2_CONFIG = {
   accountId: process.env.R2_ACCOUNT_ID || "7ff1ad5f31619e9e1a31b969ed85d05b",

@@ -426,28 +426,28 @@ export function HeadlessPageStudio() {
     setIsLoading(true);
     try {
       const [resLanding, resProg, resSec, resAbout, resCustom, resFeatured, resNav, resTokens, resCourses, resContact, resFaq, resStories, resImpact, resConsortium, resCareers, resLegal, resTeamInitiatives, resLandingHero, resLandingSections, resProgrammeReels, resStudiosEvidence, resBnsStudio] = await Promise.all([
-        fetch("/api/cms/landing"),
-        fetch("/api/cms/programmes"),
-        fetch("/api/cms/partner-page-sections"),
-        fetch("/api/cms/about"),
-        fetch("/api/cms/custom-pages"),
-        fetch("/api/cms/featured-projects"),
-        fetch("/api/cms/navigation"),
-        fetch("/api/cms/design-tokens"),
-        fetch("/api/cms/civic-modules"),
-        fetch("/api/cms/contact"),
-        fetch("/api/cms/faq"),
-        fetch("/api/cms/stories"),
-        fetch("/api/cms/impact"),
-        fetch("/api/cms/consortium"),
-        fetch("/api/cms/careers"),
-        fetch("/api/cms/legal"),
-        fetch("/api/cms/team-initiatives"),
-        fetch("/api/cms/landing-hero"),
-        fetch("/api/cms/landing-sections"),
-        fetch("/api/cms/programme-reels"),
-        fetch("/api/cms/studios-evidence"),
-        fetch("/api/cms/bns-studio"),
+        fetch("/api/cms/landing/"),
+        fetch("/api/cms/programmes/"),
+        fetch("/api/cms/partner-page-sections/"),
+        fetch("/api/cms/about/"),
+        fetch("/api/cms/custom-pages/"),
+        fetch("/api/cms/featured-projects/"),
+        fetch("/api/cms/navigation/"),
+        fetch("/api/cms/design-tokens/"),
+        fetch("/api/cms/civic-modules/"),
+        fetch("/api/cms/contact/"),
+        fetch("/api/cms/faq/"),
+        fetch("/api/cms/stories/"),
+        fetch("/api/cms/impact/"),
+        fetch("/api/cms/consortium/"),
+        fetch("/api/cms/careers/"),
+        fetch("/api/cms/legal/"),
+        fetch("/api/cms/team-initiatives/"),
+        fetch("/api/cms/landing-hero/"),
+        fetch("/api/cms/landing-sections/"),
+        fetch("/api/cms/programme-reels/"),
+        fetch("/api/cms/studios-evidence/"),
+        fetch("/api/cms/bns-studio/"),
       ]);
 
       if (resLanding.ok) {
@@ -1155,130 +1155,73 @@ export function HeadlessPageStudio() {
   const handleSaveAll = async () => {
     setIsSaving(true);
     try {
-      const payloadPromises = [
-        fetch("/api/cms/landing", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ data: landingData, editorEmail: MASTER_CMS_EMAIL }),
-        }),
-        fetch("/api/cms/programmes", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ data: programmesData, editorEmail: MASTER_CMS_EMAIL }),
-        }),
-        fetch("/api/cms/partner-page-sections", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ data: sectionsData, editorEmail: MASTER_CMS_EMAIL }),
-        }),
-        fetch("/api/cms/about", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ data: aboutData, editorEmail: MASTER_CMS_EMAIL }),
-        }),
-        fetch("/api/cms/custom-pages", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ data: customPagesData, editorEmail: MASTER_CMS_EMAIL }),
-        }),
-        fetch("/api/cms/featured-projects", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ data: featuredData, editorEmail: MASTER_CMS_EMAIL }),
-        }),
-        fetch("/api/cms/navigation", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ data: navigationData, editorEmail: MASTER_CMS_EMAIL }),
-        }),
-        fetch("/api/cms/design-tokens", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ data: designTokensData, editorEmail: MASTER_CMS_EMAIL }),
-        }),
-        fetch("/api/cms/civic-modules", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ data: coursesData, editorEmail: MASTER_CMS_EMAIL }),
-        }),
-        fetch("/api/cms/contact", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ data: contactData, editorEmail: MASTER_CMS_EMAIL }),
-        }),
-        fetch("/api/cms/faq", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ data: faqData, editorEmail: MASTER_CMS_EMAIL }),
-        }),
-        fetch("/api/cms/stories", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ data: storiesData, editorEmail: MASTER_CMS_EMAIL }),
-        }),
-        fetch("/api/cms/impact", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ data: impactData, editorEmail: MASTER_CMS_EMAIL }),
-        }),
-        fetch("/api/cms/consortium", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ data: consortiumData, editorEmail: MASTER_CMS_EMAIL }),
-        }),
-        fetch("/api/cms/careers", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ data: careersData, editorEmail: MASTER_CMS_EMAIL }),
-        }),
-        fetch("/api/cms/legal", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ data: legalData, editorEmail: MASTER_CMS_EMAIL }),
-        }),
-        fetch("/api/cms/team-initiatives", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ data: teamInitiativesData, editorEmail: MASTER_CMS_EMAIL }),
-        }),
-        fetch("/api/cms/landing-hero", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ data: landingHeroData, editorEmail: MASTER_CMS_EMAIL }),
-        }),
-        fetch("/api/cms/landing-sections", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ data: landingSectionsData, editorEmail: MASTER_CMS_EMAIL }),
-        }),
-        fetch("/api/cms/programme-reels", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ data: programmeReelsData, editorEmail: MASTER_CMS_EMAIL }),
-        }),
-        fetch("/api/cms/studios-evidence", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ data: studiosEvidenceData, editorEmail: MASTER_CMS_EMAIL }),
-        }),
-        fetch("/api/cms/bns-studio", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ data: bnsStudioData, editorEmail: MASTER_CMS_EMAIL }),
-        }),
+      const collectionsToSave: { slug: string; data: Record<string, any> }[] = [
+        { slug: "landing", data: landingData },
+        { slug: "programmes", data: programmesData },
+        { slug: "partner-page-sections", data: sectionsData },
+        { slug: "about", data: aboutData },
+        { slug: "custom-pages", data: customPagesData },
+        { slug: "featured-projects", data: featuredData },
+        { slug: "navigation", data: navigationData },
+        { slug: "design-tokens", data: designTokensData },
+        { slug: "civic-modules", data: coursesData },
+        { slug: "contact", data: contactData },
+        { slug: "faq", data: faqData },
+        { slug: "stories", data: storiesData },
+        { slug: "impact", data: impactData },
+        { slug: "consortium", data: consortiumData },
+        { slug: "careers", data: careersData },
+        { slug: "legal", data: legalData },
+        { slug: "team-initiatives", data: teamInitiativesData },
+        { slug: "landing-hero", data: landingHeroData },
+        { slug: "landing-sections", data: landingSectionsData },
+        { slug: "programme-reels", data: programmeReelsData },
+        { slug: "studios-evidence", data: studiosEvidenceData },
+        { slug: "bns-studio", data: bnsStudioData },
       ];
 
-      const responses = await Promise.all(payloadPromises);
-      const allOk = responses.every((r) => r.ok);
+      const saveResults = await Promise.all(
+        collectionsToSave.map(async ({ slug, data }) => {
+          try {
+            const res = await fetch(`/api/cms/${slug}/`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ data, editorEmail: MASTER_CMS_EMAIL }),
+            });
+            const json = await res.json().catch(() => ({}));
+            return { slug, ok: res.ok, status: res.status, json };
+          } catch (fetchErr: any) {
+            return { slug, ok: false, status: 0, json: { error: fetchErr.message || "Network error" } };
+          }
+        })
+      );
 
-      if (allOk) {
+      const failed = saveResults.filter((r) => !r.ok);
+      const succeeded = saveResults.filter((r) => r.ok);
+
+      if (failed.length === 0) {
         setLastSaved(new Date().toLocaleTimeString());
         setPreviewRefreshKey((k) => k + 1);
         toast.success(`Successfully saved and published live!`, {
-          description: `Updated all 22 CMS collections including landing, programmes, sections, custom pages, featured blogs, navigation, tokens, courses, contact, about, FAQ, stories, impact, consortium, careers, legal, team initiatives, landing hero, landing sections, programme reels, studios evidence, and BNS studio schemas.`,
+          description: `Updated all ${succeeded.length} CMS collections persistently to disk and edge storage.`,
         });
       } else {
-        throw new Error("One or more collections failed to persist");
+        const errorDetails = failed.map((f) => {
+          let detail = f.json.error || `HTTP ${f.status}`;
+          if (Array.isArray(f.json.validationFailures) && f.json.validationFailures.length > 0) {
+            const rules = f.json.validationFailures.map((v: any) => `${v.rule}: ${v.message}`).join("; ");
+            detail += ` (${rules})`;
+          } else if (Array.isArray(f.json.lockedPaths) && f.json.lockedPaths.length > 0) {
+            detail += ` (Locked paths: ${f.json.lockedPaths.join(", ")})`;
+          }
+          return `${f.slug}: ${detail}`;
+        });
+
+        const fullErrorMsg = `Failed to save ${failed.length} of ${saveResults.length} collections:\n• ${errorDetails.join("\n• ")}`;
+        toast.error(`Save failed for ${failed.length} collection(s)`, {
+          description: errorDetails.slice(0, 2).join(" | "),
+        });
+        throw new Error(fullErrorMsg);
       }
     } catch (err: any) {
       toast.error(err.message || "Failed to save CMS updates");

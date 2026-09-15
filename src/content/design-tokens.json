@@ -1,92 +1,30 @@
 {
-  "provenance": {
-    "source": "Brand agency design tokens (Stripe indigo-ink ledger on frosted glass)",
-    "note": "CMS-managed brand colors, radii, and button fills. Applied sitewide via CSS variables.",
-    "level": "seed",
-    "lastUpdated": "2026-09-15"
-  },
-  "brand": {
-    "primary": "#533afd",
-    "primaryForeground": "#FFFFFF",
-    "accent": "#533afd",
-    "background": "#FFFFFF",
-    "foreground": "#061b31",
-    "muted": "#f8fafd",
-    "card": "#FFFFFF",
-    "border": "#e5edf5",
-    "surfaceMuted": "#f8fafd"
-  },
-  "radii": {
-    "sm": "4px",
-    "md": "4px",
-    "lg": "4px",
-    "xl": "8px",
-    "2xl": "12px",
-    "card": "4px",
-    "button": "4px",
-    "image": "4px"
-  },
   "badges": {
-    "shape": "subtle",
+    "shape": "pill",
     "variant": "soft",
     "colorScheme": "brand",
     "typography": "uppercase",
-    "showDot": true
+    "showDot": false
   },
   "buttons": {
-    "borderRadius": "md",
-    "defaultElevation": "none",
-    "primaryBg": "#533afd",
-    "primaryFg": "#FFFFFF",
-    "primaryHoverBg": "#7389ff",
-    "outlineBg": "#FFFFFF",
-    "outlineFg": "#533afd",
-    "outlineBorder": "#b9b9f9"
+    "borderRadius": "full",
+    "defaultElevation": "subtle"
   },
   "typography": {
-    "eyebrowTracking": "wider",
-    "headlineWeight": "bold",
-    "heroHeadlineItalic": false,
-    "heroHeadlineColor": "#061b31",
-    "heroBodyColor": "#64748d",
-    "sectionEyebrowColor": "#839bc8"
+    "eyebrowTracking": "tight",
+    "headlineWeight": "bold"
+  },
+  "brand": {
+    "muted": "#dedede"
   },
   "layout": {
-    "heroAspect": "16/10",
-    "heroObjectFit": "cover",
-    "footerRadius": "0",
-    "footerBackground": "muted",
-    "featuredLayout": "grid",
-    "featuredColumns": 3
+    "featuredColumns": 4,
+    "featuredLayout": "list"
   },
   "programmePresets": {
-    "brand-agency-indigo": {
-      "label": "Brand Agency Indigo",
-      "description": "Stripe-inspired indigo ink on frosted glass ledger",
-      "brand": {
-        "primary": "#533afd",
-        "primaryForeground": "#FFFFFF",
-        "accent": "#533afd",
-        "background": "#FFFFFF",
-        "foreground": "#061b31",
-        "muted": "#f8fafd",
-        "card": "#FFFFFF",
-        "border": "#e5edf5",
-        "surfaceMuted": "#f8fafd"
-      },
-      "buttons": {
-        "borderRadius": "md",
-        "primaryBg": "#533afd",
-        "primaryFg": "#FFFFFF",
-        "primaryHoverBg": "#7389ff",
-        "outlineBg": "#FFFFFF",
-        "outlineFg": "#533afd",
-        "outlineBorder": "#b9b9f9"
-      }
-    },
     "connect-blue": {
       "label": "Connect Blue",
-      "description": "National tracker — BNS blue",
+      "description": "National tracker  --  BNS blue",
       "brand": {
         "primary": "#0055FF",
         "primaryForeground": "#FFFFFF",
@@ -101,22 +39,22 @@
     },
     "mashinani-red": {
       "label": "Mashinani Red",
-      "description": "County accountability — warm crimson",
+      "description": "County accountability  --  warm crimson",
       "brand": {
-        "primary": "#C41E3A",
+        "primary": "#8000ff",
         "primaryForeground": "#FFFFFF",
-        "accent": "#E85D4C"
+        "accent": "#8000ff"
       },
       "buttons": {
         "borderRadius": "full",
-        "primaryBg": "#C41E3A",
+        "primaryBg": "#8000ff",
         "primaryFg": "#FFFFFF",
-        "primaryHoverBg": "#9E1830"
+        "primaryHoverBg": "#8000ff"
       }
     },
     "wanahabari-teal": {
       "label": "Wanahabari Teal",
-      "description": "Newsroom lab — deep teal",
+      "description": "Newsroom lab  --  deep teal",
       "brand": {
         "primary": "#0F766E",
         "primaryForeground": "#FFFFFF",
@@ -131,7 +69,7 @@
     },
     "studios-ink": {
       "label": "Studios Ink",
-      "description": "Production house — near-black ink",
+      "description": "Production house  --  near-black ink",
       "brand": {
         "primary": "#111827",
         "primaryForeground": "#FFFFFF",
@@ -146,4 +84,3 @@
     }
   }
 }
-

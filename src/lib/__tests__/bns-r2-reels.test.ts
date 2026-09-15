@@ -1,4 +1,5 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
+import { citizenApi } from "@/lib/api-client";
 import {
   BNS_HERO_REEL,
   BNS_R2_BASE_URL,
@@ -84,6 +85,7 @@ describe("Cloudflare R2 8-Reels System", () => {
   });
 
   it("getFeaturedTikTokVideos returns all 8 reels with video URLs", async () => {
+    vi.spyOn(citizenApi, "getTikTokFeatured").mockRejectedValueOnce(new Error("offline"));
     const featured = await getFeaturedTikTokVideos();
     expect(featured).toHaveLength(8);
     expect(featured[0].video_url).toContain("Calvina%20Praise%20Sovereign%20debt.mp4");

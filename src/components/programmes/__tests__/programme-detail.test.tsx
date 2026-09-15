@@ -19,7 +19,9 @@ describe("ProgrammeDetail", () => {
   it("renders landing-format layout for connect", () => {
     const p = getProgramme("connect")!;
     render(<ProgrammeDetail programme={p} />);
-    expect(screen.getByRole("heading", { name: p.headline })).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { name: p.headline.replace(/\s+/g, " ").trim() }),
+    ).toBeInTheDocument();
     expect(screen.getByText(/What this programme does/i)).toBeInTheDocument();
     expect(screen.getByText(/Other programmes/i)).toBeInTheDocument();
   });
@@ -27,7 +29,9 @@ describe("ProgrammeDetail", () => {
   it("renders landing-format layout for mashinani", () => {
     const p = getProgramme("mashinani")!;
     render(<ProgrammeDetail programme={p} />);
-    expect(screen.getByRole("heading", { name: p.headline })).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { name: p.headline.replace(/\s+/g, " ").trim() }),
+    ).toBeInTheDocument();
     expect(screen.getByText(p.name)).toBeInTheDocument();
   });
 

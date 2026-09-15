@@ -1,7 +1,7 @@
 {
   "provenance": {
     "source": "YouTube channel @budgetndiostory (UCvxVwuKoG8XEN53OohMu9qA)",
-    "note": "JSON-only Learn Hub video catalogue — no learn/videos API. Accumulate; do not truncate to RSS window.",
+    "note": "JSON-only Learn Hub video catalogue  --  no learn/videos API. Accumulate; do not truncate to RSS window.",
     "level": "fallback",
     "shape": "youtube_catalogue"
   },

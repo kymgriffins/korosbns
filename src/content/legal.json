@@ -2,46 +2,162 @@
   "security": {
     "title": "Security",
     "description": "Budget Ndio Story is committed to protecting your data and privacy. Here is how we keep our platform safe and secure.",
-    "locked": true,
     "sections": [
-      { "icon": "Lock", "title": "Encryption in Transit", "description": "All data transmitted between your browser and our servers is encrypted using TLS 1.3 (Transport Layer Security). This ensures that no third party can intercept or read your communications with Budget Ndio Story. Our SSL/TLS certificates are managed and auto-renewed through trusted certificate authorities.", "locked": true },
-      { "icon": "Key", "title": "Encryption at Rest", "description": "Sensitive user data stored in our databases is encrypted using AES-256 encryption. Passwords are never stored in plain text - they are hashed using bcrypt with a cost factor of 12. Personal identifiable information (PII) is encrypted at the application layer before being written to the database.", "locked": true },
-      { "icon": "Shield", "title": "Authentication & Session Management", "description": "We use JSON Web Tokens (JWT) for stateless authentication. Access tokens have a short expiry (15 minutes) and are rotated frequently using refresh tokens stored securely in localStorage. Refresh tokens are single-use and rotated on each request to prevent replay attacks. All authentication follows the OWASP best practices for session management.", "locked": true },
-      { "icon": "FileCheck", "title": "Security Headers", "description": "Our platform implements a comprehensive set of security headers to protect against common web vulnerabilities: Content Security Policy (CSP) restricts script and resource origins; HTTP Strict Transport Security (HSTS) enforces HTTPS; X-Content-Type-Options prevents MIME sniffing; X-Frame-Options prevents clickjacking; and Referrer-Policy controls referrer information leakage.", "locked": true },
-      { "icon": "Eye", "title": "Regular Security Audits", "description": "We conduct quarterly security audits and penetration tests on our platform. Our codebase undergoes automated security scanning through GitHub's Dependabot and CodeQL, with weekly dependency vulnerability checks. We also perform manual code reviews for all authentication and payment-related changes.", "locked": true },
-      { "icon": "Mail", "title": "Vulnerability Disclosure Policy", "description": "We welcome responsible disclosure of security vulnerabilities. If you discover a security issue, please email us at info@budgetndiostory.org with details. We commit to acknowledging receipt within 48 hours and will work diligently to address verified vulnerabilities. We ask that you refrain from publicly disclosing vulnerabilities until we have had reasonable time to address them.", "locked": true }
-    ]
+      {
+        "icon": "Lock",
+        "title": "Encryption in Transit",
+        "description": "All data transmitted between your browser and our servers is encrypted using TLS 1.3 (Transport Layer Security). This ensures that no third party can intercept or read your communications with Budget Ndio Story. Our SSL/TLS certificates are managed and auto-renewed through trusted certificate authorities."
+      },
+      {
+        "icon": "Key",
+        "title": "Encryption at Rest",
+        "description": "Sensitive user data stored in our databases is encrypted using AES-256 encryption. Passwords are never stored in plain text - they are hashed using bcrypt with a cost factor of 12. Personal identifiable information (PII) is encrypted at the application layer before being written to the database."
+      },
+      {
+        "icon": "Shield",
+        "title": "Authentication & Session Management",
+        "description": "We use JSON Web Tokens (JWT) for stateless authentication. Access tokens have a short expiry (15 minutes) and are rotated frequently using refresh tokens stored securely in localStorage. Refresh tokens are single-use and rotated on each request to prevent replay attacks. All authentication follows the OWASP best practices for session management."
+      },
+      {
+        "icon": "FileCheck",
+        "title": "Security Headers",
+        "description": "Our platform implements a comprehensive set of security headers to protect against common web vulnerabilities: Content Security Policy (CSP) restricts script and resource origins; HTTP Strict Transport Security (HSTS) enforces HTTPS; X-Content-Type-Options prevents MIME sniffing; X-Frame-Options prevents clickjacking; and Referrer-Policy controls referrer information leakage."
+      },
+      {
+        "icon": "Eye",
+        "title": "Regular Security Audits",
+        "description": "We conduct quarterly security audits and penetration tests on our platform. Our codebase undergoes automated security scanning through GitHub's Dependabot and CodeQL, with weekly dependency vulnerability checks. We also perform manual code reviews for all authentication and payment-related changes."
+      },
+      {
+        "icon": "Mail",
+        "title": "Vulnerability Disclosure Policy",
+        "description": "We welcome responsible disclosure of security vulnerabilities. If you discover a security issue, please email us at info@budgetndiostory.org with details. We commit to acknowledging receipt within 48 hours and will work diligently to address verified vulnerabilities. We ask that you refrain from publicly disclosing vulnerabilities until we have had reasonable time to address them."
+      }
+    ],
+    "locked": true
   },
   "privacy": {
     "title": "Privacy Policy",
     "lastUpdated": "June 2026",
-    "locked": true,
     "changelog": [
-      { "version": "June 2026", "changes": "Updated to include education level data collection, expanded retention periods, and DPO contact details." },
-      { "version": "April 2026", "changes": "Initial privacy policy published." }
+      {
+        "version": "June 2026",
+        "changes": "Updated to include education level data collection, expanded retention periods, and DPO contact details."
+      },
+      {
+        "version": "April 2026",
+        "changes": "Initial privacy policy published."
+      }
     ],
     "sections": [
-      { "icon": "Database", "title": "Data We Collect", "content": ["Account information: name, email address, phone number (optional), and display name when you register or subscribe", "Demographic data: county, ward, language preference, and education level to tailor content and improve local relevance", "Engagement data: learning progress, quiz scores, survey responses, bookmarks, and forum participation", "Technical data: browser type, device information, IP address, and usage patterns via analytics tools", "Communications: correspondence when you contact us via the contact form or directly via email"] },
-      { "icon": "Users", "title": "How We Use Your Data", "content": ["To provide and personalize our civic education content and learning modules", "To send you budget alerts, public participation notifications, and newsletter updates (with your consent)", "To improve our platform, content, and user experience through analytics", "To administer leaderboards, gamification features, and certificates (anonymized where possible)", "To comply with legal obligations under Kenya's Data Protection Act, 2019"] },
-      { "icon": "Clock", "title": "Data Retention", "content": ["Account data: retained for the duration of your active account plus 12 months after deletion for audit purposes", "Engagement data: retained for 3 years to track learning progress and program impact", "Analytics data: aggregated data retained indefinitely; individual session data retained for 26 months", "Newsletter subscriptions: retained until you unsubscribe or request deletion", "You may request earlier deletion of your data at any time by contacting our DPO"] },
-      { "icon": "Shield", "title": "Your Rights (Under Kenya DPA 2019)", "content": ["Right to be informed about the collection and use of your personal data", "Right of access to personal data we hold about you", "Right to rectification of inaccurate or incomplete data", "Right to erasure (right to be forgotten) - request deletion of your data", "Right to restrict processing of your data", "Right to data portability - receive your data in a structured, machine-readable format", "Right to object to processing of your data for direct marketing", "To exercise any of these rights, contact our Data Protection Officer at info@budgetndiostory.org"] },
-      { "icon": "Cookie", "title": "Cookie Policy", "content": ["Essential cookies: required for platform functionality, authentication, and security", "Analytics cookies: used to understand site usage (you can opt out via browser settings)", "Preference cookies: remember your language and display preferences", "We do not use third-party advertising cookies or tracking scripts for marketing purposes", "You can manage cookie preferences through your browser settings at any time"] },
-      { "icon": "Mail", "title": "Contact Our Data Protection Officer", "content": ["Email: info@budgetndiostory.org", "Phone: +254 700 000 000 (Weekdays, 9 AM - 5 PM EAT)", "Physical address: Budget Ndio Story, Nairobi, Kenya", "Response time: We aim to respond to all privacy inquiries within 72 hours"] }
-    ]
+      {
+        "icon": "Database",
+        "title": "Data We Collect",
+        "content": [
+          "Account information: name, email address, phone number (optional), and display name when you register or subscribe",
+          "Demographic data: county, ward, language preference, and education level to tailor content and improve local relevance",
+          "Engagement data: learning progress, quiz scores, survey responses, bookmarks, and forum participation",
+          "Technical data: browser type, device information, IP address, and usage patterns via analytics tools",
+          "Communications: correspondence when you contact us via the contact form or directly via email"
+        ]
+      },
+      {
+        "icon": "Users",
+        "title": "How We Use Your Data",
+        "content": [
+          "To provide and personalize our civic education content and learning modules",
+          "To send you budget alerts, public participation notifications, and newsletter updates (with your consent)",
+          "To improve our platform, content, and user experience through analytics",
+          "To administer leaderboards, gamification features, and certificates (anonymized where possible)",
+          "To comply with legal obligations under Kenya's Data Protection Act, 2019"
+        ]
+      },
+      {
+        "icon": "Clock",
+        "title": "Data Retention",
+        "content": [
+          "Account data: retained for the duration of your active account plus 12 months after deletion for audit purposes",
+          "Engagement data: retained for 3 years to track learning progress and program impact",
+          "Analytics data: aggregated data retained indefinitely; individual session data retained for 26 months",
+          "Newsletter subscriptions: retained until you unsubscribe or request deletion",
+          "You may request earlier deletion of your data at any time by contacting our DPO"
+        ]
+      },
+      {
+        "icon": "Shield",
+        "title": "Your Rights (Under Kenya DPA 2019)",
+        "content": [
+          "Right to be informed about the collection and use of your personal data",
+          "Right of access to personal data we hold about you",
+          "Right to rectification of inaccurate or incomplete data",
+          "Right to erasure (right to be forgotten) - request deletion of your data",
+          "Right to restrict processing of your data",
+          "Right to data portability - receive your data in a structured, machine-readable format",
+          "Right to object to processing of your data for direct marketing",
+          "To exercise any of these rights, contact our Data Protection Officer at info@budgetndiostory.org"
+        ]
+      },
+      {
+        "icon": "Cookie",
+        "title": "Cookie Policy",
+        "content": [
+          "Essential cookies: required for platform functionality, authentication, and security",
+          "Analytics cookies: used to understand site usage (you can opt out via browser settings)",
+          "Preference cookies: remember your language and display preferences",
+          "We do not use third-party advertising cookies or tracking scripts for marketing purposes",
+          "You can manage cookie preferences through your browser settings at any time"
+        ]
+      },
+      {
+        "icon": "Mail",
+        "title": "Contact Our Data Protection Officer",
+        "content": [
+          "Email: info@budgetndiostory.org",
+          "Phone: +254 700 000 000 (Weekdays, 9 AM - 5 PM EAT)",
+          "Physical address: Budget Ndio Story, Nairobi, Kenya",
+          "Response time: We aim to respond to all privacy inquiries within 72 hours"
+        ]
+      }
+    ],
+    "locked": true
   },
   "terms": {
     "title": "Terms of Service",
     "lastUpdated": "April 2026",
-    "locked": true,
     "sections": [
-      { "heading": "1. Acceptance of Terms", "content": "By accessing or using Budget Ndio Story (\"we\", \"us\", \"our\"), you agree to be bound by these Terms of Service. If you do not agree to these terms, please do not use our website.", "locked": true },
-      { "heading": "2. Use License", "content": "Permission is granted to temporarily access the materials on Budget Ndio Story for personal, non-commercial use. This is the grant of a license, not a transfer of title.", "locked": true },
-      { "heading": "3. Disclaimer", "content": "The materials on Budget Ndio Story are provided on an 'as is' basis. We make no warranties, expressed or implied, and hereby disclaim and negate all other warranties including, without limitation, implied warranties or conditions of merchantability, fitness for a particular purpose, or non-infringement of intellectual property. While we strive for accuracy, budget figures and policy information are based on official government documents which may be updated. Always refer to official sources for the most current data.", "locked": true },
-      { "heading": "4. Limitations", "content": "In no event shall Budget Ndio Story or its suppliers be liable for any damages (including, without limitation, damages for loss of data or profit, or due to business interruption) arising out of the use or inability to use the materials on our website.", "locked": true },
-      { "heading": "5. Content Ownership", "content": "All content on this site-including text, graphics, logos, and software-is the property of Budget Ndio Story or its content suppliers and is protected by Kenyan and international copyright laws.", "locked": true },
-      { "heading": "6. External Links", "content": "Our site may contain links to external websites (e.g., government budget documents, social media platforms). We are not responsible for the content or practices of these third-party sites.", "locked": true },
-      { "heading": "7. Modifications", "content": "We may revise these terms at any time without notice. By using this website, you agree to be bound by the then-current version of these Terms of Service.", "locked": true },
-      { "heading": "8. Contact", "content": "If you have any questions about these Terms of Service, please contact us at info@budgetndiostory.org.", "locked": true }
-    ]
+      {
+        "heading": "1. Acceptance of Terms",
+        "content": "By accessing or using Budget Ndio Story (\"we\", \"us\", \"our\"), you agree to be bound by these Terms of Service. If you do not agree to these terms, please do not use our website."
+      },
+      {
+        "heading": "2. Use License",
+        "content": "Permission is granted to temporarily access the materials on Budget Ndio Story for personal, non-commercial use. This is the grant of a license, not a transfer of title."
+      },
+      {
+        "heading": "3. Disclaimer",
+        "content": "The materials on Budget Ndio Story are provided on an 'as is' basis. We make no warranties, expressed or implied, and hereby disclaim and negate all other warranties including, without limitation, implied warranties or conditions of merchantability, fitness for a particular purpose, or non-infringement of intellectual property. While we strive for accuracy, budget figures and policy information are based on official government documents which may be updated. Always refer to official sources for the most current data."
+      },
+      {
+        "heading": "4. Limitations",
+        "content": "In no event shall Budget Ndio Story or its suppliers be liable for any damages (including, without limitation, damages for loss of data or profit, or due to business interruption) arising out of the use or inability to use the materials on our website."
+      },
+      {
+        "heading": "5. Content Ownership",
+        "content": "All content on this site-including text, graphics, logos, and software-is the property of Budget Ndio Story or its content suppliers and is protected by Kenyan and international copyright laws."
+      },
+      {
+        "heading": "6. External Links",
+        "content": "Our site may contain links to external websites (e.g., government budget documents, social media platforms). We are not responsible for the content or practices of these third-party sites."
+      },
+      {
+        "heading": "7. Modifications",
+        "content": "We may revise these terms at any time without notice. By using this website, you agree to be bound by the then-current version of these Terms of Service."
+      },
+      {
+        "heading": "8. Contact",
+        "content": "If you have any questions about these Terms of Service, please contact us at info@budgetndiostory.org."
+      }
+    ],
+    "locked": true
   }
 }

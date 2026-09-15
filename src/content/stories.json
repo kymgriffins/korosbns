@@ -7,11 +7,65 @@
     "ctaHref": "/learn"
   },
   "items": [
-    { "id": 1, "title": "Education Budget: Where the Money Goes", "excerpt": "Breaking down the KES 630B allocated to education and how it impacts classrooms across Kenya.", "category": "Education", "readTime": "5 min read", "views": "45.2k", "image": "/images/project.svg", "href": "/learn" },
-    { "id": 2, "title": "Healthcare Funding in the 2026 Budget", "excerpt": "Understanding the SHA rollout and what KES 47B means for universal health coverage.", "category": "Healthcare", "readTime": "7 min read", "views": "38.7k", "image": "/images/client.svg", "href": "/learn" },
-    { "id": 3, "title": "County Budgets: Your Local spending Guide", "excerpt": "How the KES 420B equitable share is distributed across all 47 counties.", "category": "Devolution", "readTime": "6 min read", "views": "29.1k", "image": "/images/invoices.svg", "href": "/learn" },
-    { "id": 4, "title": "Debt & Deficits: The Big Picture", "excerpt": "Explaining Kenya's KES 1.15T fiscal deficit and what it means for future generations.", "category": "Economics", "readTime": "8 min read", "views": "52.3k", "visual": "budget-vs-debt", "href": "/learn" },
-    { "id": 5, "title": "BETA Pillars Explained in Plain English", "excerpt": "Agriculture, MSMEs, Healthcare, Housing, Digital - what do they actually mean?", "category": "Policy", "readTime": "6 min read", "views": "41.8k", "image": "/images/blob.svg", "href": "/learn" },
-    { "id": 6, "title": "Fiscal Risks You Should Know About", "excerpt": "The five major risks identified in the BPS 2026 and why they matter to you.", "category": "Risk Analysis", "readTime": "5 min read", "views": "33.4k", "image": "/images/project.svg", "href": "/learn" }
+    {
+      "id": 1,
+      "title": "Education Budget: Where the Money Goes",
+      "excerpt": "Breaking down the KES 630B allocated to education and how it impacts classrooms across Kenya.",
+      "category": "Education",
+      "readTime": "5 min read",
+      "views": "45.2k",
+      "image": "/images/project.svg",
+      "href": "/learn"
+    },
+    {
+      "id": 2,
+      "title": "Healthcare Funding in the 2026 Budget",
+      "excerpt": "Understanding the SHA rollout and what KES 47B means for universal health coverage.",
+      "category": "Healthcare",
+      "readTime": "7 min read",
+      "views": "38.7k",
+      "image": "/images/client.svg",
+      "href": "/learn"
+    },
+    {
+      "id": 3,
+      "title": "County Budgets: Your Local spending Guide",
+      "excerpt": "How the KES 420B equitable share is distributed across all 47 counties.",
+      "category": "Devolution",
+      "readTime": "6 min read",
+      "views": "29.1k",
+      "image": "/images/invoices.svg",
+      "href": "/learn"
+    },
+    {
+      "id": 4,
+      "title": "Debt & Deficits: The Big Picture",
+      "excerpt": "Explaining Kenya's KES 1.15T fiscal deficit and what it means for future generations.",
+      "category": "Economics",
+      "readTime": "8 min read",
+      "views": "52.3k",
+      "visual": "budget-vs-debt",
+      "href": "/learn"
+    },
+    {
+      "id": 5,
+      "title": "BETA Pillars Explained in Plain English",
+      "excerpt": "Agriculture, MSMEs, Healthcare, Housing, Digital - what do they actually mean?",
+      "category": "Policy",
+      "readTime": "6 min read",
+      "views": "41.8k",
+      "image": "/images/blob.svg",
+      "href": "/learn"
+    },
+    {
+      "id": 6,
+      "title": "Fiscal Risks You Should Know About",
+      "excerpt": "The five major risks identified in the BPS 2026 and why they matter to you.",
+      "category": "Risk Analysis",
+      "readTime": "5 min read",
+      "views": "33.4k",
+      "image": "/images/project.svg",
+      "href": "/learn"
+    }
   ]
 }

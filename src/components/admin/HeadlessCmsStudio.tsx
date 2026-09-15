@@ -73,7 +73,7 @@ export function HeadlessCmsStudio() {
     setSaveSuccess(false);
 
     try {
-      const res = await fetch(`/api/cms/${slug}`);
+      const res = await fetch(`/api/cms/${slug}/`);
       if (res.ok) {
         const payload = await res.json();
         const formatted = JSON.stringify(payload.data, null, 2);
@@ -148,7 +148,7 @@ export function HeadlessCmsStudio() {
       setJsonError(null);
 
       // Save via API (persists to disk and memory)
-      const res = await fetch(`/api/cms/${selectedSlug}`, {
+      const res = await fetch(`/api/cms/${selectedSlug}/`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ data: parsed, editorEmail: MASTER_CMS_EMAIL }),
@@ -157,7 +157,14 @@ export function HeadlessCmsStudio() {
       const result = await res.json();
 
       if (!res.ok) {
-        throw new Error(result.error || "Failed to save JSON to disk");
+        let errorMsg = result.error || "Failed to save JSON to disk";
+        if (Array.isArray(result.validationFailures) && result.validationFailures.length > 0) {
+          const failureDetails = result.validationFailures.map((f: any) => `${f.rule}: ${f.message}`).join(" | ");
+          errorMsg = `${result.error || "Validation failed"} — Details: ${failureDetails}`;
+        } else if (Array.isArray(result.lockedPaths) && result.lockedPaths.length > 0) {
+          errorMsg = `${result.error || "Locked fields rejected"} — Locked paths: ${result.lockedPaths.join(", ")}`;
+        }
+        throw new Error(errorMsg);
       }
 
       // Also update in-memory client store
@@ -177,7 +184,9 @@ export function HeadlessCmsStudio() {
     } catch (err) {
       const msg = err instanceof Error ? err.message : "Failed to publish JSON";
       setJsonError(msg);
-      toast.error(msg);
+      toast.error("Failed to publish JSON", {
+        description: msg,
+      });
     } finally {
       setIsSaving(false);
     }

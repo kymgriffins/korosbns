@@ -1,15 +1,4 @@
 {
-  "dials": {
-    "DESIGN_VARIANCE": 4,
-    "MOTION_INTENSITY": 4,
-    "VISUAL_DENSITY": 3
-  },
-  "seo": {
-    "title": "BNS Studio - Forensic Civic Media Production",
-    "description": "Documentaries, podcasts, animations, town halls, and social reels - verified civic media production from Budget Ndio Story.",
-    "canonical": "https://budgetndiostory.org/bns-studio",
-    "ogImage": "/images/media/129A3905.jpg"
-  },
   "provenance": {
     "source": "BNS Studio page content (seed)",
     "note": "CMS-managed page sections, images, and configuration for the BNS Studio page. Add/remove/reorder sections in the 'sections' array.",
@@ -25,58 +14,21 @@
       "autoPlayMs": 7000,
       "slides": [
         {
-          "id": "social-media",
-          "label": "Social Media Series",
-          "shortDesc": "Bite-sized vertical video engineered for reach and civic action.",
-          "image": "/images/reels/reel-01-poster.jpg",
-          "imagePosition": "center top",
+          "id": "slide-mtzo3l3b",
+          "label": "The Budget",
+          "shortDesc": "Where it all Begins",
+          "image": "https://pub-96ce2eba58694b1da7f540033bdaa464.r2.dev/images/1789293014368-Before_Budget.jpg",
           "videoUrl": "",
-          "projectSlug": "",
-          "year": "2025",
-          "layout": "vertical"
-        },
-        {
-          "id": "podcast",
-          "label": "Podcast & Audio",
-          "shortDesc": "Bilingual fiscal deep-dives, field soundscapes, and expert debate series.",
-          "image": "/images/reels/reel-04-poster.jpg",
-          "imagePosition": "center",
-          "videoUrl": "",
-          "projectSlug": "",
-          "year": "2025",
-          "layout": "square"
-        },
-        {
-          "id": "explainer",
-          "label": "Explainer Videos",
-          "shortDesc": "Step-by-step visual breakdowns of public finance, policy memos, and sector allocations.",
-          "image": "/images/reels/reel-02-poster.jpg",
-          "imagePosition": "center",
-          "videoUrl": "",
-          "projectSlug": "",
-          "year": "2025",
+          "year": "2026",
           "layout": "cinema"
         },
         {
-          "id": "documentary",
-          "label": "Documentaries",
-          "shortDesc": "Cinematic, character-driven storytelling capturing grassroots community realities.",
-          "image": "/images/reels/reel-03-poster.jpg",
-          "imagePosition": "center",
+          "id": "slide-mtzo7074",
+          "label": "Project Terra",
+          "shortDesc": "Are Digital platforms Leaving Women Behind?",
+          "image": "https://pub-96ce2eba58694b1da7f540033bdaa464.r2.dev/thumbnails/1789145766250-project_terra.webp",
           "videoUrl": "",
-          "projectSlug": "",
-          "year": "2025",
-          "layout": "cinema"
-        },
-        {
-          "id": "animation",
-          "label": "Animations",
-          "shortDesc": "High-engagement 2D and motion explainers that demystify complex legislation.",
-          "image": "/images/reels/reel-05-poster.jpg",
-          "imagePosition": "center",
-          "videoUrl": "",
-          "projectSlug": "",
-          "year": "2025",
+          "year": "2026",
           "layout": "cinema"
         }
       ]
@@ -107,7 +59,14 @@
           "subtitle": "Forensic visual storytelling",
           "description": "High-engagement explainers that demystify complex legislation and budget cycles.",
           "icon": "Film",
-          "capabilities": ["Policy explainer animations", "Budget cycle breakdowns", "Infographic motion graphics", "Legislative process visuals", "Data visualization films", "Social media clips"]
+          "capabilities": [
+            "Policy explainer animations",
+            "Budget cycle breakdowns",
+            "Infographic motion graphics",
+            "Legislative process visuals",
+            "Data visualization films",
+            "Social media clips"
+          ]
         },
         {
           "badge": "Cinema",
@@ -115,7 +74,14 @@
           "subtitle": "Character-driven civic narratives",
           "description": "Cinematic storytelling capturing grassroots community realities and institutional accountability.",
           "icon": "Clapperboard",
-          "capabilities": ["Feature documentaries", "Short-form films", "Investigative series", "Community portraits", "Institutional profiles", "Festival-ready productions"]
+          "capabilities": [
+            "Feature documentaries",
+            "Short-form films",
+            "Investigative series",
+            "Community portraits",
+            "Institutional profiles",
+            "Festival-ready productions"
+          ]
         },
         {
           "badge": "Audio",
@@ -123,7 +89,14 @@
           "subtitle": "Bilingual fiscal deep-dives",
           "description": "Field soundscapes, expert debate series, and bilingual fiscal analysis.",
           "icon": "Headphones",
-          "capabilities": ["Investigative podcast series", "Bilingual fiscal explainers", "Field recordings", "Expert interview series", "Community voice collections", "Audio documentaries"]
+          "capabilities": [
+            "Investigative podcast series",
+            "Bilingual fiscal explainers",
+            "Field recordings",
+            "Expert interview series",
+            "Community voice collections",
+            "Audio documentaries"
+          ]
         }
       ]
     },
@@ -134,14 +107,46 @@
       "title": "From field to frame.",
       "description": "Every production captures the real moments that drive Kenya's civic story.",
       "images": [
-        { "src": "/images/media/129A3905.jpg", "alt": "BNS Studio production team on location", "caption": "Studio production floor" },
-        { "src": "/images/media/main media image.jpg", "alt": "Audio recording session", "caption": "Podcast recording" },
-        { "src": "/images/media/129A3923.jpg", "alt": "Town hall facilitation", "caption": "Community convening" },
-        { "src": "/images/marketing newsletter subcribe/Nelly with The Mic.jpg", "alt": "Field reporting with microphone", "caption": "Field documentation" },
-        { "src": "/images/cohort1 groundworks/129A3964.jpg", "alt": "Youth cohort workshop", "caption": "Civic fellowship" },
-        { "src": "/images/towwnhallmay/129A3863.jpg", "alt": "Multi-stakeholder forum", "caption": "Stakeholder convening" },
-        { "src": "/images/towwnhallmay/theman.jpg", "alt": "Presenter in studio", "caption": "Studio presentation" },
-        { "src": "/images/media/129A3905.jpg", "alt": "Production crew at work", "caption": "Behind the scenes" }
+        {
+          "src": "/images/media/129A3905.jpg",
+          "alt": "BNS Studio production team on location",
+          "caption": "Studio production floor"
+        },
+        {
+          "src": "/images/media/main media image.jpg",
+          "alt": "Audio recording session",
+          "caption": "Podcast recording"
+        },
+        {
+          "src": "/images/media/129A3923.jpg",
+          "alt": "Town hall facilitation",
+          "caption": "Community convening"
+        },
+        {
+          "src": "/images/marketing newsletter subcribe/Nelly with The Mic.jpg",
+          "alt": "Field reporting with microphone",
+          "caption": "Field documentation"
+        },
+        {
+          "src": "/images/cohort1 groundworks/129A3964.jpg",
+          "alt": "Youth cohort workshop",
+          "caption": "Civic fellowship"
+        },
+        {
+          "src": "/images/towwnhallmay/129A3863.jpg",
+          "alt": "Multi-stakeholder forum",
+          "caption": "Stakeholder convening"
+        },
+        {
+          "src": "/images/towwnhallmay/theman.jpg",
+          "alt": "Presenter in studio",
+          "caption": "Studio presentation"
+        },
+        {
+          "src": "/images/media/129A3905.jpg",
+          "alt": "Production crew at work",
+          "caption": "Behind the scenes"
+        }
       ],
       "speed": "normal",
       "direction": "left"
@@ -156,9 +161,18 @@
       "tagline": "Mission-aligned. Editorially independent. Built for reach.",
       "ctaPrompt": "Tell us what you need to move.",
       "stats": [
-        { "value": "04", "label": "Core formats" },
-        { "value": "08", "label": "Full production formats" },
-        { "value": "2x", "label": "Double impact" }
+        {
+          "value": "",
+          "label": "Documentaries"
+        },
+        {
+          "value": "",
+          "label": "Podcasts"
+        },
+        {
+          "value": "",
+          "label": "Animations"
+        }
       ],
       "image": "/images/media/129A3905.jpg",
       "imageAlt": "BNS Studio team"
@@ -170,19 +184,46 @@
       "eyebrow": "Partner With Us",
       "title": "Build civic media that moves policy.",
       "description": "Whether you are a development partner, newsroom, or citizen - there is a place for you in Kenya's accountability story.",
-      "primaryCta": { "label": "Start a Partnership", "href": "/contact" },
-      "secondaryCta": { "label": "View Our Work", "href": "/bns-studio" },
+      "primaryCta": {
+        "label": "Start a Partnership",
+        "href": "/contact"
+      },
+      "secondaryCta": {
+        "label": "View Our Work",
+        "href": "/bns-studio"
+      },
       "image": "/images/media/129A3905.jpg",
       "imageAlt": "BNS Studio production team",
       "partnerLogos": [
-        { "src": "/images/senmedia.png", "alt": "Sen Media & Events" },
-        { "src": "/images/The-Continental-Pot-Vertical-removebg-preview.png", "alt": "The Continental Pot" },
-        { "src": "/images/colortwist.png", "alt": "Colour Twist Media" }
+        {
+          "src": "/images/senmedia.png",
+          "alt": "Sen Media & Events"
+        },
+        {
+          "src": "/images/The-Continental-Pot-Vertical-removebg-preview.png",
+          "alt": "The Continental Pot"
+        },
+        {
+          "src": "/images/colortwist.png",
+          "alt": "Colour Twist Media"
+        }
       ],
       "features": [
-        { "icon": "Megaphone", "title": "Amplify Your Message", "description": "Reach 480K+ young Kenyans through our verified civic media channels." },
-        { "icon": "Shield", "title": "Editorial Independence", "description": "All partnerships maintain full editorial independence and fact-checking standards." },
-        { "icon": "TrendingUp", "title": "Measurable Impact", "description": "Track engagement, policy changes, and civic outcomes from your partnership." }
+        {
+          "icon": "Megaphone",
+          "title": "Amplify Your Message",
+          "description": "Reach 480K+ young Kenyans through our verified civic media channels."
+        },
+        {
+          "icon": "Shield",
+          "title": "Editorial Independence",
+          "description": "All partnerships maintain full editorial independence and fact-checking standards."
+        },
+        {
+          "icon": "TrendingUp",
+          "title": "Measurable Impact",
+          "description": "Track engagement, policy changes, and civic outcomes from your partnership."
+        }
       ]
     },
     {
@@ -203,10 +244,10 @@
       "viewAllHref": "/stories",
       "layout": "featured-side-list",
       "featured": {
-        "category": "Design Insights",
-        "title": "Explore modern living design ideas",
-        "summary": "Field craft, civic media, and production notes from the BNS Studio floor.",
-        "image": "/images/media/129A3905.jpg",
+        "category": "Production Studios",
+        "title": "Audio Visuals ",
+        "summary": "Field craft, civic media, and production notes from the BNS Studio floor. Cuba Ngondi Houghton - Bajeti Hub",
+        "image": "https://pub-96ce2eba58694b1da7f540033bdaa464.r2.dev/images/1789300578766-129A4113.jpg",
         "href": "/stories",
         "authorName": "BNS Studio",
         "authorRole": "Production",
@@ -216,26 +257,21 @@
       },
       "items": [
         {
-          "category": "Architecture",
-          "title": "Top living room design trends for modern homes",
-          "image": "/images/media/main media image.jpg",
+          "category": "Animations",
+          "title": "Animated explainer videos",
+          "image": "https://pub-96ce2eba58694b1da7f540033bdaa464.r2.dev/thumbnails/1789145865568-project_terra.webp",
           "href": "/stories",
-          "authorName": "BNS Editorial",
+          "authorName": "Are  Women ",
           "authorRole": "Editor",
-          "authorAvatar": "",
-          "date": "2026"
-        },
-        {
-          "category": "Interior",
-          "title": "Smart space planning ideas for urban living",
-          "image": "/images/media/129A3923.jpg",
-          "href": "/stories",
-          "authorName": "BNS Studio",
-          "authorRole": "Producer",
           "authorAvatar": "",
           "date": "2026"
         }
       ]
     }
-  ]
+  ],
+  "seo": {
+    "title": "BNS Studio - Forensic Civic Media Production",
+    "description": "Documentaries, podcasts, animations, town halls, and social reels - verified civic media production from Budget Ndio Story.",
+    "ogImage": "/images/media/129A3905.jpg"
+  }
 }

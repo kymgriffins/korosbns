@@ -168,7 +168,7 @@ function mergeProject(studio: StudioProject): CanonicalProject {
     outputs: studio.outputs || [],
     tags: studio.tags || [],
     featured: studio.featured || false,
-    visible: studio.visible !== false,
+    visible: (studio as { visible?: boolean }).visible !== false,
     format: (studio as { format?: string }).format,
     order: (studio as { order?: number }).order ?? 999,
     prose: featured?.prose,

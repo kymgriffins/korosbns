@@ -1,5 +1,5 @@
 {
-  "$schema_comment": "Org marketing JSON — read-heavy, mundane UI data. Prefer this over live DB hits for landing/about/team. Optional later: Admin UI writes here and syncs to DB.",
+  "$schema_comment": "Org marketing JSON  --  read-heavy, mundane UI data. Prefer this over live DB hits for landing/about/team. Optional later: Admin UI writes here and syncs to DB.",
   "org": {
     "name": "Budget Ndio Story",
     "short_name": "BNS",
@@ -41,7 +41,7 @@
       "description": "Connecting BNS with global and local partners to scale our institutional legacy and democratic stability.",
       "bio": "Drives BNS's strategic coalitions, international development partnerships, and institutional growth. James bridges youth-led movements with policy research institutions, civil society orgs, and donor partners.",
       "tagline": "Strategic Alliances & Institutional Growth Lead",
-      "profileText": "James Maingi Mutinda is Director Partnerships at Budget Ndio Story, responsible for expanding BNS's institutional footprint, strategic alliances, and sustainability networks. He brings extensive experience in stakeholder management, public interest advocacy, and inter-organizational diplomacy.\n\nJames leads engagement with key consortium partners—including academic bodies, legal advocacy groups, and grassroots coalitions—to scale BNS's reach into secondary schools, universities, and community halls across Kenya.",
+      "profileText": "James Maingi Mutinda is Director Partnerships at Budget Ndio Story, responsible for expanding BNS's institutional footprint, strategic alliances, and sustainability networks. He brings extensive experience in stakeholder management, public interest advocacy, and inter-organizational diplomacy.\n\nJames leads engagement with key consortium partners -- including academic bodies, legal advocacy groups, and grassroots coalitions -- to scale BNS's reach into secondary schools, universities, and community halls across Kenya.",
       "missionImpact": "James transforms BNS's civic mission into a nationwide coalition. By connecting grassroots youth mobilizers with established policy think tanks, universities, and international development partners, he ensures that fiscal literacy tools reach millions of citizens who have historically been locked out of budgetary decision-making.",
       "visionContribution": "Expanding BNS's campus chapter network into all 47 Kenyan counties and forging enduring co-creation pacts with public interest media houses, ensuring civic budget education becomes permanently embedded within Kenyan youth culture.",
       "focusAreas": [

@@ -5,12 +5,42 @@
     "description": "From viral explainers to classroom resources, here's how we're changing how Kenyans engage with public finances."
   },
   "metrics": [
-    { "icon": "Users", "value": "5M+", "label": "Youth to be Reached", "description": "Through digital platforms, broadcast partnerships, and social media syndication." },
-    { "icon": "Map", "value": "47", "label": "Counties Covered", "description": "Full national coverage with Town Halls interrogation local budget estimates." },
-    { "icon": "Calendar", "value": "5000", "label": "Budget Champions", "description": "Trained budget analysts and civic leaders on the ground across the country." },
-    { "icon": "Eye", "value": "20+", "label": "Campus Hubs", "description": "Permanent student chapters dedicated to fiscal analysis, debate, and education." },
-    { "icon": "Heart", "value": "1.2M+", "label": "Engaged Citizens", "description": "Young Kenyans actively following and participating in budget deep-dives." },
-    { "icon": "Share2", "value": "100%", "label": "Clean Audit", "description": "Maintaining a standard of rigorous data integrity and policy-based accountability." }
+    {
+      "icon": "Users",
+      "value": "5M+",
+      "label": "Youth to be Reached",
+      "description": "Through digital platforms, broadcast partnerships, and social media syndication."
+    },
+    {
+      "icon": "Map",
+      "value": "47",
+      "label": "Counties Covered",
+      "description": "Full national coverage with Town Halls interrogation local budget estimates."
+    },
+    {
+      "icon": "Calendar",
+      "value": "5000",
+      "label": "Budget Champions",
+      "description": "Trained budget analysts and civic leaders on the ground across the country."
+    },
+    {
+      "icon": "Eye",
+      "value": "20+",
+      "label": "Campus Hubs",
+      "description": "Permanent student chapters dedicated to fiscal analysis, debate, and education."
+    },
+    {
+      "icon": "Heart",
+      "value": "1.2M+",
+      "label": "Engaged Citizens",
+      "description": "Young Kenyans actively following and participating in budget deep-dives."
+    },
+    {
+      "icon": "Share2",
+      "value": "100%",
+      "label": "Clean Audit",
+      "description": "Maintaining a standard of rigorous data integrity and policy-based accountability."
+    }
   ],
   "testimonial": {
     "quote": "Budget Ndio Story made the BPS actually understandable. I used their explainer video in my civics class and the students finally got it.",

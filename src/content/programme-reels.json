@@ -21,7 +21,12 @@
       "shares": 430,
       "plays": 280000,
       "duration": "2:16",
-      "hashtags": ["#BudgetNdioStory", "#CalvinaPraise", "#Article201", "#SovereignDebt"],
+      "hashtags": [
+        "#BudgetNdioStory",
+        "#CalvinaPraise",
+        "#Article201",
+        "#SovereignDebt"
+      ],
       "tiktokUrl": "https://www.tiktok.com/@budget.ndio.story",
       "featuredInHero": true,
       "programmeSlug": "connect"
@@ -41,7 +46,12 @@
       "shares": 260,
       "plays": 195000,
       "duration": "0:49",
-      "hashtags": ["#CountyBudget", "#NellyMaina", "#BNSMashinani", "#Devolution"],
+      "hashtags": [
+        "#CountyBudget",
+        "#NellyMaina",
+        "#BNSMashinani",
+        "#Devolution"
+      ],
       "tiktokUrl": "https://www.tiktok.com/@budget.ndio.story",
       "programmeSlug": "mashinani"
     },
@@ -60,7 +70,12 @@
       "shares": 680,
       "plays": 310000,
       "duration": "0:45",
-      "hashtags": ["#BudgetDay2026", "#NationalTreasury", "#KenyaBudget", "#Article201"],
+      "hashtags": [
+        "#BudgetDay2026",
+        "#NationalTreasury",
+        "#KenyaBudget",
+        "#Article201"
+      ],
       "tiktokUrl": "https://www.tiktok.com/@budget.ndio.story",
       "programmeSlug": "connect"
     },
@@ -79,7 +94,12 @@
       "shares": 940,
       "plays": 420000,
       "duration": "1:22",
-      "hashtags": ["#BNSStudio", "#MythOrFact", "#BudgetGame", "#PublicFinance"],
+      "hashtags": [
+        "#BNSStudio",
+        "#MythOrFact",
+        "#BudgetGame",
+        "#PublicFinance"
+      ],
       "tiktokUrl": "https://www.tiktok.com/@budget.ndio.story",
       "programmeSlug": "connect"
     },
@@ -98,7 +118,12 @@
       "shares": 820,
       "plays": 350000,
       "duration": "0:45",
-      "hashtags": ["#NyotaProgrammes", "#UwezoFund", "#YouthEmpowerment", "#Opportunities"],
+      "hashtags": [
+        "#NyotaProgrammes",
+        "#UwezoFund",
+        "#YouthEmpowerment",
+        "#Opportunities"
+      ],
       "tiktokUrl": "https://www.tiktok.com/@budget.ndio.story",
       "programmeSlug": "mashinani"
     },
@@ -117,7 +142,12 @@
       "shares": 390,
       "plays": 210000,
       "duration": "0:24",
-      "hashtags": ["#OneKenyan", "#Wanahabari", "#TaxJustice", "#Unity"],
+      "hashtags": [
+        "#OneKenyan",
+        "#Wanahabari",
+        "#TaxJustice",
+        "#Unity"
+      ],
       "tiktokUrl": "https://www.tiktok.com/@budget.ndio.story",
       "programmeSlug": "wanahabari-lab"
     },
@@ -136,7 +166,12 @@
       "shares": 450,
       "plays": 275000,
       "duration": "1:37",
-      "hashtags": ["#PersonalBudget", "#CostOfLiving", "#Inflation", "#NationalDebt"],
+      "hashtags": [
+        "#PersonalBudget",
+        "#CostOfLiving",
+        "#Inflation",
+        "#NationalDebt"
+      ],
       "tiktokUrl": "https://www.tiktok.com/@budget.ndio.story",
       "programmeSlug": "connect"
     },
@@ -155,7 +190,12 @@
       "shares": 610,
       "plays": 320000,
       "duration": "2:44",
-      "hashtags": ["#UoNCohort001", "#WanahabariLab", "#HELB", "#CampusCivic"],
+      "hashtags": [
+        "#UoNCohort001",
+        "#WanahabariLab",
+        "#HELB",
+        "#CampusCivic"
+      ],
       "tiktokUrl": "https://www.tiktok.com/@budget.ndio.story",
       "programmeSlug": "wanahabari-lab"
     }

@@ -23,7 +23,7 @@
         "name": "House of Fiscal Wisdom",
         "website": "",
         "logo_url": "",
-        "role": "Partner \u2014 fiscal literacy and public finance dialogue",
+        "role": "Partner  --  fiscal literacy and public finance dialogue",
         "tier": "partner",
         "is_active": true,
         "is_consortium": false
@@ -33,7 +33,7 @@
         "name": "Committee on Fiscal Studies",
         "website": "",
         "logo_url": "",
-        "role": "Partner \u2014 academic and policy research on public finance",
+        "role": "Partner  --  academic and policy research on public finance",
         "tier": "partner",
         "is_active": true,
         "is_consortium": false
@@ -73,7 +73,7 @@
         "name": "TISA Kenya",
         "website": "https://newtisa.tisa.co.ke/",
         "logo_url": "https://newtisa.tisa.co.ke/wp-content/uploads/2025/03/New-TISA-logo.svg",
-        "role": "Partner \u2014 transparency, integrity and accountability",
+        "role": "Partner  --  transparency, integrity and accountability",
         "tier": "sponsor",
         "is_active": true,
         "is_consortium": false
@@ -510,7 +510,7 @@
     {
       "id": "bns-leadership-2026-06-18",
       "date": "2026-06-18",
-      "title": "Q3 Sprint Review \u2014 June 18 Leadership Sync",
+      "title": "Q3 Sprint Review  --  June 18 Leadership Sync",
       "summary": "Review of Q3 sprint deliverables: admin task system redesign, breadcrumb navigation, shadcn UI migration, June 18 meeting seeding, checklist sync, headless CMS documentation, and project management tooling.",
       "actionItems": [
         {

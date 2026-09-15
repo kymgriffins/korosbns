@@ -11,7 +11,7 @@ describe("PartnerLandingThesis", () => {
     expect(
       screen.getByRole("heading", { name: PARTNER_LANDING_THESIS.title }),
     ).toBeInTheDocument();
-    expect(screen.getByText(PARTNER_LANDING_THESIS.body)).toBeInTheDocument();
+    expect(screen.getByText(/Budget Ndio Story verifies/i)).toBeInTheDocument();
     expect(screen.getByText(PARTNER_LANDING_THESIS.method)).toBeInTheDocument();
     expect(screen.getByText(/Who we are/i)).toBeInTheDocument();
   });

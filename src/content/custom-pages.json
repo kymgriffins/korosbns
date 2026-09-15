@@ -54,7 +54,7 @@
           "media": {
             "type": "video",
             "url": "https://pub-96ce2eba58694b1da7f540033bdaa464.r2.dev/Calvina%20Praise%20Sovereign%20debt.mp4",
-            "title": "Calvina Praise - Sovereign Debt Investigation",
+            "title": "Calvina Praise  --  Sovereign Debt Investigation",
             "caption": "Produced by Budget Ndio Story · Direct R2 Cloudflare Stream"
           },
           "buttons": [
@@ -336,6 +336,35 @@
           "label": "Community Monitors"
         }
       ]
+    },
+    {
+      "slug": "civic-campaign-ntho",
+      "title": "New Civic Initiative Page",
+      "seoDescription": "An evidence-based civic brief tracking public expenditures and devolution milestones.",
+      "eyebrow": "Civic Initiative · BNS Special",
+      "headline": "Empowering Citizen Scrutiny & Public Accountability",
+      "body": "An independent analysis exploring budgetary efficiency, county spending patterns, and civic monitoring baselines across Kenya.",
+      "content": "Public participation thrives when citizens have direct access to clear, uncompromised financial data.\n\nThis initiative bridges grassroots investigative reporting with fiscal data to ensure every shilling allocated to public interest projects is accounted for.",
+      "ctaLabel": "Download Policy Brief",
+      "ctaHref": "/contact?intent=partner",
+      "secondaryLabel": "Explore All Programmes",
+      "secondaryHref": "/programmes",
+      "stats": [
+        {
+          "value": "47",
+          "label": "Counties Monitored"
+        },
+        {
+          "value": "100%",
+          "label": "Verified Data"
+        },
+        {
+          "value": "Quarterly",
+          "label": "Audit Reports"
+        }
+      ],
+      "published": false,
+      "createdAt": "2026-09-11T18:39:17.333Z"
     }
   ]
 }

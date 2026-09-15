@@ -56,8 +56,8 @@
       "id": "where-your-tax-goes",
       "content_type": "story",
       "title": "Where your tax shilling goes",
-      "summary": "A short scroll through how PAYE and VAT feed the national budget — and what counties receive.",
-      "description": "A short scroll through how PAYE and VAT feed the national budget — and what counties receive.",
+      "summary": "A short scroll through how PAYE and VAT feed the national budget  --  and what counties receive.",
+      "description": "A short scroll through how PAYE and VAT feed the national budget  --  and what counties receive.",
       "slug": "where-your-tax-goes",
       "url": "/learn/stories/where-your-tax-goes",
       "difficulty": "beginner",
@@ -84,8 +84,8 @@
       "id": "finance-bill-in-plain-words",
       "content_type": "story",
       "title": "The Finance Bill in plain words",
-      "summary": "What Kenya’s annual Finance Bill changes — tax rates, exemptions, and why public hearings matter.",
-      "description": "What Kenya’s annual Finance Bill changes — tax rates, exemptions, and why public hearings matter.",
+      "summary": "What Kenya’s annual Finance Bill changes  --  tax rates, exemptions, and why public hearings matter.",
+      "description": "What Kenya’s annual Finance Bill changes  --  tax rates, exemptions, and why public hearings matter.",
       "slug": "finance-bill-in-plain-words",
       "url": "/learn/stories/finance-bill-in-plain-words",
       "difficulty": "beginner",
@@ -100,7 +100,7 @@
           "text": "The Finance Bill is how Parliament updates tax law for the next fiscal year."
         },
         {
-          "text": "Citizens can submit memoranda before MPs vote — your feedback is part of the process."
+          "text": "Citizens can submit memoranda before MPs vote  --  your feedback is part of the process."
         }
       ]
     },

@@ -40,6 +40,23 @@ async function findValidDiskPath(slug: CmsCollectionSlug): Promise<string | null
   return path.resolve(cwd, meta.filePath);
 }
 
+function normalizeEmDashes(obj: unknown): unknown {
+  if (typeof obj === "string") {
+    return obj.replace(/\u2014/g, " -- ");
+  }
+  if (Array.isArray(obj)) {
+    return obj.map(normalizeEmDashes);
+  }
+  if (obj && typeof obj === "object") {
+    const res: Record<string, unknown> = {};
+    for (const [k, v] of Object.entries(obj)) {
+      res[k] = normalizeEmDashes(v);
+    }
+    return res;
+  }
+  return obj;
+}
+
 export async function GET(
   _request: Request,
   { params }: { params: Promise<{ collection: string }> },
@@ -69,30 +86,41 @@ export async function GET(
   try {
     let data = headlessCmsApi.getCollectionData(slug);
     let source: "r2_cloudflare" | "disk" | "memory_fallback" = "memory_fallback";
+    const isDev = process.env.NODE_ENV === "development";
+    const diskPath = await findValidDiskPath(slug);
 
-    // 1. Attempt to read live version from Cloudflare R2 bucket first
-    try {
-      const r2Data = await getJsonFromR2<Record<string, unknown>>(`cms/${slug}.json`);
-      if (r2Data && typeof r2Data === "object" && Object.keys(r2Data).length > 0) {
-        data = r2Data;
-        source = "r2_cloudflare";
+    // 1. In local development, the local repository files on disk are authoritative
+    if (isDev && diskPath) {
+      try {
+        const raw = await fs.readFile(diskPath, "utf-8");
+        data = JSON.parse(raw);
+        source = "disk";
+      } catch {
+        // Fall back to R2 or memory
       }
-    } catch {
-      // Fallback to disk
     }
 
-    // 2. Fall back to local disk if R2 is unavailable
+    // 2. In production or if disk reading failed, attempt to read live version from Cloudflare R2
     if (source === "memory_fallback") {
-      const diskPath = await findValidDiskPath(slug);
-      if (diskPath) {
-        try {
-          const raw = await fs.readFile(diskPath, "utf-8");
-          const parsed = JSON.parse(raw);
-          data = parsed;
-          source = "disk";
-        } catch {
-          // Fall back to memory cache
+      try {
+        const r2Data = await getJsonFromR2<Record<string, unknown>>(`cms/${slug}.json`);
+        if (r2Data && typeof r2Data === "object" && Object.keys(r2Data).length > 0) {
+          data = r2Data;
+          source = "r2_cloudflare";
         }
+      } catch {
+        // Fallback to disk
+      }
+    }
+
+    // 3. Fall back to local disk if R2 was unavailable in production
+    if (source === "memory_fallback" && diskPath) {
+      try {
+        const raw = await fs.readFile(diskPath, "utf-8");
+        data = JSON.parse(raw);
+        source = "disk";
+      } catch {
+        // Fall back to memory cache
       }
     }
 
@@ -142,13 +170,18 @@ export async function POST(
       );
     }
 
+    // Auto-normalize any raw em-dashes (\u2014) to standard markdown dashes ( -- )
+    body.data = normalizeEmDashes(body.data) as Record<string, unknown>;
+
     // 0. Run Section 11 validators — reject publish on fail
     const validation = validateCollection(slug, body.data);
     if (!validation.passed) {
       const failures = validation.results.filter((r) => !r.pass);
+      const failureList = failures.map((f) => `${f.rule}: ${f.message}`).join("; ");
       return NextResponse.json(
         {
-          error: "Validation failed. Fix the following before publishing:",
+          error: `Validation failed on '${slug}': ${failureList}`,
+          message: `Validation failed on ${failures.length} rule(s) for collection '${slug}'.`,
           validationFailures: failures.map((f) => ({
             rule: f.rule,
             message: f.message,
@@ -161,7 +194,17 @@ export async function POST(
     }
 
     // 0b. Enforce locked fields — reject edits to locked content
-    const existingData = headlessCmsApi.getCollectionData(slug);
+    let existingData = headlessCmsApi.getCollectionData(slug);
+    const diskPathForExisting = await findValidDiskPath(slug);
+    if (diskPathForExisting) {
+      try {
+        const raw = await fs.readFile(diskPathForExisting, "utf-8");
+        existingData = JSON.parse(raw);
+      } catch {
+        // fallback to in-memory
+      }
+    }
+
     if (existingData) {
       const lockedPaths = checkLockedFields(
         existingData as Record<string, unknown>,
@@ -170,12 +213,36 @@ export async function POST(
       if (lockedPaths.length > 0) {
         return NextResponse.json(
           {
-            error: "Locked fields cannot be edited:",
+            error: `Locked fields in '${slug}' cannot be edited: ${lockedPaths.join(", ")}`,
+            message: `Edits rejected because the following fields are locked: ${lockedPaths.join(", ")}`,
             lockedPaths,
           },
           { status: 422 },
         );
       }
+
+      // Restore locked markers on the payload so saved file stays locked
+      function restoreLockedMarkers(orig: unknown, incoming: unknown) {
+        if (!orig || !incoming || typeof orig !== "object" || typeof incoming !== "object") return;
+        if (Array.isArray(orig) && Array.isArray(incoming)) {
+          for (let i = 0; i < Math.min(orig.length, incoming.length); i++) {
+            restoreLockedMarkers(orig[i], incoming[i]);
+          }
+          return;
+        }
+        const o = orig as Record<string, unknown>;
+        const inc = incoming as Record<string, unknown>;
+        for (const [k, v] of Object.entries(o)) {
+          if (v && typeof v === "object" && !Array.isArray(v) && (v as Record<string, unknown>).locked === true) {
+            if (inc[k] && typeof inc[k] === "object" && !Array.isArray(inc[k])) {
+              (inc[k] as Record<string, unknown>).locked = true;
+            }
+          } else if (inc[k] && typeof inc[k] === "object") {
+            restoreLockedMarkers(v, inc[k]);
+          }
+        }
+      }
+      restoreLockedMarkers(existingData, body.data);
     }
 
     // 1. Update in-memory data cache and permissions
