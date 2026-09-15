@@ -1,55 +1,55 @@
 {
   "provenance": {
-    "source": "Brand agency design tokens (seed)",
+    "source": "Brand agency design tokens (Stripe indigo-ink ledger on frosted glass)",
     "note": "CMS-managed brand colors, radii, and button fills. Applied sitewide via CSS variables.",
     "level": "seed",
-    "lastUpdated": "2026-09-13"
+    "lastUpdated": "2026-09-15"
   },
   "brand": {
-    "primary": "#0055FF",
+    "primary": "#533afd",
     "primaryForeground": "#FFFFFF",
-    "accent": "#0055FF",
+    "accent": "#533afd",
     "background": "#FFFFFF",
-    "foreground": "#000000",
-    "muted": "#F5F5F5",
+    "foreground": "#061b31",
+    "muted": "#f8fafd",
     "card": "#FFFFFF",
-    "border": "rgba(0, 0, 0, 0.12)",
-    "surfaceMuted": "#F5F5F5"
+    "border": "#e5edf5",
+    "surfaceMuted": "#f8fafd"
   },
   "radii": {
-    "sm": "0.375rem",
-    "md": "0.5rem",
-    "lg": "1rem",
-    "xl": "1.5rem",
-    "2xl": "2rem",
-    "card": "1.5rem",
-    "button": "9999px",
-    "image": "1rem"
+    "sm": "4px",
+    "md": "4px",
+    "lg": "4px",
+    "xl": "8px",
+    "2xl": "12px",
+    "card": "4px",
+    "button": "4px",
+    "image": "4px"
   },
   "badges": {
-    "shape": "pill",
+    "shape": "subtle",
     "variant": "soft",
-    "colorScheme": "emerald",
+    "colorScheme": "brand",
     "typography": "uppercase",
     "showDot": true
   },
   "buttons": {
-    "borderRadius": "full",
-    "defaultElevation": "subtle",
-    "primaryBg": "#0055FF",
+    "borderRadius": "md",
+    "defaultElevation": "none",
+    "primaryBg": "#533afd",
     "primaryFg": "#FFFFFF",
-    "primaryHoverBg": "#0044CC",
+    "primaryHoverBg": "#7389ff",
     "outlineBg": "#FFFFFF",
-    "outlineFg": "#000000",
-    "outlineBorder": "rgba(0, 0, 0, 0.12)"
+    "outlineFg": "#533afd",
+    "outlineBorder": "#b9b9f9"
   },
   "typography": {
     "eyebrowTracking": "wider",
     "headlineWeight": "bold",
     "heroHeadlineItalic": false,
-    "heroHeadlineColor": "",
-    "heroBodyColor": "",
-    "sectionEyebrowColor": ""
+    "heroHeadlineColor": "#061b31",
+    "heroBodyColor": "#64748d",
+    "sectionEyebrowColor": "#839bc8"
   },
   "layout": {
     "heroAspect": "16/10",
@@ -60,6 +60,30 @@
     "featuredColumns": 3
   },
   "programmePresets": {
+    "brand-agency-indigo": {
+      "label": "Brand Agency Indigo",
+      "description": "Stripe-inspired indigo ink on frosted glass ledger",
+      "brand": {
+        "primary": "#533afd",
+        "primaryForeground": "#FFFFFF",
+        "accent": "#533afd",
+        "background": "#FFFFFF",
+        "foreground": "#061b31",
+        "muted": "#f8fafd",
+        "card": "#FFFFFF",
+        "border": "#e5edf5",
+        "surfaceMuted": "#f8fafd"
+      },
+      "buttons": {
+        "borderRadius": "md",
+        "primaryBg": "#533afd",
+        "primaryFg": "#FFFFFF",
+        "primaryHoverBg": "#7389ff",
+        "outlineBg": "#FFFFFF",
+        "outlineFg": "#533afd",
+        "outlineBorder": "#b9b9f9"
+      }
+    },
     "connect-blue": {
       "label": "Connect Blue",
       "description": "National tracker — BNS blue",
@@ -122,3 +146,4 @@
     }
   }
 }
+

@@ -126,19 +126,30 @@ export function designTokensToCssVars(override?: DesignTokens | null | Record<st
   const t = resolveDesignTokens((override || null) as DesignTokens | null);
   const buttonRadius =
     t.radii?.button ||
-    RADIUS_PRESET[t.buttons?.borderRadius || "full"] ||
-    "9999px";
+    RADIUS_PRESET[t.buttons?.borderRadius || "md"] ||
+    "4px";
+
+  const primaryColor = t.brand?.primary || "#533afd";
+  const foregroundColor = t.brand?.foreground || "#061b31";
+  const hoverColor = t.buttons?.primaryHoverBg || "#7389ff";
 
   return [
-    cssDecl("--primary", t.brand?.primary, defaultTokens.brand.primary),
+    cssDecl("--color-indigo-ink", primaryColor),
+    cssDecl("--color-indigo-hover", hoverColor),
+    cssDecl("--color-midnight-ink", foregroundColor),
+    cssDecl("--color-pure-white", t.brand?.primaryForeground || "#ffffff"),
+    cssDecl("--color-mist", t.brand?.muted || "#f8fafd"),
+    cssDecl("--color-frost", t.brand?.border || "#e5edf5"),
+    cssDecl("--color-lavender-border", t.buttons?.outlineBorder || "#b9b9f9"),
+    cssDecl("--primary", primaryColor, defaultTokens.brand.primary),
     cssDecl(
       "--primary-foreground",
       t.brand?.primaryForeground,
       defaultTokens.brand.primaryForeground,
     ),
-    cssDecl("--accent", t.brand?.accent, t.brand?.primary),
+    cssDecl("--accent", t.brand?.accent, primaryColor),
     cssDecl("--background", t.brand?.background),
-    cssDecl("--foreground", t.brand?.foreground),
+    cssDecl("--foreground", foregroundColor),
     cssDecl("--muted", t.brand?.muted),
     cssDecl("--card", t.brand?.card),
     cssDecl("--border", t.brand?.border),
@@ -151,11 +162,14 @@ export function designTokensToCssVars(override?: DesignTokens | null | Record<st
     cssDecl("--brand-radius-card", t.radii?.card, defaultTokens.radii.card),
     cssDecl("--brand-radius-image", t.radii?.image, defaultTokens.radii.image),
     cssDecl("--brand-button-radius", buttonRadius),
+    cssDecl("--radius-buttons", buttonRadius),
+    cssDecl("--radius-cards", t.radii?.card || "4px"),
+    cssDecl("--radius-inputs", t.radii?.sm || "4px"),
     cssDecl("--radius-pill", buttonRadius),
     cssDecl(
       "--brand-button-bg",
       t.buttons?.primaryBg,
-      t.brand?.primary || defaultTokens.buttons.primaryBg,
+      primaryColor,
     ),
     cssDecl(
       "--brand-button-fg",
@@ -164,12 +178,12 @@ export function designTokensToCssVars(override?: DesignTokens | null | Record<st
     ),
     cssDecl(
       "--brand-button-hover",
-      t.buttons?.primaryHoverBg,
+      hoverColor,
       defaultTokens.buttons.primaryHoverBg,
     ),
     cssDecl("--brand-button-outline-bg", t.buttons?.outlineBg),
-    cssDecl("--brand-button-outline-fg", t.buttons?.outlineFg),
-    cssDecl("--brand-button-outline-border", t.buttons?.outlineBorder),
+    cssDecl("--brand-button-outline-fg", t.buttons?.outlineFg || primaryColor),
+    cssDecl("--brand-button-outline-border", t.buttons?.outlineBorder || "#b9b9f9"),
   ]
     .filter(Boolean)
     .join("");

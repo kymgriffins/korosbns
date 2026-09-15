@@ -21,45 +21,45 @@ export function DesignTokensStudioEditor({
   onChange,
 }: DesignTokensStudioEditorProps) {
   const badges = data?.badges || {
-    shape: "pill",
+    shape: "subtle",
     variant: "soft",
-    colorScheme: "emerald",
+    colorScheme: "brand",
     typography: "uppercase",
     showDot: true,
   };
 
   const buttons = data?.buttons || {
-    borderRadius: "full",
-    defaultElevation: "subtle",
-    primaryBg: "#0055FF",
+    borderRadius: "md",
+    defaultElevation: "none",
+    primaryBg: "#533afd",
     primaryFg: "#FFFFFF",
-    primaryHoverBg: "#0044CC",
+    primaryHoverBg: "#7389ff",
     outlineBg: "#FFFFFF",
-    outlineFg: "#000000",
-    outlineBorder: "rgba(0, 0, 0, 0.12)",
+    outlineFg: "#533afd",
+    outlineBorder: "#b9b9f9",
   };
 
   const brand = data?.brand || {
-    primary: "#0055FF",
+    primary: "#533afd",
     primaryForeground: "#FFFFFF",
-    accent: "#0055FF",
+    accent: "#533afd",
     background: "#FFFFFF",
-    foreground: "#000000",
-    muted: "#F5F5F5",
+    foreground: "#061b31",
+    muted: "#f8fafd",
     card: "#FFFFFF",
-    border: "rgba(0, 0, 0, 0.12)",
-    surfaceMuted: "#F5F5F5",
+    border: "#e5edf5",
+    surfaceMuted: "#f8fafd",
   };
 
   const radii = data?.radii || {
-    sm: "0.375rem",
-    md: "0.5rem",
-    lg: "1rem",
-    xl: "1.5rem",
-    "2xl": "2rem",
-    card: "1.5rem",
-    button: "9999px",
-    image: "1rem",
+    sm: "4px",
+    md: "4px",
+    lg: "4px",
+    xl: "8px",
+    "2xl": "12px",
+    card: "4px",
+    button: "4px",
+    image: "4px",
   };
 
   const typography = data?.typography || {
@@ -109,6 +109,43 @@ export function DesignTokensStudioEditor({
     ...(data?.programmePresets || {}),
   };
 
+  const applyPreset = (presetKey: string) => {
+    const preset = programmePresets[presetKey];
+    if (!preset) return;
+    onChange({
+      ...data,
+      brand: {
+        ...(data?.brand || {}),
+        ...preset.brand,
+      },
+      buttons: {
+        ...(data?.buttons || {}),
+        ...preset.buttons,
+      },
+      ...(presetKey === "brand-agency-indigo"
+        ? {
+            radii: {
+              sm: "4px",
+              md: "4px",
+              lg: "4px",
+              xl: "8px",
+              "2xl": "12px",
+              card: "4px",
+              button: "4px",
+              image: "4px",
+            },
+            badges: {
+              shape: "subtle",
+              variant: "soft",
+              colorScheme: "brand",
+              typography: "uppercase",
+              showDot: true,
+            },
+          }
+        : {}),
+    });
+  };
+
   return (
     <div className="space-y-6">
       <style
@@ -116,6 +153,58 @@ export function DesignTokensStudioEditor({
           __html: `.cms-token-preview{${previewCss}}`,
         }}
       />
+
+      {/* Sitewide One-Click Theme Preset Switcher */}
+      <div className="rounded-2xl border border-[var(--color-lavender-border,#b9b9f9)] bg-[var(--color-periwinkle-wash,#e8e9ff)]/40 p-6 shadow-xs space-y-4">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-[var(--color-lilac-border,#d6d9fc)] pb-4">
+          <div>
+            <div className="flex items-center gap-2">
+              <Sparkles className="size-4 text-[var(--color-indigo-ink,#533afd)]" />
+              <h2 className="text-base font-semibold text-[var(--color-midnight-ink,#061b31)]">
+                Sitewide One-Click Theme Switcher
+              </h2>
+            </div>
+            <p className="text-xs text-[var(--color-slate,#64748d)] mt-0.5">
+              Switch themes easily across all pages with standard brand tokens.
+            </p>
+          </div>
+          <span className="font-mono text-[11px] font-semibold text-[var(--color-indigo-ink,#533afd)] bg-white px-2.5 py-1 rounded-[4px] border border-[var(--color-lavender-border,#b9b9f9)]">
+            Active: {brand.primary ?? "#533afd"}
+          </span>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
+          {Object.entries(programmePresets).map(([key, preset]: [string, any]) => {
+            const isActive = brand.primary?.toLowerCase() === preset.brand?.primary?.toLowerCase();
+            return (
+              <button
+                key={key}
+                type="button"
+                onClick={() => applyPreset(key)}
+                className={`flex flex-col text-left p-3 rounded-[4px] border transition-all ${
+                  isActive
+                    ? "border-[var(--color-indigo-ink,#533afd)] bg-white shadow-xs ring-1 ring-[var(--color-indigo-ink,#533afd)]"
+                    : "border-[var(--color-frost,#e5edf5)] bg-white/70 hover:bg-white hover:border-[var(--color-lavender-border,#b9b9f9)]"
+                }`}
+              >
+                <div className="flex items-center justify-between gap-1">
+                  <span className="text-xs font-semibold text-[var(--color-midnight-ink,#061b31)] truncate">
+                    {preset.label || key}
+                  </span>
+                  <span
+                    className="size-3.5 rounded-full shrink-0 border border-black/10"
+                    style={{ backgroundColor: preset.brand?.primary || "#533afd" }}
+                  />
+                </div>
+                <span className="text-[10px] text-[var(--color-slate,#64748d)] mt-1 line-clamp-2 leading-tight">
+                  {preset.description || "Preset theme palette"}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
       {/* Live Badge Preview Stage */}
       <div className="rounded-2xl border border-primary/20 bg-gradient-to-br from-primary/5 via-card to-card p-6 shadow-sm space-y-4">
         <div className="flex items-center justify-between border-b border-border/50 pb-3">

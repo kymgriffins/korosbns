@@ -1,81 +1,180 @@
 :root {
+  /* Brand Agency Theme Tokens (Stripe — indigo-ink ledger on frosted glass) */
+  --color-indigo-ink: #533afd;
+  --color-indigo-hover: #7389ff;
+  --color-midnight-ink: #061b31;
+  --color-slate: #64748d;
+  --color-steel: #50617a;
+  --color-smoke: #839bc8;
+  --color-pure-white: #ffffff;
+  --color-mist: #f8fafd;
+  --color-frost: #e5edf5;
+  --color-lavender-border: #b9b9f9;
+  --color-lilac-border: #d6d9fc;
+  --color-periwinkle-wash: #e8e9ff;
+  --color-deep-violet: #182659;
+  --color-amethyst-edge: #7f71e6;
+
+  /* Typography — Font Families */
+  --font-sohne-var: 'sohne-var', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+
+  /* Typography — Scale */
+  --text-caption: 12px;
+  --leading-caption: 1.45;
+  --tracking-caption: -0.12px;
+  --text-body-sm: 14px;
+  --leading-body-sm: 1.4;
+  --tracking-body-sm: -0.14px;
+  --text-body: 16px;
+  --leading-body: 1.2;
+  --tracking-body: -0.16px;
+  --text-body-lg: 20px;
+  --leading-body-lg: 1.4;
+  --tracking-body-lg: -0.2px;
+  --text-subheading: 22px;
+  --leading-subheading: 1.1;
+  --tracking-subheading: -0.22px;
+  --text-heading-sm: 26px;
+  --leading-heading-sm: 1.12;
+  --tracking-heading-sm: -0.26px;
+  --text-heading: 32px;
+  --leading-heading: 1.1;
+  --tracking-heading: -0.64px;
+  --text-heading-lg: 48px;
+  --leading-heading-lg: 1.03;
+  --tracking-heading-lg: -0.96px;
+  --text-display: 56px;
+  --leading-display: 1.03;
+  --tracking-display: -1.4px;
+
+  /* Typography — Weights */
+  --font-weight-light: 300;
+  --font-weight-regular: 400;
+
+  /* Spacing */
+  --spacing-unit: 8px;
+  --spacing-8: 8px;
+  --spacing-16: 16px;
+  --spacing-24: 24px;
+  --spacing-32: 32px;
+  --spacing-40: 40px;
+  --spacing-48: 48px;
+  --spacing-64: 64px;
+  --spacing-80: 80px;
+  --spacing-96: 96px;
+
+  /* Layout */
+  --page-max-width: 1320px;
+  --section-gap: 96px;
+  --card-padding: 32px;
+  --element-gap: 8px;
+
+  /* Border Radius */
+  --radius-md: 4px;
+
+  /* Named Radii */
+  --radius-tags: 9999px;
+  --radius-cards: 4px;
+  --radius-inputs: 4px;
+  --radius-buttons: 4px;
+
+  /* Surfaces */
+  --surface-canvas: #ffffff;
+  --surface-band: #f8fafd;
+  --surface-frosted-card: #e5edf5;
+  --surface-lavender-card: #e8e9ff;
+  --surface-indigo-surface: #533afd;
+
+  /* Mapped Brand System Tokens for Tailwind & Radix UI Compatibility */
   --mobile-nav-height: 3.5rem;
-  /* Editorial radius scale — Marwa-inspired large corners */
-  --radius: 1rem;
-  --bns-radius-xl: 1.5rem;
-  --bns-radius-2xl: 2rem;
-  --bns-radius-3xl: 2.5rem;
+  --radius: 0.25rem;
+  --bns-radius-xl: 0.5rem;
+  --bns-radius-2xl: 0.75rem;
+  --bns-radius-3xl: 1rem;
   --radius-pill: 9999px;
-  /* Editorial surfaces */
-  --surface-muted: hsl(0 0% 96%);
-  --surface-elevated: #ffffff;
-  --surface-invert: #0a0a0a;
-  --surface-invert-foreground: #fafafa;
-  --background: #ffffff;
-  --foreground: #000000;
-  --card: #ffffff;
-  --card-foreground: #000000;
-  --popover: #ffffff;
-  --popover-foreground: #000000;
-  --primary: hsl(214 100% 50%);
-  --primary-foreground: #ffffff;
-  --secondary: hsl(0 0% 0% / 0.05);
-  --secondary-foreground: #000000;
-  --tertiary: #000000;
-  --tertiary-foreground: #ffffff;
-  --muted: hsl(0 0% 96%);
-  --muted-foreground: hsl(0 0% 20%);
-  --accent: hsl(214 100% 50%);
-  --accent-foreground: #ffffff;
+  --surface-muted: var(--surface-band);
+  --surface-elevated: var(--surface-canvas);
+  --surface-invert: var(--color-midnight-ink);
+  --surface-invert-foreground: var(--color-pure-white);
+  --background: var(--surface-canvas);
+  --foreground: var(--color-midnight-ink);
+  --card: var(--surface-canvas);
+  --card-foreground: var(--color-midnight-ink);
+  --popover: var(--surface-canvas);
+  --popover-foreground: var(--color-midnight-ink);
+  --primary: var(--color-indigo-ink);
+  --primary-foreground: var(--color-pure-white);
+  --secondary: var(--color-periwinkle-wash);
+  --secondary-foreground: var(--color-midnight-ink);
+  --tertiary: var(--color-midnight-ink);
+  --tertiary-foreground: var(--color-pure-white);
+  --muted: var(--surface-band);
+  --muted-foreground: var(--color-slate);
+  --accent: var(--color-indigo-ink);
+  --accent-foreground: var(--color-pure-white);
   --destructive: hsl(356 85% 55%);
   --destructive-foreground: #ffffff;
-  --border: hsl(0 0% 0% / 0.12);
-  --input: hsl(0 0% 0% / 0.16);
-  --ring: hsl(214 100% 55%);
-  --chart-1: hsl(12 76% 61%);
-  --chart-2: hsl(173 58% 39%);
-  --chart-3: hsl(197 37% 24%);
-  --chart-4: hsl(43 74% 66%);
-  --chart-5: hsl(27 87% 67%);
-  --dot-color: rgba(0, 0, 0, 0.05);
+  --border: var(--color-frost);
+  --input: var(--color-frost);
+  --ring: var(--color-indigo-ink);
+  --chart-1: #533afd;
+  --chart-2: #7389ff;
+  --chart-3: #64748d;
+  --chart-4: #839bc8;
+  --chart-5: #182659;
+  --dot-color: rgba(6, 27, 49, 0.06);
   --cardbox: #ffffff;
-
+  --brand-button-radius: 4px;
+  --brand-button-bg: var(--color-indigo-ink);
+  --brand-button-fg: var(--color-pure-white);
+  --brand-button-hover: var(--color-indigo-hover);
+  --brand-button-outline-bg: transparent;
+  --brand-button-outline-fg: var(--color-indigo-ink);
+  --brand-button-outline-border: var(--color-lavender-border);
 }
 
 .dark {
-  --background: #010104;
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: #0055FF;
+  --background: #061b31;
+  --foreground: #f8fafd;
+  --card: #0c2440;
+  --card-foreground: #ffffff;
+  --popover: #0c2440;
+  --popover-foreground: #ffffff;
+  --primary: #533afd;
   --primary-foreground: #ffffff;
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --tertiary: hsl(280 70% 60%);
-  --tertiary-foreground: hsl(0 0% 100%);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
+  --secondary: #182659;
+  --secondary-foreground: #ffffff;
+  --tertiary: #7389ff;
+  --tertiary-foreground: #061b31;
+  --muted: #102a48;
+  --muted-foreground: #839bc8;
+  --accent: #533afd;
+  --accent-foreground: #ffffff;
   --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 14%);
-  --input: oklch(1 0 0 / 22%);
-  --ring: #0055FF;
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
-  --radius: 1rem;
-  --bns-radius-xl: 1.5rem;
-  --bns-radius-2xl: 2rem;
-  --bns-radius-3xl: 2.5rem;
-  --surface-muted: hsl(0 0% 12%);
-  --surface-elevated: hsl(0 0% 8%);
-  --surface-invert: #fafafa;
-  --surface-invert-foreground: #0a0a0a;
-  --cardbox: #111112;
+  --border: rgba(185, 185, 249, 0.2);
+  --input: rgba(185, 185, 249, 0.25);
+  --ring: #7389ff;
+  --chart-1: #533afd;
+  --chart-2: #7389ff;
+  --chart-3: #839bc8;
+  --chart-4: #7f71e6;
+  --chart-5: #b9b9f9;
+  --radius: 0.25rem;
+  --bns-radius-xl: 0.5rem;
+  --bns-radius-2xl: 0.75rem;
+  --bns-radius-3xl: 1rem;
+  --surface-muted: #102a48;
+  --surface-elevated: #0c2440;
+  --surface-invert: #f8fafd;
+  --surface-invert-foreground: #061b31;
+  --cardbox: #0c2440;
   --dot-color: rgba(255, 255, 255, 0.1);
+  --brand-button-radius: 4px;
+  --brand-button-bg: #533afd;
+  --brand-button-fg: #ffffff;
+  --brand-button-hover: #7389ff;
+  --brand-button-outline-bg: transparent;
+  --brand-button-outline-fg: #ffffff;
+  --brand-button-outline-border: #b9b9f9;
 }
+
