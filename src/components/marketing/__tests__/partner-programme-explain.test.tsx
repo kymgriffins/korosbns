@@ -36,7 +36,7 @@ describe("PartnerProgrammeExplainSections", () => {
     expect(
       screen.getAllByText(/Success looks like/i).length,
     ).toBeGreaterThanOrEqual(3);
-    expect(screen.getAllByRole("link", { name: /Read more/i })).toHaveLength(3);
+    expect(screen.getAllByRole("link", { name: /Explore programme|Read more/i })).toHaveLength(3);
 
     expect(screen.getAllByText(/National Debt Forum/i).length).toBeGreaterThanOrEqual(1);
     expect(screen.getAllByText(/Policy Scrutiny Panel/i).length).toBeGreaterThanOrEqual(1);

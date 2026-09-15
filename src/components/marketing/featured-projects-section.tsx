@@ -55,7 +55,7 @@ export function FeaturedProjectsSection({
   openProjectLabel = PARTNER_FEATURED_INTRO.openProjectLabel,
   className,
   initialProjects,
-  layout = "list",
+  layout = "grid",
   columns = 3,
   projectIds,
 }: FeaturedProjectsSectionProps) {
@@ -116,6 +116,9 @@ export function FeaturedProjectsSection({
 
   if (visible.length === 0) return null;
 
+  // Limit to top 6 curated evidence items for punchy scannability
+  const curatedItems = visible.slice(0, 6);
+
   const gridCols =
     columns === 4
       ? "sm:grid-cols-2 lg:grid-cols-4"
@@ -127,92 +130,79 @@ export function FeaturedProjectsSection({
     <LandingSection
       id="featured-projects"
       aria-labelledby="featured-projects-heading"
-      className={cn("border-t border-border/50", className)}
+      className={cn("border-t border-[#e5edf5] bg-white py-16 md:py-24", className)}
     >
-      <div className="mb-10 max-w-2xl space-y-4 md:mb-12">
-        <p className={cn(T.eyebrow, "text-muted-foreground")}>{eyebrow}</p>
+      <div className="mb-12 max-w-2xl space-y-2">
+        <p className="text-xs font-semibold uppercase tracking-wider text-[#64748d]">{eyebrow}</p>
         <h2
           id="featured-projects-heading"
-          className={cn(T.sectionTitle, "text-balance text-foreground")}
+          className="font-heading text-3xl font-light tracking-tight text-[#061b31] md:text-4xl"
         >
           {headline}
         </h2>
-        <p className={cn(T.lead, "text-foreground/75")}>{lede}</p>
+        <p className="text-base text-[#061b31]/75 leading-relaxed">{lede}</p>
       </div>
 
       {layout === "grid" ? (
         <ul className={cn("grid grid-cols-1 gap-8", gridCols)}>
-          {visible.map((project) => {
-            const thumbnailSrc = projectThumb(project);
-            const showMobileSwap = Boolean(
-              project.thumbnailMobile && (project.hideDesktopThumbOnMobile ?? true),
-            );
-            const projectHref =
-              project.href || `/bns-project/${project.slug || project.id}`;
-            const programmeLabel =
-              project.programmeLabel || project.programmeSlug || "Investigation";
+        {curatedItems.map((project) => {
+          const thumbnailSrc = projectThumb(project);
+          const projectHref =
+            project.href || `/bns-project/${project.slug || project.id}`;
+          const programmeLabel =
+            project.programmeLabel || project.programmeSlug || "Investigation";
 
-            return (
-              <li key={project.id} className="flex flex-col gap-3">
-                <Link
-                  href={projectHref}
-                  className="relative block aspect-video w-full overflow-hidden bg-muted outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                >
-                  {showMobileSwap ? (
-                    <>
-                      <Image
-                        src={thumbnailSrc}
-                        alt={project.title || "Project thumbnail"}
-                        fill
-                        className="hidden object-cover object-center sm:block"
-                        sizes="(max-width: 768px) 100vw, 33vw"
-                      />
-                      <Image
-                        src={project.thumbnailMobile || thumbnailSrc}
-                        alt={project.title || "Project thumbnail"}
-                        fill
-                        className="object-cover object-center sm:hidden"
-                        sizes="100vw"
-                      />
-                    </>
-                  ) : (
-                    <Image
-                      src={thumbnailSrc}
-                      alt={project.title || "Project thumbnail"}
-                      fill
-                      className="object-cover object-center"
-                      sizes="(max-width: 768px) 100vw, 33vw"
-                    />
-                  )}
-                </Link>
-                <p className={cn(T.caption, "text-muted-foreground")}>{programmeLabel}</p>
-                <h3 className="font-heading text-base font-bold leading-snug text-foreground md:text-lg">
-                  <Link
-                    href={projectHref}
-                    className="outline-none transition-colors hover:text-primary focus-visible:ring-2 focus-visible:ring-ring"
-                  >
-                    {project.title}
-                  </Link>
+          return (
+            <li key={project.id} className="h-full">
+              <Link
+                href={projectHref}
+                className="group flex flex-col h-full rounded-[4px] border border-[#e5edf5] bg-white p-5 transition-all duration-200 hover:border-[#533afd]/50 hover:shadow-xs focus-visible:ring-2 focus-visible:ring-[#533afd]"
+              >
+                {/* 1. Image */}
+                <div className="relative aspect-video w-full overflow-hidden rounded-[4px] border border-[#e5edf5] bg-[#f8fafd]">
+                  <Image
+                    src={thumbnailSrc}
+                    alt={project.title || "Evidence preview"}
+                    fill
+                    className="object-cover object-center transition-transform duration-300 group-hover:scale-[1.02]"
+                    sizes="(max-width: 768px) 100vw, 33vw"
+                  />
+                </div>
+
+                {/* 2. Category */}
+                <div className="mt-4">
+                  <span className="text-[12px] font-semibold uppercase tracking-wider text-[#64748d]">
+                    {programmeLabel}
+                  </span>
+                </div>
+
+                {/* 3. Title (20px Weight 300) */}
+                <h3 className="mt-1.5 font-heading text-[20px] font-light leading-snug text-[#061b31] tracking-tight transition-colors group-hover:text-[#533afd]">
+                  {project.title}
                 </h3>
-                <p className={cn(T.caption, "line-clamp-3 text-foreground/75")}>
+
+                {/* 4. Evidence Brief (16px Weight 400) */}
+                <p className="mt-2 text-[16px] text-[#061b31]/75 leading-relaxed font-normal line-clamp-3">
                   {project.prose}
                 </p>
-                <Link
-                  href={projectHref}
-                  className="group inline-flex items-center text-sm font-medium text-foreground outline-none transition-colors hover:text-primary focus-visible:ring-2 focus-visible:ring-ring"
-                >
-                  {project.ctaLabel || openProjectLabel}
-                  <span
-                    aria-hidden
-                    className="ml-1 transition-transform duration-150 group-hover:translate-x-0.5"
-                  >
-                    →
+
+                {/* 5. Action Link */}
+                <div className="mt-auto pt-5 border-t border-[#e5edf5]/60">
+                  <span className="inline-flex items-center text-sm font-medium text-[#533afd] group-hover:text-[#7389ff] transition-colors">
+                    <span>{project.ctaLabel || openProjectLabel || "Read story →"}</span>
+                    <span
+                      aria-hidden
+                      className="ml-1.5 transition-transform duration-150 group-hover:translate-x-1"
+                    >
+                      →
+                    </span>
                   </span>
-                </Link>
-              </li>
-            );
-          })}
-        </ul>
+                </div>
+              </Link>
+            </li>
+          );
+        })}
+      </ul>
       ) : (
         <ul className="divide-y divide-border/50 border-y border-border/50">
           {visible.map((project, index) => {

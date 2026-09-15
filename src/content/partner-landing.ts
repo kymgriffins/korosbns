@@ -99,11 +99,11 @@ export const PARTNER_PROGRAMME_VOCAB = {
  * Programme names must match PARTNER_PROGRAMME_VOCAB; no vanity reach stats.
  */
 export const PARTNER_HERO_NARRATIVE = {
-  eyebrow: rawLanding.heroNarrative?.eyebrow ?? "After Budget Day",
-  title: rawLanding.heroNarrative?.title ?? "The budget lands. Then the silence.",
+  eyebrow: rawLanding.heroNarrative?.eyebrow ?? "Budget Ndio Story",
+  title: rawLanding.heroNarrative?.title ?? "Follow the budget. Find the story.",
   lede:
     rawLanding.heroNarrative?.lede ??
-    "We verify Treasury claims, track four counties, and train newsrooms after Budget Day.",
+    "We follow Kenya's public money from budget promise to county delivery—turning complex government spending into evidence citizens, journalists and partners can act on.",
 };
 
 export function resolvePartnerHeroNarrative(override?: {
@@ -147,7 +147,7 @@ export const PARTNER_LANDING_THESIS = {
   body:
     rawLanding.thesis?.body ??
     "Budget Ndio Story verifies what Treasury and counties publish, embeds where delivery happens, and trains newsrooms to stay forensic after Budget Day - so partners fund accountability they can brief and cite.",
-  /** Shared method whisper - verify → embed → train/co-produce */
+  /** Shared method whisper - verify → embed → train & co-produce */
   method: rawLanding.thesis?.method ?? "Verify → embed → train & co-produce",
 };
 
@@ -167,26 +167,26 @@ export function resolvePartnerThesis(override?: {
 
 /** Featured-projects intro - stories behind the evidence (no vanity millions). */
 export const PARTNER_FEATURED_INTRO = {
-  eyebrow: rawLanding.featuredIntro?.eyebrow ?? "Stories behind the evidence",
-  headline: rawLanding.featuredIntro?.headline ?? "Projects partners can brief against",
+  eyebrow: rawLanding.featuredIntro?.eyebrow ?? "INVESTIGATIONS & REPORTS",
+  headline: rawLanding.featuredIntro?.headline ?? "Our Evidence Base",
   lede:
     rawLanding.featuredIntro?.lede ??
-    "Published films and convenings - AFRODAD debt forums, Red Flags, and Project TERRA - with local event photography as cover art. Titles stay fresh from YouTube; reach claims stay off the page.",
+    "Published investigations, documentaries, and field evidence from across our three programmes.",
   openProjectLabel:
     (rawLanding.featuredIntro as { openProjectLabel?: string } | undefined)?.openProjectLabel ??
-    "Open project",
+    "Read story →",
 };
 
 /** Closing partnership band - invest against the three phrases. */
 export const PARTNER_LANDING_CTA = {
   eyebrow: rawLanding.partnerCta?.eyebrow ?? "Partner with us",
-  title: rawLanding.partnerCta?.title ?? "Fund the bet that fits your mandate.",
+  title: rawLanding.partnerCta?.title ?? "Your mandate. Our evidence.",
   description:
     rawLanding.partnerCta?.description ??
-    "Co-fund national budget intelligence, county delivery verification, or newsroom scrutiny - with production captured through BNS Studio.",
-  ctaLabel: rawLanding.partnerCta?.ctaLabel ?? "Discuss a partnership",
+    "Whether you're funding accountability, strengthening public participation, or supporting journalism, BNS brings grounded evidence into the work.",
+  ctaLabel: rawLanding.partnerCta?.ctaLabel ?? "Partner with BNS →",
   ctaHref: rawLanding.partnerCta?.ctaHref ?? "/contact?intent=partner",
-  secondaryLabel: rawLanding.partnerCta?.secondaryLabel ?? "View programmes",
+  secondaryLabel: rawLanding.partnerCta?.secondaryLabel ?? "Explore programmes →",
   secondaryHref: rawLanding.partnerCta?.secondaryHref ?? "/programmes",
   hidePrimaryButton: Boolean(rawLanding.partnerCta?.hidePrimaryButton),
   hideSecondaryButton: Boolean(rawLanding.partnerCta?.hideSecondaryButton),
@@ -330,45 +330,39 @@ const DEFAULT_PROGRAMME_EXPLAINS: PartnerProgrammeExplain[] = [
     slug: "connect",
     number: "01",
     name: PARTNER_PROGRAMME_VOCAB.connect.name,
-    eyebrow: PARTNER_PROGRAMME_VOCAB.connect.label,
-    title: PARTNER_PROGRAMME_VOCAB.connect.phrase,
-    lede:
-      "We verify what Treasury publishes and keep national debt and allocation questions alive after Budget Day.",
-    success:
-      "Success looks like a baseline partners can fund and cite - AFRODAD debt forums, continental panels, continuous scrutiny.",
+    eyebrow: "National Budget",
+    title: "BNS Connect",
+    lede: "Tracking the KSh 4.8T national budget from Treasury allocation to ministry execution.",
+    success: "KSh 4.8T Monitored",
     cycle: "Formulation → Budget Day → continuous scrutiny",
     href: PARTNER_PROGRAMME_VOCAB.connect.href,
-    ctaLabel: "Read more",
+    ctaLabel: "Explore programme →",
     stillIds: ["maingi-afrodad", "wajackoyah-afrodad"],
   },
   {
     slug: "mashinani",
     number: "02",
     name: PARTNER_PROGRAMME_VOCAB.mashinani.name,
-    eyebrow: PARTNER_PROGRAMME_VOCAB.mashinani.label,
-    title: PARTNER_PROGRAMME_VOCAB.mashinani.phrase,
-    lede:
-      "Full-cycle embeds in Kakamega, Kilifi, Nakuru, and Wajir track whether equitable share reaches clinics, roads, and schools.",
-    success:
-      "Success looks like scorecards, town halls, and field briefings that show delivery - not estimates alone.",
+    eyebrow: "County Devolved Delivery",
+    title: "BNS Mashinani",
+    lede: "Embedded teams verifying capital delivery across 4 counties (Kakamega, Kitui, Nakuru, Wajir).",
+    success: "4 Counties Embedded",
     cycle: "Estimates → assembly → disbursement & delivery",
     href: PARTNER_PROGRAMME_VOCAB.mashinani.href,
-    ctaLabel: "Read more",
+    ctaLabel: "Explore programme →",
     stillIds: ["townhall-room", "townhall-brief"],
   },
   {
     slug: "wanahabari-lab",
     number: "03",
     name: PARTNER_PROGRAMME_VOCAB["wanahabari-lab"].name,
-    eyebrow: PARTNER_PROGRAMME_VOCAB["wanahabari-lab"].label,
-    title: PARTNER_PROGRAMME_VOCAB["wanahabari-lab"].phrase,
-    lede:
-      "Training and co-production keep journalists forensic after Budget Day - when the spending story actually begins.",
-    success:
-      "Success looks like investigations and launches partners can brief against - Red Flags, TERRA, newsroom-ready scrutiny.",
+    eyebrow: "Investigative Journalism",
+    title: "Wanahabari Lab",
+    lede: "Year-round investigative reporting, moving beyond the 48-hour Budget Day news cycle.",
+    success: "4 Newsroom Labs Anchored",
     cycle: "Post-Budget Day → investigations & public narrative",
     href: PARTNER_PROGRAMME_VOCAB["wanahabari-lab"].href,
-    ctaLabel: "Read more",
+    ctaLabel: "Explore programme →",
     stillIds: ["hall-camera", "latif-launch"],
   },
 ];

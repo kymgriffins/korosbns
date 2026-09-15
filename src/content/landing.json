@@ -1,8 +1,8 @@
 {
   "heroNarrative": {
-    "eyebrow": "After Budget Day",
-    "title": "The budget lands. Then the silence.",
-    "lede": "We verify Treasury claims, track four counties, and train newsrooms after Budget Day."
+    "eyebrow": "Budget Ndio Story",
+    "title": "Follow the budget. Find the story.",
+    "lede": "We follow Kenya's public money from budget promise to county delivery—turning complex government spending into evidence citizens, journalists and partners can act on."
   },
   "thesis": {
     "eyebrow": "Who we are",
@@ -15,13 +15,13 @@
       "slug": "connect",
       "number": "01",
       "name": "BNS Connect",
-      "eyebrow": "Connect",
+      "eyebrow": "National Budget",
       "title": "National budget intelligence",
-      "lede": "We verify what Treasury publishes and keep national debt and allocation questions alive after Budget Day.",
-      "success": "Success looks like a baseline partners can fund and cite - AFRODAD debt forums, continental panels, continuous scrutiny.",
+      "lede": "Tracking the KSh 4.8T national budget from Treasury allocation to ministry execution.",
+      "success": "KSh 4.8T Monitored",
       "cycle": "Formulation → Budget Day → continuous scrutiny",
       "href": "/programmes/connect",
-      "ctaLabel": "Read more",
+      "ctaLabel": "Explore programme →",
       "stillIds": [
         "maingi-afrodad",
         "wajackoyah-afrodad"
@@ -43,13 +43,13 @@
       "slug": "mashinani",
       "number": "02",
       "name": "BNS Mashinani",
-      "eyebrow": "Mashinani",
+      "eyebrow": "County Devolved Delivery",
       "title": "County delivery verification",
-      "lede": "Full-cycle embeds in Kakamega, Kilifi, Nakuru, and Wajir track whether equitable share reaches clinics, roads, and schools.",
-      "success": "Success looks like scorecards, town halls, and field briefings that show delivery - not estimates alone.",
+      "lede": "Embedded teams verifying capital delivery across 4 counties (Kakamega, Kitui, Nakuru, Wajir).",
+      "success": "4 Counties Embedded",
       "cycle": "Estimates → assembly → disbursement & delivery",
       "href": "/programmes/mashinani",
-      "ctaLabel": "Read more",
+      "ctaLabel": "Explore programme →",
       "stillIds": [
         "townhall-room",
         "townhall-brief"
@@ -71,13 +71,13 @@
       "slug": "wanahabari-lab",
       "number": "03",
       "name": "Wanahabari Lab",
-      "eyebrow": "Wanahabari",
+      "eyebrow": "Investigative Journalism",
       "title": "Newsroom scrutiny",
-      "lede": "Training and co-production keep journalists forensic after Budget Day - when the spending story actually begins.",
-      "success": "Success looks like investigations and launches partners can brief against - Red Flags, TERRA, newsroom-ready scrutiny.",
+      "lede": "Year-round investigative reporting, moving beyond the 48-hour Budget Day news cycle.",
+      "success": "4 Newsroom Labs Anchored",
       "cycle": "Post-Budget Day → investigations & public narrative",
       "href": "/programmes/wanahabari-lab",
-      "ctaLabel": "Read more",
+      "ctaLabel": "Explore programme →",
       "stillIds": [
         "hall-camera",
         "latif-launch"
@@ -97,18 +97,18 @@
     }
   ],
   "featuredIntro": {
-    "eyebrow": "Stories behind the evidence",
-    "headline": "Projects partners can brief against",
-    "lede": "Published films and convenings - AFRODAD debt forums, Red Flags, and Project TERRA - with local event photography as cover art. Titles stay fresh from YouTube; reach claims stay off the page.",
-    "openProjectLabel": "Open project"
+    "eyebrow": "INVESTIGATIONS & REPORTS",
+    "headline": "Our Evidence Base",
+    "lede": "Published investigations, documentaries, and field evidence from across our three programmes.",
+    "openProjectLabel": "Read story →"
   },
   "partnerCta": {
     "eyebrow": "Partner with us",
-    "title": "Fund the bet that fits your mandate.",
-    "description": "Co-fund national budget intelligence, county delivery verification, or newsroom scrutiny - with production captured through BNS Studio.",
-    "ctaLabel": "Discuss a partnership",
+    "title": "Your mandate. Our evidence.",
+    "description": "Whether you're funding accountability, strengthening public participation, or supporting journalism, BNS brings grounded evidence into the work.",
+    "ctaLabel": "Partner with BNS →",
     "ctaHref": "/contact?intent=partner",
-    "secondaryLabel": "View programmes",
+    "secondaryLabel": "Explore programmes →",
     "secondaryHref": "/programmes"
   },
   "hero": {
