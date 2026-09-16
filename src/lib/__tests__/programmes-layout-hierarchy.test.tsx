@@ -35,7 +35,9 @@ describe("Programme Layout Hierarchy Audit", { timeout: 30000 }, () => {
         expect(screen.queryByText(/Mashinani Desk/i)).not.toBeInTheDocument();
         expect(screen.queryByText(/Wanahabari Desk/i)).not.toBeInTheDocument();
         expect(screen.queryByText(/chapter/i)).not.toBeInTheDocument();
-        expect(screen.getByRole("link", { name: /Partner with BNS/i })).toBeInTheDocument();
+        expect(
+          screen.getAllByRole("link", { name: /Contact us/i }).length,
+        ).toBeGreaterThanOrEqual(1);
       },
     );
 
