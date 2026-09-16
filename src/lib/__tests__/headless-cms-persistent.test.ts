@@ -117,4 +117,11 @@ describe("Persistent Headless CMS & JSON Studio Test Suite", () => {
       headlessCmsApi.updateCollectionData(slug, data, "intruder@external.io");
     }).toThrow(/Permission Denied/i);
   });
+
+  it("getLiveCmsCollection retrieves live data from R2 or fallback reliably", async () => {
+    const { getLiveCmsCollection } = await import("@/lib/cms-live-data");
+    const studios = await getLiveCmsCollection("studios-evidence");
+    expect(studios).toBeDefined();
+    expect(typeof studios).toBe("object");
+  });
 });

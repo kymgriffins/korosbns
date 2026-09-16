@@ -92,7 +92,9 @@ export function ProgrammeProjectGrid({
     let cancelled = false;
     async function loadLive() {
       try {
-        const res = await fetch("/api/cms/studios-evidence");
+        const res = await fetch(`/api/cms/studios-evidence?t=${Date.now()}`, {
+          cache: "no-store",
+        });
         if (res.ok) {
           const json = await res.json();
           const rawProjects = json.data?.projects;
@@ -137,7 +139,9 @@ export function ProgrammeProjectGrid({
     let cancelled = false;
     async function loadLiveReels() {
       try {
-        const res = await fetch("/api/cms/programme-reels");
+        const res = await fetch(`/api/cms/programme-reels?t=${Date.now()}`, {
+          cache: "no-store",
+        });
         if (res.ok) {
           const json = await res.json();
           const rawReels = json.data?.reels;

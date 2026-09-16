@@ -89,35 +89,29 @@ export async function GET(
     const isDev = process.env.NODE_ENV === "development";
     const diskPath = await findValidDiskPath(slug);
 
-    // 1. Authoritative repository files on disk are primary in all environments
-    if (diskPath) {
+    // 1. Attempt to read live version from Cloudflare R2 bucket first (authoritative live CMS database)
+    const forceDisk = process.env.CMS_FORCE_DISK === "1";
+    if (!forceDisk) {
+      try {
+        const r2Data = await getJsonFromR2<Record<string, unknown>>(`cms/${slug}.json`);
+        if (r2Data && typeof r2Data === "object" && Object.keys(r2Data).length > 0) {
+          data = r2Data;
+          source = "r2_cloudflare";
+        }
+      } catch (r2Err) {
+        console.warn(`[CMS R2 Read Warning] Failed to read ${slug} from R2:`, r2Err);
+      }
+    }
+
+    // 2. Fall back to local repository disk if R2 was unavailable, empty, or forceDisk is set
+    if (source === "memory_fallback" && diskPath) {
       try {
         const raw = await fs.readFile(diskPath, "utf-8");
         data = JSON.parse(raw);
         source = "disk";
       } catch {
-        // Fall back to R2 or memory
+        // Fall back to memory cache
       }
-    }
-
-    // 2. Only use Cloudflare R2 if disk reading failed, or if R2 has a verified newer timestamp (> 2026-09-16)
-    try {
-      const r2Data = await getJsonFromR2<Record<string, unknown>>(`cms/${slug}.json`);
-      if (r2Data && typeof r2Data === "object" && Object.keys(r2Data).length > 0) {
-        const r2Time =
-          (r2Data as any)?.provenance?.lastSync ||
-          (r2Data as any)?.provenance?.lastUpdated ||
-          (r2Data as any)?.timestamp;
-        const isR2Recent = r2Time && new Date(r2Time).getTime() >= new Date("2026-09-16T00:00:00Z").getTime();
-        
-        // If disk wasn't found, OR if R2 has a verified fresh save after the Sep 16 cleanup
-        if (source === "memory_fallback" || (isR2Recent && source === "disk")) {
-          data = r2Data;
-          source = "r2_cloudflare";
-        }
-      }
-    } catch {
-      // Keep disk data
     }
 
     return NextResponse.json({
@@ -241,6 +235,18 @@ export async function POST(
       restoreLockedMarkers(existingData, body.data);
     }
 
+    // Auto-stamp current save timestamps onto data and provenance
+    const nowIso = new Date().toISOString();
+    if (!body.data.provenance || typeof body.data.provenance !== "object") {
+      body.data.provenance = {};
+    }
+    const prov = body.data.provenance as Record<string, unknown>;
+    prov.lastUpdated = nowIso;
+    prov.lastSaved = nowIso;
+    prov.lastSync = nowIso;
+    body.data._savedAt = nowIso;
+    body.data.lastSaved = nowIso;
+
     // 1. Update in-memory data cache and permissions
     const res = headlessCmsApi.updateCollectionData(slug, body.data, editorEmail);
 
@@ -290,6 +296,7 @@ export async function POST(
       revalidatePath("/about", "layout");
       revalidatePath("/contact", "layout");
       revalidatePath("/stories", "layout");
+      revalidatePath("/work", "layout");
       if (slug === "custom-pages") revalidatePath("/pages", "layout");
       nextRevalidated = true;
     } catch (revalErr) {

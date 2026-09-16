@@ -15,10 +15,13 @@ import {
   Building2,
   Code2,
   Layers,
+  Save,
+  Loader2,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { toast } from "sonner";
 import { CmsCollectionJsonEditor } from "./CmsCollectionJsonEditor";
 
 export interface ProjectMedia {
@@ -81,6 +84,7 @@ export function AllProjectsStudioEditor({
   const [selectedOrgFilter, setSelectedOrgFilter] = useState("all");
   const [selectedTypeFilter, setSelectedTypeFilter] = useState("all");
   const [editingProjectId, setEditingProjectId] = useState<string | null>(null);
+  const [isSaving, setIsSaving] = useState(false);
 
   const rawProjects: EvidenceProject[] = Array.isArray(data.projects)
     ? data.projects
@@ -190,24 +194,41 @@ export function AllProjectsStudioEditor({
     setEditingProjectId(newId);
   };
 
-  // Delete a project
+  // Save all projects directly to CMS & Cloudflare R2
+  const handleSaveAllProjects = async (customData?: Record<string, any>) => {
+    const payload = customData || data;
+    setIsSaving(true);
+    const toastId = toast.loading("Saving projects to live Cloudflare R2 database...");
+    try {
+      const res = await fetch("/api/cms/studios-evidence/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ data: payload, editorEmail: "info@budgetndiostory.org" }),
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.error || `HTTP ${res.status}`);
+      }
+      toast.success("All projects saved permanently to database & live site!", { id: toastId });
+    } catch (err: any) {
+      toast.error(`Save failed: ${err.message || err}`, { id: toastId });
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  // Delete a project with automatic live persistence
   const handleDeleteProject = async (id: string) => {
-    if (!confirm("Are you sure you want to delete this project from the database?")) {
+    const target = rawProjects.find((p) => p.id === id);
+    const title = target?.title || "this project";
+    if (!confirm(`Are you sure you want to delete "${title}" from the database?`)) {
       return;
     }
     const updated = rawProjects.filter((p) => p.id !== id);
     const updatedData = { ...data, projects: updated };
     onChange(updatedData);
     if (editingProjectId === id) setEditingProjectId(null);
-    try {
-      await fetch("/api/cms/studios-evidence/", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ data: updatedData, editorEmail: "info@budgetndiostory.org" }),
-      });
-    } catch {
-      // Ignored - onChange already updated parent state
-    }
+    await handleSaveAllProjects(updatedData);
   };
 
   return (
@@ -276,6 +297,21 @@ export function AllProjectsStudioEditor({
             >
               <Plus className="size-3.5" />
               <span>Add Project</span>
+            </Button>
+
+            <Button
+              type="button"
+              size="sm"
+              onClick={() => handleSaveAllProjects()}
+              disabled={isSaving}
+              className="gap-1.5 bg-emerald-600 text-xs font-semibold text-white hover:bg-emerald-700 shadow-xs"
+            >
+              {isSaving ? (
+                <Loader2 className="size-3.5 animate-spin" />
+              ) : (
+                <Save className="size-3.5" />
+              )}
+              <span>{isSaving ? "Saving..." : "Save All Projects"}</span>
             </Button>
           </div>
         </div>

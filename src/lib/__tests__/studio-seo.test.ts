@@ -1,4 +1,4 @@
-﻿import { describe, it, expect, vi } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import { buildPageMetadata } from "@/utils/page-metadata";
 
 vi.mock("@/lib/api-client", () => ({
@@ -50,7 +50,7 @@ describe("Studio SEO & Commercial Indexing (P0 Priority)", () => {
     expect(urls).toContain("https://budgetndiostory.org/bns-studio/budget-sasa-ni-delivery-explainer");
     expect(urls).toContain("https://budgetndiostory.org/bns-studio/budget-ndio-story-podcast");
     expect(urls).toContain("https://budgetndiostory.org/bns-studio/nakuru-citizen-baraza");
-    expect(urls).toContain("https://budgetndiostory.org/bns-studio/finance-bill-motion-explainer");
+    expect(urls).toContain("https://budgetndiostory.org/bns-studio/project-terra");
     expect(urls).toContain("https://budgetndiostory.org/bns-studio/mashinani-field-documentary");
 
     const podcastProject = entries.find(

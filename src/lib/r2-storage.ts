@@ -344,12 +344,12 @@ export async function getJsonFromR2<T = unknown>(key: string): Promise<T | null>
   }
 
   // 1. Try fetching via public domain first (fastest CDN edge route)
-  const publicUrl = buildR2PublicUrl(key);
+  const publicUrl = `${buildR2PublicUrl(key)}?t=${Date.now()}`;
   try {
     const res = await fetch(publicUrl, {
       cache: "no-store",
       headers: { Accept: "application/json" },
-      signal: AbortSignal.timeout(1500),
+      signal: AbortSignal.timeout(2500),
     });
     if (res.ok) {
       const data = (await res.json()) as T;

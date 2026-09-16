@@ -425,29 +425,32 @@ export function HeadlessPageStudio() {
   const loadAllData = useCallback(async () => {
     setIsLoading(true);
     try {
+      const fetchFresh = (endpoint: string) =>
+        fetch(`${endpoint}?t=${Date.now()}`, { cache: "no-store" });
+
       const [resLanding, resProg, resSec, resAbout, resCustom, resFeatured, resNav, resTokens, resCourses, resContact, resFaq, resStories, resImpact, resConsortium, resCareers, resLegal, resTeamInitiatives, resLandingHero, resLandingSections, resProgrammeReels, resStudiosEvidence, resBnsStudio] = await Promise.all([
-        fetch("/api/cms/landing/"),
-        fetch("/api/cms/programmes/"),
-        fetch("/api/cms/partner-page-sections/"),
-        fetch("/api/cms/about/"),
-        fetch("/api/cms/custom-pages/"),
-        fetch("/api/cms/featured-projects/"),
-        fetch("/api/cms/navigation/"),
-        fetch("/api/cms/design-tokens/"),
-        fetch("/api/cms/civic-modules/"),
-        fetch("/api/cms/contact/"),
-        fetch("/api/cms/faq/"),
-        fetch("/api/cms/stories/"),
-        fetch("/api/cms/impact/"),
-        fetch("/api/cms/consortium/"),
-        fetch("/api/cms/careers/"),
-        fetch("/api/cms/legal/"),
-        fetch("/api/cms/team-initiatives/"),
-        fetch("/api/cms/landing-hero/"),
-        fetch("/api/cms/landing-sections/"),
-        fetch("/api/cms/programme-reels/"),
-        fetch("/api/cms/studios-evidence/"),
-        fetch("/api/cms/bns-studio/"),
+        fetchFresh("/api/cms/landing/"),
+        fetchFresh("/api/cms/programmes/"),
+        fetchFresh("/api/cms/partner-page-sections/"),
+        fetchFresh("/api/cms/about/"),
+        fetchFresh("/api/cms/custom-pages/"),
+        fetchFresh("/api/cms/featured-projects/"),
+        fetchFresh("/api/cms/navigation/"),
+        fetchFresh("/api/cms/design-tokens/"),
+        fetchFresh("/api/cms/civic-modules/"),
+        fetchFresh("/api/cms/contact/"),
+        fetchFresh("/api/cms/faq/"),
+        fetchFresh("/api/cms/stories/"),
+        fetchFresh("/api/cms/impact/"),
+        fetchFresh("/api/cms/consortium/"),
+        fetchFresh("/api/cms/careers/"),
+        fetchFresh("/api/cms/legal/"),
+        fetchFresh("/api/cms/team-initiatives/"),
+        fetchFresh("/api/cms/landing-hero/"),
+        fetchFresh("/api/cms/landing-sections/"),
+        fetchFresh("/api/cms/programme-reels/"),
+        fetchFresh("/api/cms/studios-evidence/"),
+        fetchFresh("/api/cms/bns-studio/"),
       ]);
 
       if (resLanding.ok) {
