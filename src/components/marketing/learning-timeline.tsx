@@ -19,21 +19,21 @@ const modules: LearningModule[] = [
     icon: <Scale className="w-8 h-8" />,
     title: "Constitution & Rights",
     description: "Understanding your constitutional rights to budget information, public participation, and fiscal accountability.",
-    href: "/learn/constitution",
+    href: "/programmes",
     color: "text-blue-500"
   },
   {
     icon: <FileText className="w-8 h-8" />,
     title: "Budget Policy Statement",
     description: "Decoding the BPS: How national priorities translate into spending plans and what it means for you.",
-    href: "/learn/budget-policy",
+    href: "/reports",
     color: "text-amber-500"
   },
   {
     icon: <Building2 className="w-8 h-8" />,
     title: "Infrastructure Fund",
     description: "Explore Kenya's National Infrastructure Fund for long-term investments in transport, energy, water, and digital infrastructure.",
-    href: "/learn/infrastructure",
+    href: "/projects",
     color: "text-green-500"
   },
 ];
@@ -130,9 +130,9 @@ const LearningTimeline = () => {
           viewport={{ once: true }}
           className="text-center mt-20 md:mt-32"
         >
-          <Link href="/learn">
+          <Link href="/programmes">
             <Button size="lg" className="rounded-full px-8 py-6 text-base font-bold">
-              Browse All Modules →
+              Explore programmes →
             </Button>
           </Link>
         </motion.div>

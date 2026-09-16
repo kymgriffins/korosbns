@@ -9,7 +9,7 @@
       },
       {
         "title": "County Budget Tracking Network (47 Counties)",
-        "link": "/learn",
+        "link": "/programmes",
         "type": "Grassroots Governance",
         "badge": "Nationwide"
       },
@@ -29,7 +29,7 @@
       },
       {
         "title": "Finance Bill Viral Explainer Series",
-        "link": "/learn/videos",
+        "link": "/bns-studio",
         "type": "Short-Form Video",
         "badge": "1.2M+ Organic Views"
       },
@@ -69,7 +69,7 @@
       },
       {
         "title": "Sheng & Grassroots Civic Translation",
-        "link": "/learn/stories",
+        "link": "/bns-studio",
         "type": "Community Dialogue",
         "badge": "50+ Episodes"
       },
@@ -144,7 +144,7 @@
   "default": [
     {
       "title": "Youth Civic Education Series",
-      "link": "/learn",
+      "link": "/programmes",
       "type": "Public Literacy",
       "badge": "Core"
     },

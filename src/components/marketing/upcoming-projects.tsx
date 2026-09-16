@@ -50,10 +50,10 @@ const UpcomingProjects = () => {
                                 ))}
                             </div>
                             <Link
-                                href="/learn"
+                                href={projects[0]?.href || "/programmes"}
                                 className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-white rounded-xl font-bold transition-all hover:bg-primary/90 hover:gap-3"
                             >
-                                Open civic brief
+                                {projects[0]?.cta || "Open civic brief"}
                                 <ArrowRight className="size-4" />
                             </Link>
                         </div>
@@ -90,10 +90,10 @@ const UpcomingProjects = () => {
                         </div>
                         
                         <Link
-                            href="/learn"
+                            href={projects[1]?.href || "/programmes"}
                             className="mt-auto inline-flex items-center gap-1.5 text-sm font-bold text-primary hover:gap-2 transition-all"
                         >
-                            Start leadership story
+                            {projects[1]?.cta || "Start leadership story"}
                             <ArrowRight className="size-4" />
                         </Link>
 
@@ -119,27 +119,24 @@ const UpcomingProjects = () => {
                             </p>
                         </div>
                         <Link
-                            href="/learn/quests"
+                            href={projects[2]?.href || "/reports"}
                             className="inline-flex items-center justify-center px-8 py-4 border-2 border-foreground/10 rounded-2xl font-bold transition-all hover:bg-foreground/5 hover:border-primary/30"
                         >
-                            Join challenge loop
+                            {projects[2]?.cta || "Join challenge loop"}
                         </Link>
                     </motion.article>
                 </div>
 
                 <div className="mt-12 flex flex-wrap items-center justify-center gap-3">
-                    <Link
-                        href="/learn"
+                    {(landingSectionsContent.upcomingProjects.bottomCtas as Array<{ label: string; href: string }>).map((cta) => (
+                      <Link
+                        key={cta.href + cta.label}
+                        href={cta.href}
                         className="px-5 py-2.5 rounded-full border border-foreground/10 bg-background text-sm font-bold text-foreground/80 transition-all hover:bg-foreground/5 hover:scale-105 active:scale-95"
-                    >
-                        {(landingSectionsContent.upcomingProjects.bottomCtas as Array<{ label: string; href: string }>)[0].label}
-                    </Link>
-                    <Link
-                        href="/learn?story=budget-trivia"
-                        className="px-5 py-2.5 rounded-full border border-foreground/10 bg-background text-sm font-bold text-foreground/80 transition-all hover:bg-foreground/5 hover:scale-105 active:scale-95"
-                    >
-                        {(landingSectionsContent.upcomingProjects.bottomCtas as Array<{ label: string; href: string }>)[1].label}
-                    </Link>
+                      >
+                        {cta.label}
+                      </Link>
+                    ))}
                 </div>
             </div>
         </section>

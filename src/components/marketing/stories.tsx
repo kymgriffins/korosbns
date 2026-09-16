@@ -188,7 +188,7 @@ const Stories = () => {
                     transition={{ duration: 0.6, delay: 0.5 }}
                     className="text-center mt-16"
                 >
-                    <Link href="/learn">
+                    <Link href={storiesContent.hero.ctaHref}>
                         <Button size="lg" className="text-base">
                             {storiesContent.hero.ctaLabel}
                             <ArrowRight className="ml-2 size-4" />

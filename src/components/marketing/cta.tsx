@@ -91,7 +91,7 @@ const Cta = () => {
                                 whileTap={{ scale: 0.97 }}
                                 className="mt-6"
                             >
-                                <Link href="/learn">
+                                <Link href={landingSectionsContent.cta.href}>
                                     <Button size="lg" className="text-base">
                                         {landingSectionsContent.cta.label}
                                     </Button>

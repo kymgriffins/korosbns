@@ -26,7 +26,7 @@ const TICKER_ITEMS: TickerItem[] = [
   {
     topic: "Watch Reel",
     text: "Calvina Praise breaks down the KES 12T Sovereign Debt",
-    href: "/learn/stories",
+    href: "/bns-project",
   },
   {
     topic: "Controller of Budget",
@@ -36,7 +36,7 @@ const TICKER_ITEMS: TickerItem[] = [
   {
     topic: "Article 201",
     text: "Openness, accountability and public participation in all financial matters",
-    href: "/learn",
+    href: "/reports",
   },
   {
     topic: "Devolution Share",
@@ -46,7 +46,7 @@ const TICKER_ITEMS: TickerItem[] = [
   {
     topic: "Citizen Audit",
     text: "Nelly Maina audits local dispensary funds in 4 counties",
-    href: "/learn/stories",
+    href: "/projects",
   },
   {
     topic: "Health Ceiling",

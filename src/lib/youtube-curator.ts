@@ -134,7 +134,11 @@ export function curateFlagshipYoutubeProducts(
       authorName: existing?.authorName || "Budget Ndio Story Team",
       programmeSlug: existing?.programmeSlug || prog.slug,
       programmeLabel: existing?.programmeLabel || prog.label,
-      href: existing?.href || (courseSlug ? "/learn/modules/" + courseSlug : "/bns-project/" + targetSlug),
+      // Marketing YouTube always lands on project pages — never Learn hub chrome.
+      href:
+        existing?.href && !existing.href.startsWith("/learn")
+          ? existing.href
+          : "/bns-project/" + (existing?.slug || targetSlug),
       publishedAt: primaryVideo.publishedAt || existing?.publishedAt || new Date().toISOString(),
       channelHandle: existing?.channelHandle || "@budgetndiostory",
       useYoutubeThumbnail: existing?.useYoutubeThumbnail ?? true,

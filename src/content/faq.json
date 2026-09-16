@@ -92,9 +92,9 @@
   "hero": {
     "eyebrow": "Budget literacy",
     "ctaHeading": "Still have questions?",
-    "ctaDescription": "Dive deeper with free civic modules on Kenya's budget cycle.",
-    "ctaLabel": "Start learning",
-    "ctaHref": "/learn"
+    "ctaDescription": "Explore BNS programmes and published reports on Kenya's budget cycle.",
+    "ctaLabel": "Explore programmes",
+    "ctaHref": "/programmes"
   },
   "helpTopics": [
     {

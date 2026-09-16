@@ -120,7 +120,7 @@ const Impact = () => {
                             {impactContent.cta.description}
                         </p>
                         <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                            <a href="/learn" className="inline-flex items-center justify-center px-6 py-3 bg-primary text-white rounded-xl font-medium hover:bg-primary/90 transition-colors">
+                            <a href={impactContent.cta.primaryHref} className="inline-flex items-center justify-center px-6 py-3 bg-primary text-white rounded-xl font-medium hover:bg-primary/90 transition-colors">
                                 {impactContent.cta.primaryLabel}
                             </a>
                             <a href="https://instagram.com/budgetndiostory" target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center px-6 py-3 bg-foreground/5 border border-foreground/10 rounded-xl font-medium hover:bg-foreground/10 transition-colors">

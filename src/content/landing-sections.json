@@ -212,7 +212,7 @@
           "Duty bearers",
           "Budget estimates"
         ],
-        "href": "/learn",
+        "href": "/programmes",
         "cta": "Open civic brief"
       },
       {
@@ -224,7 +224,7 @@
           "Fiscal analysis",
           "Peer education"
         ],
-        "href": "/learn",
+        "href": "/programmes",
         "cta": "Start leadership story"
       },
       {
@@ -236,18 +236,18 @@
           "Open civic data",
           "Evidence-based"
         ],
-        "href": "/learn/quests",
+        "href": "/reports",
         "cta": "Join challenge loop"
       }
     ],
     "bottomCtas": [
       {
-        "label": "Start Learning",
-        "href": "/learn"
+        "label": "Explore programmes",
+        "href": "/programmes"
       },
       {
-        "label": "Play Trivia",
-        "href": "/learn?story=budget-trivia"
+        "label": "Watch studio work",
+        "href": "/bns-studio"
       }
     ]
   },
@@ -455,8 +455,8 @@
   "cta": {
     "heading": "The clearest way to watch the budget",
     "description": "Join thousands of young Kenyans tracking spending and demanding accountability today",
-    "label": "Start Learning",
-    "href": "/learn"
+    "label": "Explore programmes",
+    "href": "/programmes"
   },
   "footer": {
     "heading": "Let's write the next chapter together.",
@@ -468,11 +468,11 @@
         "links": [
           {
             "label": "Stories",
-            "href": "/learn"
+            "href": "/projects"
           },
           {
-            "label": "Learn",
-            "href": "/learn"
+            "label": "Programmes",
+            "href": "/programmes"
           },
           {
             "label": "Budget Glossary",

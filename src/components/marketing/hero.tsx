@@ -172,7 +172,7 @@ export default function Hero() {
             variants={heroItem}
             className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2"
           >
-            <Link href="/learn/modules" className="w-full sm:w-auto">
+            <Link href={landingHeroContent.primaryCta.href} className="w-full sm:w-auto">
               <Button
                 size="default"
                 className="w-full sm:w-auto rounded-xl px-6 py-3 text-sm font-bold gap-2"
@@ -180,7 +180,7 @@ export default function Hero() {
                 {landingHeroContent.primaryCta.label} <ArrowRight className="size-4" />
               </Button>
             </Link>
-            <Link href="/learn/stories" className="w-full sm:w-auto">
+            <Link href={landingHeroContent.secondaryCta.href} className="w-full sm:w-auto">
               <Button
                 size="default"
                 variant="outline"

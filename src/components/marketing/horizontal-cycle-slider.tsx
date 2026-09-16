@@ -99,9 +99,9 @@ export default function HorizontalCycleSlider() {
               transition={{ duration: 0.6, delay: 0.1, ease: [0.19, 1, 0.22, 1] }}
               className="shrink-0"
             >
-              <a href="/learn">
+              <a href="/programmes">
                 <Button className="rounded-full px-6 gap-2 bg-foreground text-background hover:bg-foreground/90">
-                  Start Learning Now <ArrowRight className="size-4" />
+                  Explore programmes <ArrowRight className="size-4" />
                 </Button>
               </a>
             </motion.div>

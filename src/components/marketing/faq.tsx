@@ -150,7 +150,7 @@ export default function FAQ() {
                 {faqContent.hero.ctaDescription}
               </p>
               <Button asChild size="lg" className={cn(T.btnPrimary, "mt-6 rounded-full px-8")}>
-                <Link href="/learn">
+                <Link href={faqContent.hero.ctaHref}>
                   {faqContent.hero.ctaLabel}
                   <ArrowRight className="ml-2 size-4" />
                 </Link>

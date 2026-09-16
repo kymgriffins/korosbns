@@ -209,7 +209,7 @@ export default function AlertsSimulator() {
             </div>
 
             <div className="pt-4">
-              <a href="/learn">
+              <a href="/contact?intent=alerts">
                 <Button size="lg" className="rounded-full px-6 gap-2">
                   Opt-in to Alerts <ArrowRight className="size-4" />
                 </Button>

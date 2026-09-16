@@ -19,12 +19,12 @@ import { socialIconComponents } from "@/components/ui/social-icons";
 // Lean footer links with only working pages
 const footerLinks = {
   product: [
-    { label: "Stories", href: "/learn" },
+    { label: "Stories", href: "/projects" },
     { label: "Explainers", href: "/about" },
     { label: "Events", href: "/events" },
   ],
   resources: [
-    { label: "Budget Guides", href: "/learn" },
+    { label: "Budget Guides", href: "/reports" },
     { label: "Budget Glossary", href: "/glossary" },
     { label: "Help & FAQ", href: "/help" },
     { label: "Surveys", href: "/surveys" },

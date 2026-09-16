@@ -67,7 +67,7 @@ export default function ArticlesPromoMarquee() {
             Latest articles
           </span>
           <span className="hidden sm:inline-block text-xs text-foreground/60 truncate">
-            Budget explainers from the Learn hub
+            Budget explainers from BNS reports
           </span>
         </div>
 
@@ -94,7 +94,7 @@ export default function ArticlesPromoMarquee() {
         {articles.map((article: Record<string, any>) => (
           <Link
             key={article.id}
-            href={Routes.Article(article.id)}
+            href={Routes.Reports}
             className={cn(
               "mx-2 inline-flex items-center gap-2 rounded-full border border-foreground/15",
               "bg-muted/30 px-4 py-2 text-sm text-foreground/90 hover:bg-muted/50 transition-colors",

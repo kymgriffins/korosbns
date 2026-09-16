@@ -230,8 +230,8 @@
         "href": "/programmes"
       },
       {
-        "label": "Learn",
-        "href": "/learn"
+        "label": "Reports",
+        "href": "/reports"
       },
       {
         "label": "About",
@@ -239,10 +239,6 @@
       }
     ],
     "secondary": [
-      {
-        "label": "Reports",
-        "href": "/reports"
-      },
       {
         "label": "Studios",
         "href": "/bns-studio"
@@ -252,10 +248,6 @@
       {
         "label": "Programmes",
         "href": "/programmes"
-      },
-      {
-        "label": "Learn",
-        "href": "/learn"
       },
       {
         "label": "Reports",

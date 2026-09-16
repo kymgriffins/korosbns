@@ -176,7 +176,7 @@ export default async function RootLayout({
                 { "@type": "ListItem", position: 2, name: "BNS Studios", item: `${siteUrl}/bns-studio` },
                 { "@type": "ListItem", position: 3, name: "Work", item: `${siteUrl}/work` },
                 { "@type": "ListItem", position: 4, name: "Programmes", item: `${siteUrl}/programmes` },
-                { "@type": "ListItem", position: 5, name: "Learn", item: `${siteUrl}/learn` },
+                { "@type": "ListItem", position: 5, name: "Studios", item: `${siteUrl}/bns-studio` },
                 { "@type": "ListItem", position: 6, name: "Reports", item: `${siteUrl}/reports` },
                 { "@type": "ListItem", position: 7, name: "About", item: `${siteUrl}/about` },
               ],

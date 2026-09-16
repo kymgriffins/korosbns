@@ -432,16 +432,16 @@ export default function BudgetGlossaryClient() {
                 Want to see these budget concepts in action?
               </h3>
               <p className="text-sm text-muted-foreground leading-relaxed">
-                Explore our interactive Learn Hub for animated breakdowns of Kenya&apos;s budget cycle, or read verified
-                reports detailing actual county spending versus development allocations.
+                Explore BNS programmes and verified reports detailing actual county spending versus development
+                allocations.
               </p>
             </div>
             <div className="lg:col-span-4 flex flex-col sm:flex-row lg:flex-col gap-3 justify-end">
               <Link
-                href="/learn"
+                href="/programmes"
                 className="inline-flex items-center justify-center gap-2 rounded-full bg-primary px-5 py-2.5 text-xs font-bold text-primary-foreground hover:bg-primary/90 transition-colors shadow-xs"
               >
-                <span>Start Learning on Learn Hub</span>
+                <span>Explore programmes</span>
                 <ArrowRight className="size-3.5" />
               </Link>
               <Link
