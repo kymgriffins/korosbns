@@ -19,13 +19,15 @@ function findCanonicalProject(idOrSlug: string): ProjectEditorialData | null {
   const canonical = projectsData.getById(norm);
   if (!canonical) return null;
 
+  const body = canonical.wysiwygProse || canonical.prose || canonical.description;
+
   return {
     id: canonical.id,
     slug: canonical.slug,
     title: canonical.title,
     subtitle: canonical.subtitle,
-    prose: canonical.description,
-    wysiwygProse: canonical.wysiwygProse || canonical.description,
+    prose: canonical.prose || canonical.description,
+    wysiwygProse: body,
     authorName: canonical.authorName,
     programmeSlug: canonical.programmeSlug,
     programmeLabel: canonical.programmeLabel,
@@ -96,5 +98,6 @@ export default async function ProjectDetailPage({ params }: PageProps) {
     return <ProjectEditorialView project={canonicalProject} />;
   }
 
-  redirect("/bns-project");
+  // Unknown ids → project index (JSON-backed), never a programmes dump.
+  redirect("/projects");
 }

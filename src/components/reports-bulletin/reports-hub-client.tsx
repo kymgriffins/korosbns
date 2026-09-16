@@ -76,9 +76,9 @@ export function ReportsHubClient() {
         <EditorialCtaBand
           eyebrow="Citizen intelligence"
           title="Turn budget numbers into stories you can use."
-          description="Explore free learning modules and verified county reports — built for young Kenyans tracking public spending."
-          ctaHref="/learn"
-          ctaLabel="Start Learning"
+          description="Explore verified county reports and flagship project dossiers — built for young Kenyans tracking public spending."
+          ctaHref="/reports"
+          ctaLabel="Browse reports"
         />
       </main>
     </div>

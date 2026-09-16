@@ -74,7 +74,7 @@ const initiatives = [
     badge: "BNS Mashinani · Grassroots",
     programme: "BNS Mashinani",
     partner: "Grassroots Alliances",
-    href: "/learn",
+    href: "/bns-project/story-mty40jp1",
   },
   {
     id: "public-participation",
@@ -86,7 +86,7 @@ const initiatives = [
     badge: "BNS Connect · Citizen Oversight",
     programme: "BNS Connect",
     partner: "Civil Society Coalitions",
-    href: "/bns-project/public-participation",
+    href: "/programmes/connect",
   },
 ];
 

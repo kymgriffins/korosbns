@@ -27,7 +27,7 @@ const LATEST_ITEMS = [
     category: "Civic Explainer",
     title: "Where Does Kenya's KES 4.8 Trillion Go?",
     description: "Snackable explainer for youth breaking down county equitable shares, recurrent vs development spending.",
-    href: "/learn",
+    href: "/bns-project/budget-sasa-ni-delivery-explainer",
     icon: BookOpen,
     date: "Active Guide",
   },

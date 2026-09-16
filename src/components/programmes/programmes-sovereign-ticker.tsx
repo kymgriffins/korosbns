@@ -16,7 +16,7 @@ export const SOVEREIGN_TICKER_ITEMS: SovereignTickerItem[] = [
   {
     topic: "Article 201 Standard",
     text: "Openness, accountability and public participation in all financial matters",
-    href: "/learn",
+    href: "/programmes",
   },
   {
     topic: "Connect",
@@ -51,7 +51,7 @@ export const SOVEREIGN_TICKER_ITEMS: SovereignTickerItem[] = [
   {
     topic: "Citizen Audit",
     text: "Nelly Maina & Calvina Praise tracking county dispensaries & public funds",
-    href: "/learn/stories",
+    href: "/bns-project/story-mty40jp1",
   },
 ];
 

@@ -6,10 +6,10 @@ export default function OfflinePage() {
         Some content may still be available from cache. Connect to the internet to access the latest.
       </p>
       <a
-        href="/learn"
+        href="/programmes"
         className="inline-block px-6 py-3 bg-blue-600 text-white no-underline rounded-lg font-semibold"
       >
-        Browse cached content
+        Browse cached programmes
       </a>
     </div>
   );

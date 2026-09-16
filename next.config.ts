@@ -254,16 +254,7 @@ const nextConfig: NextConfig = {
         destination: "/",
         permanent: false,
       },
-      {
-        source: "/projects",
-        destination: "/programmes/",
-        permanent: true,
-      },
-      {
-        source: "/projects/",
-        destination: "/programmes/",
-        permanent: true,
-      },
+      // /projects index is JSON-backed (BNSProjectClient); do not dump to programmes.
       // Legacy project routes → canonical /projects/[slug]
       {
         source: "/bns-project/:slug*",

@@ -26,8 +26,8 @@ export default function RootError({
         Something went wrong
       </h2>
       <p className="max-w-md text-sm text-muted-foreground">
-        An unexpected error stopped this page. Retry, or head back to Learn — catalogue
-        pages use offline JSON when the API is down.
+        An unexpected error stopped this page. Retry, or head back to programmes —
+        catalogue pages use offline JSON when the API is down.
       </p>
       {error.digest ? (
         <p className="font-mono text-[10px] text-muted-foreground/80">Ref: {error.digest}</p>
@@ -41,10 +41,10 @@ export default function RootError({
           Try again
         </button>
         <Link
-          href="/learn"
+          href="/programmes"
           className="rounded-md border border-border bg-background px-4 py-2 text-sm text-foreground"
         >
-          Back to Learn
+          Browse programmes
         </Link>
       </div>
     </div>

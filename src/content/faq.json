@@ -115,11 +115,11 @@
     },
     {
       "id": "learning",
-      "title": "Learn Hub & Courses",
-      "description": "Interactive civic modules, certificates, quizzes, study guides, and mobile access.",
+      "title": "Civic Literacy & Projects",
+      "description": "Flagship project dossiers, civic explainers, certificates context, and how free reading works.",
       "badge": "Education",
       "iconName": "GraduationCap",
-      "popularSearch": "Free courses, certificates, quizzes"
+      "popularSearch": "UON cohort, Project TERRA, free reading"
     },
     {
       "id": "reports",
@@ -322,24 +322,24 @@
     },
     {
       "id": "learn-free",
-      "question": "Are BNS Learn Hub courses, modules, and study tracks free?",
-      "answer": "Yes, 100% free. Budget Ndio Story is committed to democratizing civic literacy. Anyone can read our chapters, take knowledge checks, and explore data visualisations without paying any subscription or paywall fees.",
+      "question": "Are BNS civic literacy materials and project dossiers free to read?",
+      "answer": "Yes, 100% free. Budget Ndio Story is committed to democratizing civic literacy. Anyone can read our project dossiers, explainers, and reports without paying any subscription or paywall fees.",
       "topicId": "learning",
       "tags": [
-        "learn hub",
-        "free courses",
+        "free reading",
         "civic education",
+        "project dossiers",
         "modules"
       ],
       "actionLink": {
-        "label": "Open Learn Hub",
-        "href": "/learn"
+        "label": "Browse flagship projects",
+        "href": "/projects"
       }
     },
     {
       "id": "learn-certs",
       "question": "How do learning tracks and certificates work?",
-      "answer": "As you read chapters and complete end-of-module quizzes, your progress is tracked locally and in your citizen profile. Completing foundational tracks (such as Public Finance Mastery or County Budget Tracking) unlocks verified completion badges and digital shareable certificates.",
+      "answer": "As you engage with civic explainers and project dossiers, progress can be tracked in your citizen profile when signed in. Completing foundational tracks unlocks verified completion badges and digital shareable certificates where those programmes are active.",
       "topicId": "learning",
       "tags": [
         "certificates",
@@ -348,14 +348,14 @@
         "completion"
       ],
       "actionLink": {
-        "label": "View Learning Modules",
-        "href": "/learn"
+        "label": "Explore programmes",
+        "href": "/programmes"
       }
     },
     {
       "id": "learn-offline",
-      "question": "Can I access BNS Learn Hub content offline or on low-bandwidth connections?",
-      "answer": "Yes. Our Learn Hub progressive web app is optimized for mobile data efficiency with offline service worker caching. Once loaded, core reading chapters, glossary terms, and study texts remain accessible even without active internet connectivity.",
+      "question": "Can I access BNS civic content offline or on low-bandwidth connections?",
+      "answer": "Yes. Key marketing and report pages are optimized for mobile data efficiency. Once loaded, core reading and glossary text remain usable even when connectivity is intermittent.",
       "topicId": "learning",
       "tags": [
         "offline",

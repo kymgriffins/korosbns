@@ -24,11 +24,11 @@ export default function NotFoundPage() {
         <div className="flex items-center gap-3">
           <DayNightSwitch />
           <Link
-            href="/learn"
+            href="/programmes"
             className="hidden sm:inline-flex items-center gap-1.5 text-xs font-bold text-primary hover:underline"
           >
             <Compass className="size-3.5" />
-            Explore Syllabus
+            Explore programmes
           </Link>
         </div>
       </header>
@@ -51,13 +51,13 @@ export default function NotFoundPage() {
         </p>
 
         {/* Search Bar */}
-        <form action="/learn" method="GET" className="max-w-md mx-auto mb-8 relative">
+        <form action="/programmes" method="GET" className="max-w-md mx-auto mb-8 relative">
           <div className="relative">
             <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
             <input
               type="text"
               name="q"
-              placeholder="Search budget topics, BPS, county allocations..."
+              placeholder="Search programmes, projects, county reports..."
               className="w-full rounded-xl border border-border bg-muted/40 pl-10 pr-24 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
             />
             <button
@@ -90,21 +90,21 @@ export default function NotFoundPage() {
           </Link>
 
           <Link
-            href="/learn"
+            href="/projects"
             className="group p-4 rounded-2xl border border-border bg-muted/20 hover:bg-primary/5 hover:border-primary/40 transition-all flex flex-col justify-between"
           >
             <div>
               <BookOpen className="size-5 text-primary mb-2 group-hover:scale-110 transition-transform" />
-              <h2 className="text-sm font-bold text-foreground">Civic Learn Hub</h2>
-              <p className="text-xs text-muted-foreground mt-0.5">BPS, Finance Bill & civic courses</p>
+              <h2 className="text-sm font-bold text-foreground">Flagship projects</h2>
+              <p className="text-xs text-muted-foreground mt-0.5">TERRA, UON Cohort & studio dossiers</p>
             </div>
             <span className="text-[10px] font-semibold text-primary mt-3 flex items-center gap-1">
-              Start Learning <ArrowRight className="size-3 group-hover:translate-x-1 transition-transform" />
+              View projects <ArrowRight className="size-3 group-hover:translate-x-1 transition-transform" />
             </span>
           </Link>
 
           <Link
-            href="/task"
+            href="/reports"
             className="group p-4 rounded-2xl border border-border bg-muted/20 hover:bg-primary/5 hover:border-primary/40 transition-all flex flex-col justify-between"
           >
             <div>

@@ -50,7 +50,7 @@ export interface ProjectEditorialViewProps {
 
 export function ProjectEditorialView({
   project,
-  backHref = "/bns-project",
+  backHref = "/projects",
   backLabel = "All Projects",
 }: ProjectEditorialViewProps) {
   const [copied, setCopied] = React.useState(false);

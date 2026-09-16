@@ -68,7 +68,7 @@ export function ReportLibraryArchive({ reports }: ReportLibraryArchiveProps) {
         </div>
         <div className="flex flex-wrap items-center gap-2 self-start sm:self-auto">
           <Link
-            href="/learn/documents"
+            href="/reports"
             className="inline-flex items-center gap-1.5 text-xs font-bold text-primary hover:underline px-2.5 py-1 rounded-md bg-primary/10 transition-colors"
           >
             <FileText className="size-3.5" />

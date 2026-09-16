@@ -135,7 +135,10 @@ function resolveGallery(p: StudioProject): ProjectGalleryItem[] {
 }
 
 function mergeProject(studio: StudioProject): CanonicalProject {
-  const featured = featuredMap.get(studio.id);
+  const featured =
+    featuredMap.get(studio.id) ||
+    featuredMap.get(studio.slug) ||
+    [...featuredMap.values()].find((f) => f.slug === studio.slug || f.id === studio.id);
   const org = studio.organizationId ? orgMap.get(studio.organizationId) : undefined;
   const videoId = videoIdFrom(studio, featured);
   const programmeSlug = studio.programmeSlug || featured?.programmeSlug || "connect";
@@ -167,7 +170,7 @@ function mergeProject(studio: StudioProject): CanonicalProject {
     hideCaptions: false,
     outputs: studio.outputs || [],
     tags: studio.tags || [],
-    featured: studio.featured || false,
+    featured: studio.featured || Boolean(featured),
     visible: (studio as { visible?: boolean }).visible !== false,
     format: (studio as { format?: string }).format,
     order: (studio as { order?: number }).order ?? 999,
@@ -180,8 +183,70 @@ function mergeProject(studio: StudioProject): CanonicalProject {
   };
 }
 
-/** All projects from the canonical studios-evidence database */
-const ALL_PROJECTS: CanonicalProject[] = studiosEvidence.projects.map(mergeProject);
+/**
+ * Featured-only seeds (e.g. UON `story-mty40jp1`) that are not yet in
+ * studios-evidence still need deep-link fidelity on /projects/[id].
+ */
+function fromFeaturedOnly(featured: FeaturedSeed): CanonicalProject {
+  const programmeSlug = featured.programmeSlug || "connect";
+  const videoId = featured.videoId || undefined;
+  const galleryRaw = (featured as { gallery?: ProjectGalleryItem[] }).gallery;
+  const gallery = Array.isArray(galleryRaw)
+    ? galleryRaw.filter((g) => Boolean(g?.url))
+    : [];
+
+  return {
+    id: featured.id,
+    slug: featured.slug || featured.id,
+    title: featured.title,
+    subtitle: (featured as { subtitle?: string }).subtitle,
+    description: featured.prose || "",
+    programmeSlug,
+    programmeLabel: featured.programmeLabel || programmeLabelFor(programmeSlug),
+    contentType: "featured-editorial",
+    date: (featured.publishedAt || "").slice(0, 10) || "2026-01-01",
+    year: (featured.publishedAt || "2026").slice(0, 4),
+    mediaType: videoId ? "youtube" : "none",
+    videoId,
+    videoUrl: featured.url || (videoId ? `https://www.youtube.com/watch?v=${videoId}` : undefined),
+    thumbnail: featured.thumbnail || "/images/hall/129A4248.jpg",
+    gallery,
+    hideCaptions: false,
+    outputs: [],
+    tags: [],
+    featured: true,
+    visible: true,
+    order: 0,
+    prose: featured.prose,
+    wysiwygProse: featured.wysiwygProse,
+    href: featured.href || `/bns-project/${featured.slug || featured.id}`,
+    authorName: featured.authorName,
+    publishedAt: featured.publishedAt,
+    channelHandle: featured.channelHandle,
+  };
+}
+
+const studioIdAndSlug = new Set<string>();
+for (const p of studiosEvidence.projects) {
+  studioIdAndSlug.add(p.id);
+  studioIdAndSlug.add(p.slug);
+}
+
+const featuredOnlyProjects: CanonicalProject[] = featuredSeeds.results
+  .filter((f) => !studioIdAndSlug.has(f.id) && !studioIdAndSlug.has(f.slug))
+  .map(fromFeaturedOnly);
+
+/** Studios-evidence + featured-only editorial seeds (unified lookup) */
+const ALL_PROJECTS: CanonicalProject[] = [
+  ...studiosEvidence.projects.map(mergeProject),
+  ...featuredOnlyProjects,
+];
+
+/** Prefer this when a bare /bns-project or /projects list CTA needs a concrete destination. */
+export const FLAGSHIP_PROJECT_ID =
+  featuredSeeds.results.find((f) => f.id === "project-terra")?.id ||
+  featuredSeeds.results[0]?.id ||
+  "project-terra";
 
 const _featuredIds = new Set(
   featuredSeeds.results.map((f) => f.id),
@@ -206,7 +271,10 @@ function getFeatured(): CanonicalProject[] {
 
 /** Find a single project by id or slug — returns hidden projects too (direct URL access) */
 function getById(id: string): CanonicalProject | undefined {
-  return ALL_PROJECTS.find((p) => p.id === id || p.slug === id);
+  const norm = id.toLowerCase().trim();
+  return ALL_PROJECTS.find(
+    (p) => p.id.toLowerCase() === norm || p.slug.toLowerCase() === norm,
+  );
 }
 
 /** Projects filtered by programme */

@@ -17,6 +17,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { path: "/programmes/connect", priority: 0.85, frequency: "monthly" as const },
     { path: "/programmes/mashinani", priority: 0.85, frequency: "monthly" as const },
     { path: "/programmes/wanahabari-lab", priority: 0.85, frequency: "monthly" as const },
+    { path: "/projects", priority: 0.9, frequency: "weekly" as const },
     { path: "/about", priority: 0.85, frequency: "monthly" as const },
     { path: "/learn", priority: 0.9, frequency: "weekly" as const },
     { path: "/learn/podcasts", priority: 0.85, frequency: "weekly" as const },
@@ -168,6 +169,25 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     });
   } catch (err) {
     console.error("Sitemap: Failed to load studio project paths", err);
+  }
+
+  // Featured + studios-evidence projects under canonical /projects/[id]
+  try {
+    const { projectsData } = await import("@/data/projects");
+    for (const project of projectsData.get()) {
+      sitemapEntries.push({
+        url: canonicalUrl(`/projects/${project.slug || project.id}`),
+        lastModified: project.publishedAt
+          ? new Date(project.publishedAt)
+          : project.date
+            ? new Date(project.date)
+            : new Date(),
+        changeFrequency: "weekly",
+        priority: project.featured ? 0.9 : 0.8,
+      });
+    }
+  } catch (err) {
+    console.error("Sitemap: Failed to load canonical project paths", err);
   }
 
   return sitemapEntries;

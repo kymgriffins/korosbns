@@ -20,9 +20,9 @@
     },
     {
       "from": "/bns-project",
-      "to": "/programmes/",
+      "to": "/projects/",
       "status": 301,
-      "reason": "Hardcoded 6-item index killed. Projects live under /projects/[slug]; programme context via /programmes/."
+      "reason": "Legacy project index → canonical /projects list (JSON-backed). Deep links stay on /projects/[slug]."
     }
   ]
 }
