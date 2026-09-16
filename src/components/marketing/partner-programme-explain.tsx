@@ -59,9 +59,9 @@ export function PartnerProgrammeExplainSections({
         </p>
       </div>
 
-      {/* 3-Column Editorial Grid */}
-      <div className="grid grid-cols-1 gap-10 md:grid-cols-3 md:gap-8 lg:gap-12 md:divide-x md:divide-[#e5edf5]">
-        {items.map((item, idx) => {
+      {/* 3-Column Editorial Grid — Clean whitespace gutters without touching divide borders */}
+      <div className="grid grid-cols-1 gap-12 md:grid-cols-3 md:gap-8 lg:gap-12">
+        {items.map((item) => {
           const validCustomImages = (item.images || []).filter(
             (img: any) => Boolean(img?.src && img.src.trim() !== "")
           );
@@ -90,10 +90,7 @@ export function PartnerProgrammeExplainSections({
           return (
             <div
               key={item.slug}
-              className={cn(
-                "flex flex-col h-full",
-                idx > 0 && "md:pl-8 lg:pl-12"
-              )}
+              className="flex flex-col h-full"
             >
               <div className="flex-1 flex flex-col">
                 {/* 1. Eyebrow & Headline - uniform height */}
@@ -107,7 +104,7 @@ export function PartnerProgrammeExplainSections({
                 </div>
 
                 {/* 2. Key Stat Block - uniform height */}
-                <div className="mt-4 rounded-[4px] border border-[#e5edf5] bg-[#f8fafd] p-4 min-h-[86px] flex flex-col justify-center">
+                <div className="mt-4 rounded-lg border border-[#e5edf5] bg-[#f8fafd] p-4 min-h-[86px] flex flex-col justify-center">
                   <div className="font-heading text-[32px] font-normal tracking-tight text-[#061b31] leading-none mb-1">
                     {stat.value}
                   </div>
@@ -137,10 +134,10 @@ export function PartnerProgrammeExplainSections({
                 </div>
 
                 {/* 6. Field Photography Grid - horizontally level across all cards */}
-                <div className="mt-4 grid grid-cols-2 gap-2">
+                <div className="mt-4 grid grid-cols-2 gap-3">
                   {stills.slice(0, 2).map((still) => (
-                    <figure key={still.id} className="space-y-1">
-                      <div className="relative aspect-[4/3] overflow-hidden rounded-[4px] border border-[#e5edf5] bg-[#f8fafd]">
+                    <figure key={still.id} className="space-y-1.5">
+                      <div className="relative aspect-[4/3] overflow-hidden rounded-lg border border-[#e5edf5] bg-[#f8fafd]">
                         <Image
                           src={still.src}
                           alt={still.alt}
@@ -158,7 +155,7 @@ export function PartnerProgrammeExplainSections({
               </div>
 
               {/* 7. Action Link - anchored to bottom, no duplicate arrow */}
-              <div className="mt-auto pt-6 border-t border-[#e5edf5]/60">
+              <div className="mt-auto pt-6">
                 <Link
                   href={item.href}
                   className="group inline-flex items-center text-sm font-medium text-[#533afd] hover:text-[#7389ff] transition-colors"
