@@ -145,8 +145,10 @@ export function Header() {
         initial={reduced ? false : "hidden"}
         animate="visible"
         className={cn(
-          "fixed inset-x-0 top-0 z-[100] border-b border-transparent backdrop-blur-[6px] transition-[background-color] duration-300",
-          scrolled ? "bg-background/35" : "bg-background/20",
+          "fixed inset-x-0 top-0 z-[100] transition-all duration-300",
+          scrolled
+            ? "bg-background/95 backdrop-blur-md border-b border-border/40 shadow-xs"
+            : "bg-background/80 backdrop-blur-md border-b border-border/20 shadow-2xs",
         )}
       >
         <div

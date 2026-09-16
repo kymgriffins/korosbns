@@ -85,8 +85,8 @@ const Navbar = () => {
         animate="visible"
         className={cn(
           "fixed top-0 inset-x-0 z-[100] h-14 max-h-20 md:h-16",
-          "border-b border-border/20 backdrop-blur-md transition-colors duration-300",
-          scrolled ? "bg-background/80" : "bg-background/45",
+          "border-b border-border/30 backdrop-blur-md transition-colors duration-300",
+          scrolled ? "bg-background/95 shadow-xs" : "bg-background/85",
         )}
       >
         <div

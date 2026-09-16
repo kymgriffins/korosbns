@@ -20,7 +20,7 @@ describe("ProgrammesProjectsLoop", () => {
     expect(screen.getByTestId("filter-tab-connect")).toBeInTheDocument();
     expect(screen.getByTestId("filter-tab-mashinani")).toBeInTheDocument();
     expect(screen.getByTestId("filter-tab-wanahabari-lab")).toBeInTheDocument();
-    expect(screen.getByTestId("filter-tab-studios")).toBeInTheDocument();
+    expect(screen.getByTestId("filter-tab-studio-production")).toBeInTheDocument();
 
     // Key real projects rendered in loop
     expect(screen.getAllByText(/Budget Sasa ni Delivery/i).length).toBeGreaterThanOrEqual(1);

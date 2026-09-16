@@ -89,8 +89,8 @@ export async function GET(
     const isDev = process.env.NODE_ENV === "development";
     const diskPath = await findValidDiskPath(slug);
 
-    // 1. In local development, the local repository files on disk are authoritative
-    if (isDev && diskPath) {
+    // 1. Authoritative repository files on disk are primary in all environments
+    if (diskPath) {
       try {
         const raw = await fs.readFile(diskPath, "utf-8");
         data = JSON.parse(raw);
@@ -100,28 +100,24 @@ export async function GET(
       }
     }
 
-    // 2. In production or if disk reading failed, attempt to read live version from Cloudflare R2
-    if (source === "memory_fallback") {
-      try {
-        const r2Data = await getJsonFromR2<Record<string, unknown>>(`cms/${slug}.json`);
-        if (r2Data && typeof r2Data === "object" && Object.keys(r2Data).length > 0) {
+    // 2. Only use Cloudflare R2 if disk reading failed, or if R2 has a verified newer timestamp (> 2026-09-16)
+    try {
+      const r2Data = await getJsonFromR2<Record<string, unknown>>(`cms/${slug}.json`);
+      if (r2Data && typeof r2Data === "object" && Object.keys(r2Data).length > 0) {
+        const r2Time =
+          (r2Data as any)?.provenance?.lastSync ||
+          (r2Data as any)?.provenance?.lastUpdated ||
+          (r2Data as any)?.timestamp;
+        const isR2Recent = r2Time && new Date(r2Time).getTime() >= new Date("2026-09-16T00:00:00Z").getTime();
+        
+        // If disk wasn't found, OR if R2 has a verified fresh save after the Sep 16 cleanup
+        if (source === "memory_fallback" || (isR2Recent && source === "disk")) {
           data = r2Data;
           source = "r2_cloudflare";
         }
-      } catch {
-        // Fallback to disk
       }
-    }
-
-    // 3. Fall back to local disk if R2 was unavailable in production
-    if (source === "memory_fallback" && diskPath) {
-      try {
-        const raw = await fs.readFile(diskPath, "utf-8");
-        data = JSON.parse(raw);
-        source = "disk";
-      } catch {
-        // Fall back to memory cache
-      }
+    } catch {
+      // Keep disk data
     }
 
     return NextResponse.json({
@@ -266,11 +262,13 @@ export async function POST(
     // 3. Persist directly to Cloudflare R2 Storage (for Edge, Serverless & Permanent Backup)
     let r2Persisted = false;
     let r2Url = "";
+    let r2Error: string | null = null;
     try {
       const r2Res = await saveJsonToR2(`cms/${slug}.json`, body.data);
       r2Persisted = true;
       r2Url = r2Res.url;
     } catch (r2Err) {
+      r2Error = r2Err instanceof Error ? r2Err.message : String(r2Err);
       console.warn(`[CMS R2 Write Warning] Failed to persist to Cloudflare R2:`, r2Err);
     }
 
@@ -286,9 +284,12 @@ export async function POST(
     // 5. Invalidate Next.js internal server cache on-demand
     let nextRevalidated = false;
     try {
-      revalidatePath("/");
-      if (slug === "programmes") revalidatePath("/programmes");
-      if (slug === "about") revalidatePath("/about");
+      revalidatePath("/", "layout");
+      revalidatePath("/programmes", "layout");
+      revalidatePath("/bns-studio", "layout");
+      revalidatePath("/about", "layout");
+      revalidatePath("/contact", "layout");
+      revalidatePath("/stories", "layout");
       if (slug === "custom-pages") revalidatePath("/pages", "layout");
       nextRevalidated = true;
     } catch (revalErr) {
@@ -301,10 +302,13 @@ export async function POST(
       diskPersisted,
       r2Persisted,
       r2Url,
+      r2Error,
       edgePurged,
       nextRevalidated,
       filePath: targetPath,
-      message: `Successfully updated and persisted ${slug}.json to Disk and Cloudflare R2.`,
+      message: r2Persisted
+        ? `Successfully updated and persisted ${slug}.json to Disk and Cloudflare R2.`
+        : `Successfully updated ${slug}.json to local repository disk.${r2Error ? ` (Note: Cloudflare R2 backup skipped: ${r2Error})` : ""}`,
     });
   } catch (err) {
     return NextResponse.json(

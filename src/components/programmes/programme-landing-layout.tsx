@@ -1,5 +1,6 @@
 "use client";
 
+import { useMemo } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { ReelPlayer } from "@/components/programmes/reel-player";
@@ -53,6 +54,7 @@ export function ProgrammeLandingLayout({
   closing = PROGRAMMES_CLOSING,
   sectionsConfig,
   reels,
+  studiosEvidence,
   projectCtaLabels,
 }: {
   programme: ProgrammeBlock;
@@ -60,6 +62,7 @@ export function ProgrammeLandingLayout({
   closing?: ProgrammesContent["closing"];
   sectionsConfig?: PartnerPageSectionsContent | null;
   reels?: ProgrammeReel[];
+  studiosEvidence?: any;
   projectCtaLabels?: {
     openProjectLabel?: string;
     watchReelLabel?: string;
@@ -68,6 +71,21 @@ export function ProgrammeLandingLayout({
   if (programme.slug === "studios") {
     return null;
   }
+
+  const programmeProjects = useMemo(() => {
+    if (studiosEvidence?.projects && Array.isArray(studiosEvidence.projects)) {
+      const orgs = studiosEvidence.organizations || [];
+      const orgById = new Map(orgs.map((o: any) => [o.id, o]));
+      return studiosEvidence.projects
+        .filter((p: any) => p.programmeSlug === programme.slug && p.visible !== false)
+        .map((p: any) => ({
+          ...p,
+          organization: orgById.get(p.organizationId) || { id: p.organizationId, name: "BNS", slug: "bns" },
+        }))
+        .sort((a: any, b: any) => (a.order ?? 999) - (b.order ?? 999));
+    }
+    return undefined;
+  }, [studiosEvidence, programme.slug]);
 
   const pageId = PAGE_ID_BY_SLUG[programme.slug];
   const others = civicProgrammes.filter((p) => p.slug !== programme.slug);
@@ -294,9 +312,9 @@ export function ProgrammeLandingLayout({
           {/* Header & Mandate */}
           <div className="space-y-4">
             <div className="flex flex-wrap items-center gap-2">
-              <span className="font-mono text-xs font-bold uppercase tracking-wider text-primary">
+              <p className={cn(T.eyebrow, "text-muted-foreground")}>
                 Mandate
-              </span>
+              </p>
               {programme.mandateFit ? (
                 <>
                   <span aria-hidden className="text-border">
@@ -343,7 +361,7 @@ export function ProgrammeLandingLayout({
 
           {/* Key Scale Stats */}
           {programme.stats && programme.stats.length > 0 ? (
-            <dl className="mt-8 grid gap-0 border-b border-border/50 sm:grid-cols-3">
+            <dl className="mt-8 grid gap-0 sm:grid-cols-3">
               {programme.stats.map((stat) => (
                 <div
                   key={`${stat.value}-${stat.label}`}
@@ -359,101 +377,116 @@ export function ProgrammeLandingLayout({
               ))}
             </dl>
           ) : null}
+        </LandingSection>
+      ) : null}
 
-          {/* 4-Stage Operational Process (How We Execute) */}
-          {programme.process && programme.process.length > 0 ? (
-            <div className="mt-14 space-y-6">
-              <div className="space-y-1">
-                <p className={cn(T.eyebrow, "text-muted-foreground")}>Operational Lifecycle</p>
-                <h3 className="font-heading text-xl font-bold text-foreground">
-                  How this programme operates
-                </h3>
-              </div>
-              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-                {programme.process.map((step, idx) => (
-                  <div
-                    key={step.title}
-                    className="flex flex-col justify-between border border-border/60 bg-muted/10 p-5"
-                  >
-                    <div>
-                      <span className="font-mono text-xs font-bold text-primary">
-                        0{idx + 1}
-                      </span>
-                      <h4 className="mt-2 font-heading text-base font-bold text-foreground">
-                        {step.title}
-                      </h4>
-                      <p className="mt-2 text-xs leading-relaxed text-foreground/75 md:text-sm">
-                        {step.body}
-                      </p>
-                    </div>
-                  </div>
-                ))}
-              </div>
+      {/* 4-Stage Operational Process (How We Execute) */}
+      {show("lifecycle") && programme.process && programme.process.length > 0 ? (
+        <LandingSection
+          aria-labelledby={`programme-${programme.slug}-lifecycle`}
+          className="border-t border-border/50"
+        >
+          <div className="space-y-6">
+            <div className="space-y-1">
+              <p className={cn(T.eyebrow, "text-muted-foreground")}>Operational Lifecycle</p>
+              <h3 id={`programme-${programme.slug}-lifecycle`} className="font-heading text-xl font-bold text-foreground">
+                How this programme operates
+              </h3>
             </div>
-          ) : null}
-
-          {/* Tangible Investor Deliverables */}
-          {programme.deliverables && programme.deliverables.length > 0 ? (
-            <div className="mt-14 space-y-6">
-              <div className="space-y-1">
-                <p className={cn(T.eyebrow, "text-muted-foreground")}>Partner Assets</p>
-                <h3 className="font-heading text-xl font-bold text-foreground">
-                  Deliverables partners fund & cite
-                </h3>
-              </div>
-              <div className="grid gap-6 sm:grid-cols-3">
-                {programme.deliverables.map((item) => (
-                  <div
-                    key={item.title}
-                    className="border border-border/60 bg-background p-6 space-y-2"
-                  >
-                    <h4 className="font-heading text-base font-bold text-foreground">
-                      {item.title}
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+              {programme.process.map((step, idx) => (
+                <div
+                  key={step.title}
+                  className="flex flex-col justify-between border border-border/60 bg-muted/10 p-5"
+                >
+                  <div>
+                    <span className="font-mono text-xs font-bold text-primary">
+                      0{idx + 1}
+                    </span>
+                    <h4 className="mt-2 font-heading text-base font-bold text-foreground">
+                      {step.title}
                     </h4>
-                    <p className="text-xs leading-relaxed text-foreground/75 md:text-sm">
-                      {item.description}
+                    <p className="mt-2 text-xs leading-relaxed text-foreground/75 md:text-sm">
+                      {step.body}
                     </p>
                   </div>
-                ))}
-              </div>
+                </div>
+              ))}
             </div>
-          ) : null}
+          </div>
+        </LandingSection>
+      ) : null}
 
-          {/* Core Operating Pillars */}
-          {programme.pillars && programme.pillars.length > 0 ? (
-            <div className="mt-14 space-y-6">
-              <div className="space-y-1">
-                <p className={cn(T.eyebrow, "text-muted-foreground")}>Programme Infrastructure</p>
-                <h3 className="font-heading text-xl font-bold text-foreground">
-                  Core pillars
-                </h3>
-              </div>
-              <ul className="divide-y divide-border/50 border-y border-border/50">
-                {programme.pillars.slice(0, 4).map((pillar) => (
-                  <li
-                    key={pillar.title}
-                    className="grid gap-3 py-6 md:grid-cols-12 md:gap-8 md:py-8"
-                  >
-                    <h4
-                      className={cn(
-                        "font-heading text-base font-bold text-foreground md:col-span-4 md:text-lg",
-                      )}
-                    >
-                      {pillar.title}
-                    </h4>
-                    <p
-                      className={cn(
-                        T.lead,
-                        "max-w-2xl text-foreground/75 md:col-span-8 md:text-base",
-                      )}
-                    >
-                      {pillar.body}
-                    </p>
-                  </li>
-                ))}
-              </ul>
+      {/* Tangible Investor Deliverables (Partner Assets) */}
+      {show("partnerAssets") && programme.deliverables && programme.deliverables.length > 0 ? (
+        <LandingSection
+          aria-labelledby={`programme-${programme.slug}-deliverables`}
+          className="border-t border-border/50"
+        >
+          <div className="space-y-6">
+            <div className="space-y-1">
+              <p className={cn(T.eyebrow, "text-muted-foreground")}>Partner Assets</p>
+              <h3 id={`programme-${programme.slug}-deliverables`} className="font-heading text-xl font-bold text-foreground">
+                Deliverables partners fund & cite
+              </h3>
             </div>
-          ) : null}
+            <div className="grid gap-6 sm:grid-cols-3">
+              {programme.deliverables.map((item) => (
+                <div
+                  key={item.title}
+                  className="border border-border/60 bg-background p-6 space-y-2"
+                >
+                  <h4 className="font-heading text-base font-bold text-foreground">
+                    {item.title}
+                  </h4>
+                  <p className="text-xs leading-relaxed text-foreground/75 md:text-sm">
+                    {item.description}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </LandingSection>
+      ) : null}
+
+      {/* Core Operating Pillars */}
+      {show("pillars") && programme.pillars && programme.pillars.length > 0 ? (
+        <LandingSection
+          aria-labelledby={`programme-${programme.slug}-pillars`}
+          className="border-t border-border/50"
+        >
+          <div className="space-y-6">
+            <div className="space-y-1">
+              <p className={cn(T.eyebrow, "text-muted-foreground")}>Programme Infrastructure</p>
+              <h3 id={`programme-${programme.slug}-pillars`} className="font-heading text-xl font-bold text-foreground">
+                Core pillars
+              </h3>
+            </div>
+            <ul className="divide-y divide-border/50 border-y border-border/50">
+              {programme.pillars.slice(0, 4).map((pillar) => (
+                <li
+                  key={pillar.title}
+                  className="grid gap-3 py-6 md:grid-cols-12 md:gap-8 md:py-8"
+                >
+                  <h4
+                    className={cn(
+                      "font-heading text-base font-bold text-foreground md:col-span-4 md:text-lg",
+                    )}
+                  >
+                    {pillar.title}
+                  </h4>
+                  <p
+                    className={cn(
+                      T.lead,
+                      "max-w-2xl text-foreground/75 md:col-span-8 md:text-base",
+                    )}
+                  >
+                    {pillar.body}
+                  </p>
+                </li>
+              ))}
+            </ul>
+          </div>
         </LandingSection>
       ) : null}
 
@@ -463,6 +496,7 @@ export function ProgrammeLandingLayout({
           openProjectLabel={projectCtaLabels?.openProjectLabel}
           watchReelLabel={projectCtaLabels?.watchReelLabel}
           showReels={show("reels")}
+          initialProjects={programmeProjects}
         />
       ) : null}
 
@@ -479,7 +513,8 @@ export function ProgrammeLandingLayout({
           className="border-t border-border/50"
         >
           <div className="mb-8 flex flex-col gap-4 md:mb-10 md:flex-row md:items-end md:justify-between">
-            <div className="max-w-2xl">
+            <div className="max-w-2xl space-y-3">
+              <p className={cn(T.eyebrow, "text-muted-foreground")}>Explore More</p>
               <h2 id="other-programmes-heading" className={T.sectionTitle}>
                 Other programmes
               </h2>

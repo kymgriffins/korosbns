@@ -174,7 +174,7 @@ export const PARTNER_FEATURED_INTRO = {
     "Published investigations, documentaries, and field evidence from across our three programmes.",
   openProjectLabel:
     (rawLanding.featuredIntro as { openProjectLabel?: string } | undefined)?.openProjectLabel ??
-    "Read story →",
+    "Read story",
 };
 
 /** Closing partnership band - invest against the three phrases. */

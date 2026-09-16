@@ -191,13 +191,23 @@ export function AllProjectsStudioEditor({
   };
 
   // Delete a project
-  const handleDeleteProject = (id: string) => {
+  const handleDeleteProject = async (id: string) => {
     if (!confirm("Are you sure you want to delete this project from the database?")) {
       return;
     }
     const updated = rawProjects.filter((p) => p.id !== id);
-    onChange({ ...data, projects: updated });
+    const updatedData = { ...data, projects: updated };
+    onChange(updatedData);
     if (editingProjectId === id) setEditingProjectId(null);
+    try {
+      await fetch("/api/cms/studios-evidence/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ data: updatedData, editorEmail: "info@budgetndiostory.org" }),
+      });
+    } catch {
+      // Ignored - onChange already updated parent state
+    }
   };
 
   return (

@@ -378,44 +378,6 @@
       "featured": false
     },
     {
-      "id": "finance-bill-motion-explainer",
-      "slug": "finance-bill-motion-explainer",
-      "title": "Finance Bill Motion Graphics",
-      "subtitle": "2D animation package",
-      "contentType": "Animations",
-      "organizationId": "house-of-fiscal-wisdom",
-      "date": "2024-07-10",
-      "year": "2024",
-      "briefChallenge": "Explain contested Finance Bill clauses to first-time voters without partisan framing.",
-      "whatWeProduced": "Three animated chapters covering revenue measures, exemptions, and citizen recourse pathways.",
-      "description": "Animation storyboards were reviewed by fiscal policy researchers. All figures sourced from published bill text and CRA summaries.",
-      "media": {
-        "type": "animation",
-        "posterUrl": "/images/explainer-formulation.png",
-        "posterPosition": "object-center",
-        "platform": "local",
-        "aspectRatio": "16/9"
-      },
-      "outputs": [
-        "3 animated chapters (3–4 min each)",
-        "Square crops for Instagram",
-        "Source citation slide deck"
-      ],
-      "impactEvidence": {
-        "primaryMetric": "1.2M impressions on partner civic channels",
-        "context": "Released during Finance Bill debate window.",
-        "verificationOutcome": "Partner-reported reach; BNS retained raw analytics screenshots."
-      },
-      "tags": [
-        "animation",
-        "finance-bill",
-        "civic"
-      ],
-      "deliveryMode": "co-produced",
-      "programmeSlug": "connect",
-      "featured": true
-    },
-    {
       "id": "mashinani-field-documentary",
       "slug": "mashinani-field-documentary",
       "title": "Mashinani: Promise vs Delivery",

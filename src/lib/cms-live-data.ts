@@ -77,6 +77,16 @@ export async function getLiveCmsCollection<T = Record<string, unknown>>(
   try {
     const r2Data = await getJsonFromR2<T>(`cms/${slug}.json`);
     if (r2Data && typeof r2Data === "object" && Object.keys(r2Data).length > 0) {
+      // Validate that R2 payload is fresh and was saved after the Sep 16 cleanup
+      const r2Time =
+        (r2Data as any)?.provenance?.lastSync ||
+        (r2Data as any)?.provenance?.lastUpdated ||
+        (r2Data as any)?.timestamp;
+      
+      // If R2 data is from the obsolete Sep 14/15 snapshot, discard it in favor of authoritative fallback
+      if (r2Time && new Date(r2Time).getTime() < new Date("2026-09-16T00:00:00Z").getTime()) {
+        return defaultData;
+      }
       return r2Data;
     }
   } catch (err) {

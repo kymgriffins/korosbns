@@ -1,6 +1,6 @@
 {
   "policy": {
-    "maxBlocksPartnerPages": 5,
+    "maxBlocksPartnerPages": 10,
     "blogLikeExempt": true,
     "notes": "Partner-attention pages must keep visible sections ≤ maxBlocks. Blog-like / long-form project & article pages are exempt. Flip section.visible  --  do not delete section composers.",
     "loadingDefaults": {
@@ -178,12 +178,32 @@
         },
         {
           "id": "body",
-          "label": "What this programme does",
+          "label": "Mandate & problem statement",
+          "visible": true
+        },
+        {
+          "id": "lifecycle",
+          "label": "Operational lifecycle (01-04)",
+          "visible": true
+        },
+        {
+          "id": "partnerAssets",
+          "label": "Partner assets & deliverables",
+          "visible": true
+        },
+        {
+          "id": "pillars",
+          "label": "Programme infrastructure (pillars)",
           "visible": true
         },
         {
           "id": "projects",
-          "label": "Project grid",
+          "label": "Verified outputs (project grid)",
+          "visible": true
+        },
+        {
+          "id": "reels",
+          "label": "Programme social reels",
           "visible": true
         },
         {
@@ -212,12 +232,32 @@
         },
         {
           "id": "body",
-          "label": "What this programme does",
+          "label": "Mandate & problem statement",
+          "visible": true
+        },
+        {
+          "id": "lifecycle",
+          "label": "Operational lifecycle (01-04)",
+          "visible": true
+        },
+        {
+          "id": "partnerAssets",
+          "label": "Partner assets & deliverables",
+          "visible": true
+        },
+        {
+          "id": "pillars",
+          "label": "Programme infrastructure (pillars)",
           "visible": true
         },
         {
           "id": "projects",
-          "label": "Project grid",
+          "label": "Verified outputs (project grid)",
+          "visible": true
+        },
+        {
+          "id": "reels",
+          "label": "Programme social reels",
           "visible": true
         },
         {
@@ -246,12 +286,32 @@
         },
         {
           "id": "body",
-          "label": "What this programme does",
+          "label": "Mandate & problem statement",
+          "visible": true
+        },
+        {
+          "id": "lifecycle",
+          "label": "Operational lifecycle (01-04)",
+          "visible": true
+        },
+        {
+          "id": "partnerAssets",
+          "label": "Partner assets & deliverables",
+          "visible": true
+        },
+        {
+          "id": "pillars",
+          "label": "Programme infrastructure (pillars)",
           "visible": true
         },
         {
           "id": "projects",
-          "label": "Project grid",
+          "label": "Verified outputs (project grid)",
+          "visible": true
+        },
+        {
+          "id": "reels",
+          "label": "Programme social reels",
           "visible": true
         },
         {

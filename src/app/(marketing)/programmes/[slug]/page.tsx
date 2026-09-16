@@ -9,6 +9,7 @@ import {
   getLivePartnerPageSections,
   getLiveProgrammeReels,
   getLiveProgrammesContent,
+  getLiveStudiosEvidence,
 } from "@/lib/cms-live-data";
 
 type PageProps = {
@@ -58,10 +59,11 @@ export default async function ProgrammeSlugPage({ params }: PageProps) {
     redirect("/bns-studio");
   }
 
-  const [programmesData, sectionsConfig, reelsData] = await Promise.all([
+  const [programmesData, sectionsConfig, reelsData, studiosEvidenceData] = await Promise.all([
     getLiveProgrammesContent(),
     getLivePartnerPageSections(),
     getLiveProgrammeReels(),
+    getLiveStudiosEvidence(),
   ]);
 
   const programme = findProgrammeInContent(programmesData, slug) as
@@ -78,6 +80,7 @@ export default async function ProgrammeSlugPage({ params }: PageProps) {
       closing={programmesData.closing}
       sectionsConfig={sectionsConfig}
       reels={(reelsData as { reels?: unknown[] }).reels as never}
+      studiosEvidence={studiosEvidenceData as never}
       projectCtaLabels={{
         openProjectLabel: (
           programmesData as {

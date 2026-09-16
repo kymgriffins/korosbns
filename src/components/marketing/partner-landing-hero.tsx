@@ -242,8 +242,10 @@ export default function PartnerLandingHero({
               alt=""
               fill
               priority={index === 0}
+              fetchPriority={index === 0 ? "high" : "auto"}
               className="object-cover object-center"
-              sizes="100vw"
+              sizes="(max-width: 640px) 100vw, (max-width: 1200px) 100vw, 1920px"
+              quality={80}
             />
           </div>
         </motion.div>

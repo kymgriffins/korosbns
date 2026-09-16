@@ -18,6 +18,7 @@ export function ProgrammeDetail({
   closing = PROGRAMMES_CLOSING,
   sectionsConfig,
   reels,
+  studiosEvidence,
   projectCtaLabels,
 }: {
   programme: ProgrammeBlock;
@@ -25,6 +26,7 @@ export function ProgrammeDetail({
   closing?: ProgrammesContent["closing"];
   sectionsConfig?: PartnerPageSectionsContent | null;
   reels?: ProgrammeReel[];
+  studiosEvidence?: any;
   projectCtaLabels?: {
     openProjectLabel?: string;
     watchReelLabel?: string;
@@ -37,6 +39,7 @@ export function ProgrammeDetail({
       closing={closing}
       sectionsConfig={sectionsConfig}
       reels={reels}
+      studiosEvidence={studiosEvidence}
       projectCtaLabels={projectCtaLabels}
     />
   );

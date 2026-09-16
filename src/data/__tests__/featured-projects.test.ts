@@ -31,7 +31,7 @@ describe("featuredProjectsData", () => {
     expect(projects.length).toBeGreaterThanOrEqual(3);
     // Verify that at least some of the expected videoIds are present
     const videoIds = projects.map((p) => p.videoId);
-    expect(videoIds).toContain("G5ddu4I6mNs");
+    expect(videoIds).toContain("it8rOKSYKnc");
     expect(videoIds).toContain("kWpY4K1uI20");
     for (const project of projects) {
       expect(project.prose.length).toBeGreaterThan(40);
@@ -57,11 +57,11 @@ describe("featuredProjectsData", () => {
     vi.spyOn(youtubeMeta, "fetchYoutubeChannelRss").mockResolvedValue([]);
     vi.spyOn(youtubeMeta, "fetchYoutubeOembed").mockImplementation(
       async (url) => {
-        if (url.includes("G5ddu4I6mNs")) {
+        if (url.includes("it8rOKSYKnc")) {
           return {
-            title: "Live IFF title from oEmbed",
+            title: "Live TERRA title from oEmbed",
             author_name: "Lyla Latif",
-            thumbnail_url: "https://i.ytimg.com/vi/G5ddu4I6mNs/hqdefault.jpg",
+            thumbnail_url: "https://i.ytimg.com/vi/it8rOKSYKnc/hqdefault.jpg",
           };
         }
         return {
@@ -73,12 +73,9 @@ describe("featuredProjectsData", () => {
     );
 
     const live = await refreshFeaturedProjectsFromYoutube();
-    const iff = live.find((p) => p.videoId === "G5ddu4I6mNs");
-    expect(iff?.title).toBe("Live IFF title from oEmbed");
-    expect(iff?.prose).toContain("House of Fiscal Wisdom");
-    expect(iff?.thumbnail).toBe(
-      "/images/events/red-flags-book-launch/dr-lyla-latif.jpeg",
-    );
-    expect(iff?.thumbnail).not.toMatch(/ytimg\.com/);
+    const terra = live.find((p) => p.videoId === "it8rOKSYKnc");
+    expect(terra?.title).toBe("Live TERRA title from oEmbed");
+    expect(terra?.prose).toContain("House of Fiscal Wisdom");
+    expect(terra?.thumbnail).not.toMatch(/ytimg\.com/);
   });
 });

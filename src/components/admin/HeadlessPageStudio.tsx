@@ -659,7 +659,7 @@ export function HeadlessPageStudio() {
 
     pageObj.sections = pageObj.sections.map((sec: any) => {
       if (sec.id === sectionId) {
-        return { ...sec, visible: !sec.visible };
+        return { ...sec, visible: sec.visible === false ? true : false };
       }
       return sec;
     });
@@ -1079,22 +1079,36 @@ export function HeadlessPageStudio() {
     toast.success("Added new featured impact story!");
   };
 
-  const handleDeleteFeaturedStory = (id: string) => {
+  const handleDeleteFeaturedStory = async (id: string) => {
     const results = featuredData.results || [];
     if (results.length <= 1) {
       toast.error("At least one featured story must remain.");
       return;
     }
     const updated = results.filter((s) => s.id !== id);
-    setFeaturedData({
+    const updatedFeatured = {
       ...featuredData,
       count: updated.length,
       results: updated,
-    });
+    };
+    setFeaturedData(updatedFeatured);
     if (selectedFeaturedId === id) {
       setSelectedFeaturedId(updated[0]?.id || "");
     }
-    toast.success("Deleted featured impact story");
+    try {
+      const res = await fetch("/api/cms/featured-projects/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ data: updatedFeatured, editorEmail: MASTER_CMS_EMAIL }),
+      });
+      if (res.ok) {
+        toast.success("Deleted featured story and permanently saved to disk.");
+      } else {
+        toast.success("Deleted from view. Click 'Save All Changes' to persist.");
+      }
+    } catch {
+      toast.success("Deleted from view. Click 'Save All Changes' to persist.");
+    }
   };
 
   const handleUpdateFeaturedStory = (id: string, field: string, value: any) => {
@@ -1202,8 +1216,11 @@ export function HeadlessPageStudio() {
       if (failed.length === 0) {
         setLastSaved(new Date().toLocaleTimeString());
         setPreviewRefreshKey((k) => k + 1);
+        const hadR2Failure = succeeded.some((s) => s.json?.r2Persisted === false);
         toast.success(`Successfully saved and published live!`, {
-          description: `Updated all ${succeeded.length} CMS collections persistently to disk and edge storage.`,
+          description: hadR2Failure
+            ? `Saved ${succeeded.length} collections to repository disk. Note: Cloudflare R2 backup skipped (credentials unauthorized).`
+            : `Updated all ${succeeded.length} CMS collections persistently to disk and edge storage.`,
         });
       } else {
         const errorDetails = failed.map((f) => {
@@ -1782,6 +1799,16 @@ export function HeadlessPageStudio() {
                             <span className="font-mono text-[9px] text-muted-foreground">
                               #{idx + 1}
                             </span>
+                            <Badge
+                              variant="outline"
+                              className={`text-[9px] px-1.5 py-0 h-4 font-mono font-semibold ${
+                                story.visible === false
+                                  ? "bg-rose-500/10 text-rose-600 border-rose-500/20"
+                                  : "bg-emerald-500/10 text-emerald-600 border-emerald-500/20"
+                              }`}
+                            >
+                              {story.visible === false ? "Hidden" : "Visible"}
+                            </Badge>
                           </div>
                           <h3 className="line-clamp-2 text-xs font-bold text-foreground">
                             {story.title}
@@ -1793,6 +1820,31 @@ export function HeadlessPageStudio() {
                         </div>
                         <div className="flex flex-col items-center gap-1">
                           <div className="flex items-center">
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="sm"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleUpdateFeaturedStory(
+                                  story.id,
+                                  "visible",
+                                  story.visible === false ? true : false,
+                                );
+                              }}
+                              className={`h-5 w-5 p-0 ${
+                                story.visible === false
+                                  ? "text-rose-500 hover:text-rose-600"
+                                  : "text-emerald-600 hover:text-emerald-700"
+                              }`}
+                              title={story.visible === false ? "Show story on site" : "Hide story from site"}
+                            >
+                              {story.visible === false ? (
+                                <EyeOff className="size-3" />
+                              ) : (
+                                <Eye className="size-3" />
+                              )}
+                            </Button>
                             <Button
                               type="button"
                               variant="ghost"
@@ -1863,6 +1915,50 @@ export function HeadlessPageStudio() {
                 </div>
 
                 <div className="space-y-4">
+                  {/* Story Visibility Card */}
+                  <div className="flex items-center justify-between rounded-xl border border-border/60 bg-muted/20 p-3">
+                    <div className="space-y-0.5">
+                      <label className="text-xs font-semibold text-foreground flex items-center gap-1.5">
+                        {selectedFeaturedStory.visible === false ? (
+                          <EyeOff className="size-3.5 text-rose-500" />
+                        ) : (
+                          <Eye className="size-3.5 text-emerald-600" />
+                        )}
+                        <span>Story Visibility on Live Site</span>
+                      </label>
+                      <p className="text-[11px] text-muted-foreground">
+                        {selectedFeaturedStory.visible === false
+                          ? "Currently hidden from the homepage and featured sections."
+                          : "Currently visible on the live homepage and featured sections."}
+                      </p>
+                    </div>
+                    <Button
+                      type="button"
+                      size="sm"
+                      variant={selectedFeaturedStory.visible === false ? "outline" : "default"}
+                      className="h-7 text-xs font-semibold gap-1.5"
+                      onClick={() =>
+                        handleUpdateFeaturedStory(
+                          selectedFeaturedStory.id,
+                          "visible",
+                          selectedFeaturedStory.visible === false ? true : false,
+                        )
+                      }
+                    >
+                      {selectedFeaturedStory.visible === false ? (
+                        <>
+                          <EyeOff className="size-3.5 text-rose-500" />
+                          <span>Hidden</span>
+                        </>
+                      ) : (
+                        <>
+                          <Eye className="size-3.5" />
+                          <span>Visible</span>
+                        </>
+                      )}
+                    </Button>
+                  </div>
+
                   <div>
                     <label className="text-xs font-semibold text-foreground">Story Title</label>
                     <Input
@@ -4690,9 +4786,46 @@ export function HeadlessPageStudio() {
                         <Film className="size-3.5 text-primary" />
                         <span>Social reels in project grid</span>
                       </h4>
-                      <span className="font-mono text-[10px] text-muted-foreground">
-                        desk: Programme Reels
-                      </span>
+                      <div className="flex items-center gap-2">
+                        {(() => {
+                          const secPageKey =
+                            currentProgramme.slug === "connect"
+                              ? "programmeConnect"
+                              : currentProgramme.slug === "mashinani"
+                                ? "programmeMashinani"
+                                : currentProgramme.slug === "wanahabari-lab"
+                                  ? "programmeWanahabari"
+                                  : null;
+                          if (!secPageKey) return null;
+                          const isReelsVis =
+                            sectionsData.pages?.[secPageKey]?.sections?.find((s: any) => s.id === "reels")?.visible !== false;
+                          return (
+                            <Button
+                              type="button"
+                              size="sm"
+                              variant={isReelsVis ? "default" : "outline"}
+                              className="h-6 text-[10px] font-semibold gap-1"
+                              onClick={() => toggleSectionForPage(secPageKey, "reels")}
+                              title={isReelsVis ? "Click to mute social reels on this programme page" : "Click to enable social reels on this programme page"}
+                            >
+                              {isReelsVis ? (
+                                <>
+                                  <Eye className="size-3" />
+                                  <span>Reels Active</span>
+                                </>
+                              ) : (
+                                <>
+                                  <EyeOff className="size-3 text-rose-500" />
+                                  <span>Reels Muted</span>
+                                </>
+                              )}
+                            </Button>
+                          );
+                        })()}
+                        <span className="font-mono text-[10px] text-muted-foreground">
+                          desk: Programme Reels
+                        </span>
+                      </div>
                     </div>
                     <p className="text-[11px] text-muted-foreground">
                       Reels tagged <code className="font-mono">{currentProgramme.slug}</code> appear inside this programme&apos;s project grid and play in-app. Edit the archive under the{" "}

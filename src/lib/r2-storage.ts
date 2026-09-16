@@ -316,6 +316,10 @@ export async function deleteFromR2(key: string): Promise<boolean> {
   return true;
 }
 
+// In-memory cache to prevent repetitive remote roundtrips during bursts of SSR
+const r2JsonMemoryCache = new Map<string, { data: unknown; timestamp: number }>();
+const CACHE_TTL_MS = 30_000; // 30 seconds TTL
+
 /**
  * Persist arbitrary JSON payload directly into Cloudflare R2 bucket.
  */
@@ -323,6 +327,8 @@ export async function saveJsonToR2(
   key: string,
   data: unknown,
 ): Promise<{ url: string; key: string }> {
+  // Invalidate cache immediately on update
+  r2JsonMemoryCache.delete(key);
   const jsonStr = JSON.stringify(data, null, 2);
   const buffer = Buffer.from(jsonStr, "utf-8");
   return uploadToR2(key, buffer, "application/json; charset=utf-8");
@@ -332,15 +338,22 @@ export async function saveJsonToR2(
  * Retrieve JSON payload from Cloudflare R2 bucket.
  */
 export async function getJsonFromR2<T = unknown>(key: string): Promise<T | null> {
+  const cached = r2JsonMemoryCache.get(key);
+  if (cached && Date.now() - cached.timestamp < CACHE_TTL_MS) {
+    return cached.data as T;
+  }
+
   // 1. Try fetching via public domain first (fastest CDN edge route)
   const publicUrl = buildR2PublicUrl(key);
   try {
     const res = await fetch(publicUrl, {
       cache: "no-store",
       headers: { Accept: "application/json" },
+      signal: AbortSignal.timeout(1500),
     });
     if (res.ok) {
       const data = (await res.json()) as T;
+      r2JsonMemoryCache.set(key, { data, timestamp: Date.now() });
       return data;
     }
   } catch {
@@ -383,10 +396,13 @@ export async function getJsonFromR2<T = unknown>(key: string): Promise<T | null>
         "x-amz-content-sha256": emptyHash,
         Authorization: authHeader,
       },
+      signal: AbortSignal.timeout(1500),
     });
 
     if (res.ok) {
-      return (await res.json()) as T;
+      const data = (await res.json()) as T;
+      r2JsonMemoryCache.set(key, { data, timestamp: Date.now() });
+      return data;
     }
     return null;
   } catch (err) {

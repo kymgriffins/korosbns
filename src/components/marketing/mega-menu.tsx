@@ -222,20 +222,20 @@ export function MegaMenu() {
               <Link
                 href={section.href}
                 className={cn(
-                  "group inline-flex items-center gap-1 px-3.5 py-2 text-xs font-semibold tracking-tight transition-all duration-200 outline-none",
+                  "group inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold tracking-tight transition-all duration-200 outline-none rounded-md",
                   "focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2",
                   isOpen
-                    ? "bg-muted text-foreground"
+                    ? "bg-muted/90 text-foreground shadow-xs"
                     : isActive
-                    ? "bg-primary/10 text-primary font-bold"
-                    : "text-muted-foreground hover:bg-muted/70 hover:text-foreground"
+                    ? "bg-primary/15 text-primary font-bold border border-primary/25"
+                    : "text-foreground/90 hover:text-foreground hover:bg-muted/60 drop-shadow-[0_1px_3px_rgba(0,0,0,0.4)]"
                 )}
                 aria-expanded={isOpen}
               >
                 <span>{section.label}</span>
                 <ChevronDown
                   className={cn(
-                    "size-3 transition-transform duration-200 text-muted-foreground/70 group-hover:text-foreground",
+                    "size-3 transition-transform duration-200 text-foreground/75 group-hover:text-foreground",
                     isOpen && "rotate-180 text-foreground"
                   )}
                   aria-hidden

@@ -42,7 +42,7 @@ describe("FeaturedProjectsSection", () => {
     await waitFor(() => {
       expect(
         screen.getByRole("heading", {
-          name: /illicit financial flows in Benin/i,
+          name: /UON Cohort/i,
         }),
       ).toBeInTheDocument();
       expect(
@@ -55,5 +55,39 @@ describe("FeaturedProjectsSection", () => {
 
     const thumbs = screen.getAllByTestId("project-thumb");
     expect(thumbs.length).toBeGreaterThanOrEqual(3);
+  });
+
+  it("filters out projects where visible is false", async () => {
+    setFeaturedProjects([
+      {
+        ...featuredFallback.results[0],
+        id: "visible-1",
+        title: "Visible Project Alpha",
+        programmeSlug: "connect",
+        visible: true,
+      },
+      {
+        ...featuredFallback.results[1],
+        id: "hidden-1",
+        title: "Hidden Secret Project",
+        programmeSlug: "studios",
+        visible: false,
+      },
+    ]);
+    vi.spyOn(featuredProjectsData, "fetch").mockResolvedValue(
+      featuredProjectsData.get(),
+    );
+
+    render(<FeaturedProjectsSection />);
+
+    await waitFor(() => {
+      expect(
+        screen.getByRole("heading", { name: /Visible Project Alpha/i }),
+      ).toBeInTheDocument();
+    });
+
+    expect(
+      screen.queryByRole("heading", { name: /Hidden Secret Project/i }),
+    ).not.toBeInTheDocument();
   });
 });

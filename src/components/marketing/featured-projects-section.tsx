@@ -79,18 +79,14 @@ export function FeaturedProjectsSection({
         if (res.ok) {
           const json = await res.json();
           const results = json.data?.results || json.data?.projects;
-          if (!cancelled && Array.isArray(results) && results.length > 0) {
+          if (!cancelled && Array.isArray(results)) {
             setProjects(results);
             return;
           }
         }
       } catch {
-        // fallback
+        // keep fallback
       }
-
-      void featuredProjectsData.fetch().then((live) => {
-        if (!cancelled && live.length) setProjects(live);
-      });
     };
     const useIdle = typeof window.requestIdleCallback === "function";
     const idle = useIdle
@@ -107,8 +103,9 @@ export function FeaturedProjectsSection({
   }, []);
 
   const visible = useMemo(() => {
-    if (!projectIds || projectIds.length === 0) return projects;
-    const byId = new Map(projects.map((p) => [p.id, p]));
+    const activeProjects = projects.filter((p) => p.visible !== false);
+    if (!projectIds || projectIds.length === 0) return activeProjects;
+    const byId = new Map(activeProjects.map((p) => [p.id, p]));
     return projectIds
       .map((id) => byId.get(id))
       .filter((p): p is FeaturedProject => Boolean(p));
@@ -189,7 +186,11 @@ export function FeaturedProjectsSection({
                 {/* 5. Action Link */}
                 <div className="mt-auto pt-5 border-t border-[#e5edf5]/60">
                   <span className="inline-flex items-center text-sm font-medium text-[#533afd] group-hover:text-[#7389ff] transition-colors">
-                    <span>{project.ctaLabel || openProjectLabel || "Read story →"}</span>
+                    <span>
+                      {(project.ctaLabel || openProjectLabel || "Read story")
+                        .replace(/[→\->]/g, "")
+                        .trim()}
+                    </span>
                     <span
                       aria-hidden
                       className="ml-1.5 transition-transform duration-150 group-hover:translate-x-1"
@@ -297,7 +298,9 @@ export function FeaturedProjectsSection({
                     href={projectHref}
                     className="group inline-flex items-center pt-1 text-sm font-medium text-foreground outline-none transition-colors hover:text-primary focus-visible:ring-2 focus-visible:ring-ring"
                   >
-                    {project.ctaLabel || openProjectLabel}
+                    {(project.ctaLabel || openProjectLabel || "Read story")
+                      .replace(/[→\->]/g, "")
+                      .trim()}
                     <span
                       aria-hidden
                       className="ml-1 transition-transform duration-150 group-hover:translate-x-0.5"

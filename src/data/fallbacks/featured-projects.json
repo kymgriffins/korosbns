@@ -5,7 +5,7 @@
     "level": "authoritative",
     "shape": "featured_project_youtube"
   },
-  "count": 4,
+  "count": 3,
   "results": [
     {
       "id": "story-mty40jp1",
@@ -33,21 +33,6 @@
           "alt": ""
         }
       ]
-    },
-    {
-      "id": "illicit-financial-flows-benin-cabo-verde",
-      "slug": "illicit-financial-flows-benin-cabo-verde",
-      "videoId": "G5ddu4I6mNs",
-      "url": "https://www.youtube.com/watch?v=G5ddu4I6mNs",
-      "title": "Learn about illicit financial flows in Benin and Cabo Verde",
-      "prose": "Dr. Lyla Latif  --  with House of Fiscal Wisdom  --  walks newsrooms through trade misinvoicing and extractive contracts that bleed sovereign revenue. The briefing sits beside the Red Flags monograph partners can cite the same week.",
-      "thumbnail": "/images/events/red-flags-book-launch/dr-lyla-latif.jpeg",
-      "authorName": "Lyla Latif",
-      "programmeSlug": "wanahabari-lab",
-      "programmeLabel": "Wanahabari",
-      "href": "/bns-studio/illicit-financial-flows-benin-cabo-verde",
-      "publishedAt": "2026-08-08T00:00:00Z",
-      "channelHandle": "@lyla-latif"
     },
     {
       "id": "cabri-digital-pfm-reforms",

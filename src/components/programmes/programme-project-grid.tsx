@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Play, Search, X } from "lucide-react";
@@ -38,6 +38,7 @@ interface ProgrammeProjectGridProps {
   watchReelLabel?: string;
   showReels?: boolean;
   className?: string;
+  initialProjects?: any[];
 }
 
 type GridItem = {
@@ -65,27 +66,100 @@ export function ProgrammeProjectGrid({
   watchReelLabel = SEED_CTA?.watchReelLabel ?? "Watch reel",
   showReels = true,
   className,
+  initialProjects,
 }: ProgrammeProjectGridProps) {
   const [selectedFormat, setSelectedFormat] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [activeReel, setActiveReel] = useState<GridItem | null>(null);
 
-  const projects = useMemo(
-    () => format
-      ? studiosEvidenceData.getProjectsByFormat(format)
-      : programmeSlug
-        ? studiosEvidenceData.getProjectsByProgramme(programmeSlug)
-        : [],
-    [programmeSlug, format],
+  const [projectsList, setProjectsList] = useState<any[]>(() =>
+    initialProjects && initialProjects.length > 0
+      ? initialProjects
+      : format
+        ? studiosEvidenceData.getProjectsByFormat(format)
+        : programmeSlug
+          ? studiosEvidenceData.getProjectsByProgramme(programmeSlug)
+          : [],
   );
 
-  const reels = useMemo(
-    () => programmeSlug ? getReelsByProgramme(programmeSlug) : [],
-    [programmeSlug],
+  useEffect(() => {
+    if (initialProjects) {
+      setProjectsList(initialProjects);
+    }
+  }, [initialProjects]);
+
+  useEffect(() => {
+    let cancelled = false;
+    async function loadLive() {
+      try {
+        const res = await fetch("/api/cms/studios-evidence");
+        if (res.ok) {
+          const json = await res.json();
+          const rawProjects = json.data?.projects;
+          if (Array.isArray(rawProjects) && !cancelled) {
+            const orgs = json.data?.organizations || [];
+            const orgById = new Map(orgs.map((o: any) => [o.id, o]));
+            const hydrated = rawProjects
+              .map((p: any) => {
+                const org = orgById.get(p.organizationId) || {
+                  id: p.organizationId || "bns",
+                  name: "Budget Ndio Story",
+                  slug: "bns",
+                };
+                return { ...p, organization: org };
+              })
+              .filter((p: any) => p.visible !== false);
+
+            const filtered = format
+              ? hydrated.filter((p: any) => p.format === format)
+              : programmeSlug
+                ? hydrated.filter((p: any) => p.programmeSlug === programmeSlug)
+                : hydrated;
+
+            setProjectsList(filtered.sort((a: any, b: any) => (a.order ?? 999) - (b.order ?? 999)));
+          }
+        }
+      } catch {
+        // keep fallback
+      }
+    }
+    loadLive();
+    return () => {
+      cancelled = true;
+    };
+  }, [programmeSlug, format]);
+
+  const [reelsList, setReelsList] = useState<any[]>(() =>
+    programmeSlug ? getReelsByProgramme(programmeSlug) : [],
   );
+
+  useEffect(() => {
+    let cancelled = false;
+    async function loadLiveReels() {
+      try {
+        const res = await fetch("/api/cms/programme-reels");
+        if (res.ok) {
+          const json = await res.json();
+          const rawReels = json.data?.reels;
+          if (Array.isArray(rawReels) && !cancelled) {
+            const filtered = programmeSlug
+              ? rawReels.filter((r: any) => r.programmeSlug === programmeSlug && r.visible !== false)
+              : rawReels.filter((r: any) => r.visible !== false);
+            setReelsList(filtered);
+          }
+        }
+      } catch {
+        // keep fallback
+      }
+    }
+    loadLiveReels();
+    return () => {
+      cancelled = true;
+    };
+  }, [programmeSlug]);
 
   const allContent = useMemo(() => {
-    const projectItems: GridItem[] = projects.map((p) => ({
+    const projectItems: GridItem[] = projectsList.map((p: any) => ({
       type: "project" as const,
       id: p.id,
       title: p.title,
@@ -93,13 +167,13 @@ export function ProgrammeProjectGrid({
       description: p.briefChallenge || p.description,
       contentType: p.contentType,
       year: p.year,
-      posterUrl: p.media.posterUrl,
-      href: `/bns-studio/${p.slug}`,
-      metric: p.impactEvidence.primaryMetric,
+      posterUrl: p.media?.posterUrl,
+      href: `/bns-studio/${p.slug || p.id}`,
+      metric: p.impactEvidence?.primaryMetric,
       tags: p.tags,
     }));
     const reelItems: GridItem[] = showReels
-      ? reels.map((r) => ({
+      ? reelsList.map((r: any) => ({
           type: "reel" as const,
           id: r.id,
           title: r.title,
@@ -110,12 +184,12 @@ export function ProgrammeProjectGrid({
           posterUrl: r.posterUrl,
           href: r.videoUrl,
           videoUrl: sanitizeMediaUrl(r.videoUrl),
-          metric: `${(r.plays / 1000).toFixed(0)}K plays`,
+          metric: `${((r.plays || 0) / 1000).toFixed(0)}K plays`,
           tags: r.hashtags,
         }))
       : [];
     return [...projectItems, ...reelItems];
-  }, [projects, reels, showReels]);
+  }, [projectsList, reelsList, showReels]);
 
   const filteredContent = useMemo(() => {
     let list = allContent;
@@ -148,7 +222,7 @@ export function ProgrammeProjectGrid({
     return Array.from(set);
   }, [allContent]);
 
-  if (projects.length === 0 && reels.length === 0) return null;
+  if (projectsList.length === 0 && reelsList.length === 0) return null;
 
   return (
     <LandingSection
