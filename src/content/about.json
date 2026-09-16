@@ -38,8 +38,8 @@
       "href": "/contact"
     },
     "secondaryCta": {
-      "label": "Partner with BNS",
-      "href": "/contact?intent=partner"
+      "label": "Contact us",
+      "href": "/contact"
     }
   }
 }

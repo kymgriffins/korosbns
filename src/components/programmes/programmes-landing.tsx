@@ -72,8 +72,8 @@ export type ProgrammesLandingProps = {
 };
 
 /**
- * Programmes hub - Rockefeller-clarity partner architecture:
- * Hero → Ecosystem Flywheel → Three Big Bets (Investor Matrix) → Featured Projects → CTA
+ * Programmes hub - civic education architecture:
+ * Hero → Ecosystem Flywheel → Programme matrix → Featured Projects → CTA
  * BNS Studio is separate at /bns-studio.
  */
 export function ProgrammesLanding({

@@ -6,8 +6,8 @@
   },
   "thesis": {
     "eyebrow": "Who we are",
-    "title": "Three bets. Year-round accountability.",
-    "body": "Budget Ndio Story verifies what Treasury and counties publish, embeds where delivery happens, and trains newsrooms to stay forensic after Budget Day  --  so partners fund accountability they can brief and cite. \n\nBeyond the budget. Into the evidence.\nWe verify the numbers, follow delivery on the ground, and equip journalists to keep public money under scrutiny long after Budget Day.\n",
+    "title": "Three programmes. Year-round accountability.",
+    "body": "Budget Ndio Story verifies what Treasury and counties publish, embeds where delivery happens, and trains newsrooms to stay forensic after Budget Day  --  so communities and journalists can brief, cite, and hold public money to account.\n\nBeyond the budget. Into the evidence.\nWe verify the numbers, follow delivery on the ground, and equip journalists to keep public money under scrutiny long after Budget Day.\n",
     "method": "From exchequer to local Mwananchi"
   },
   "programmeExplains": [
@@ -18,7 +18,7 @@
       "eyebrow": "Connect",
       "title": "National budget intelligence",
       "lede": "We verify what Treasury publishes and keep national debt and allocation questions alive after Budget Day.",
-      "success": "Success looks like a baseline partners can fund and cite  --  AFRODAD debt forums, continental panels, continuous scrutiny.",
+      "success": "Success looks like a baseline communities and newsrooms can brief and cite  --  AFRODAD debt forums, continental panels, continuous scrutiny.",
       "cycle": "Formulation → Budget Day → Ground Truth",
       "href": "/programmes/connect",
       "ctaLabel": "Read more",
@@ -78,7 +78,7 @@
       "eyebrow": "Wanahabari",
       "title": "Newsroom scrutiny",
       "lede": "Training and co-production keep journalists forensic after Budget Day  --  when the spending story actually begins.",
-      "success": "Success looks like investigations and launches partners can brief against  --  Red Flags, TERRA, newsroom-ready scrutiny.",
+      "success": "Success looks like investigations and launches newsrooms can brief against  --  Red Flags, TERRA, newsroom-ready scrutiny.",
       "cycle": "Post–Budget Day → investigations & public narrative",
       "href": "/programmes/wanahabari-lab",
       "ctaLabel": "Read more",
@@ -104,38 +104,38 @@
   ],
   "featuredIntro": {
     "eyebrow": "Stories behind the evidence",
-    "headline": "Projects partners can brief against",
+    "headline": "Projects communities can learn from",
     "lede": "Films, forums & field stories.\nFrom AFRODAD debt forums and Red Flags investigations in Government Projects to Project TERRA, we turn real conversations and public finance issues into films, events and visual stories  --  rooted in the people and places where the work happens.\n"
   },
   "partnerCta": {
-    "eyebrow": "Partner with us",
-    "title": "Fund the bet that fits your mandate.",
-    "description": "Co-fund national budget intelligence, county delivery verification, or newsroom scrutiny  --  with production captured through BNS Studio.",
-    "ctaLabel": "Get Involved",
-    "ctaHref": "/contact?intent=partner",
-    "secondaryLabel": "View programmes",
+    "eyebrow": "Get involved",
+    "title": "Explore national budget intelligence, county delivery verification, or newsroom scrutiny.",
+    "description": "Learn how our programmes work, read the reports, or contact the team  --  with civic production captured through BNS Studio.",
+    "ctaLabel": "Contact us",
+    "ctaHref": "/contact",
+    "secondaryLabel": "Explore programmes",
     "secondaryHref": "/programmes",
-    "hideSecondaryButton": true,
+    "hideSecondaryButton": false,
     "hidePrimaryButton": false
   },
   "hero": {
     "brand": "Budget Ndio Story",
     "headlineBefore": "Follow the budget.",
     "headlineHighlight": "Find the story.",
-    "body": "Kenya's public money moves fast, and mostly out of sight. We turn opaque fiscal policy into verified intelligence for partners, institutions, and newsrooms  --  nationally and in select counties.",
+    "body": "Kenya's public money moves fast, and mostly out of sight. We turn opaque fiscal policy into clear civic education for communities, institutions, and newsrooms  --  nationally and in select counties.",
     "primaryCta": {
       "label": "See how programmes work",
       "href": "#explain-connect"
     },
     "secondaryCta": {
-      "label": "Partner with BNS",
-      "href": "/contact?intent=partner"
+      "label": "Explore programmes",
+      "href": "/programmes"
     },
     "videoSrcKey": "heroLandingVideoMp4"
   },
   "storyIntro": {
     "title": "Featured programme evidence",
-    "body": "House of Fiscal Wisdom with Dr. Lyla Latif  --  forensic briefing on illicit financial flows, produced with Wanahabari Lab as evidence partners can brief against.",
+    "body": "House of Fiscal Wisdom with Dr. Lyla Latif  --  forensic briefing on illicit financial flows, produced with Wanahabari Lab as evidence communities can learn from.",
     "cta": {
       "label": "View programmes",
       "href": "/programmes"
@@ -199,14 +199,14 @@
     "eyebrow": "Impact production",
     "titleBefore": "Evidence by",
     "titleHighlight": "format and partner",
-    "description": "Browse commissioned podcasts, documentaries, animations, and civic campaigns organised by content type and organisation  --  every project helps fund Kenya's leading youth budget platform.",
-    "highlight": "Every commission is double impact: evidence-based content for your audience, with proceeds reinvested into Budget Ndio Story's civic mission.",
+    "description": "Browse podcasts, documentaries, animations, and civic campaigns organised by content type and organisation  --  craft that helps Kenya's youth read the budget.",
+    "highlight": "Every production pairs evidence-based storytelling for audiences with Budget Ndio Story's civic education mission.",
     "seeMoreLabel": "Browse evidence",
     "seeMoreHref": "/bns-studio",
     "seeMoreNewTab": true,
     "primaryCta": {
-      "label": "Start a commission",
-      "href": "/bns-studio#booking",
+      "label": "Explore Studios",
+      "href": "/bns-studio",
       "newTab": true
     },
     "secondaryCta": {

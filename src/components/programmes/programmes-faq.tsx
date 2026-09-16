@@ -11,12 +11,12 @@ import {
 } from "@/components/ui/accordion";
 import { LANDING_TYPOGRAPHY as T } from "@/constants/landing-typography";
 
-const INVESTOR_FAQS = [
+const PROGRAMME_FAQS = [
   {
     id: "item-1",
     question: "How does Budget Ndio Story ensure editorial independence and non-partisanship?",
     answer:
-      "BNS is strictly non-partisan. We do not accept funding contingent on editorial outcomes. Every claim, score, and investigation is grounded in public statutory records: National Treasury publications, Controller of Budget exchequer releases, and Auditor-General reports, backed by Article 201 of the Constitution.",
+      "BNS is strictly non-partisan. We do not accept editorial conditions tied to any grant or commission. Every claim, score, and investigation is grounded in public statutory records: National Treasury publications, Controller of Budget exchequer releases, and Auditor-General reports, backed by Article 201 of the Constitution.",
   },
   {
     id: "item-2",
@@ -32,15 +32,15 @@ const INVESTOR_FAQS = [
   },
   {
     id: "item-4",
-    question: "How does the BNS Studio commercial surplus mechanism work?",
+    question: "How does BNS Studios relate to the civic programmes?",
     answer:
-      "BNS Studios operates as a commercial-grade impact production house. International NGOs, corporations, and governments commission broadcast documentaries, animations, and town hall productions. The commercial surplus generated directly cross-subsidizes BNS civic watchdogging, ensuring long-term financial resilience.",
+      "BNS Studios produces documentaries, animations, and town hall media for civil society and public agencies. That craft keeps civic storytelling sharp while Connect, Mashinani, and Wanahabari Lab stay focused on budget accountability and learning.",
   },
   {
     id: "item-5",
-    question: "How can institutional donors and development partners co-invest?",
+    question: "How can newsrooms, civic groups, or institutions work with BNS?",
     answer:
-      "Partners can support through core programme grants, co-design thematic tracking sprints (e.g. Health, Climate, Sovereign Debt), or commission BNS Studios for high-craft public participation storytelling. All partnerships include formal briefing rights and verification data access.",
+      "Explore programme pages, co-publish investigations, join a Lab cohort, or commission BNS Studios for public-facing storytelling. All learning modules and reading content remain free.",
   },
 ];
 
@@ -48,7 +48,7 @@ export function ProgrammesFaq() {
   const faqSchema = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
-    mainEntity: INVESTOR_FAQS.map((faq) => ({
+    mainEntity: PROGRAMME_FAQS.map((faq) => ({
       "@type": "Question",
       name: faq.question,
       acceptedAnswer: {
@@ -60,7 +60,6 @@ export function ProgrammesFaq() {
 
   return (
     <LandingSection id="faq" aria-labelledby="faq-heading" className="border-t border-border/50">
-      {/* FAQPage JSON-LD Schema */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
@@ -68,52 +67,44 @@ export function ProgrammesFaq() {
 
       <LandingContent>
         <div className="grid grid-cols-1 gap-10 lg:grid-cols-12 lg:gap-14">
-          {/* Left Column: Desk Briefing */}
           <div className="space-y-5 self-start lg:sticky lg:top-28 lg:col-span-5">
-            <EditorialPill variant="default">
-              Due Diligence & Governance
-            </EditorialPill>
+            <EditorialPill variant="default">Governance & independence</EditorialPill>
             <h2 id="faq-heading" className={T.sectionTitle}>
-              Investor & Partner FAQs
+              Programme FAQs
             </h2>
             <p className={T.lead}>
-              Direct answers on fiduciary standards, non-partisanship, county government collaboration, and our dual-impact production model.
+              Direct answers on non-partisanship, county embeds, newsroom labs, and how communities engage with our work.
             </p>
 
-            <div className="pt-2">
-              <div className="border border-border/60 bg-muted/20 p-5 space-y-3">
-                <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                  Partner Enquiry Desk
-                </p>
-                <p className="text-xs leading-relaxed text-foreground/75">
-                  Need custom research data, county scorecard access, or want to explore an institutional co-funding arrangement?
-                </p>
-                <div className="flex flex-wrap gap-2 pt-1">
-                  <PillButtonGroup
-                    href="/contact?intent=partner"
-                    label="Discuss Partnership"
-                    variant="primary"
-                    size="sm"
-                  />
-                  <PillButtonGroup
-                    href="/about"
-                    label="About BNS"
-                    variant="outline"
-                    size="sm"
-                  />
-                </div>
+            <div className="space-y-3 border-t border-border/50 pt-5">
+              <p className={T.eyebrow}>Have a question?</p>
+              <p className="text-xs leading-relaxed text-foreground/75">
+                Need county scorecard access, a Lab application, or want to explore a collaboration?
+              </p>
+              <div className="flex flex-wrap gap-2 pt-1">
+                <PillButtonGroup
+                  href="/contact"
+                  label="Contact us"
+                  variant="primary"
+                  size="sm"
+                />
+                <PillButtonGroup
+                  href="/about"
+                  label="About BNS"
+                  variant="outline"
+                  size="sm"
+                />
               </div>
             </div>
           </div>
 
-          {/* Right Column: Full-Width Accordion */}
           <div className="lg:col-span-7">
-            <Accordion type="single" collapsible className="w-full space-y-3">
-              {INVESTOR_FAQS.map((faq) => (
+            <Accordion type="single" collapsible className="w-full divide-y divide-border/50 border-y border-border/50">
+              {PROGRAMME_FAQS.map((faq) => (
                 <AccordionItem
                   key={faq.id}
                   value={faq.id}
-                  className="border border-border/60 bg-background px-5 transition-all data-[state=open]:border-primary/40 data-[state=open]:bg-muted/10"
+                  className="border-0 bg-transparent px-0"
                 >
                   <AccordionTrigger className="py-5 text-left text-sm font-bold text-foreground hover:no-underline md:text-base">
                     <div className="flex items-start gap-3 text-left">

@@ -38,15 +38,15 @@ export function ProgrammesInvestorMatrix({
       <div className="mb-10 flex flex-col gap-4 md:mb-14 md:flex-row md:items-end md:justify-between">
         <div className="max-w-2xl space-y-3">
           <EditorialPill variant="default">
-            {matrix?.eyebrow ?? "The Three Big Bets"}
+            {matrix?.eyebrow ?? "Our programmes"}
           </EditorialPill>
           <h2 id="matrix-heading" className={T.sectionTitle}>
-            {matrix?.headline ?? "Where partners invest"}
+            {matrix?.headline ?? "Where the work happens"}
           </h2>
         </div>
         <p className={cn(T.lead, "max-w-md md:text-right")}>
           {matrix?.lede ??
-            "Three distinct, non-overlapping interventions spanning national macro-policy, county delivery, and investigative newsrooms."}
+            "Three distinct programmes spanning national budget tracking, county delivery, and investigative newsrooms."}
         </p>
       </div>
 
@@ -58,7 +58,7 @@ export function ProgrammesInvestorMatrix({
           return (
             <article
               key={programme.slug}
-              className="border border-border/60 bg-background transition-colors hover:border-primary/40"
+              className="border-y border-border/50 bg-background first:border-t-0"
             >
               <div
                 className={cn(
@@ -93,10 +93,10 @@ export function ProgrammesInvestorMatrix({
                       </p>
                     </div>
 
-                    <div className="space-y-3 rounded-none border-l-2 border-primary/60 bg-muted/20 p-4">
+                    <div className="space-y-3 bg-muted/20 p-4">
                       <div>
                         <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                          The Conundrum:
+                          The challenge
                         </span>
                         <p className="mt-0.5 text-sm leading-relaxed text-foreground/85">
                           {programme.investorThesis || programme.highlight}
@@ -104,7 +104,7 @@ export function ProgrammesInvestorMatrix({
                       </div>
                       <div className="pt-2">
                         <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                          The Intervention :
+                          What we do
                         </span>
                         <p className="mt-0.5 text-sm leading-relaxed text-foreground/85">
                           {programme.whatWeDo || programme.body}
@@ -129,10 +129,10 @@ export function ProgrammesInvestorMatrix({
                         |
                       </span>
                       <Link
-                        href={`/contact?intent=partner&programme=${programme.slug}`}
+                        href={`/contact?programme=${programme.slug}`}
                         className="text-xs font-medium text-muted-foreground transition-colors hover:text-foreground"
                       >
-                        Discuss co-funding →
+                        Contact the team →
                       </Link>
                     </div>
 

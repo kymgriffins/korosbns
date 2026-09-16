@@ -91,8 +91,8 @@ export function ProgrammeLandingLayout({
   const others = civicProgrammes.filter((p) => p.slug !== programme.slug);
   const primaryCta = programme.cta;
   const secondaryCta: ProgrammeCta = programme.secondaryCta ?? {
-    label: "Discuss Co-Funding",
-    href: `/contact?intent=partner&programme=${programme.slug}`,
+    label: "Contact us",
+    href: `/contact?programme=${programme.slug}`,
     showOnMobile: false,
     showOnDesktop: true,
   };
@@ -417,7 +417,7 @@ export function ProgrammeLandingLayout({
         </LandingSection>
       ) : null}
 
-      {/* Tangible Investor Deliverables (Partner Assets) */}
+      {/* Programme deliverables */}
       {show("partnerAssets") && programme.deliverables && programme.deliverables.length > 0 ? (
         <LandingSection
           aria-labelledby={`programme-${programme.slug}-deliverables`}
@@ -425,16 +425,16 @@ export function ProgrammeLandingLayout({
         >
           <div className="space-y-6">
             <div className="space-y-1">
-              <p className={cn(T.eyebrow, "text-muted-foreground")}>Partner Assets</p>
+              <p className={cn(T.eyebrow, "text-muted-foreground")}>What you get</p>
               <h3 id={`programme-${programme.slug}-deliverables`} className="font-heading text-xl font-bold text-foreground">
-                Deliverables partners fund & cite
+                Deliverables communities can use and cite
               </h3>
             </div>
-            <div className="grid gap-6 sm:grid-cols-3">
+            <div className="divide-y divide-border/50 border-y border-border/50 sm:grid sm:grid-cols-3 sm:gap-8 sm:divide-x sm:divide-y-0 sm:border-0">
               {programme.deliverables.map((item) => (
                 <div
                   key={item.title}
-                  className="border border-border/60 bg-background p-6 space-y-2"
+                  className="space-y-2 py-6 sm:border-0 sm:px-6 sm:py-0 first:sm:pl-0 last:sm:pr-0"
                 >
                   <h4 className="font-heading text-base font-bold text-foreground">
                     {item.title}

@@ -1,10 +1,10 @@
 /**
  * Partner landing evidence stills - project/event imagery only (not team headshots).
- * Hero reel = project moments. Programme sections = one investment lede each.
+ * Hero reel = project moments. Programme sections = one civic lede each.
  * Shared vocabulary (do not diverge): Connect / Mashinani / Wanahabari noun phrases.
  *
- * Communication spine (RF-shaped, BNS-honest):
- * thesis → who/how → three bets → featured evidence → partner CTA.
+ * Communication spine:
+ * thesis → who/how → three programmes → featured evidence → contact CTA.
  * No fabricated reach stats - proof is named programmes and published work.
  */
 export type PartnerLandingStill = {
@@ -15,7 +15,7 @@ export type PartnerLandingStill = {
   programme: "connect" | "mashinani" | "wanahabari-lab";
   /** Project moment title - not a programme pitch */
   storyTitle: string;
-  /** One observational line - no investment ask */
+  /** One observational line - no fundraising ask */
   storyLine: string;
   /** Visibility toggle for public landing carousel - defaults to true */
   visible?: boolean;
@@ -138,15 +138,14 @@ export const PARTNER_FONT_FAMILY = rawLanding.fontFamily ?? "";
 
 /**
  * Brand-level promise + who/how - first text band after the hero reel.
- * Mirrors RF “Big Bets, Real Results” → commitment → path to proof.
  * Expands the hero chain; does not invent a second method story.
  */
 export const PARTNER_LANDING_THESIS = {
   eyebrow: rawLanding.thesis?.eyebrow ?? "Who we are",
-  title: rawLanding.thesis?.title ?? "Three bets. Year-round accountability.",
+  title: rawLanding.thesis?.title ?? "Three programmes. Year-round accountability.",
   body:
     rawLanding.thesis?.body ??
-    "Budget Ndio Story verifies what Treasury and counties publish, embeds where delivery happens, and trains newsrooms to stay forensic after Budget Day - so partners fund accountability they can brief and cite.",
+    "Budget Ndio Story verifies what Treasury and counties publish, embeds where delivery happens, and trains newsrooms to stay forensic after Budget Day - so communities and journalists can brief, cite, and hold public money to account.",
   /** Shared method whisper - verify → embed → train & co-produce */
   method: rawLanding.thesis?.method ?? "Verify → embed → train & co-produce",
 };
@@ -177,16 +176,16 @@ export const PARTNER_FEATURED_INTRO = {
     "Read story",
 };
 
-/** Closing partnership band - invest against the three phrases. */
+/** Closing band - learn / explore / contact against the three phrases. */
 export const PARTNER_LANDING_CTA = {
-  eyebrow: rawLanding.partnerCta?.eyebrow ?? "Partner with us",
-  title: rawLanding.partnerCta?.title ?? "Your mandate. Our evidence.",
+  eyebrow: rawLanding.partnerCta?.eyebrow ?? "Get involved",
+  title: rawLanding.partnerCta?.title ?? "Explore national budget intelligence, county delivery verification, or newsroom scrutiny.",
   description:
     rawLanding.partnerCta?.description ??
-    "Whether you're funding accountability, strengthening public participation, or supporting journalism, BNS brings grounded evidence into the work.",
-  ctaLabel: rawLanding.partnerCta?.ctaLabel ?? "Partner with BNS →",
-  ctaHref: rawLanding.partnerCta?.ctaHref ?? "/contact?intent=partner",
-  secondaryLabel: rawLanding.partnerCta?.secondaryLabel ?? "Explore programmes →",
+    "Learn how our programmes work, read the reports, or contact the team - with civic production captured through BNS Studio.",
+  ctaLabel: rawLanding.partnerCta?.ctaLabel ?? "Contact us",
+  ctaHref: rawLanding.partnerCta?.ctaHref ?? "/contact",
+  secondaryLabel: rawLanding.partnerCta?.secondaryLabel ?? "Explore programmes",
   secondaryHref: rawLanding.partnerCta?.secondaryHref ?? "/programmes",
   hidePrimaryButton: Boolean(rawLanding.partnerCta?.hidePrimaryButton),
   hideSecondaryButton: Boolean(rawLanding.partnerCta?.hideSecondaryButton),
@@ -303,7 +302,7 @@ export const PARTNER_HERO_PROGRAMME_LINES: PartnerHeroProgrammeLine[] =
 
 export type PartnerProgrammeExplain = {
   slug: "connect" | "mashinani" | "wanahabari-lab";
-  /** Display index - RF-style numbered big bet */
+  /** Display index — programme order */
   number: "01" | "02" | "03";
   name: string;
   eyebrow: string;

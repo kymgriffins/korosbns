@@ -44,7 +44,7 @@ describe("partner landing copy audit", () => {
     }
   });
 
-  it("numbers the three big bets and pairs stakes with honest success lines", () => {
+  it("numbers the three programmes and pairs stakes with honest success lines", () => {
     expect(PARTNER_PROGRAMME_EXPLAINS.map((e) => e.number)).toEqual([
       "01",
       "02",

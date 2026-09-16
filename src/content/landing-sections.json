@@ -74,16 +74,16 @@
     }
   ],
   "aboutPartnerCta": {
-    "pill": "Civic Collaboration",
-    "heading": "Partner with Kenya's leading budget watchdog.",
-    "description": "Whether you are a development partner seeking to fund county accountability, a newsroom looking to co-publish an investigation, or a citizen wanting to bring BNS to your ward - there is a place for you.",
+    "pill": "Get involved",
+    "heading": "Learn with Kenya's youth budget educators.",
+    "description": "Whether you are a newsroom looking to co-publish an investigation, a civic group bringing budget literacy to your ward, or a student ready to start learning - there is a place for you.",
     "primaryCta": {
-      "label": "Partner With Us",
-      "href": "/contact"
+      "label": "Explore programmes",
+      "href": "/programmes"
     },
     "secondaryCta": {
-      "label": "Join Creative Network",
-      "href": "/careers"
+      "label": "Contact us",
+      "href": "/contact"
     }
   },
   "aboutTheoryOfChange": {
@@ -170,28 +170,28 @@
     ]
   },
   "roi": {
-    "badge": "Strategic Value",
-    "title": "The Return on Investment",
-    "description": "Beyond social impact, Budget Ndio Story provides strategic value for partners looking to build a stable, data-driven democratic future.",
-    "ctaText": "Join the movement and write the story of Kenya's fiscal future together.",
+    "badge": "Why it matters",
+    "title": "What civic education unlocks",
+    "description": "Budget Ndio Story helps young Kenyans read public money clearly - so participation is informed, not just loud.",
+    "ctaText": "Join learners tracking spending and shaping how Kenya talks about the budget.",
     "items": [
       {
-        "title": "Democratic Stability",
-        "description": "Channeling youth frustration away from chaotic protests into constructive, policy-based dialogue and sustainable civic engagement.",
+        "title": "Informed participation",
+        "description": "Channeling civic energy into constructive, policy-based dialogue and sustainable community engagement.",
         "icon": "ShieldCheck",
         "color": "text-emerald-500",
         "bg": "bg-emerald-500/10"
       },
       {
-        "title": "Data Intelligence",
+        "title": "Shared fiscal literacy",
         "description": "Access to civic education insights and priority mapping from youth across Kenya - coverage grows as county data is verified.",
         "icon": "Database",
         "color": "text-blue-500",
         "bg": "bg-blue-500/10"
       },
       {
-        "title": "Institutional Legacy",
-        "description": "Positioning your organization as the primary architect of Kenya's next generation of informed and responsible civic leadership.",
+        "title": "Lasting civic capacity",
+        "description": "Building a generation that can read budgets, question delivery, and participate in public finance with confidence.",
         "icon": "Landmark",
         "color": "text-amber-500",
         "bg": "bg-amber-500/10"

@@ -36,7 +36,7 @@ describe("FeaturedProjectsSection", () => {
     render(<FeaturedProjectsSection />);
 
     expect(
-      screen.getByRole("heading", { name: /Projects partners can brief against/i }),
+      screen.getByRole("heading", { name: /Projects communities can learn from/i }),
     ).toBeInTheDocument();
 
     await waitFor(() => {

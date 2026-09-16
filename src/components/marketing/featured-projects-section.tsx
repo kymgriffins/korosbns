@@ -127,21 +127,21 @@ export function FeaturedProjectsSection({
     <LandingSection
       id="featured-projects"
       aria-labelledby="featured-projects-heading"
-      className={cn("border-t border-[#e5edf5] bg-white py-16 md:py-24", className)}
+      className={cn("border-t border-border/50 bg-background py-16 md:py-24", className)}
     >
-      <div className="mb-12 max-w-2xl space-y-2">
-        <p className="text-xs font-semibold uppercase tracking-wider text-[#64748d]">{eyebrow}</p>
+      <div className="mb-12 max-w-2xl space-y-3">
+        <p className={cn(T.eyebrow, "text-muted-foreground")}>{eyebrow}</p>
         <h2
           id="featured-projects-heading"
-          className="font-heading text-3xl font-light tracking-tight text-[#061b31] md:text-4xl"
+          className={cn(T.sectionTitle, "text-balance text-foreground")}
         >
           {headline}
         </h2>
-        <p className="text-base text-[#061b31]/75 leading-relaxed">{lede}</p>
+        <p className={cn(T.lead, "text-foreground/75")}>{lede}</p>
       </div>
 
       {layout === "grid" ? (
-        <ul className={cn("grid grid-cols-1 gap-8", gridCols)}>
+        <ul className={cn("grid grid-cols-1 gap-10", gridCols)}>
         {curatedItems.map((project) => {
           const thumbnailSrc = projectThumb(project);
           const projectHref =
@@ -153,10 +153,9 @@ export function FeaturedProjectsSection({
             <li key={project.id} className="h-full">
               <Link
                 href={projectHref}
-                className="group flex flex-col h-full rounded-[4px] border border-[#e5edf5] bg-white p-5 transition-all duration-200 hover:border-[#533afd]/50 hover:shadow-xs focus-visible:ring-2 focus-visible:ring-[#533afd]"
+                className="group flex h-full flex-col outline-none focus-visible:ring-2 focus-visible:ring-ring"
               >
-                {/* 1. Image */}
-                <div className="relative aspect-video w-full overflow-hidden rounded-[4px] border border-[#e5edf5] bg-[#f8fafd]">
+                <div className="relative aspect-video w-full overflow-hidden bg-muted">
                   <Image
                     src={thumbnailSrc}
                     alt={project.title || "Evidence preview"}
@@ -166,26 +165,22 @@ export function FeaturedProjectsSection({
                   />
                 </div>
 
-                {/* 2. Category */}
                 <div className="mt-4">
-                  <span className="text-[12px] font-semibold uppercase tracking-wider text-[#64748d]">
+                  <span className={cn(T.eyebrow, "text-muted-foreground")}>
                     {programmeLabel}
                   </span>
                 </div>
 
-                {/* 3. Title (20px Weight 300) */}
-                <h3 className="mt-1.5 font-heading text-[20px] font-light leading-snug text-[#061b31] tracking-tight transition-colors group-hover:text-[#533afd]">
+                <h3 className="mt-2 font-heading text-xl font-light leading-snug tracking-tight text-foreground transition-colors group-hover:text-primary">
                   {project.title}
                 </h3>
 
-                {/* 4. Evidence Brief (16px Weight 400) */}
-                <p className="mt-2 text-[16px] text-[#061b31]/75 leading-relaxed font-normal line-clamp-3">
+                <p className="mt-2 line-clamp-3 text-base font-normal leading-relaxed text-foreground/75">
                   {project.prose}
                 </p>
 
-                {/* 5. Action Link */}
-                <div className="mt-auto pt-5 border-t border-[#e5edf5]/60">
-                  <span className="inline-flex items-center text-sm font-medium text-[#533afd] group-hover:text-[#7389ff] transition-colors">
+                <div className="mt-auto border-t border-border/40 pt-4">
+                  <span className="inline-flex items-center text-sm font-medium text-primary transition-colors group-hover:text-primary/80">
                     <span>
                       {(project.ctaLabel || openProjectLabel || "Read story")
                         .replace(/[→\->]/g, "")

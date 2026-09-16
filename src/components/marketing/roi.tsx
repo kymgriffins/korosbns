@@ -38,18 +38,13 @@ const ROI = () => {
                         </motion.p>
 
                         <div className="mt-8">
-                            <div className="flex items-center gap-4 p-4 rounded-2xl bg-primary/5 border border-primary/10">
-                                <div className="size-10 rounded-full bg-primary flex items-center justify-center shrink-0">
-                                    <TrendingUp className="size-5 text-white" />
-                                </div>
-                                <p className="text-sm font-medium">
-                                    {landingSectionsContent.roi.ctaText}
-                                </p>
-                            </div>
+                            <p className="max-w-md text-sm font-medium leading-relaxed text-foreground/80">
+                                {landingSectionsContent.roi.ctaText}
+                            </p>
                         </div>
                     </div>
 
-                    <div className="space-y-4">
+                    <div className="divide-y divide-border/50 border-y border-border/50">
                         {roiItems.map((item, index) => (
                             <motion.div
                                 key={index}
@@ -57,7 +52,7 @@ const ROI = () => {
                                 whileInView={{ opacity: 1, x: 0 }}
                                 viewport={{ once: true }}
                                 transition={{ delay: index * 0.1 }}
-                                className="p-6 rounded-2xl border border-border bg-card hover:border-primary/30 transition-all group"
+                                className="group py-6"
                             >
                                 <div className="flex gap-5">
                                     <div className={cn(
@@ -68,8 +63,8 @@ const ROI = () => {
                                         {(() => { const Icon = roiIconMap[item.icon as string] || TrendingUp; return <Icon className="size-6" />; })()}
                                     </div>
                                     <div>
-                                        <h3 className="text-lg font-bold group-hover:text-primary transition-colors">{item.title}</h3>
-                                        <p className="text-sm text-muted-foreground mt-1 leading-relaxed">
+                                        <h3 className="text-lg font-bold transition-colors group-hover:text-primary">{item.title}</h3>
+                                        <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
                                             {item.description}
                                         </p>
                                     </div>

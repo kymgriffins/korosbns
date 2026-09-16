@@ -37,7 +37,7 @@ const Disconnect = () => {
                     </motion.p>
                 </div>
 
-                <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="mt-8 grid grid-cols-1 gap-6 md:grid-cols-3 md:gap-8 md:divide-x md:divide-border/50">
                     {cards.map((card, index) => (
                         <motion.div
                             key={index}
@@ -45,12 +45,12 @@ const Disconnect = () => {
                             whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true }}
                             transition={{ delay: index * 0.1 }}
-                            className="group relative p-5 rounded-2xl border border-border bg-muted/10 hover:bg-muted/30 transition-all duration-300"
+                            className="group relative py-2 md:px-6 first:md:pl-0 last:md:pr-0"
                         >
                             <div className="mb-3 flex items-center gap-2.5">
                                 <div
                                     className={cn(
-                                        "size-8 shrink-0 rounded-lg flex items-center justify-center ring-1 ring-white/10",
+                                        "size-8 shrink-0 rounded-lg flex items-center justify-center",
                                         card.bg,
                                         card.color
                                     )}
@@ -62,9 +62,6 @@ const Disconnect = () => {
                             <p className="text-muted-foreground text-sm leading-relaxed">
                                 {card.description}
                             </p>
-                            
-                            {/* Decorative line */}
-                            <div className="absolute bottom-0 left-8 right-8 h-px bg-linear-to-r from-transparent via-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                         </motion.div>
                     ))}
                 </div>

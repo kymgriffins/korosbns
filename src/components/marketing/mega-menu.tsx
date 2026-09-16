@@ -98,7 +98,7 @@ export const MEGA_MENU_DATA: MegaMenuSection[] = [
     ctaHref: "/contact?intent=commission",
     featured: {
       title: "Evidence by commission",
-      description: "Documentaries, briefings, and campaigns that fund civic scrutiny.",
+      description: "Documentaries, briefings, and campaigns for civic scrutiny.",
       badge: "BNS Studio",
       href: "/bns-studio",
     },

@@ -279,37 +279,35 @@ export default function About({
 
       {/* 06 - Civic Action & Partnership Portal */}
       {showPartnerCta ? (
-        <section className="py-20 md:py-28 bg-muted/30 border-t border-border/40">
+        <section className="border-t border-border/40 bg-muted/20 py-20 md:py-28">
           <div className={SECTION_SHELL_INNER}>
-            <div className="rounded-3xl border border-border/60 bg-card p-8 md:p-14 shadow-xl">
-              <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8">
-                <div className="space-y-4 max-w-2xl">
-                  <span className={cn(T.eyebrow, "inline-flex items-center gap-2")}>
-                    <HeartHandshake className="size-3.5 text-primary" />
-                    {sections.aboutPartnerCta.pill}
-                  </span>
-                  <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight text-foreground">
-                    {sections.aboutPartnerCta.heading}
-                  </h2>
-                  <p className="text-base text-muted-foreground leading-relaxed">
-                    {sections.aboutPartnerCta.description}
-                  </p>
-                </div>
+            <div className="flex flex-col justify-between gap-8 lg:flex-row lg:items-center">
+              <div className="max-w-2xl space-y-4">
+                <span className={cn(T.eyebrow, "inline-flex items-center gap-2")}>
+                  <HeartHandshake className="size-3.5 text-primary" />
+                  {sections.aboutPartnerCta.pill}
+                </span>
+                <h2 className={cn(T.sectionTitle, "text-foreground")}>
+                  {sections.aboutPartnerCta.heading}
+                </h2>
+                <p className={cn(T.lead, "text-muted-foreground")}>
+                  {sections.aboutPartnerCta.description}
+                </p>
+              </div>
 
-                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 shrink-0">
-                  <Link
-                    href={sections.aboutPartnerCta.primaryCta.href}
-                    className="inline-flex items-center justify-center rounded-full bg-primary px-8 py-3.5 text-sm font-bold text-primary-foreground shadow-sm transition-all hover:bg-primary/90 focus-visible:ring-2 focus-visible:ring-primary"
-                  >
-                    {sections.aboutPartnerCta.primaryCta.label}
-                  </Link>
-                  <Link
-                    href={sections.aboutPartnerCta.secondaryCta.href}
-                    className="inline-flex items-center justify-center rounded-full border border-border/60 bg-background px-6 py-3.5 text-sm font-semibold text-foreground transition-colors hover:bg-muted"
-                  >
-                    {sections.aboutPartnerCta.secondaryCta.label}
-                  </Link>
-                </div>
+              <div className="flex shrink-0 flex-col items-stretch gap-3 sm:flex-row sm:items-center">
+                <Link
+                  href={sections.aboutPartnerCta.primaryCta.href}
+                  className="inline-flex items-center justify-center rounded-full bg-primary px-8 py-3.5 text-sm font-bold text-primary-foreground transition-all hover:bg-primary/90 focus-visible:ring-2 focus-visible:ring-primary"
+                >
+                  {sections.aboutPartnerCta.primaryCta.label}
+                </Link>
+                <Link
+                  href={sections.aboutPartnerCta.secondaryCta.href}
+                  className="inline-flex items-center justify-center rounded-full border border-border/60 bg-background px-6 py-3.5 text-sm font-semibold text-foreground transition-colors hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring"
+                >
+                  {sections.aboutPartnerCta.secondaryCta.label}
+                </Link>
               </div>
             </div>
           </div>

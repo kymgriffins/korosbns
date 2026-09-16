@@ -64,7 +64,7 @@ export function ProgrammesEcosystemFlywheel({
         </div>
         <p className={cn(T.lead, "max-w-md md:text-right")}>
           {content?.lede ??
-            "One continuous accountability engine: national data informs local scrutiny, newsrooms broadcast the findings, and high-craft production funds the next cycle."}
+            "One continuous accountability engine: national data informs local scrutiny, newsrooms broadcast the findings, and Studios craft keeps the civic story visible."}
         </p>
       </div>
 

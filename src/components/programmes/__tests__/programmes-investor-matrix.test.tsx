@@ -16,39 +16,73 @@ beforeEach(() => {
 });
 
 describe("ProgrammesInvestorMatrix & EcosystemFlywheel", () => {
-  it("renders the 3 Big Bets with investor deliverables", () => {
+  it("renders civic programme framing without fundraising asks", () => {
     render(<ProgrammesInvestorMatrix />);
 
-    // Section title
-    expect(screen.getByRole("heading", { name: /Where partners invest/i })).toBeInTheDocument();
-
-    // 3 Big Bets
-    expect(screen.getByText("BNS Connect")).toBeInTheDocument();
-    expect(screen.getByText("BNS Mashinani")).toBeInTheDocument();
-    expect(screen.getByText("Wanahabari Lab")).toBeInTheDocument();
-
-    // Conundrum and Intervention dossiers
-    expect(screen.getAllByText(/The Conundrum:/i).length).toBe(3);
-    expect(screen.getAllByText(/The Intervention/i).length).toBe(3);
-
-    // Verification methodology
-    expect(screen.getByRole("heading", { name: /How we work/i })).toBeInTheDocument();
-    expect(screen.getByText(/Ingest & Trace/i)).toBeInTheDocument();
-    expect(screen.getByText(/Triangulate & Verify/i)).toBeInTheDocument();
-    expect(screen.getByText(/Frame & Publish/i)).toBeInTheDocument();
-    expect(screen.getByText(/Convene & Hold Pressure/i)).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: /Where the work happens/i })).toBeInTheDocument();
+    expect(screen.getByText(/Our programmes/i)).toBeInTheDocument();
+    expect(screen.queryByText(/Discuss co-funding/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/Where partners invest/i)).not.toBeInTheDocument();
   });
 
-  it("renders the Closed-Loop Ecosystem Flywheel", () => {
-    render(<ProgrammesEcosystemFlywheel />);
+  it("renders the ecosystem flywheel when nodes are provided", () => {
+    render(
+      <ProgrammesEcosystemFlywheel
+        content={{
+          eyebrow: "The Closed-Loop Ecosystem",
+          headline: "How the programmes connect",
+          lede: "National data informs local scrutiny and newsrooms broadcast the findings.",
+          nodes: [
+            {
+              step: "01",
+              name: "National Intelligence",
+              eyebrow: "Connect",
+              icon: "BarChart3",
+              href: "/programmes/connect",
+              role: "Track",
+              description: "National budget intelligence.",
+              feedsTo: "County Ground Truth",
+            },
+            {
+              step: "02",
+              name: "County Ground Truth",
+              eyebrow: "Mashinani",
+              icon: "Building2",
+              href: "/programmes/mashinani",
+              role: "Verify",
+              description: "County delivery verification.",
+              feedsTo: "Newsroom Scrutiny",
+            },
+            {
+              step: "03",
+              name: "Newsroom Scrutiny",
+              eyebrow: "Wanahabari",
+              icon: "Newspaper",
+              href: "/programmes/wanahabari-lab",
+              role: "Publish",
+              description: "Newsroom labs.",
+              feedsTo: "Production",
+            },
+            {
+              step: "04",
+              name: "Production & Surplus",
+              eyebrow: "Studios",
+              icon: "Video",
+              href: "/bns-studio",
+              role: "Craft",
+              description: "Civic media craft.",
+              feedsTo: "National Intelligence",
+            },
+          ],
+        }}
+      />,
+    );
 
     expect(screen.getByRole("heading", { name: /How the programmes connect/i })).toBeInTheDocument();
     expect(screen.getByText(/The Closed-Loop Ecosystem/i)).toBeInTheDocument();
-
-    // 4 interconnected nodes
-    expect(screen.getByText("National Intelligence")).toBeInTheDocument();
-    expect(screen.getByText("County Ground Truth")).toBeInTheDocument();
-    expect(screen.getByText("Newsroom Scrutiny")).toBeInTheDocument();
-    expect(screen.getByText("Production & Surplus")).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "National Intelligence" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "County Ground Truth" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Newsroom Scrutiny" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Production & Surplus" })).toBeInTheDocument();
   });
 });
