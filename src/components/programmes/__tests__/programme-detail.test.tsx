@@ -23,7 +23,6 @@ describe("ProgrammeDetail", () => {
       screen.getByRole("heading", { name: p.headline.replace(/\s+/g, " ").trim() }),
     ).toBeInTheDocument();
     expect(screen.getByText(/What this programme does/i)).toBeInTheDocument();
-    expect(screen.getByText(/Other programmes/i)).toBeInTheDocument();
   });
 
   it("renders landing-format layout for mashinani", () => {

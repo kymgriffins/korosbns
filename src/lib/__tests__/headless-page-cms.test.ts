@@ -8,6 +8,7 @@ import {
   isSectionVisible,
   visibleSectionCount,
   partnerPagesOverBudget,
+  partnerPageSectionsCms,
 } from "@/lib/partner-page-cms";
 
 describe("Headless Pages CMS Core Engine & Validation", () => {
@@ -55,8 +56,9 @@ describe("Headless Pages CMS Core Engine & Validation", () => {
   it("verifies section visibility policy remains clean and compliant across all pages", () => {
     const overBudget = partnerPagesOverBudget();
     expect(overBudget).toEqual([]);
-    expect(visibleSectionCount("home")).toBeLessThanOrEqual(5);
-    expect(visibleSectionCount("programmes")).toBeLessThanOrEqual(5);
+    const maxBlocks = partnerPageSectionsCms.policy.maxBlocksPartnerPages;
+    expect(visibleSectionCount("home")).toBeLessThanOrEqual(maxBlocks);
+    expect(visibleSectionCount("programmes")).toBeLessThanOrEqual(maxBlocks);
   });
 
   it("allows updating landing page hero and value proposition in memory store", () => {

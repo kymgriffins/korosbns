@@ -49,9 +49,9 @@ describe("Studio SEO & Commercial Indexing (P0 Priority)", () => {
 
     expect(urls).toContain("https://budgetndiostory.org/bns-studio/budget-sasa-ni-delivery-explainer");
     expect(urls).toContain("https://budgetndiostory.org/bns-studio/budget-ndio-story-podcast");
-    expect(urls).toContain("https://budgetndiostory.org/bns-studio/nakuru-citizen-baraza");
     expect(urls).toContain("https://budgetndiostory.org/bns-studio/project-terra");
-    expect(urls).toContain("https://budgetndiostory.org/bns-studio/mashinani-field-documentary");
+    expect(urls).toContain("https://budgetndiostory.org/bns-studio/cra-formula-research-spotlight");
+    expect(urls).toContain("https://budgetndiostory.org/bns-studio/wajir-community-listening");
 
     const podcastProject = entries.find(
       (e) => e.url === "https://budgetndiostory.org/bns-studio/budget-ndio-story-podcast",

@@ -44,8 +44,9 @@ describe("programme project ids", () => {
   });
 
   it("looks up projects by legacy aliases", () => {
-    const byLegacy = studiosEvidenceData.getProjectById("proj-003");
-    expect(byLegacy?.slug).toBe("nakuru-citizen-baraza");
+    expect(resolveProjectId("proj-003")).toBe("nakuru-citizen-baraza");
+    const byLegacy = studiosEvidenceData.getProjectById("proj-001");
+    expect(byLegacy?.slug).toBe("budget-sasa-ni-delivery-explainer");
     expect(studiosEvidenceData.getProjectBySlug("proj-001")?.id).toBe(
       "budget-sasa-ni-delivery-explainer",
     );

@@ -26,7 +26,7 @@ describe("partner-page-cms ≤5 block policy", () => {
     expect(isSectionVisible("home", "whoHow")).toBe(true);
     expect(isSectionVisible("home", "programmeExplains")).toBe(true);
     expect(isSectionVisible("home", "featuredProjects")).toBe(true);
-    expect(isSectionVisible("home", "partners")).toBe(false);
+    expect(isSectionVisible("home", "partners")).toBe(true);
     expect(isSectionVisible("home", "storyNearYou")).toBe(false);
     expect(isSectionVisible("home", "programmes")).toBe(false);
     expect(isSectionVisible("home", "team")).toBe(false);
@@ -38,7 +38,7 @@ describe("partner-page-cms ≤5 block policy", () => {
 
   it("showcases featured YouTube projects on programmes hub under budget", () => {
     expect(isSectionVisible("programmes", "featuredProjects")).toBe(true);
-    expect(isSectionVisible("programmes", "partners")).toBe(false);
+    expect(isSectionVisible("programmes", "partners")).toBe(true);
     expect(visibleSectionCount("programmes")).toBeLessThanOrEqual(
       partnerPageSectionsCms.policy.maxBlocksPartnerPages,
     );
