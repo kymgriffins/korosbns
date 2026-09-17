@@ -11,7 +11,6 @@ import Image from "next/image";
 import { useClickOutside } from "@/hooks";
 import { useAuth } from "@/contexts/auth-context";
 import {
-  ThemeToggle,
   NAV_CONTROL_BORDER,
   NAV_CONTROL_SIZE,
 } from "@/components/marketing/theme-toggle";
@@ -281,8 +280,6 @@ export function Header() {
                 </Link>
               </motion.div>
             ) : null}
-
-            <ThemeToggle />
 
             <motion.button
               type="button"

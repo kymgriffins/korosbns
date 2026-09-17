@@ -21,7 +21,7 @@ import {
 import { AccountSwitcher } from "./_components/sidebar/account-switcher";
 import { LayoutControls } from "./_components/sidebar/layout-controls";
 import { SearchDialog } from "./_components/sidebar/search-dialog";
-import { ThemeSwitcher } from "./_components/sidebar/theme-switcher";
+import { ThemeToggle } from "@/components/marketing/theme-toggle";
 import { AdminGuard } from "./_components/admin-guard";
 
 export default async function Layout({ children }: Readonly<{ children: ReactNode }>) {
@@ -73,7 +73,7 @@ export default async function Layout({ children }: Readonly<{ children: ReactNod
                   <TeachingToggle />
                   <SearchDialog />
                   <LayoutControls />
-                  <ThemeSwitcher />
+                  <ThemeToggle />
                   <AccountSwitcher />
                 </div>
               </div>

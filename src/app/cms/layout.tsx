@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { ThemeToggle } from "@/components/marketing/theme-toggle";
 import { MASTER_CMS_EMAIL } from "@/lib/headless-cms";
 
 export const metadata: Metadata = {
@@ -66,6 +67,8 @@ export default function CmsStandaloneLayout({
               <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
               <span>Cloudflare R2: Live Sync</span>
             </div>
+
+            <ThemeToggle />
 
             <Button
               asChild
