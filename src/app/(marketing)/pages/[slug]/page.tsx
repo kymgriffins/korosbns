@@ -18,6 +18,7 @@ import {
   ensurePageSections,
 } from "@/lib/headless-page-cms";
 import { ArrowRight, CheckCircle2, ChevronRight } from "lucide-react";
+import { ObamaOrgShowcase } from "@/components/marketing/obama-org-showcase";
 
 export const dynamicParams = true;
 
@@ -113,8 +114,11 @@ export default async function DynamicCustomPage({
         </div>
       ) : null}
 
-      {/* Render All Enabled Modular Sections */}
-      {sections.map((section) => {
+      {/* Render Sovereign Showcase for obama-org, or All Enabled Modular Sections */}
+      {page.slug === "obama-org" ? (
+        <ObamaOrgShowcase />
+      ) : (
+        sections.map((section) => {
         switch (section.type) {
           case "hero":
             return (
@@ -371,7 +375,7 @@ export default async function DynamicCustomPage({
           default:
             return null;
         }
-      })}
+      }))}
     </div>
   );
 }
