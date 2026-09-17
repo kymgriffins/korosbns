@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import { buildPageMetadata } from "@/utils/page-metadata";
 import { BNSProjectClient } from "@/components/project/BNSProjectClient";
+import { getLivePartnerPageSections } from "@/lib/cms-live-data";
+
+export const revalidate = 60;
 
 export const metadata: Metadata = buildPageMetadata({
   title: "Flagship Projects & Research Initiatives | Budget Ndio Story",
@@ -17,6 +20,9 @@ export const metadata: Metadata = buildPageMetadata({
   ],
 });
 
-export default function ProjectsPage() {
-  return <BNSProjectClient />;
+export default async function ProjectsPage() {
+  const sectionsConfig = await getLivePartnerPageSections();
+  const pages = sectionsConfig?.pages as Record<string, any> | undefined;
+  const archetype = pages?.projectIndex?.layoutArchetype || pages?.work?.layoutArchetype || pages?.projects?.layoutArchetype || "sovereign";
+  return <BNSProjectClient archetype={archetype} />;
 }

@@ -42,17 +42,32 @@ export type ProjectEditorialData = {
   hideCaptions?: boolean;
 };
 
+import { ProjectShell, type LayoutArchetype } from "@/layouts/page-shells";
+
 export interface ProjectEditorialViewProps {
   project: ProjectEditorialData;
+  archetype?: LayoutArchetype | string | null;
   backHref?: string;
   backLabel?: string;
 }
 
 export function ProjectEditorialView({
   project,
+  archetype = "sovereign",
   backHref = "/projects",
   backLabel = "All Projects",
 }: ProjectEditorialViewProps) {
+  if (archetype && archetype !== "sovereign") {
+    return (
+      <ProjectShell
+        project={project}
+        archetype={archetype}
+        backHref={backHref}
+        backLabel={backLabel}
+      />
+    );
+  }
+
   const [copied, setCopied] = React.useState(false);
 
   const displayTitle = project.title || "Civic Evidence Project";

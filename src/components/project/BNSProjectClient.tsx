@@ -90,9 +90,36 @@ const initiatives = [
   },
 ];
 
-export function BNSProjectClient() {
+import { CatalogShell, type LayoutArchetype } from "@/layouts/page-shells";
+
+export interface BNSProjectClientProps {
+  archetype?: LayoutArchetype | string | null;
+}
+
+export function BNSProjectClient({ archetype = "sovereign" }: BNSProjectClientProps = {}) {
+  if (archetype && archetype !== "sovereign") {
+    const catalogItems = initiatives.map((item) => ({
+      id: item.id,
+      title: item.title,
+      description: item.desc,
+      category: item.programme,
+      tag: item.partner,
+      href: item.href,
+    }));
+
+    return (
+      <CatalogShell
+        title="Flagship Projects & Research Initiatives"
+        subtitle="Key investigative and civic initiatives driving public fiscal justice, platform accountability, and sovereign transparency across Africa."
+        eyebrow="OUR RESEARCH & ACTION"
+        items={catalogItems}
+        archetype={archetype}
+      />
+    );
+  }
+
   return (
-    <LandingSection className="bg-muted/20 py-20 md:py-28">
+    <LandingSection data-layout-archetype="sovereign" className="bg-muted/20 py-20 md:py-28">
       <LandingSectionHeader
         eyebrow="Our Research & Action"
         title={

@@ -22,16 +22,75 @@ import {
 import { Button } from "@/components/ui/button";
 import { EditorialPill } from "@/components/ui/editorial";
 import type { ReportDossier } from "@/data/reports-bulletin";
+import { ArticleShell, type LayoutArchetype } from "@/layouts/page-shells";
+
+export interface ReportDetailViewProps {
+  report: ReportDossier;
+  relatedReports: ReportDossier[];
+  archetype?: LayoutArchetype | string | null;
+}
 
 export function ReportDetailView({
   report,
   relatedReports,
-}: {
-  report: ReportDossier;
-  relatedReports: ReportDossier[];
-}) {
+  archetype = "sovereign",
+}: ReportDetailViewProps) {
   const [copied, setCopied] = useState(false);
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(0);
+
+  if (archetype && archetype !== "sovereign") {
+    return (
+      <ArticleShell
+        article={{
+          title: report.title,
+          subtitle: report.seoDescription,
+          eyebrow: report.eyebrow,
+          content: report.content,
+          authorName: report.author,
+          publishedAt: report.publishedDate,
+          readTime: `${report.readTimeMinutes} min read`,
+          tags: [report.category, report.county, report.programme].filter(Boolean),
+          funder: report.provenance.source,
+          hostInstitution: report.provenance.analystSignoff,
+          metrics: report.kpis?.map((k) => ({ label: k.label, value: `${k.value} (${k.change})` })),
+        }}
+        archetype={archetype}
+        backHref="/reports"
+        backLabel="Back to Reports"
+      >
+        {report.citizenTakeaway && report.citizenTakeaway.length > 0 && (
+          <section className="my-8 rounded-xl border border-primary/30 bg-primary/5 p-6 space-y-3">
+            <div className="flex items-center gap-2 text-primary font-mono font-bold text-xs uppercase tracking-wider">
+              <FileText className="size-4 text-primary" />
+              <h3>Citizen Summary &amp; Core Takeaways</h3>
+            </div>
+            <ul className="space-y-2 text-sm text-foreground/90 leading-relaxed">
+              {report.citizenTakeaway.map((point, idx) => (
+                <li key={idx} className="flex items-start gap-2.5">
+                  <CheckCircle2 className="size-4 shrink-0 text-primary mt-0.5" />
+                  <span>{point}</span>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
+
+        {report.faqs && report.faqs.length > 0 && (
+          <section className="my-8 rounded-xl border border-border bg-card p-6 space-y-4">
+            <h3 className="text-lg font-bold">Frequently Asked Questions</h3>
+            <div className="space-y-3">
+              {report.faqs.map((faq, idx) => (
+                <div key={idx} className="rounded-lg border border-border/60 p-4 space-y-2">
+                  <h4 className="font-semibold text-sm">{faq.question}</h4>
+                  <p className="text-xs text-muted-foreground leading-relaxed">{faq.answer}</p>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
+      </ArticleShell>
+    );
+  }
 
   const handleShare = () => {
     if (typeof window !== "undefined") {

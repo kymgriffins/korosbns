@@ -34,6 +34,7 @@ import {
 } from "@/content";
 import type { PartnerPageSectionsContent, ProgrammesContent } from "@/lib/cms-live-data";
 import { isSectionVisible } from "@/lib/partner-page-cms";
+import { ProgrammeShell, type LayoutArchetype } from "@/layouts/page-shells";
 import { cn } from "@/utils";
 
 const PAGE_ID_BY_SLUG: Record<Exclude<ProgrammeSlug, "studios">, string> = {
@@ -138,9 +139,50 @@ export function ProgrammeLandingLayout({
         ? "auto"
         : "video";
 
+  const pages = sectionsConfig?.pages as Record<string, any> | undefined;
+  const pageConfig = pages?.[pageId];
+  const layoutArchetype = (pageConfig?.layoutArchetype || "sovereign") as LayoutArchetype;
+
+  if (layoutArchetype && layoutArchetype !== "sovereign") {
+    return (
+      <ProgrammeThemeScope theme={programme.theme}>
+        <ProgrammeShell
+          programme={{
+            slug: programme.slug,
+            title: programme.name,
+            eyebrow: programme.eyebrow,
+            headline: programme.headline,
+            description: programme.body,
+            pillars: programme.pillars?.map((p) => ({
+              title: p.title,
+              description: p.body,
+            })),
+            deliverables: programme.deliverables?.map((d) => ({
+              title: d.title,
+              detail: d.description,
+            })),
+            reels: programmeReels?.map((r) => ({
+              title: r.title,
+              url: r.videoUrl,
+              poster: r.posterUrl,
+            })),
+            stats: programme.stats?.map((s) => ({
+              label: s.label,
+              value: s.value,
+            })),
+          }}
+          archetype={layoutArchetype}
+        />
+      </ProgrammeThemeScope>
+    );
+  }
+
   return (
     <ProgrammeThemeScope theme={programme.theme}>
-    <div className="w-full min-h-dvh bg-background overflow-x-clip text-foreground">
+    <div
+      data-layout-archetype="sovereign"
+      className="w-full min-h-dvh bg-background overflow-x-clip text-foreground"
+    >
       {show("hero") ? (
         <section
           className={cn(HERO_SECTION_PADDING, "border-b border-border/50 bg-background")}

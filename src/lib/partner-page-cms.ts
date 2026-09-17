@@ -32,6 +32,8 @@ export type PartnerPageConfig = {
   blogLike: boolean;
   composer: string;
   sections: PartnerPageSection[];
+  /** Attached layout archetype determining page shell presentation */
+  layoutArchetype?: "sovereign" | "editorial" | "cinematic" | "brutalist";
   /** Optional route-loading chrome. Omit or enabled:false = no loading page. */
   loading?: PageLoadingConfig;
 };

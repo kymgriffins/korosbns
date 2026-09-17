@@ -5,6 +5,9 @@ import { ProjectTerraEditorial } from "@/components/project/project-terra-editor
 import { ProjectEditorialView, type ProjectEditorialData } from "@/components/project/project-editorial-view";
 import { buildPageMetadata } from "@/utils/page-metadata";
 import { resolveProjectId } from "@/lib/programme-project-ids";
+import { getLivePartnerPageSections } from "@/lib/cms-live-data";
+
+export const revalidate = 60;
 
 type PageProps = {
   params: Promise<{ id: string }>;
@@ -88,14 +91,20 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function ProjectDetailPage({ params }: PageProps) {
   const { id } = await params;
-  const canonicalProject = findCanonicalProject(id);
+  const [canonicalProject, sectionsConfig] = await Promise.all([
+    Promise.resolve(findCanonicalProject(id)),
+    getLivePartnerPageSections(),
+  ]);
+
+  const pages = sectionsConfig?.pages as Record<string, any> | undefined;
+  const archetype = pages?.projectDetail?.layoutArchetype || pages?.projects?.layoutArchetype || "sovereign";
 
   if (isTerraProject(id)) {
     return <ProjectTerraEditorial project={canonicalProject || undefined} />;
   }
 
   if (canonicalProject) {
-    return <ProjectEditorialView project={canonicalProject} />;
+    return <ProjectEditorialView project={canonicalProject} archetype={archetype} />;
   }
 
   // Unknown ids → project index (JSON-backed), never a programmes dump.

@@ -56,6 +56,7 @@ import { ImageFieldControl } from "./ImageFieldControl";
 import { ColorFieldControl } from "./ColorFieldControl";
 import { MediaEmbed, detectMediaType } from "@/components/ui/media-embed";
 import { NavigationStudioEditor } from "./NavigationStudioEditor";
+import { cn } from "@/utils";
 import { DesignTokensStudioEditor } from "./DesignTokensStudioEditor";
 import { CoursesStudioEditor } from "./CoursesStudioEditor";
 import { ContactStudioEditor } from "./ContactStudioEditor";
@@ -71,6 +72,7 @@ import { StoriesStudioEditor } from "./StoriesStudioEditor";
 import { FaqStudioEditor } from "./FaqStudioEditor";
 import { AllProjectsStudioEditor } from "./AllProjectsStudioEditor";
 import { listProgrammePresetOptions } from "@/lib/programme-theme";
+import { LAYOUT_ARCHETYPES_LIST, type LayoutArchetype } from "@/layouts/page-shells";
 
 type PageKey =
   | "landing"
@@ -3219,6 +3221,63 @@ export function HeadlessPageStudio() {
                   <p className="text-[10px] text-muted-foreground">
                     Tip: keep Learn, programmes, and Connect at enabled=false. Only turn on Studio reel if you want that cinematic intro back.
                   </p>
+                </div>
+              </div>
+
+              {/* Page Layout Archetype Selector */}
+              <div className="rounded-xl border border-border/80 bg-card p-4 space-y-3">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h3 className="text-xs font-bold font-mono uppercase tracking-wider text-foreground flex items-center gap-1.5">
+                      <Layers className="size-3.5 text-primary" />
+                      Page Layout Archetype
+                    </h3>
+                    <p className="text-[11px] text-muted-foreground mt-0.5">
+                      Controls how this page operates: chassis structure, reading measure, and visual layout.
+                    </p>
+                  </div>
+                  <span className="rounded-md border border-primary/30 bg-primary/10 px-2 py-0.5 font-mono text-[10px] font-bold text-primary uppercase">
+                    {pageSectionsConfig.layoutArchetype || "sovereign"}
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 pt-1">
+                  {LAYOUT_ARCHETYPES_LIST.map((arch) => {
+                    const isSelected = (pageSectionsConfig.layoutArchetype || "sovereign") === arch.id;
+                    return (
+                      <button
+                        key={arch.id}
+                        type="button"
+                        onClick={() => {
+                          const pageId = currentPage.sectionPageId;
+                          setSectionsData({
+                            ...sectionsData,
+                            pages: {
+                              ...(sectionsData.pages || {}),
+                              [pageId]: {
+                                ...(sectionsData.pages?.[pageId] || {}),
+                                layoutArchetype: arch.id,
+                              },
+                            },
+                          });
+                        }}
+                        className={cn(
+                          "flex flex-col items-start p-3 rounded-lg border text-left transition-all cursor-pointer",
+                          isSelected
+                            ? "border-primary bg-primary/5 ring-2 ring-primary/20 shadow-xs"
+                            : "border-border/60 bg-muted/20 hover:border-border hover:bg-muted/40"
+                        )}
+                      >
+                        <span className="font-semibold text-xs text-foreground flex items-center justify-between w-full">
+                          <span>{arch.label}</span>
+                          {isSelected && <Check className="size-3 text-primary shrink-0" />}
+                        </span>
+                        <span className="text-[10px] text-muted-foreground mt-1 line-clamp-2 leading-relaxed">
+                          {arch.tagline}
+                        </span>
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
 

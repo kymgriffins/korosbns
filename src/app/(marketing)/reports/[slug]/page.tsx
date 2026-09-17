@@ -4,6 +4,9 @@ import { notFound } from "next/navigation";
 import { canonicalUrl } from "@/utils/metadata";
 import { getAllReports, getReportBySlug } from "@/data/reports-bulletin";
 import { ReportDetailView } from "@/components/reports-bulletin/report-detail-view";
+import { getLivePartnerPageSections } from "@/lib/cms-live-data";
+
+export const revalidate = 60;
 
 type PageProps = {
   params: Promise<{ slug: string }>;
@@ -71,8 +74,12 @@ export default async function ReportDossierPage({ params }: PageProps) {
     notFound();
   }
 
-  const allReports = getAllReports();
+  const [sectionsConfig, allReports] = await Promise.all([
+    getLivePartnerPageSections(),
+    Promise.resolve(getAllReports()),
+  ]);
   const relatedReports = allReports.filter((r) => r.slug !== slug);
+  const archetype = sectionsConfig?.pages?.reports?.layoutArchetype || "sovereign";
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -150,7 +157,7 @@ export default async function ReportDossierPage({ params }: PageProps) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <ReportDetailView report={report} relatedReports={relatedReports} />
+      <ReportDetailView report={report} relatedReports={relatedReports} archetype={archetype} />
     </>
   );
 }
