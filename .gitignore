@@ -55,6 +55,7 @@ next-env.d.ts
 # lighthouse profiles & reports
 .lh-profile/
 .lh-chrome-profile/
+.impeccable/
 reports/lighthouse/*.json
 !reports/lighthouse/summary.json
 

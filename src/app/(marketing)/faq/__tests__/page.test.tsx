@@ -9,8 +9,9 @@ vi.mock("@/components/marketing/help-center-client", () => ({
 import FAQPage from "../page";
 
 describe("FAQPage", () => {
-  it("renders FAQ and Help Center cleanly", () => {
-    render(<FAQPage />);
+  it("renders FAQ and Help Center cleanly", async () => {
+    const Component = await FAQPage();
+    render(Component);
     expect(screen.getByTestId("help-center-client")).toBeInTheDocument();
   });
 });

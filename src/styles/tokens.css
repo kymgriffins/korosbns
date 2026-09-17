@@ -133,6 +133,8 @@
   --brand-button-outline-border: var(--color-lavender-border);
 }
 
+html.dark,
+[data-theme-mode="dark"],
 .dark {
   --background: #061b31;
   --foreground: #f8fafd;

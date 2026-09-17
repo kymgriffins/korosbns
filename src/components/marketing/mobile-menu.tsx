@@ -36,6 +36,7 @@ import {
 import { ease } from "@/motion/variants";
 import { SHOW_MARKETING_SIGN_IN } from "@/lib/marketing-chrome";
 import { MEGA_MENU_DATA } from "@/components/marketing/mega-menu";
+import { ThemeToggle } from "@/components/marketing/theme-toggle";
 
 const PROGRAMME_MOBILE_ITEMS =
   MEGA_MENU_DATA.find((s) => s.id === "programmes")?.items ?? [
@@ -220,14 +221,17 @@ function MenuPanel({ isOpen, setIsOpen, navConfig }: Props) {
           >
             <div className="flex items-center justify-between px-6 h-16 shrink-0 border-b border-border/40">
               <span className="text-sm font-semibold text-muted-foreground">Navigation</span>
-              <Button
-                size="icon-sm"
-                variant="ghost"
-                onClick={() => setIsOpen(false)}
-                className="h-8 w-8"
-              >
-                <XIcon className="size-4" />
-              </Button>
+              <div className="flex items-center gap-2">
+                <ThemeToggle />
+                <Button
+                  size="icon-sm"
+                  variant="ghost"
+                  onClick={() => setIsOpen(false)}
+                  className="h-8 w-8"
+                >
+                  <XIcon className="size-4" />
+                </Button>
+              </div>
             </div>
             <div className="flex-1 overflow-y-auto px-4 py-6">
               <ul className="flex flex-col space-y-1">
@@ -388,6 +392,10 @@ function MenuPanel({ isOpen, setIsOpen, navConfig }: Props) {
                   ),
                 )}
               </ul>
+              <div className="flex items-center justify-between py-3 px-3 mt-3 rounded-lg bg-muted/30 border border-border/40">
+                <span className="text-sm font-medium text-muted-foreground">Appearance</span>
+                <ThemeToggle />
+              </div>
               {(SHOW_MARKETING_SIGN_IN || isLoggedIn) ? (
                 <motion.div
                   initial={{ opacity: 0, y: 16 }}
