@@ -38,7 +38,7 @@ const initiatives = [
     badge: "BNS Studios · Pan-African Bilingual 2026",
     programme: "BNS Studios",
     partner: "CABRI",
-    href: "/bns-studio/cabri-digital-pfm-reforms",
+    href: "/projects/cabri-digital-pfm-reforms",
   },
   {
     id: "hofw-iff",
@@ -50,7 +50,7 @@ const initiatives = [
     badge: "Wanahabari Lab · Forensic Spotlight 2026",
     programme: "Wanahabari Lab",
     partner: "House of Fiscal Wisdom",
-    href: "/bns-studio/illicit-financial-flows-benin-cabo-verde",
+    href: "/projects/illicit-financial-flows-benin-cabo-verde",
   },
   {
     id: "afrodad-debt-and-contracts",

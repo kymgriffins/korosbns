@@ -18,7 +18,7 @@
       "authorName": "Budget Ndio Story Team",
       "programmeSlug": "connect",
       "programmeLabel": "BNS Connect",
-      "href": "/bns-project/story-mty40jp1",
+      "href": "/projects/story-mty40jp1",
       "isProject": false,
       "useYoutubeThumbnail": false,
       "hostInstitution": "House of Fiscal Wisdom",
@@ -45,7 +45,7 @@
       "authorName": "Collaborative Africa Budget Reform Initiative",
       "programmeSlug": "studios",
       "programmeLabel": "BNS Studio",
-      "href": "/bns-studio/cabri-digital-pfm-reforms",
+      "href": "/projects/cabri-digital-pfm-reforms",
       "publishedAt": "2026-04-28T00:00:00Z",
       "channelHandle": "@WeareCABRI"
     },
@@ -62,7 +62,7 @@
       "authorName": "Dr. Lyla Latif",
       "programmeSlug": "wanahabari-lab",
       "programmeLabel": "Wanahabari Lab",
-      "href": "/bns-project/terra",
+      "href": "/projects/project-terra",
       "publishedAt": "2026-07-25T00:00:00Z",
       "channelHandle": "@lyla-latif"
     }

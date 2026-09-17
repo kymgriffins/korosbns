@@ -97,4 +97,30 @@ describe("marketing public surfaces never promote /learn", () => {
     expect(entry?.to).toBe("/projects/");
     expect(entry?.to).not.toContain("programmes");
   });
+
+  it("CMS redirects and next.config send /learn to /projects, hiding it from users", () => {
+    const redirects = JSON.parse(
+      readFileSync(join(process.cwd(), "src/content/redirects.json"), "utf8"),
+    ) as { redirects: Array<{ from: string; to: string }> };
+    const learnRedirect = redirects.redirects.find((r) => r.from === "/learn");
+    expect(learnRedirect?.to).toBe("/projects/");
+
+    const nextConfig = readFileSync(join(process.cwd(), "next.config.ts"), "utf8");
+    expect(nextConfig).toMatch(/source:\s*["']\/learn["'][\s\S]*?destination:\s*["']\/projects["']/);
+  });
+
+  it("sitemap never exposes any /learn routes", () => {
+    const sitemapSrc = readFileSync(join(process.cwd(), "src/app/sitemap.ts"), "utf8");
+    expect(sitemapSrc).not.toMatch(/path:\s*["']\/learn/);
+    expect(sitemapSrc).not.toMatch(/canonicalUrl\(`\/learn/);
+  });
+
+  it("featured projects fallback links strictly to project details, never /learn", () => {
+    for (const seed of featuredSeeds.results) {
+      expect(seed.href).toBeTruthy();
+      expect(seed.href.startsWith("/learn")).toBe(false);
+      expect(seed.href.startsWith("/projects/") || seed.href.startsWith("/bns-project/")).toBe(true);
+    }
+  });
 });
+

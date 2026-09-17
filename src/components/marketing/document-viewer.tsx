@@ -91,11 +91,11 @@ export default function DocumentViewer({ document }: DocumentViewerProps) {
                     {/* BREADCRUMB */}
                     <Container animation="fadeUp" className="mb-6">
                         <Link 
-                            href="/learn"
+                            href="/reports"
                             className="inline-flex items-center gap-2 text-sm text-foreground/60 hover:text-primary transition-colors"
                         >
                             <ArrowLeft className="size-4" />
-                            Back to Learn
+                            Back to Reports
                         </Link>
                     </Container>
 

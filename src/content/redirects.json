@@ -23,6 +23,12 @@
       "to": "/projects/",
       "status": 301,
       "reason": "Legacy project index → canonical /projects list (JSON-backed). Deep links stay on /projects/[slug]."
+    },
+    {
+      "from": "/learn",
+      "to": "/projects/",
+      "status": 302,
+      "reason": "Mute public learn hub; redirect users to canonical projects."
     }
   ]
 }

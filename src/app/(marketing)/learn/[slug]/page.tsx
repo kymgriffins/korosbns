@@ -155,61 +155,8 @@ export default async function UnifiedReaderPage(
     );
 
   if (isProject) {
-    redirect(`/bns-project/${slug}`);
+    redirect(`/projects/${slug}`);
   }
 
-  let initialMode: "loading" | "error" | "article" | "story" | "trivia" = "loading";
-  let initialArticle: Record<string, unknown> | null = null;
-  let initialTrivia: TriviaSetApi | null = null;
-  let initialStory: StoryData | null = null;
-
-  const resolved = await resolveContentSlug(slug);
-
-  if (resolved?.type === "article") {
-    initialArticle = resolved.data;
-    initialMode = "article";
-  } else if (resolved?.type === "trivia") {
-    initialTrivia = resolved.data as TriviaSetApi;
-    initialMode = "trivia";
-  } else if (resolved?.type === "story") {
-    const foundStory = resolved.data as Record<string, unknown>;
-    let parsedCards: StoryCard[] = [];
-    try {
-      const body = foundStory.body;
-      parsedCards =
-        typeof body === "string"
-          ? (JSON.parse(body) as StoryCard[])
-          : Array.isArray(body)
-            ? (body as StoryCard[])
-            : [];
-    } catch {
-      parsedCards = [];
-    }
-
-    const metadata =
-      foundStory.metadata && typeof foundStory.metadata === "object"
-        ? (foundStory.metadata as Record<string, string>)
-        : {};
-
-    initialStory = {
-      id: String(foundStory.id ?? slug),
-      title: String(foundStory.title ?? ""),
-      subtitle: String(foundStory.summary ?? ""),
-      icon: metadata.icon || "📖",
-      duration: metadata.duration || "2 min",
-      cards: parsedCards,
-    };
-    initialMode = "story";
-  } else {
-    initialMode = "error";
-  }
-
-  return (
-    <UnifiedReaderClientPage
-      initialMode={initialMode}
-      initialArticle={initialArticle}
-      initialTrivia={initialTrivia}
-      initialStory={initialStory}
-    />
-  );
+  redirect("/projects");
 }

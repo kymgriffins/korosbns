@@ -192,46 +192,41 @@ const nextConfig: NextConfig = {
         destination: "/contact/",
         permanent: true,
       },
-      // Consolidated legacy routes redirecting to unified /learn
+      // Hide /learn completely: redirect all /learn and /learn/:slug* to canonical /projects
+      {
+        source: "/learn",
+        destination: "/projects",
+        permanent: false,
+      },
+      {
+        source: "/learn/:slug*",
+        destination: "/projects",
+        permanent: false,
+      },
+      // Consolidated legacy routes redirecting to canonical /projects
       {
         source: "/articles/:slug*",
-        destination: "/learn/:slug*",
+        destination: "/projects",
         permanent: false,
       },
       {
         source: "/trivia/:slug*",
-        destination: "/learn/:slug*",
+        destination: "/projects",
         permanent: false,
       },
       {
         source: "/knowledge/:slug*",
-        destination: "/learn/:slug*",
-        permanent: false,
-      },
-      {
-        source: "/learn/bps/:path*",
-        destination: "/learn/",
-        permanent: false,
-      },
-      {
-        source: "/learn/deep-dives/:slug*",
-        destination: "/learn/:slug*",
-        permanent: false,
-      },
-      // /learn/units/* is handled by app router → redirect to /learn/paths/{edition}
-      {
-        source: "/learn/repository/:path*",
-        destination: "/learn/",
+        destination: "/projects",
         permanent: false,
       },
       {
         source: "/cafe/:path*",
-        destination: "/learn/",
+        destination: "/projects",
         permanent: false,
       },
       {
         source: "/challenges/:path*",
-        destination: "/learn/",
+        destination: "/projects",
         permanent: false,
       },
       {
@@ -241,12 +236,12 @@ const nextConfig: NextConfig = {
       },
       {
         source: "/test/:path*",
-        destination: "/learn/",
+        destination: "/projects",
         permanent: false,
       },
       {
         source: "/users/:id*",
-        destination: "/learn/",
+        destination: "/projects",
         permanent: false,
       },
       {
