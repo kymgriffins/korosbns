@@ -66,5 +66,12 @@
       "color": "text-amber-500",
       "bg": "bg-amber-500/10"
     }
-  ]
+  ],
+  "provenance": {
+    "lastUpdated": "2026-09-17T12:29:24.888Z",
+    "lastSaved": "2026-09-17T12:29:24.888Z",
+    "lastSync": "2026-09-17T12:29:24.888Z"
+  },
+  "_savedAt": "2026-09-17T12:29:24.888Z",
+  "lastSaved": "2026-09-17T12:29:24.888Z"
 }

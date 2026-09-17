@@ -30,6 +30,8 @@ import {
   getHeroAspectClass,
   getHeroObjectFitClass,
 } from "@/lib/design-tokens";
+import { useThemePreset } from "@/hooks/use-theme-preset";
+import { BrutalistProgrammesHub } from "@/components/marketing/theme-newsroom-layouts";
 
 const PartnersMarquee = dynamic(
   () => import("@/components/marketing/partners-marquee"),
@@ -81,6 +83,7 @@ export function ProgrammesLanding({
   sectionsConfig,
   featuredProjects,
 }: ProgrammesLandingProps) {
+  const themePreset = useThemePreset();
   const landing = programmesData.landing as ProgrammesLandingCms;
   const closing = programmesData.closing;
   const civic = civicProgrammesFromContent(programmesData) as ProgrammeBlock[];
@@ -98,6 +101,17 @@ export function ProgrammesLanding({
 
   const show = (sectionId: string) =>
     isSectionVisible("programmes", sectionId, sectionsConfig);
+
+  if (themePreset === "brutalist") {
+    return (
+      <BrutalistProgrammesHub
+        programmes={civic}
+        landing={landing}
+        featuredProjects={featuredProjects ?? undefined}
+        closing={closing}
+      />
+    );
+  }
 
   return (
     <div className="w-full min-h-dvh bg-background overflow-x-clip text-foreground">

@@ -1,41 +1,41 @@
 {
   "landing": {
     "seoTitle": "Budget Ndio Story | Follow Kenya's Budget. Find the Story.",
-    "seoDescription": "Explore Budget Ndio Story programmes on national and county budget accountability, newsroom capacity, and evidence production across Kenya's public finance system.",
+    "seoDescription": "Partner with Budget Ndio Story on national and county budget accountability, newsroom capacity, and evidence production across Kenya's public finance system.",
     "headline": "Follow the budget. Find the story.",
-    "body": "Kenya's public money moves fast, and mostly out of sight. Budget Ndio Story tracks it nationally and in select counties  --  turning opaque fiscal policy into clear civic education communities, institutions, and newsrooms can act on.",
+    "body": "Kenya's public money moves fast, and mostly out of sight. Budget Ndio Story tracks it nationally and in select counties  --  turning opaque fiscal policy into verified intelligence partners, institutions, and newsrooms can act on.",
     "subhead": "Three programmes  --  Connect, Mashinani, and Wanahabari  --  with evidence captured through BNS Studio.",
     "exploreCta": {
       "label": "Explore Programmes",
       "href": "#programmes-matrix"
     },
     "partnerCta": {
-      "label": "Contact us",
-      "href": "/contact"
+      "label": "Discuss Partnership",
+      "href": "/contact?intent=partner"
     }
   },
   "cardBlurbs": {
     "connect": "National money, verified and published for institutional and public use.",
     "mashinani": "Rooted in Four counties : Kakamega, Kilifi, Nakuru, Wajir.",
     "wanahabari-lab": "A newsroom bench trained for the eleven months after Budget Day.",
-    "studios": "Commissioned craft that sustains civic scrutiny  --  not the other way around."
+    "studios": "Commissioned craft that funds civic scrutiny  --  not the other way around."
   },
   "closing": {
-    "seoTitle": "Explore Programmes | Budget Ndio Story",
-    "seoDescription": "Explore Budget Ndio Story programmes on national and county budget accountability, journalist training, and civic evidence production.",
-    "headline": "Ready to explore our programmes?",
-    "body": "Three programmes, one evidence system: BNS Connect monitors the national flow, BNS Mashinani delivers county-level scrutiny, and Wanahabari Lab builds newsroom capacity  --  with production captured through BNS Studio.",
+    "seoTitle": "Partner With BNS | Budget Ndio Story",
+    "seoDescription": "Partner with Budget Ndio Story on national and county budget accountability, journalist training, or commissioned impact content.",
+    "headline": "Partner with BNS",
+    "body": "Three programmes, one evidence system: BNS Connect monitors the national flow, BNS Mashinani delivers county-level scrutiny, and Wanahabari Lab builds newsroom capacity  --  with production and commissions captured through BNS Studio.",
     "cta": {
-      "label": "Contact us",
-      "href": "/contact",
-      "note": "Programme enquiry, commission, or general question"
+      "label": "Partner with BNS",
+      "href": "/contact?intent=partner",
+      "note": "Programme partnership, commission, or funding enquiry"
     }
   },
   "contactIntents": {
     "partner": {
-      "title": "Collaborate with BNS",
-      "blurb": "Tell us whether you're exploring a programme collaboration, a Studios commission, or a civic education enquiry  --  we'll route your message.",
-      "messagePrefill": "I'd like to collaborate with Budget Ndio Story. Enquiry type: [programme / commission / learning]. Details:"
+      "title": "Partner with BNS",
+      "blurb": "Tell us whether you're exploring a programme partnership, a Studios commission, or funding support  --  we'll route your enquiry.",
+      "messagePrefill": "I'd like to partner with Budget Ndio Story. Enquiry type: [programme / commission / funding]. Details:"
     },
     "budget-tracker": {
       "title": "Become a Budget Tracker",
@@ -174,9 +174,9 @@
         "hidden": true
       },
       "secondaryCta": {
-        "label": "Contact us",
-        "href": "/contact?programme=connect",
-        "note": "Programme enquiry for BNS Connect",
+        "label": "Discuss Co-Funding",
+        "href": "/contact?intent=partner&programme=connect",
+        "note": "Co-funding enquiry for BNS Connect",
         "hidden": false,
         "showOnMobile": false,
         "showOnDesktop": false
@@ -303,9 +303,9 @@
         "hidden": true
       },
       "secondaryCta": {
-        "label": "Contact us",
-        "href": "/contact?programme=mashinani",
-        "note": "Programme enquiry for BNS Mashinani",
+        "label": "Discuss Co-Funding",
+        "href": "/contact?intent=partner&programme=mashinani",
+        "note": "Co-funding enquiry for BNS Mashinani",
         "hidden": true
       },
       "href": "/programmes/mashinani",
@@ -436,9 +436,9 @@
         "hidden": true
       },
       "secondaryCta": {
-        "label": "Contact us",
-        "href": "/contact?programme=wanahabari-lab",
-        "note": "Programme enquiry for Wanahabari Lab",
+        "label": "Discuss Co-Funding",
+        "href": "/contact?intent=partner&programme=wanahabari-lab",
+        "note": "Co-funding enquiry for Wanahabari Lab",
         "hidden": true
       },
       "href": "/programmes/wanahabari-lab",
@@ -560,5 +560,12 @@
         "caption": "High-craft creative productions commissioned to cross-subsidize civic scrutiny."
       }
     }
-  ]
+  ],
+  "provenance": {
+    "lastUpdated": "2026-09-17T12:29:00.324Z",
+    "lastSaved": "2026-09-17T12:29:00.324Z",
+    "lastSync": "2026-09-17T12:29:00.324Z"
+  },
+  "_savedAt": "2026-09-17T12:29:00.324Z",
+  "lastSaved": "2026-09-17T12:29:00.324Z"
 }

@@ -21,6 +21,7 @@ import {
   MobileArticleToc,
 } from "@/components/budget-news/report-blocks";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { useThemePreset } from "@/hooks/use-theme-preset";
 
 function ChapterContent({
   slug,
@@ -29,6 +30,7 @@ function ChapterContent({
   slug: string;
   chapterSlug: string;
 }) {
+  const themePreset = useThemePreset();
   const { data: mod, isLoading, error } = useQuery({
     queryKey: ["budget-news", "module", slug],
     queryFn: () => budgetData.fetchModule(slug),
@@ -94,7 +96,7 @@ function ChapterContent({
   const articleHeadings = getArticleHeadings(chapter.text || "");
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className={`min-h-screen bg-background ${themePreset === "brutalist" ? "budget-news-surface" : ""}`}>
       <article className="mx-auto max-w-5xl px-4 py-12 sm:px-6 lg:grid lg:grid-cols-[200px_minmax(0,1fr)_180px] lg:gap-6 xl:gap-8">
 
         <aside className="hidden lg:block">

@@ -150,6 +150,7 @@ export function Header() {
             ? "bg-background/95 backdrop-blur-md border-b border-border/40 shadow-xs"
             : "bg-background/80 backdrop-blur-md border-b border-border/20 shadow-2xs",
         )}
+          data-marketing-nav
       >
         <div
           className={cn(

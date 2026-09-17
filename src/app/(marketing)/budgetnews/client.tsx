@@ -10,10 +10,12 @@ import type { CivicModule } from "@/types/learn";
 import type { BudgetNewsYear } from "@/lib/learn-hub";
 import { YearTabs } from "@/components/budget-news/year-tabs";
 import { BudgetNewsErrorBoundary } from "./error-boundary";
+import { useThemePreset } from "@/hooks/use-theme-preset";
 
 const YEARS_KEY = ["budget-news", "years"] as const;
 
 function BudgetNewsContent() {
+  const themePreset = useThemePreset();
   const [selectedLabel, setSelectedLabel] = useState<string | null>(null);
 
   const [initialized, setInitialized] = useState(false);
@@ -95,7 +97,7 @@ function BudgetNewsContent() {
   }
 
   return (
-    <div className="min-h-screen overflow-x-hidden bg-background">
+    <div className={`min-h-screen overflow-x-hidden bg-background ${themePreset === "brutalist" ? "budget-news-surface" : ""}`}>
       <div className="mx-auto max-w-5xl px-4 py-10 sm:px-6 sm:py-12">
         <div className="flex items-center gap-3 mb-2">
           <div className="bg-primary/10 p-2 rounded-xl shrink-0">

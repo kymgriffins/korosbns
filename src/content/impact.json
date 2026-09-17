@@ -50,9 +50,16 @@
   "cta": {
     "heading": "Want to join the movement?",
     "description": "Subscribe to our newsletter for monthly budget updates, or follow us on social media for daily explainers.",
-    "primaryLabel": "Explore programmes",
-    "primaryHref": "/programmes",
+    "primaryLabel": "Start Learning",
+    "primaryHref": "/learn",
     "secondaryLabel": "Follow on Instagram",
     "secondaryHref": "https://instagram.com/budgetndiostory"
-  }
+  },
+  "provenance": {
+    "lastUpdated": "2026-09-17T12:29:24.886Z",
+    "lastSaved": "2026-09-17T12:29:24.886Z",
+    "lastSync": "2026-09-17T12:29:24.886Z"
+  },
+  "_savedAt": "2026-09-17T12:29:24.886Z",
+  "lastSaved": "2026-09-17T12:29:24.886Z"
 }

@@ -3,7 +3,9 @@
     "source": "BNS Studio page content (seed)",
     "note": "CMS-managed page sections, images, and configuration for the BNS Studio page. Add/remove/reorder sections in the 'sections' array.",
     "level": "seed",
-    "lastUpdated": "2026-09-12"
+    "lastUpdated": "2026-09-17T12:29:28.997Z",
+    "lastSaved": "2026-09-17T12:29:28.997Z",
+    "lastSync": "2026-09-17T12:29:28.997Z"
   },
   "sections": [
     {
@@ -273,5 +275,7 @@
     "title": "BNS Studio - Forensic Civic Media Production",
     "description": "Documentaries, podcasts, animations, town halls, and social reels - verified civic media production from Budget Ndio Story.",
     "ogImage": "/images/media/129A3905.jpg"
-  }
+  },
+  "_savedAt": "2026-09-17T12:29:28.997Z",
+  "lastSaved": "2026-09-17T12:29:28.997Z"
 }

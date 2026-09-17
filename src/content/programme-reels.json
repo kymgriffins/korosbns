@@ -3,7 +3,9 @@
     "source": "BNS R2 Social Reels Archive (seed)",
     "note": "CMS-managed reels migrated from bns-r2-reels.ts constant. Each reel is tagged with programmeSlug for cross-programme discovery.",
     "level": "seed",
-    "lastUpdated": "2026-09-12"
+    "lastUpdated": "2026-09-17T12:29:28.989Z",
+    "lastSaved": "2026-09-17T12:29:28.989Z",
+    "lastSync": "2026-09-17T12:29:28.989Z"
   },
   "reels": [
     {
@@ -199,5 +201,7 @@
       "tiktokUrl": "https://www.tiktok.com/@budget.ndio.story",
       "programmeSlug": "wanahabari-lab"
     }
-  ]
+  ],
+  "_savedAt": "2026-09-17T12:29:28.989Z",
+  "lastSaved": "2026-09-17T12:29:28.989Z"
 }

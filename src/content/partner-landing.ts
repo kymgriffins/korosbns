@@ -329,46 +329,75 @@ const DEFAULT_PROGRAMME_EXPLAINS: PartnerProgrammeExplain[] = [
     slug: "connect",
     number: "01",
     name: PARTNER_PROGRAMME_VOCAB.connect.name,
-    eyebrow: "National Budget",
-    title: "BNS Connect",
-    lede: "Tracking the KSh 4.8T national budget from Treasury allocation to ministry execution.",
-    success: "KSh 4.8T Monitored",
+    eyebrow: PARTNER_PROGRAMME_VOCAB.connect.label,
+    title: PARTNER_PROGRAMME_VOCAB.connect.phrase,
+    lede: "Tracking the national budget from Treasury allocation to ministry execution, with each decision traced against public records and delivery realities.",
+    success: "Success looks like: Treasury and debt questions stay visible from budget books to implementation, with public evidence driving follow-through.",
     cycle: "Formulation → Budget Day → continuous scrutiny",
     href: PARTNER_PROGRAMME_VOCAB.connect.href,
-    ctaLabel: "Explore programme →",
+    ctaLabel: "Read more",
     stillIds: ["maingi-afrodad", "wajackoyah-afrodad"],
   },
   {
     slug: "mashinani",
     number: "02",
     name: PARTNER_PROGRAMME_VOCAB.mashinani.name,
-    eyebrow: "County Devolved Delivery",
-    title: "BNS Mashinani",
-    lede: "Embedded teams verifying capital delivery across 4 counties (Kakamega, Kitui, Nakuru, Wajir).",
-    success: "4 Counties Embedded",
+    eyebrow: PARTNER_PROGRAMME_VOCAB.mashinani.label,
+    title: PARTNER_PROGRAMME_VOCAB.mashinani.phrase,
+    lede: "Embedded teams verify whether county allocations and service delivery match the promises made in public, from estimates to the point of service.",
+    success: "Success looks like: county budgets are checked in real time, with delivery evidence and citizen questions kept in the same public conversation.",
     cycle: "Estimates → assembly → disbursement & delivery",
     href: PARTNER_PROGRAMME_VOCAB.mashinani.href,
-    ctaLabel: "Explore programme →",
+    ctaLabel: "Read more",
     stillIds: ["townhall-room", "townhall-brief"],
   },
   {
     slug: "wanahabari-lab",
     number: "03",
     name: PARTNER_PROGRAMME_VOCAB["wanahabari-lab"].name,
-    eyebrow: "Investigative Journalism",
-    title: "Wanahabari Lab",
-    lede: "Year-round investigative reporting, moving beyond the 48-hour Budget Day news cycle.",
-    success: "4 Newsroom Labs Anchored",
+    eyebrow: PARTNER_PROGRAMME_VOCAB["wanahabari-lab"].label,
+    title: PARTNER_PROGRAMME_VOCAB["wanahabari-lab"].phrase,
+    lede: "Year-round reporting keeps the budget story moving beyond the 48-hour news cycle, with forensic public-interest scrutiny sustained after Budget Day.",
+    success: "Success looks like: journalists keep the public narrative grounded in evidence, turning policy gaps and delivery failures into accountable reporting.",
     cycle: "Post-Budget Day → investigations & public narrative",
     href: PARTNER_PROGRAMME_VOCAB["wanahabari-lab"].href,
-    ctaLabel: "Explore programme →",
+    ctaLabel: "Read more",
     stillIds: ["hall-camera", "latif-launch"],
   },
 ];
 
 export const PARTNER_PROGRAMME_EXPLAINS: PartnerProgrammeExplain[] =
-  rawLanding.programmeExplains && rawLanding.programmeExplains.length > 0
-    ? (rawLanding.programmeExplains as PartnerProgrammeExplain[])
+  Array.isArray(rawLanding.programmeExplains) && rawLanding.programmeExplains.length > 0
+    ? rawLanding.programmeExplains.map((item, index) => {
+        const fallback =
+          DEFAULT_PROGRAMME_EXPLAINS.find((entry) => entry.slug === item.slug) ??
+          DEFAULT_PROGRAMME_EXPLAINS[index % DEFAULT_PROGRAMME_EXPLAINS.length];
+
+        const pick = (value: string | undefined, fallbackValue: string): string =>
+          typeof value === "string" && value.trim() !== "" ? value : fallbackValue;
+
+        return {
+          ...fallback,
+          ...item,
+          number: item.number || fallback.number,
+          name: pick(item.name, fallback.name),
+          eyebrow: pick(item.eyebrow, fallback.eyebrow),
+          title: pick(item.title, fallback.title),
+          lede: pick(item.lede, fallback.lede),
+          success: pick(item.success, fallback.success),
+          cycle: pick(item.cycle, fallback.cycle),
+          href: pick(item.href, fallback.href),
+          ctaLabel: pick(item.ctaLabel, fallback.ctaLabel),
+          stillIds:
+            Array.isArray(item.stillIds) && item.stillIds.length > 0
+              ? item.stillIds
+              : fallback.stillIds,
+          images:
+            Array.isArray(item.images) && item.images.length > 0
+              ? item.images
+              : fallback.images,
+        };
+      })
     : DEFAULT_PROGRAMME_EXPLAINS;
 
 export function resolvePartnerProgrammeExplains(

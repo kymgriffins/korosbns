@@ -3,7 +3,10 @@
     "source": "seeds/youtube_series_modules.json + YouTube RSS Bloodline",
     "note": "Authorized active YouTube RSS playlist modules and comprehensive companion articles. Additional modules deferred until explicit user authorization.",
     "level": "fallback",
-    "shape": "youtube_rss_playlist_catalogue"
+    "shape": "youtube_rss_playlist_catalogue",
+    "lastUpdated": "2026-09-17T12:29:19.534Z",
+    "lastSaved": "2026-09-17T12:29:19.534Z",
+    "lastSync": "2026-09-17T12:29:19.534Z"
   },
   "count": 3,
   "results": [
@@ -150,5 +153,7 @@
       "author": null,
       "trivia": []
     }
-  ]
+  ],
+  "_savedAt": "2026-09-17T12:29:19.534Z",
+  "lastSaved": "2026-09-17T12:29:19.534Z"
 }

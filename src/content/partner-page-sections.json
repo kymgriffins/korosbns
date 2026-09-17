@@ -42,7 +42,7 @@
         {
           "id": "partners",
           "label": "Partners marquee",
-          "visible": false
+          "visible": true
         },
         {
           "id": "cta",
@@ -80,7 +80,7 @@
           "visible": false
         }
       ],
-      "layoutArchetype": "sovereign"
+      "layoutArchetype": "brutalist"
     },
     "about": {
       "route": "/about",
@@ -119,8 +119,7 @@
           "label": "Partnership CTA",
           "visible": true
         }
-      ],
-      "layoutArchetype": "sovereign"
+      ]
     },
     "programmes": {
       "route": "/programmes",
@@ -152,7 +151,7 @@
         {
           "id": "partners",
           "label": "Partners marquee",
-          "visible": false
+          "visible": true
         },
         {
           "id": "projectsLoop",
@@ -164,8 +163,7 @@
           "label": "Editorial CTA band",
           "visible": true
         }
-      ],
-      "layoutArchetype": "sovereign"
+      ]
     },
     "programmeConnect": {
       "route": "/programmes/connect",
@@ -192,7 +190,7 @@
         {
           "id": "partnerAssets",
           "label": "Partner assets & deliverables",
-          "visible": true
+          "visible": false
         },
         {
           "id": "pillars",
@@ -207,20 +205,19 @@
         {
           "id": "reels",
           "label": "Programme social reels",
-          "visible": true
+          "visible": false
         },
         {
           "id": "otherProgrammes",
           "label": "Other programmes",
-          "visible": true
+          "visible": false
         },
         {
           "id": "cta",
           "label": "Editorial CTA",
-          "visible": true
+          "visible": false
         }
-      ],
-      "layoutArchetype": "editorial"
+      ]
     },
     "programmeMashinani": {
       "route": "/programmes/mashinani",
@@ -262,20 +259,19 @@
         {
           "id": "reels",
           "label": "Programme social reels",
-          "visible": true
+          "visible": false
         },
         {
           "id": "otherProgrammes",
           "label": "Other programmes",
-          "visible": true
+          "visible": false
         },
         {
           "id": "cta",
           "label": "Editorial CTA",
           "visible": true
         }
-      ],
-      "layoutArchetype": "sovereign"
+      ]
     },
     "programmeWanahabari": {
       "route": "/programmes/wanahabari-lab",
@@ -317,20 +313,19 @@
         {
           "id": "reels",
           "label": "Programme social reels",
-          "visible": true
+          "visible": false
         },
         {
           "id": "otherProgrammes",
           "label": "Other programmes",
-          "visible": true
+          "visible": false
         },
         {
           "id": "cta",
           "label": "Editorial CTA",
           "visible": true
         }
-      ],
-      "layoutArchetype": "editorial"
+      ]
     },
     "programmeStudios": {
       "route": "/programmes/studios",
@@ -344,8 +339,7 @@
           "label": "Redirect only",
           "visible": false
         }
-      ],
-      "layoutArchetype": "sovereign"
+      ]
     },
     "contact": {
       "route": "/contact",
@@ -364,8 +358,7 @@
           "label": "Form / socials body",
           "visible": true
         }
-      ],
-      "layoutArchetype": "sovereign"
+      ]
     },
     "reports": {
       "route": "/reports",
@@ -414,8 +407,7 @@
           "label": "Editorial CTA",
           "visible": true
         }
-      ],
-      "layoutArchetype": "editorial"
+      ]
     },
     "careers": {
       "route": "/careers",
@@ -449,8 +441,7 @@
           "label": "Closing CTA",
           "visible": true
         }
-      ],
-      "layoutArchetype": "sovereign"
+      ]
     },
     "studio": {
       "route": "/bns-studio",
@@ -509,8 +500,7 @@
         "enabled": false,
         "minMs": 0,
         "variant": "studio-reel"
-      },
-      "layoutArchetype": "cinematic"
+      }
     },
     "work": {
       "route": "/work",
@@ -534,8 +524,7 @@
           "label": "Project grid",
           "visible": true
         }
-      ],
-      "layoutArchetype": "cinematic"
+      ]
     },
     "projectIndex": {
       "route": "/bns-project",
@@ -554,8 +543,7 @@
           "label": "Project cards",
           "visible": true
         }
-      ],
-      "layoutArchetype": "sovereign"
+      ]
     },
     "projectDetail": {
       "route": "/bns-project/[id]",
@@ -569,8 +557,7 @@
           "label": "Long-form editorial body",
           "visible": true
         }
-      ],
-      "layoutArchetype": "editorial"
+      ]
     },
     "reportDetail": {
       "route": "/reports/[slug]",
@@ -584,8 +571,7 @@
           "label": "Article shells",
           "visible": true
         }
-      ],
-      "layoutArchetype": "editorial"
+      ]
     },
     "learn": {
       "route": "/learn",
@@ -609,8 +595,7 @@
           "label": "Catalogue",
           "visible": true
         }
-      ],
-      "layoutArchetype": "sovereign"
+      ]
     },
     "forum": {
       "route": "/learn/forum",
@@ -624,8 +609,14 @@
           "label": "Forum surface",
           "visible": false
         }
-      ],
-      "layoutArchetype": "sovereign"
+      ]
     }
-  }
+  },
+  "provenance": {
+    "lastUpdated": "2026-09-17T12:29:00.328Z",
+    "lastSaved": "2026-09-17T12:29:00.328Z",
+    "lastSync": "2026-09-17T12:29:00.328Z"
+  },
+  "_savedAt": "2026-09-17T12:29:00.328Z",
+  "lastSaved": "2026-09-17T12:29:00.328Z"
 }

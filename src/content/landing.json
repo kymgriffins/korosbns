@@ -2,13 +2,13 @@
   "heroNarrative": {
     "eyebrow": "After Budget Day",
     "title": "The budget lands. Then the silence.",
-    "lede": "From the Exchequer to the mwananchi, we follow the money. We turn Kenya’s budgets into stories, journalism and civic action  --  giving young people and communities the knowledge to understand, question and shape how public money is spent.\n"
+    "lede": "From the Exchequer to the mwananchi, we track the money, verify the numbers, and turn Kenya’s public spending into evidence people can understand, question, and act on."
   },
   "thesis": {
     "eyebrow": "Who we are",
-    "title": "Three programmes. Year-round accountability.",
-    "body": "Budget Ndio Story verifies what Treasury and counties publish, embeds where delivery happens, and trains newsrooms to stay forensic after Budget Day  --  so communities and journalists can brief, cite, and hold public money to account.\n\nBeyond the budget. Into the evidence.\nWe verify the numbers, follow delivery on the ground, and equip journalists to keep public money under scrutiny long after Budget Day.\n",
-    "method": "From exchequer to local Mwananchi"
+    "title": "Three bets. Year-round accountability.",
+    "body": "Beyond the budget. Into the evidence. We verify the numbers, follow delivery on the ground, and equip journalists to keep public money under scrutiny long after Budget Day.",
+    "method": "Verify → embed → train & co-produce"
   },
   "programmeExplains": [
     {
@@ -18,8 +18,8 @@
       "eyebrow": "Connect",
       "title": "National budget intelligence",
       "lede": "We verify what Treasury publishes and keep national debt and allocation questions alive after Budget Day.",
-      "success": "Success looks like a baseline communities and newsrooms can brief and cite  --  AFRODAD debt forums, continental panels, continuous scrutiny.",
-      "cycle": "Formulation → Budget Day → Ground Truth",
+      "success": "Success looks like: Treasury and debt questions stay visible from budget books to implementation, with public evidence driving follow-through.",
+      "cycle": "Formulation → Budget Day → continuous scrutiny",
       "href": "/programmes/connect",
       "ctaLabel": "Read more",
       "stillIds": [
@@ -48,7 +48,7 @@
       "eyebrow": "Mashinani",
       "title": "County delivery verification",
       "lede": "Full-cycle embeds in Kakamega, Kilifi, Nakuru, and Wajir track whether equitable share reaches clinics, roads, and schools.",
-      "success": "Success looks like scorecards, town halls, and field briefings that show delivery  --  not estimates alone.",
+      "success": "Success looks like: county budgets are checked in real time, with delivery evidence and citizen questions kept in the same public conversation.",
       "cycle": "Estimates → assembly → disbursement & delivery",
       "href": "/programmes/mashinani",
       "ctaLabel": "Read more",
@@ -77,9 +77,9 @@
       "name": "Wanahabari Lab",
       "eyebrow": "Wanahabari",
       "title": "Newsroom scrutiny",
-      "lede": "Training and co-production keep journalists forensic after Budget Day  --  when the spending story actually begins.",
-      "success": "Success looks like investigations and launches newsrooms can brief against  --  Red Flags, TERRA, newsroom-ready scrutiny.",
-      "cycle": "Post–Budget Day → investigations & public narrative",
+      "lede": "Training and co-production keep journalists forensic after Budget Day, when the spending story actually begins.",
+      "success": "Success looks like: journalists keep the public narrative grounded in evidence, turning policy gaps and delivery failures into accountable reporting.",
+      "cycle": "Post-Budget Day → investigations & public narrative",
       "href": "/programmes/wanahabari-lab",
       "ctaLabel": "Read more",
       "stillIds": [
@@ -104,16 +104,16 @@
   ],
   "featuredIntro": {
     "eyebrow": "Stories behind the evidence",
-    "headline": "Projects communities can learn from",
-    "lede": "Films, forums & field stories.\nFrom AFRODAD debt forums and Red Flags investigations in Government Projects to Project TERRA, we turn real conversations and public finance issues into films, events and visual stories  --  rooted in the people and places where the work happens.\n"
+    "headline": "Evidence that can be briefed, shared, and acted on",
+    "lede": "From AFRODAD debt forums and Red Flags investigations to Project TERRA, we turn real public-finance conversations into films, field stories, and evidence partners can use."
   },
   "partnerCta": {
-    "eyebrow": "Get involved",
-    "title": "Explore national budget intelligence, county delivery verification, or newsroom scrutiny.",
-    "description": "Learn how our programmes work, read the reports, or contact the team  --  with civic production captured through BNS Studio.",
-    "ctaLabel": "Contact us",
-    "ctaHref": "/contact",
-    "secondaryLabel": "Explore programmes",
+    "eyebrow": "Partner with us",
+    "title": "See the work. Ask the question. Join the public record.",
+    "description": "National budget intelligence, county delivery verification, and newsroom scrutiny all work best when evidence is shared with the public and partners who need it.",
+    "ctaLabel": "Get involved",
+    "ctaHref": "/contact?intent=partner",
+    "secondaryLabel": "View programmes",
     "secondaryHref": "/programmes",
     "hideSecondaryButton": false,
     "hidePrimaryButton": false
@@ -122,20 +122,20 @@
     "brand": "Budget Ndio Story",
     "headlineBefore": "Follow the budget.",
     "headlineHighlight": "Find the story.",
-    "body": "Kenya's public money moves fast, and mostly out of sight. We turn opaque fiscal policy into clear civic education for communities, institutions, and newsrooms  --  nationally and in select counties.",
+    "body": "Kenya's public money moves fast, and mostly out of sight. We turn opaque fiscal policy into verified intelligence for partners, institutions, and newsrooms  --  nationally and in select counties.",
     "primaryCta": {
       "label": "See how programmes work",
       "href": "#explain-connect"
     },
     "secondaryCta": {
-      "label": "Explore programmes",
-      "href": "/programmes"
+      "label": "Partner with BNS",
+      "href": "/contact?intent=partner"
     },
     "videoSrcKey": "heroLandingVideoMp4"
   },
   "storyIntro": {
     "title": "Featured programme evidence",
-    "body": "House of Fiscal Wisdom with Dr. Lyla Latif  --  forensic briefing on illicit financial flows, produced with Wanahabari Lab as evidence communities can learn from.",
+    "body": "House of Fiscal Wisdom with Dr. Lyla Latif  --  forensic briefing on illicit financial flows, produced with Wanahabari Lab as evidence partners can brief against.",
     "cta": {
       "label": "View programmes",
       "href": "/programmes"
@@ -199,14 +199,14 @@
     "eyebrow": "Impact production",
     "titleBefore": "Evidence by",
     "titleHighlight": "format and partner",
-    "description": "Browse podcasts, documentaries, animations, and civic campaigns organised by content type and organisation  --  craft that helps Kenya's youth read the budget.",
-    "highlight": "Every production pairs evidence-based storytelling for audiences with Budget Ndio Story's civic education mission.",
+    "description": "Browse commissioned podcasts, documentaries, animations, and civic campaigns organised by content type and organisation  --  every project helps fund Kenya's leading youth budget platform.",
+    "highlight": "Every commission is double impact: evidence-based content for your audience, with proceeds reinvested into Budget Ndio Story's civic mission.",
     "seeMoreLabel": "Browse evidence",
     "seeMoreHref": "/bns-studio",
     "seeMoreNewTab": true,
     "primaryCta": {
-      "label": "Explore Studios",
-      "href": "/bns-studio",
+      "label": "Start a commission",
+      "href": "/bns-studio#booking",
       "newTab": true
     },
     "secondaryCta": {
@@ -230,8 +230,8 @@
         "href": "/programmes"
       },
       {
-        "label": "Reports",
-        "href": "/reports"
+        "label": "Learn",
+        "href": "/learn"
       },
       {
         "label": "About",
@@ -239,6 +239,10 @@
       }
     ],
     "secondary": [
+      {
+        "label": "Reports",
+        "href": "/reports"
+      },
       {
         "label": "Studios",
         "href": "/bns-studio"
@@ -248,6 +252,10 @@
       {
         "label": "Programmes",
         "href": "/programmes"
+      },
+      {
+        "label": "Learn",
+        "href": "/learn"
       },
       {
         "label": "Reports",
@@ -372,5 +380,12 @@
       "label": "Wanahabari",
       "href": "/programmes/wanahabari-lab"
     }
-  ]
+  ],
+  "provenance": {
+    "lastUpdated": "2026-09-17T12:29:00.319Z",
+    "lastSaved": "2026-09-17T12:29:00.319Z",
+    "lastSync": "2026-09-17T12:29:00.319Z"
+  },
+  "_savedAt": "2026-09-17T12:29:00.319Z",
+  "lastSaved": "2026-09-17T12:29:00.319Z"
 }

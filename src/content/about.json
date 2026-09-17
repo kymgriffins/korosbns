@@ -38,8 +38,15 @@
       "href": "/contact"
     },
     "secondaryCta": {
-      "label": "Contact us",
-      "href": "/contact"
+      "label": "Partner with BNS",
+      "href": "/contact?intent=partner"
     }
-  }
+  },
+  "provenance": {
+    "lastUpdated": "2026-09-17T12:29:00.331Z",
+    "lastSaved": "2026-09-17T12:29:00.331Z",
+    "lastSync": "2026-09-17T12:29:00.331Z"
+  },
+  "_savedAt": "2026-09-17T12:29:00.331Z",
+  "lastSaved": "2026-09-17T12:29:00.331Z"
 }

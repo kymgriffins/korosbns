@@ -214,6 +214,14 @@ html[data-theme-preset="brutalist"],
   --color-midnight-ink: #000000;
   --color-mist: #fffdf5;
   --color-frost: #000000;
+  --theme-news-paper: #fffdf5;
+  --theme-news-ink: #000000;
+  --theme-news-accent: #d9ff00;
+  --theme-news-hot: #ff4d00;
+  --theme-news-muted: #262626;
+  --theme-shell-bg: #ff4d00;
+  --theme-shell-fg: #000000;
+  --theme-shell-border: #000000;
 }
 
 html.dark[data-theme-preset="brutalist"],
@@ -255,6 +263,14 @@ html.dark[data-theme-preset="brutalist"],
   --color-midnight-ink: #ffffff;
   --color-mist: #000000;
   --color-frost: #ffffff;
+  --theme-news-paper: #000000;
+  --theme-news-ink: #ffffff;
+  --theme-news-accent: #ffe600;
+  --theme-news-hot: #ff5500;
+  --theme-news-muted: #d4d4d4;
+  --theme-shell-bg: #ff5500;
+  --theme-shell-fg: #000000;
+  --theme-shell-border: #ffffff;
 }
 
 html[data-theme-preset="brutalist"] button,
@@ -273,4 +289,50 @@ html[data-theme-preset="brutalist"] [class*="card"] {
   border-radius: 0px !important;
   border: 2px solid var(--border) !important;
   box-shadow: 4px 4px 0px 0px var(--border) !important;
+}
+
+html[data-theme-preset="brutalist"] [data-marketing-nav] {
+  background: var(--theme-shell-bg) !important;
+  color: var(--theme-shell-fg);
+  border-color: var(--theme-shell-border) !important;
+  backdrop-filter: none;
+  box-shadow: 4px 4px 0 var(--theme-shell-border);
+}
+
+html[data-theme-preset="brutalist"] [data-marketing-nav] a,
+html[data-theme-preset="brutalist"] [data-marketing-nav] button {
+  color: var(--theme-shell-fg);
+  text-shadow: none;
+}
+
+html[data-theme-preset="brutalist"] [data-marketing-footer] {
+  border-top: 4px solid var(--theme-shell-border);
+  background: var(--theme-news-paper);
+  color: var(--theme-news-ink);
+}
+
+html[data-theme-preset="brutalist"] .budget-news-surface {
+  background: var(--theme-news-paper);
+  color: var(--theme-news-ink);
+}
+
+html[data-theme-preset="brutalist"] .budget-news-surface article,
+html[data-theme-preset="brutalist"] .budget-news-surface [data-slot="collapsible"] {
+  border: 4px solid var(--theme-news-ink);
+  border-radius: 0;
+  box-shadow: 5px 5px 0 var(--theme-news-ink);
+}
+
+html[data-theme-preset="brutalist"] .budget-news-surface h1,
+html[data-theme-preset="brutalist"] .budget-news-surface h2,
+html[data-theme-preset="brutalist"] .budget-news-surface h3 {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: -0.06em;
+}
+
+html[data-theme-preset="brutalist"] .brutalist-newsroom {
+  background: var(--theme-news-paper);
+  color: var(--theme-news-ink);
 }

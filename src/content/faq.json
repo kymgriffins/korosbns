@@ -92,9 +92,9 @@
   "hero": {
     "eyebrow": "Budget literacy",
     "ctaHeading": "Still have questions?",
-    "ctaDescription": "Explore BNS programmes and published reports on Kenya's budget cycle.",
-    "ctaLabel": "Explore programmes",
-    "ctaHref": "/programmes"
+    "ctaDescription": "Dive deeper with free civic modules on Kenya's budget cycle.",
+    "ctaLabel": "Start learning",
+    "ctaHref": "/learn"
   },
   "helpTopics": [
     {
@@ -115,11 +115,11 @@
     },
     {
       "id": "learning",
-      "title": "Civic Literacy & Projects",
-      "description": "Flagship project dossiers, civic explainers, certificates context, and how free reading works.",
+      "title": "Learn Hub & Courses",
+      "description": "Interactive civic modules, certificates, quizzes, study guides, and mobile access.",
       "badge": "Education",
       "iconName": "GraduationCap",
-      "popularSearch": "UON cohort, Project TERRA, free reading"
+      "popularSearch": "Free courses, certificates, quizzes"
     },
     {
       "id": "reports",
@@ -322,24 +322,24 @@
     },
     {
       "id": "learn-free",
-      "question": "Are BNS civic literacy materials and project dossiers free to read?",
-      "answer": "Yes, 100% free. Budget Ndio Story is committed to democratizing civic literacy. Anyone can read our project dossiers, explainers, and reports without paying any subscription or paywall fees.",
+      "question": "Are BNS Learn Hub courses, modules, and study tracks free?",
+      "answer": "Yes, 100% free. Budget Ndio Story is committed to democratizing civic literacy. Anyone can read our chapters, take knowledge checks, and explore data visualisations without paying any subscription or paywall fees.",
       "topicId": "learning",
       "tags": [
-        "free reading",
+        "learn hub",
+        "free courses",
         "civic education",
-        "project dossiers",
         "modules"
       ],
       "actionLink": {
-        "label": "Browse flagship projects",
-        "href": "/projects"
+        "label": "Open Learn Hub",
+        "href": "/learn"
       }
     },
     {
       "id": "learn-certs",
       "question": "How do learning tracks and certificates work?",
-      "answer": "As you engage with civic explainers and project dossiers, progress can be tracked in your citizen profile when signed in. Completing foundational tracks unlocks verified completion badges and digital shareable certificates where those programmes are active.",
+      "answer": "As you read chapters and complete end-of-module quizzes, your progress is tracked locally and in your citizen profile. Completing foundational tracks (such as Public Finance Mastery or County Budget Tracking) unlocks verified completion badges and digital shareable certificates.",
       "topicId": "learning",
       "tags": [
         "certificates",
@@ -348,14 +348,14 @@
         "completion"
       ],
       "actionLink": {
-        "label": "Explore programmes",
-        "href": "/programmes"
+        "label": "View Learning Modules",
+        "href": "/learn"
       }
     },
     {
       "id": "learn-offline",
-      "question": "Can I access BNS civic content offline or on low-bandwidth connections?",
-      "answer": "Yes. Key marketing and report pages are optimized for mobile data efficiency. Once loaded, core reading and glossary text remain usable even when connectivity is intermittent.",
+      "question": "Can I access BNS Learn Hub content offline or on low-bandwidth connections?",
+      "answer": "Yes. Our Learn Hub progressive web app is optimized for mobile data efficiency with offline service worker caching. Once loaded, core reading chapters, glossary terms, and study texts remain accessible even without active internet connectivity.",
       "topicId": "learning",
       "tags": [
         "offline",
@@ -493,5 +493,12 @@
         "href": "https://wa.me/254790631623"
       }
     }
-  ]
+  ],
+  "provenance": {
+    "lastUpdated": "2026-09-17T12:29:19.537Z",
+    "lastSaved": "2026-09-17T12:29:19.537Z",
+    "lastSync": "2026-09-17T12:29:19.537Z"
+  },
+  "_savedAt": "2026-09-17T12:29:19.537Z",
+  "lastSaved": "2026-09-17T12:29:19.537Z"
 }

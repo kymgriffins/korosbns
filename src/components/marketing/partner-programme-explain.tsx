@@ -1,15 +1,15 @@
 "use client";
 
-import Image from "next/image";
-import Link from "next/link";
+import { LANDING_TYPOGRAPHY as T } from "@/constants/landing-typography";
 import {
   resolvePartnerProgrammeExplains,
   stillsForIds,
   type PartnerProgrammeExplain,
 } from "@/content/partner-landing";
 import { LandingSection } from "@/layouts/landing-section";
-import { LANDING_TYPOGRAPHY as T } from "@/constants/landing-typography";
 import { cn } from "@/utils";
+import Image from "next/image";
+import Link from "next/link";
 
 export interface PartnerProgrammeExplainSectionsProps {
   explains?: PartnerProgrammeExplain[];
@@ -53,23 +53,30 @@ export function PartnerProgrammeExplainSections({
           Three programmes. Year-round accountability.
         </h2>
         <p className={cn(T.lead, "text-foreground/75")}>
-          From national budget allocations to grassroots county delivery and newsroom investigation.
+          From national budget allocations to grassroots county delivery and
+          newsroom investigation.
         </p>
       </div>
 
       <div className="grid grid-cols-1 gap-12 md:grid-cols-3 md:gap-8 lg:gap-12 md:divide-x md:divide-border/50">
         {items.map((item) => {
           const validCustomImages = (item.images || []).filter(
-            (img: { src?: string }) => Boolean(img?.src && img.src.trim() !== "")
+            (img: { src?: string }) =>
+              Boolean(img?.src && img.src.trim() !== ""),
           );
           const stills =
             validCustomImages.length > 0
-              ? validCustomImages.map((img: { src: string; alt?: string; caption?: string }, i: number) => ({
-                  id: `${item.slug}-custom-${i}`,
-                  src: img.src,
-                  alt: img.alt || item.title || "Programme evidence",
-                  caption: img.caption || item.eyebrow,
-                }))
+              ? validCustomImages.map(
+                  (
+                    img: { src: string; alt?: string; caption?: string },
+                    i: number,
+                  ) => ({
+                    id: `${item.slug}-custom-${i}`,
+                    src: img.src,
+                    alt: img.alt || item.title || "Programme evidence",
+                    caption: img.caption || item.eyebrow,
+                  }),
+                )
               : stillsForIds(item.stillIds);
 
           const stat = getStatInfo(item.slug);
@@ -110,10 +117,14 @@ export function PartnerProgrammeExplainSections({
                   {item.lede}
                 </p>
 
-                <p className="mt-4 text-sm leading-normal text-foreground/70 md:min-h-[4.25rem]">
-                  <span className="font-medium text-foreground">Success looks like: </span>
-                  {cleanSuccess || item.success}
-                </p>
+                <div className="mt-4 rounded-md border border-border/40 bg-muted/25 p-3 transition-colors duration-200 group-hover:border-primary/30 group-hover:bg-primary/5">
+                  <p className="text-[10px] font-medium uppercase tracking-[0.18em] text-muted-foreground">
+                    Success looks like
+                  </p>
+                  <p className="mt-2 text-sm leading-relaxed text-foreground/85">
+                    {cleanSuccess}
+                  </p>
+                </div>
 
                 <div className="mt-3 flex items-center md:min-h-[1.5rem]">
                   {!item.hideCycle && (

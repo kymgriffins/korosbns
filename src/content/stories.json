@@ -3,8 +3,8 @@
     "badge": "Budget Stories",
     "title": "Understanding Kenya's budget, one story at a time",
     "description": "Explore our collection of explainers, analyses, and deep dives into Kenya's fiscal policy. From education to healthcare, we break down where your taxes go.",
-    "ctaLabel": "Browse reports",
-    "ctaHref": "/reports"
+    "ctaLabel": "View Full Learning Module",
+    "ctaHref": "/learn"
   },
   "items": [
     {
@@ -15,7 +15,7 @@
       "readTime": "5 min read",
       "views": "45.2k",
       "image": "/images/project.svg",
-      "href": "/reports"
+      "href": "/learn"
     },
     {
       "id": 2,
@@ -25,7 +25,7 @@
       "readTime": "7 min read",
       "views": "38.7k",
       "image": "/images/client.svg",
-      "href": "/reports"
+      "href": "/learn"
     },
     {
       "id": 3,
@@ -35,7 +35,7 @@
       "readTime": "6 min read",
       "views": "29.1k",
       "image": "/images/invoices.svg",
-      "href": "/reports"
+      "href": "/learn"
     },
     {
       "id": 4,
@@ -45,7 +45,7 @@
       "readTime": "8 min read",
       "views": "52.3k",
       "visual": "budget-vs-debt",
-      "href": "/reports"
+      "href": "/learn"
     },
     {
       "id": 5,
@@ -55,7 +55,7 @@
       "readTime": "6 min read",
       "views": "41.8k",
       "image": "/images/blob.svg",
-      "href": "/reports"
+      "href": "/learn"
     },
     {
       "id": 6,
@@ -65,7 +65,14 @@
       "readTime": "5 min read",
       "views": "33.4k",
       "image": "/images/project.svg",
-      "href": "/reports"
+      "href": "/learn"
     }
-  ]
+  ],
+  "provenance": {
+    "lastUpdated": "2026-09-17T12:29:19.537Z",
+    "lastSaved": "2026-09-17T12:29:19.537Z",
+    "lastSync": "2026-09-17T12:29:19.537Z"
+  },
+  "_savedAt": "2026-09-17T12:29:19.537Z",
+  "lastSaved": "2026-09-17T12:29:19.537Z"
 }

@@ -79,7 +79,8 @@ export default async function ReportDossierPage({ params }: PageProps) {
     Promise.resolve(getAllReports()),
   ]);
   const relatedReports = allReports.filter((r) => r.slug !== slug);
-  const archetype = sectionsConfig?.pages?.reports?.layoutArchetype || "sovereign";
+  const pages = sectionsConfig?.pages as Record<string, { layoutArchetype?: string }> | undefined;
+  const archetype = pages?.reports?.layoutArchetype || "sovereign";
 
   const jsonLd = {
     "@context": "https://schema.org",

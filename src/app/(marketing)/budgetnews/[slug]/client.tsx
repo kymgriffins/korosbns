@@ -18,8 +18,10 @@ import {
   ReportSectionToc,
   MobileSectionToc,
 } from "@/components/budget-news/report-blocks";
+import { useThemePreset } from "@/hooks/use-theme-preset";
 
 function DetailContent({ slug }: { slug: string }) {
+  const themePreset = useThemePreset();
   const { data: mod, isLoading: modLoading, error: modError } = useQuery({
     queryKey: ["budget-news", "module", slug],
     queryFn: () => budgetData.fetchModule(slug),
@@ -73,7 +75,7 @@ function DetailContent({ slug }: { slug: string }) {
   const nextYear = currentYearIndex < years.length - 1 ? years[currentYearIndex + 1] : null;
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className={`min-h-screen bg-background ${themePreset === "brutalist" ? "budget-news-surface" : ""}`}>
       <div className="mx-auto max-w-5xl px-4 py-12 sm:px-6 lg:grid lg:grid-cols-[minmax(0,1fr)_220px] lg:gap-10">
         <div>
           <div className="flex items-center justify-between mb-4 flex-wrap gap-3">

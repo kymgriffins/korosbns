@@ -3,7 +3,10 @@
     "source": "seeds/youtube_series_modules.json + CMS Editorial Projects",
     "note": "All learning courses and investigative projects consolidated into unified featured projects catalog.",
     "level": "authoritative",
-    "shape": "featured_project_youtube"
+    "shape": "featured_project_youtube",
+    "lastUpdated": "2026-09-17T12:29:00.379Z",
+    "lastSaved": "2026-09-17T12:29:00.379Z",
+    "lastSync": "2026-09-17T12:29:00.379Z"
   },
   "count": 3,
   "results": [
@@ -12,13 +15,13 @@
       "slug": "story-mty40jp1",
       "videoId": "kWpY4K1uI20",
       "url": "https://www.youtube.com/watch?v=kWpY4K1uI20",
-      "title": "UON Cohort ",
+      "title": "The University of Nairobi",
       "prose": "A one-of-a-kind youth gathering at the University of Nairobi, bringing young people into the room to talk about the issues that affect them  --  from public money and accountability to participation and the future they want to build. Through conversations, connections and shared experiences, the meetup created a space where young voices could move beyond discussion and become part of the wider civic conversation.\n",
       "thumbnail": "https://pub-96ce2eba58694b1da7f540033bdaa464.r2.dev/images/1789208759012-129A3923.jpg",
       "authorName": "Budget Ndio Story Team",
       "programmeSlug": "connect",
       "programmeLabel": "BNS Connect",
-      "href": "/projects/story-mty40jp1",
+      "href": "/bns-project/story-mty40jp1",
       "isProject": false,
       "useYoutubeThumbnail": false,
       "hostInstitution": "House of Fiscal Wisdom",
@@ -45,7 +48,7 @@
       "authorName": "Collaborative Africa Budget Reform Initiative",
       "programmeSlug": "studios",
       "programmeLabel": "BNS Studio",
-      "href": "/projects/cabri-digital-pfm-reforms",
+      "href": "/bns-studio/cabri-digital-pfm-reforms",
       "publishedAt": "2026-04-28T00:00:00Z",
       "channelHandle": "@WeareCABRI"
     },
@@ -62,9 +65,11 @@
       "authorName": "Dr. Lyla Latif",
       "programmeSlug": "wanahabari-lab",
       "programmeLabel": "Wanahabari Lab",
-      "href": "/projects/project-terra",
+      "href": "/bns-project/terra",
       "publishedAt": "2026-07-25T00:00:00Z",
       "channelHandle": "@lyla-latif"
     }
-  ]
+  ],
+  "_savedAt": "2026-09-17T12:29:00.379Z",
+  "lastSaved": "2026-09-17T12:29:00.379Z"
 }

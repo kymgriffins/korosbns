@@ -35,7 +35,7 @@ const MarketingLayout = ({
         <div className="flex flex-1 flex-col">{children}</div>
 
         {!isChromeDisabled && footerVariant !== "none" ? (
-          <div className="mt-auto shrink-0">
+          <div className="mt-auto shrink-0" data-marketing-footer>
             {footerVariant === "marketing" ? <BNSFooter /> : <MinimalFooter />}
           </div>
         ) : null}

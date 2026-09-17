@@ -36,6 +36,7 @@ import type { PartnerPageSectionsContent, ProgrammesContent } from "@/lib/cms-li
 import { isSectionVisible } from "@/lib/partner-page-cms";
 import { ProgrammeShell, type LayoutArchetype } from "@/layouts/page-shells";
 import { cn } from "@/utils";
+import { useThemePreset } from "@/hooks/use-theme-preset";
 
 const PAGE_ID_BY_SLUG: Record<Exclude<ProgrammeSlug, "studios">, string> = {
   connect: "programmeConnect",
@@ -69,6 +70,7 @@ export function ProgrammeLandingLayout({
     watchReelLabel?: string;
   };
 }) {
+  const themePreset = useThemePreset();
   if (programme.slug === "studios") {
     return null;
   }
@@ -141,7 +143,9 @@ export function ProgrammeLandingLayout({
 
   const pages = sectionsConfig?.pages as Record<string, any> | undefined;
   const pageConfig = pages?.[pageId];
-  const layoutArchetype = (pageConfig?.layoutArchetype || "sovereign") as LayoutArchetype;
+  const layoutArchetype = (
+    themePreset === "brutalist" ? "brutalist" : pageConfig?.layoutArchetype || "sovereign"
+  ) as LayoutArchetype;
 
   if (layoutArchetype && layoutArchetype !== "sovereign") {
     return (
