@@ -11,11 +11,14 @@ import {
   Moon,
   Monitor,
   ChevronDown,
+  Globe,
+  Loader2,
 } from "lucide-react";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 import { motion } from "motion/react";
 import { cn } from "@/utils";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -102,6 +105,7 @@ export function ThemeToggle({
   const setThemePreset = usePreferencesStore((s) => s.setThemePreset);
   const { theme: mode, setTheme: setMode } = useTheme();
   const [mounted, setMounted] = useState(false);
+  const [isPublishing, setIsPublishing] = useState(false);
 
   useEffect(() => {
     setMounted(true);
@@ -120,7 +124,7 @@ export function ThemeToggle({
     document.documentElement.setAttribute("data-theme-preset", id);
     if (typeof window !== "undefined") {
       try {
-        window.localStorage?.setItem("bns-theme-preset", id);
+        window.localStorage?.setItem("bns-theme-preset-preview", id);
       } catch {}
       document.cookie = `theme_preset=${id}; path=/; max-age=31536000; SameSite=Lax`;
       window.dispatchEvent(
@@ -128,7 +132,50 @@ export function ThemeToggle({
       );
     }
     const chosen = CMS_THEME_OPTIONS.find((t) => t.id === id);
-    toast.success(`CMS Theme: ${chosen?.label || id} activated`);
+    toast.info(`Theme Preview: ${chosen?.label || id}`, {
+      description: "Click 'Publish Theme to Production' to push live for all visitors.",
+    });
+  };
+
+  const handlePublishToProduction = async (targetPreset?: CmsThemePresetId) => {
+    const idToPublish = targetPreset || activePresetId;
+    setIsPublishing(true);
+    try {
+      const getRes = await fetch("/api/cms/design-tokens");
+      const current = getRes.ok ? await getRes.json() : {};
+      const payloadData = {
+        ...(current.data || {}),
+        activeThemePreset: idToPublish,
+      };
+
+      const postRes = await fetch("/api/cms/design-tokens", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ data: payloadData }),
+      });
+
+      if (!postRes.ok) {
+        const errJson = (await postRes.json().catch(() => ({}))) as { error?: string };
+        throw new Error(errJson.error || "Failed to persist to Cloudflare R2");
+      }
+
+      // Clear preview cookie so admin views canonical live production theme
+      document.cookie = "theme_preset=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+      try {
+        window.localStorage?.removeItem("bns-theme-preset-preview");
+      } catch {}
+
+      const chosen = CMS_THEME_OPTIONS.find((t) => t.id === idToPublish);
+      toast.success("Theme Published Live to Production!", {
+        description: `"${chosen?.label || idToPublish}" is now live for all visitors across Cloudflare R2 & edge.`,
+      });
+    } catch (err) {
+      toast.error("Failed to publish theme to production", {
+        description: err instanceof Error ? err.message : String(err),
+      });
+    } finally {
+      setIsPublishing(false);
+    }
   };
 
   if (!mounted) {
@@ -270,6 +317,37 @@ export function ThemeToggle({
               <Monitor className="size-2.5" />
             </button>
           </div>
+        </div>
+
+        <DropdownMenuSeparator className="my-1.5 opacity-40" />
+
+        <div className="p-1">
+          <Button
+            type="button"
+            size="sm"
+            disabled={isPublishing}
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              void handlePublishToProduction();
+            }}
+            className="w-full h-8 text-xs font-semibold gap-1.5 rounded-lg bg-primary text-primary-foreground shadow-xs hover:opacity-95 cursor-pointer"
+          >
+            {isPublishing ? (
+              <>
+                <Loader2 className="size-3.5 animate-spin" />
+                <span>Publishing to R2...</span>
+              </>
+            ) : (
+              <>
+                <Globe className="size-3.5" />
+                <span>Save Theme to Live Production</span>
+              </>
+            )}
+          </Button>
+          <p className="text-[10px] text-muted-foreground text-center mt-1">
+            Persists to Cloudflare R2 & live visitors site-wide
+          </p>
         </div>
       </DropdownMenuContent>
     </DropdownMenu>

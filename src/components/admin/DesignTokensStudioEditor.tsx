@@ -154,6 +154,57 @@ export function DesignTokensStudioEditor({
         }}
       />
 
+      {/* Active Production Theme Preset */}
+      <div className="rounded-2xl border border-primary/20 bg-primary/5 p-6 shadow-xs space-y-4">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-primary/10 pb-4">
+          <div>
+            <div className="flex items-center gap-2">
+              <Sparkles className="size-4 text-primary" />
+              <h2 className="text-base font-semibold text-foreground">
+                Active Production Theme Preset
+              </h2>
+            </div>
+            <p className="text-xs text-muted-foreground mt-0.5">
+              Determines the live visual theme (Sovereign, Editorial, Cinematic, Brutalist) rendered for all public visitors site-wide.
+            </p>
+          </div>
+          <span className="font-mono text-[11px] font-bold uppercase tracking-wider text-primary bg-background px-2.5 py-1 rounded-[4px] border border-primary/20">
+            Live: {data.activeThemePreset || "default"}
+          </span>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
+          {[
+            { id: "default", label: "Default (Sovereign)", desc: "Obama.org inspired civic movement & spring motion" },
+            { id: "editorial", label: "Editorial", desc: "Rockefeller Foundation newsprint, serif & deliberate ink" },
+            { id: "cinematic", label: "Cinematic", desc: "Make It Real darkroom, obsidian glow & slow dolly" },
+            { id: "brutalist", label: "Brutalist", desc: "Watchdog wireframe, stark borders & instant snap" },
+          ].map((preset) => {
+            const isSelected = (data.activeThemePreset || "default") === preset.id;
+            return (
+              <button
+                key={preset.id}
+                type="button"
+                onClick={() => onChange({ ...data, activeThemePreset: preset.id })}
+                className={`flex flex-col text-left p-3.5 rounded-xl border transition-all cursor-pointer ${
+                  isSelected
+                    ? "border-primary bg-primary/10 shadow-xs ring-2 ring-primary/30"
+                    : "border-border/70 bg-card hover:border-primary/50"
+                }`}
+              >
+                <div className="flex items-center justify-between w-full mb-1">
+                  <span className="text-xs font-bold text-foreground">{preset.label}</span>
+                  {isSelected ? <Check className="size-3.5 text-primary" /> : null}
+                </div>
+                <p className="text-[11px] text-muted-foreground leading-relaxed">
+                  {preset.desc}
+                </p>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
       {/* Sitewide One-Click Theme Preset Switcher */}
       <div className="rounded-2xl border border-[var(--color-lavender-border,#b9b9f9)] bg-[var(--color-periwinkle-wash,#e8e9ff)]/40 p-6 shadow-xs space-y-4">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-[var(--color-lilac-border,#d6d9fc)] pb-4">

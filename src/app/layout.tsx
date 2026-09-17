@@ -11,7 +11,7 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 import type { Viewport } from "next";
 import { cookies } from "next/headers";
 import Script from "next/script";
-import { getLivePartnerPageSections } from "@/lib/cms-live-data";
+import { getLivePartnerPageSections, getLiveDesignTokens } from "@/lib/cms-live-data";
 import { getGlobalSplashConfig } from "@/lib/page-loading";
 
 export const metadata = generateMetadata();
@@ -143,8 +143,14 @@ export default async function RootLayout({
   children: React.ReactNode;
 }) {
   const cookieStore = await cookies();
-  const themePreset = cookieStore.get("theme_preset")?.value || "default";
-  const sections = await getLivePartnerPageSections();
+  const [designTokens, sections] = await Promise.all([
+    getLiveDesignTokens(),
+    getLivePartnerPageSections(),
+  ]);
+  const liveCmsTheme = (designTokens as { activeThemePreset?: string })?.activeThemePreset || "default";
+  const cookiePreset = cookieStore.get("theme_preset")?.value;
+  // If an admin has a preview cookie set, respect it; otherwise use the live CMS production theme
+  const themePreset = cookiePreset || liveCmsTheme;
   const splash = getGlobalSplashConfig(sections);
 
   return (
@@ -152,7 +158,7 @@ export default async function RootLayout({
       <head>
         <script
           dangerouslySetInnerHTML={{
-            __html: `(function(){try{var p=localStorage.getItem("bns-theme-preset");if(p){document.documentElement.setAttribute("data-theme-preset",p);}}catch(e){}})();`,
+            __html: `(function(){try{var p=localStorage.getItem("bns-theme-preset-preview");if(p){document.documentElement.setAttribute("data-theme-preset",p);}}catch(e){}})();`,
           }}
         />
         <link rel="preconnect" href="https://res.cloudinary.com" />

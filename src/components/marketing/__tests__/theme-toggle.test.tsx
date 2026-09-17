@@ -6,6 +6,8 @@ import { ThemeToggle, CMS_THEME_OPTIONS } from "../theme-toggle";
 vi.mock("sonner", () => ({
   toast: {
     success: vi.fn(),
+    info: vi.fn(),
+    error: vi.fn(),
   },
 }));
 
@@ -52,5 +54,16 @@ describe("ThemeToggle CMS Theme Selector", () => {
     fireEvent.click(brutalistOption);
 
     expect(document.documentElement.getAttribute("data-theme-preset")).toBe("brutalist");
+  });
+
+  it("renders the Save Theme to Live Production button in the dropdown", () => {
+    render(<ThemeToggle />);
+    const trigger = screen.getByRole("button", { name: /CMS Theme/i });
+    fireEvent.pointerDown(trigger, { button: 0 });
+
+    const publishBtn = screen.getByRole("button", {
+      name: /Save Theme to Live Production/i,
+    });
+    expect(publishBtn).toBeInTheDocument();
   });
 });
