@@ -29,11 +29,18 @@ function readDomState(): Partial<PreferencesState> {
 
   const themeModeAttr = getSafeValue(root.getAttribute("data-theme-mode"), THEME_MODE_VALUES);
   const resolvedMode = root.classList.contains("dark") ? "dark" : "light";
+  const storedPreset = typeof window !== "undefined" ? window.localStorage.getItem("bns-theme-preset") : null;
+  const domPreset = root.getAttribute("data-theme-preset");
+  const themePreset = getSafeValue(domPreset || storedPreset, THEME_PRESET_VALUES);
+
+  if (themePreset && !domPreset) {
+    root.setAttribute("data-theme-preset", themePreset);
+  }
 
   return {
     themeMode: themeModeAttr ?? resolvedMode,
     resolvedThemeMode: resolvedMode,
-    themePreset: getSafeValue(root.getAttribute("data-theme-preset"), THEME_PRESET_VALUES),
+    themePreset: themePreset,
     font: getSafeValue(root.getAttribute("data-font"), FONT_VALUES),
     contentLayout: getSafeValue(root.getAttribute("data-content-layout"), CONTENT_LAYOUT_VALUES),
     navbarStyle: getSafeValue(root.getAttribute("data-navbar-style"), NAVBAR_STYLE_VALUES),
@@ -107,7 +114,7 @@ export const PreferencesStoreProvider = ({
     }
   }, [theme, resolvedTheme, store]);
 
-  // Sync PreferencesStore -> next-themes
+  // Sync PreferencesStore -> next-themes & DOM presets
   useEffect(() => {
     const unsubscribeStore = store.subscribe((s, p) => {
       if (s.themeMode !== p.themeMode) {
@@ -115,6 +122,13 @@ export const PreferencesStoreProvider = ({
           setTheme(s.themeMode);
         }
         document.documentElement.setAttribute("data-theme-mode", s.themeMode);
+      }
+      if (s.themePreset !== p.themePreset) {
+        document.documentElement.setAttribute("data-theme-preset", s.themePreset);
+        if (typeof window !== "undefined") {
+          window.localStorage.setItem("bns-theme-preset", s.themePreset);
+          document.cookie = `theme_preset=${s.themePreset}; path=/; max-age=31536000; SameSite=Lax`;
+        }
       }
     });
 

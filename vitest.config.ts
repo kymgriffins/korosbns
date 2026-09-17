@@ -16,8 +16,10 @@ export default defineConfig({
     },
   },
   resolve: {
-    alias: {
-      "@": path.resolve(__dirname, "./src"),
-    },
+    alias: [
+      { find: /^@\/stores\/(.*)/, replacement: path.resolve(__dirname, "./apps/budgethub/src/stores/$1") },
+      { find: /^@\/lib\/preferences\/(.*)/, replacement: path.resolve(__dirname, "./apps/budgethub/src/lib/preferences/$1") },
+      { find: "@", replacement: path.resolve(__dirname, "./src") },
+    ],
   },
 });

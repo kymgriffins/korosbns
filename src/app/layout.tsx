@@ -9,6 +9,7 @@ import { cn, generateMetadata } from "@/utils";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import type { Viewport } from "next";
+import { cookies } from "next/headers";
 import Script from "next/script";
 import { getLivePartnerPageSections } from "@/lib/cms-live-data";
 import { getGlobalSplashConfig } from "@/lib/page-loading";
@@ -141,12 +142,19 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const cookieStore = await cookies();
+  const themePreset = cookieStore.get("theme_preset")?.value || "default";
   const sections = await getLivePartnerPageSections();
   const splash = getGlobalSplashConfig(sections);
 
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" data-theme-preset={themePreset} suppressHydrationWarning>
       <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var p=localStorage.getItem("bns-theme-preset");if(p){document.documentElement.setAttribute("data-theme-preset",p);}}catch(e){}})();`,
+          }}
+        />
         <link rel="preconnect" href="https://res.cloudinary.com" />
         <link rel="preconnect" href="https://i.ytimg.com" />
         <link rel="dns-prefetch" href="https://res.cloudinary.com" />
