@@ -1,0 +1,71 @@
+/* Cinematic Premium Blue — Blue & white premium */
+html[data-theme-preset="cinematic-premium-blue"],
+[data-theme-preset="cinematic-premium-blue"] {
+  --background: #0a1628;
+  --foreground: #f0f4ff;
+  --card: #0f1f38;
+  --card-foreground: #f0f4ff;
+  --popover: #0f1f38;
+  --popover-foreground: #f0f4ff;
+  --surface-elevated: #162a4a;
+  --surface-muted: #0c1829;
+  --muted: #162a4a;
+  --muted-foreground: #93b4e8;
+  --primary: #3b82f6;
+  --primary-foreground: #0a1628;
+  --accent: #60a5fa;
+  --accent-foreground: #0a1628;
+  --secondary: #1e3a5f;
+  --secondary-foreground: #f0f4ff;
+  --border: rgba(59, 130, 246, 0.25);
+  --input: rgba(59, 130, 246, 0.3);
+  --ring: #3b82f6;
+  --brand-button-bg: #3b82f6;
+  --brand-button-fg: #0a1628;
+  --brand-button-hover: #60a5fa;
+  --brand-button-outline-border: #3b82f6;
+  --brand-button-outline-fg: #3b82f6;
+  --color-indigo-ink: #3b82f6;
+  --color-indigo-hover: #60a5fa;
+  --color-midnight-ink: #f0f4ff;
+  --color-mist: #0a1628;
+  --color-frost: rgba(59, 130, 246, 0.25);
+}
+
+html.dark[data-theme-preset="cinematic-premium-blue"],
+[data-theme-mode="dark"][data-theme-preset="cinematic-premium-blue"],
+.dark[data-theme-preset="cinematic-premium-blue"] {
+  --background: #060e1a;
+  --foreground: #f0f4ff;
+  --card: #0a1628;
+  --card-foreground: #ffffff;
+  --popover: #0a1628;
+  --popover-foreground: #ffffff;
+  --surface-elevated: #0f1f38;
+  --surface-muted: #080f1c;
+  --muted: #0f1f38;
+  --muted-foreground: #7da8d4;
+  --primary: #60a5fa;
+  --primary-foreground: #060e1a;
+  --accent: #93c5fd;
+  --accent-foreground: #060e1a;
+  --secondary: #0f1f38;
+  --secondary-foreground: #ffffff;
+  --border: rgba(96, 165, 250, 0.25);
+  --input: rgba(96, 165, 250, 0.3);
+  --ring: #60a5fa;
+  --brand-button-bg: #60a5fa;
+  --brand-button-fg: #060e1a;
+  --brand-button-hover: #93c5fd;
+  --brand-button-outline-border: #60a5fa;
+  --brand-button-outline-fg: #ffffff;
+  --color-indigo-ink: #60a5fa;
+  --color-indigo-hover: #93c5fd;
+  --color-midnight-ink: #f0f4ff;
+  --color-mist: #060e1a;
+  --color-frost: rgba(96, 165, 250, 0.25);
+}
+
+html[data-theme-preset="cinematic-premium-blue"] [class*="card"] {
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.8), 0 0 20px -5px rgba(59, 130, 246, 0.12);
+}

@@ -1,0 +1,121 @@
+/* Brutalist Teal — Teal & warm white */
+html[data-theme-preset="brutalist-teal"],
+[data-theme-preset="brutalist-teal"] {
+  --background: #f0fdfa;
+  --foreground: #134e4a;
+  --card: #ffffff;
+  --card-foreground: #134e4a;
+  --popover: #ffffff;
+  --popover-foreground: #134e4a;
+  --surface-elevated: #ffffff;
+  --surface-muted: #ccfbf1;
+  --muted: #ccfbf1;
+  --muted-foreground: #0d9488;
+  --primary: #0d9488;
+  --primary-foreground: #ffffff;
+  --accent: #14b8a6;
+  --accent-foreground: #134e4a;
+  --secondary: #0f766e;
+  --secondary-foreground: #ffffff;
+  --border: #134e4a;
+  --input: #134e4a;
+  --ring: #0d9488;
+  --brand-button-bg: #0d9488;
+  --brand-button-fg: #ffffff;
+  --brand-button-hover: #0f766e;
+  --brand-button-outline-border: #134e4a;
+  --brand-button-outline-fg: #134e4a;
+  --color-indigo-ink: #0d9488;
+  --color-indigo-hover: #0f766e;
+  --color-midnight-ink: #134e4a;
+  --color-mist: #f0fdfa;
+  --color-frost: #134e4a;
+  --theme-news-paper: #f0fdfa;
+  --theme-news-ink: #134e4a;
+  --theme-news-accent: #99f6e4;
+  --theme-news-hot: #0d9488;
+  --theme-news-muted: #0d9488;
+  --theme-shell-bg: #0d9488;
+  --theme-shell-fg: #ffffff;
+  --theme-shell-border: #134e4a;
+}
+
+html.dark[data-theme-preset="brutalist-teal"],
+[data-theme-mode="dark"][data-theme-preset="brutalist-teal"],
+.dark[data-theme-preset="brutalist-teal"] {
+  --background: #042f2e;
+  --foreground: #ccfbf1;
+  --card: #115e59;
+  --card-foreground: #ccfbf1;
+  --popover: #115e59;
+  --popover-foreground: #ccfbf1;
+  --surface-elevated: #115e59;
+  --surface-muted: #134e4a;
+  --muted: #134e4a;
+  --muted-foreground: #5eead4;
+  --primary: #2dd4bf;
+  --primary-foreground: #042f2e;
+  --accent: #5eead4;
+  --accent-foreground: #042f2e;
+  --secondary: #134e4a;
+  --secondary-foreground: #ccfbf1;
+  --border: rgba(45, 212, 191, 0.3);
+  --input: rgba(45, 212, 191, 0.35);
+  --ring: #2dd4bf;
+  --brand-button-bg: #2dd4bf;
+  --brand-button-fg: #042f2e;
+  --brand-button-hover: #5eead4;
+  --brand-button-outline-border: #2dd4bf;
+  --brand-button-outline-fg: #ccfbf1;
+  --color-indigo-ink: #2dd4bf;
+  --color-indigo-hover: #5eead4;
+  --color-midnight-ink: #ccfbf1;
+  --color-mist: #042f2e;
+  --color-frost: rgba(45, 212, 191, 0.3);
+  --theme-news-paper: #042f2e;
+  --theme-news-ink: #ccfbf1;
+  --theme-news-accent: #99f6e4;
+  --theme-news-hot: #2dd4bf;
+  --theme-news-muted: #5eead4;
+  --theme-shell-bg: #2dd4bf;
+  --theme-shell-fg: #042f2e;
+  --theme-shell-border: #ccfbf1;
+}
+
+html[data-theme-preset="brutalist-teal"] button,
+html[data-theme-preset="brutalist-teal"] .btn,
+html[data-theme-preset="brutalist-teal"] [class*="rounded"] {
+  border-radius: 0px !important;
+}
+
+html[data-theme-preset="brutalist-teal"] button:not([class*="ghost"]):not([class*="link"]),
+html[data-theme-preset="brutalist-teal"] .btn {
+  border: 2px solid var(--border) !important;
+  box-shadow: 3px 3px 0px 0px var(--border) !important;
+}
+
+html[data-theme-preset="brutalist-teal"] [class*="card"] {
+  border-radius: 0px !important;
+  border: 2px solid var(--border) !important;
+  box-shadow: 4px 4px 0px 0px var(--border) !important;
+}
+
+html[data-theme-preset="brutalist-teal"] [data-marketing-nav] {
+  background: var(--theme-shell-bg) !important;
+  color: var(--theme-shell-fg);
+  border-color: var(--theme-shell-border) !important;
+  backdrop-filter: none;
+  box-shadow: 4px 4px 0 var(--theme-shell-border);
+}
+
+html[data-theme-preset="brutalist-teal"] [data-marketing-nav] a,
+html[data-theme-preset="brutalist-teal"] [data-marketing-nav] button {
+  color: var(--theme-shell-fg);
+  text-shadow: none;
+}
+
+html[data-theme-preset="brutalist-teal"] [data-marketing-footer] {
+  border-top: 4px solid var(--theme-shell-border);
+  background: var(--theme-news-paper);
+  color: var(--theme-news-ink);
+}

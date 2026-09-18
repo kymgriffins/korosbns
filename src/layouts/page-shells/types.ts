@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
+import { type ThemeStructure, resolveTheme } from "@/lib/theme-registry";
 
-export type LayoutArchetype = "sovereign" | "editorial" | "cinematic" | "brutalist";
+export type LayoutArchetype = ThemeStructure;
 
 export interface LayoutArchetypeConfig {
   id: LayoutArchetype;
@@ -59,6 +60,17 @@ export const LAYOUT_ARCHETYPES: Record<LayoutArchetype, LayoutArchetypeConfig> =
     sidebarRatio: "lg:col-span-4",
     borderRadius: "rounded-none",
   },
+  ark: {
+    id: "ark",
+    label: "Ark Shelter",
+    tagline: "Premium minimalist calm — white canvas, thin rules, full-bleed photography, airy geometry",
+    containerMeasure: "max-w-[1400px] mx-auto px-5 sm:px-8 lg:px-12",
+    sectionPadding: "py-20 md:py-28",
+    headerStyle: "text-4xl sm:text-5xl md:text-6xl font-bold tracking-[-0.03em] leading-[1.05]",
+    cardStyle: "rounded-xl border border-border bg-card p-8 shadow-none hover:border-foreground/20 transition-colors",
+    sidebarRatio: "lg:col-span-4",
+    borderRadius: "rounded-xl",
+  },
 };
 
 export const LAYOUT_ARCHETYPES_LIST = Object.values(LAYOUT_ARCHETYPES);
@@ -67,6 +79,12 @@ export function resolveLayoutArchetype(
   archetype?: string | null,
   fallback: LayoutArchetype = "sovereign"
 ): LayoutArchetypeConfig {
+  // Support composite keys (e.g., "brutalist-teal") by extracting structure
+  if (archetype && archetype.includes("-")) {
+    const { structure } = resolveTheme(archetype);
+    return LAYOUT_ARCHETYPES[structure];
+  }
+
   if (archetype && archetype in LAYOUT_ARCHETYPES) {
     return LAYOUT_ARCHETYPES[archetype as LayoutArchetype];
   }

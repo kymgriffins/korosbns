@@ -7,6 +7,28 @@
 @import "./programmes-editorial.css";
 @import "./presets.css";
 
+/* Composable palette imports — each scoped to data-theme-preset="structure-palette" */
+@import "./palettes/sovereign-default.css";
+@import "./palettes/sovereign-midnight.css";
+@import "./palettes/sovereign-slate.css";
+@import "./palettes/sovereign-forest.css";
+@import "./palettes/editorial-rose.css";
+@import "./palettes/editorial-bw.css";
+@import "./palettes/editorial-premium.css";
+@import "./palettes/editorial-ink.css";
+@import "./palettes/cinematic-cyan.css";
+@import "./palettes/cinematic-noir.css";
+@import "./palettes/cinematic-neon.css";
+@import "./palettes/cinematic-premium-blue.css";
+@import "./palettes/brutalist-orange.css";
+@import "./palettes/brutalist-teal.css";
+@import "./palettes/brutalist-monochrome.css";
+@import "./palettes/brutalist-neon.css";
+@import "./palettes/ark-mist.css";
+@import "./palettes/ark-forest.css";
+@import "./palettes/ark-timber.css";
+@import "./palettes/ark-stone.css";
+
 @custom-variant dark (&:is(.dark *));
 
 :root {

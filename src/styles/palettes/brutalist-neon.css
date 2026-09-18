@@ -1,0 +1,121 @@
+/* Brutalist Neon — Neon punk (magenta + lime on black) */
+html[data-theme-preset="brutalist-neon"],
+[data-theme-preset="brutalist-neon"] {
+  --background: #000000;
+  --foreground: #00ff00;
+  --card: #0a0a0a;
+  --card-foreground: #00ff00;
+  --popover: #0a0a0a;
+  --popover-foreground: #00ff00;
+  --surface-elevated: #141414;
+  --surface-muted: #1a1a1a;
+  --muted: #1a1a1a;
+  --muted-foreground: #00cc00;
+  --primary: #ff00ff;
+  --primary-foreground: #000000;
+  --accent: #00ff00;
+  --accent-foreground: #000000;
+  --secondary: #ff00ff;
+  --secondary-foreground: #000000;
+  --border: #00ff00;
+  --input: #00ff00;
+  --ring: #ff00ff;
+  --brand-button-bg: #ff00ff;
+  --brand-button-fg: #000000;
+  --brand-button-hover: #ff33ff;
+  --brand-button-outline-border: #00ff00;
+  --brand-button-outline-fg: #00ff00;
+  --color-indigo-ink: #ff00ff;
+  --color-indigo-hover: #ff33ff;
+  --color-midnight-ink: #00ff00;
+  --color-mist: #000000;
+  --color-frost: #00ff00;
+  --theme-news-paper: #000000;
+  --theme-news-ink: #00ff00;
+  --theme-news-accent: #ff00ff;
+  --theme-news-hot: #ff00ff;
+  --theme-news-muted: #00cc00;
+  --theme-shell-bg: #ff00ff;
+  --theme-shell-fg: #000000;
+  --theme-shell-border: #00ff00;
+}
+
+html.dark[data-theme-preset="brutalist-neon"],
+[data-theme-mode="dark"][data-theme-preset="brutalist-neon"],
+.dark[data-theme-preset="brutalist-neon"] {
+  --background: #000000;
+  --foreground: #00ff00;
+  --card: #0a0a0a;
+  --card-foreground: #00ff00;
+  --popover: #0a0a0a;
+  --popover-foreground: #00ff00;
+  --surface-elevated: #141414;
+  --surface-muted: #1a1a1a;
+  --muted: #1a1a1a;
+  --muted-foreground: #00cc00;
+  --primary: #ff00ff;
+  --primary-foreground: #000000;
+  --accent: #00ff00;
+  --accent-foreground: #000000;
+  --secondary: #ff00ff;
+  --secondary-foreground: #000000;
+  --border: #00ff00;
+  --input: #00ff00;
+  --ring: #ff00ff;
+  --brand-button-bg: #ff00ff;
+  --brand-button-fg: #000000;
+  --brand-button-hover: #ff33ff;
+  --brand-button-outline-border: #00ff00;
+  --brand-button-outline-fg: #00ff00;
+  --color-indigo-ink: #ff00ff;
+  --color-indigo-hover: #ff33ff;
+  --color-midnight-ink: #00ff00;
+  --color-mist: #000000;
+  --color-frost: #00ff00;
+  --theme-news-paper: #000000;
+  --theme-news-ink: #00ff00;
+  --theme-news-accent: #ff00ff;
+  --theme-news-hot: #ff00ff;
+  --theme-news-muted: #00cc00;
+  --theme-shell-bg: #ff00ff;
+  --theme-shell-fg: #000000;
+  --theme-shell-border: #00ff00;
+}
+
+html[data-theme-preset="brutalist-neon"] button,
+html[data-theme-preset="brutalist-neon"] .btn,
+html[data-theme-preset="brutalist-neon"] [class*="rounded"] {
+  border-radius: 0px !important;
+}
+
+html[data-theme-preset="brutalist-neon"] button:not([class*="ghost"]):not([class*="link"]),
+html[data-theme-preset="brutalist-neon"] .btn {
+  border: 2px solid var(--border) !important;
+  box-shadow: 3px 3px 0px 0px var(--border) !important;
+}
+
+html[data-theme-preset="brutalist-neon"] [class*="card"] {
+  border-radius: 0px !important;
+  border: 2px solid var(--border) !important;
+  box-shadow: 4px 4px 0px 0px var(--border) !important;
+}
+
+html[data-theme-preset="brutalist-neon"] [data-marketing-nav] {
+  background: var(--theme-shell-bg) !important;
+  color: var(--theme-shell-fg);
+  border-color: var(--theme-shell-border) !important;
+  backdrop-filter: none;
+  box-shadow: 4px 4px 0 var(--theme-shell-border);
+}
+
+html[data-theme-preset="brutalist-neon"] [data-marketing-nav] a,
+html[data-theme-preset="brutalist-neon"] [data-marketing-nav] button {
+  color: var(--theme-shell-fg);
+  text-shadow: none;
+}
+
+html[data-theme-preset="brutalist-neon"] [data-marketing-footer] {
+  border-top: 4px solid var(--theme-shell-border);
+  background: var(--theme-news-paper);
+  color: var(--theme-news-ink);
+}

@@ -1,0 +1,77 @@
+/* Editorial Rose — Deep rose (current editorial) */
+html[data-theme-preset="editorial-rose"],
+[data-theme-preset="editorial-rose"] {
+  --background: #fbf9f4;
+  --foreground: #1c1917;
+  --card: #ffffff;
+  --card-foreground: #1c1917;
+  --popover: #ffffff;
+  --popover-foreground: #1c1917;
+  --surface-elevated: #ffffff;
+  --surface-muted: #f2eee3;
+  --muted: #f2eee3;
+  --muted-foreground: #78716c;
+  --primary: #881337;
+  --primary-foreground: #ffffff;
+  --accent: #14532d;
+  --accent-foreground: #ffffff;
+  --secondary: #292524;
+  --secondary-foreground: #ffffff;
+  --border: #e7e0d3;
+  --input: #e7e0d3;
+  --ring: #881337;
+  --brand-button-bg: #881337;
+  --brand-button-fg: #ffffff;
+  --brand-button-hover: #9f1239;
+  --brand-button-outline-border: #881337;
+  --brand-button-outline-fg: #881337;
+  --color-indigo-ink: #881337;
+  --color-indigo-hover: #9f1239;
+  --color-midnight-ink: #1c1917;
+  --color-mist: #fbf9f4;
+  --color-frost: #e7e0d3;
+  --font-heading: var(--font-serif, "Georgia", "Cambria", "Times New Roman", serif);
+}
+
+html.dark[data-theme-preset="editorial-rose"],
+[data-theme-mode="dark"][data-theme-preset="editorial-rose"],
+.dark[data-theme-preset="editorial-rose"] {
+  --background: #141210;
+  --foreground: #f5f0e6;
+  --card: #1c1916;
+  --card-foreground: #f5f0e6;
+  --popover: #1c1916;
+  --popover-foreground: #f5f0e6;
+  --surface-elevated: #24201c;
+  --surface-muted: #1c1916;
+  --muted: #24201c;
+  --muted-foreground: #a8a29e;
+  --primary: #e11d48;
+  --primary-foreground: #ffffff;
+  --accent: #22c55e;
+  --accent-foreground: #ffffff;
+  --secondary: #292524;
+  --secondary-foreground: #ffffff;
+  --border: #332d26;
+  --input: #332d26;
+  --ring: #e11d48;
+  --brand-button-bg: #e11d48;
+  --brand-button-fg: #ffffff;
+  --brand-button-hover: #f43f5e;
+  --brand-button-outline-border: #e11d48;
+  --brand-button-outline-fg: #ffffff;
+  --color-indigo-ink: #e11d48;
+  --color-indigo-hover: #f43f5e;
+  --color-midnight-ink: #f5f0e6;
+  --color-mist: #141210;
+  --color-frost: #332d26;
+  --font-heading: var(--font-serif, "Georgia", "Cambria", "Times New Roman", serif);
+}
+
+html[data-theme-preset="editorial-rose"] h1,
+html[data-theme-preset="editorial-rose"] h2,
+html[data-theme-preset="editorial-rose"] h3,
+html[data-theme-preset="editorial-rose"] .font-heading {
+  font-family: "Georgia", "Cambria", "Times New Roman", serif;
+  letter-spacing: -0.02em;
+}

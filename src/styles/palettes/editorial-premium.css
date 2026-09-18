@@ -1,0 +1,77 @@
+/* Editorial Premium — Gold & cream luxury */
+html[data-theme-preset="editorial-premium"],
+[data-theme-preset="editorial-premium"] {
+  --background: #fefdf5;
+  --foreground: #292524;
+  --card: #ffffff;
+  --card-foreground: #292524;
+  --popover: #ffffff;
+  --popover-foreground: #292524;
+  --surface-elevated: #ffffff;
+  --surface-muted: #f5f0e1;
+  --muted: #f5f0e1;
+  --muted-foreground: #78716c;
+  --primary: #92700c;
+  --primary-foreground: #ffffff;
+  --accent: #92700c;
+  --accent-foreground: #ffffff;
+  --secondary: #44403c;
+  --secondary-foreground: #ffffff;
+  --border: #e8dfc0;
+  --input: #e8dfc0;
+  --ring: #92700c;
+  --brand-button-bg: #92700c;
+  --brand-button-fg: #ffffff;
+  --brand-button-hover: #a6831a;
+  --brand-button-outline-border: #92700c;
+  --brand-button-outline-fg: #92700c;
+  --color-indigo-ink: #92700c;
+  --color-indigo-hover: #a6831a;
+  --color-midnight-ink: #292524;
+  --color-mist: #fefdf5;
+  --color-frost: #e8dfc0;
+  --font-heading: var(--font-serif, "Georgia", "Cambria", "Times New Roman", serif);
+}
+
+html.dark[data-theme-preset="editorial-premium"],
+[data-theme-mode="dark"][data-theme-preset="editorial-premium"],
+.dark[data-theme-preset="editorial-premium"] {
+  --background: #1c1917;
+  --foreground: #fef3c7;
+  --card: #292524;
+  --card-foreground: #fef3c7;
+  --popover: #292524;
+  --popover-foreground: #fef3c7;
+  --surface-elevated: #292524;
+  --surface-muted: #44403c;
+  --muted: #44403c;
+  --muted-foreground: #d6d3d1;
+  --primary: #fbbf24;
+  --primary-foreground: #1c1917;
+  --accent: #fbbf24;
+  --accent-foreground: #1c1917;
+  --secondary: #44403c;
+  --secondary-foreground: #fef3c7;
+  --border: rgba(251, 191, 36, 0.2);
+  --input: rgba(251, 191, 36, 0.25);
+  --ring: #fbbf24;
+  --brand-button-bg: #fbbf24;
+  --brand-button-fg: #1c1917;
+  --brand-button-hover: #fcd34d;
+  --brand-button-outline-border: #fbbf24;
+  --brand-button-outline-fg: #fef3c7;
+  --color-indigo-ink: #fbbf24;
+  --color-indigo-hover: #fcd34d;
+  --color-midnight-ink: #fef3c7;
+  --color-mist: #1c1917;
+  --color-frost: rgba(251, 191, 36, 0.2);
+  --font-heading: var(--font-serif, "Georgia", "Cambria", "Times New Roman", serif);
+}
+
+html[data-theme-preset="editorial-premium"] h1,
+html[data-theme-preset="editorial-premium"] h2,
+html[data-theme-preset="editorial-premium"] h3,
+html[data-theme-preset="editorial-premium"] .font-heading {
+  font-family: "Georgia", "Cambria", "Times New Roman", serif;
+  letter-spacing: -0.02em;
+}

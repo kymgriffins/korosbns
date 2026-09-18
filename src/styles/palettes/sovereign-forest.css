@@ -1,0 +1,67 @@
+/* Sovereign Forest — Green earth tones */
+html[data-theme-preset="sovereign-forest"],
+[data-theme-preset="sovereign-forest"] {
+  --background: #f0fdf4;
+  --foreground: #14532d;
+  --card: #ffffff;
+  --card-foreground: #14532d;
+  --popover: #ffffff;
+  --popover-foreground: #14532d;
+  --surface-elevated: #ffffff;
+  --surface-muted: #dcfce7;
+  --muted: #dcfce7;
+  --muted-foreground: #166534;
+  --primary: #166534;
+  --primary-foreground: #ffffff;
+  --accent: #166534;
+  --accent-foreground: #ffffff;
+  --secondary: #bbf7d0;
+  --secondary-foreground: #14532d;
+  --border: #bbf7d0;
+  --input: #bbf7d0;
+  --ring: #166534;
+  --brand-button-bg: #166534;
+  --brand-button-fg: #ffffff;
+  --brand-button-hover: #15803d;
+  --brand-button-outline-border: #86efac;
+  --brand-button-outline-fg: #166534;
+  --color-indigo-ink: #166534;
+  --color-indigo-hover: #15803d;
+  --color-midnight-ink: #14532d;
+  --color-mist: #f0fdf4;
+  --color-frost: #bbf7d0;
+}
+
+html.dark[data-theme-preset="sovereign-forest"],
+[data-theme-mode="dark"][data-theme-preset="sovereign-forest"],
+.dark[data-theme-preset="sovereign-forest"] {
+  --background: #052e16;
+  --foreground: #dcfce7;
+  --card: #14532d;
+  --card-foreground: #dcfce7;
+  --popover: #14532d;
+  --popover-foreground: #dcfce7;
+  --surface-elevated: #14532d;
+  --surface-muted: #166534;
+  --muted: #166534;
+  --muted-foreground: #86efac;
+  --primary: #4ade80;
+  --primary-foreground: #052e16;
+  --accent: #4ade80;
+  --accent-foreground: #052e16;
+  --secondary: #166534;
+  --secondary-foreground: #dcfce7;
+  --border: rgba(134, 239, 172, 0.2);
+  --input: rgba(134, 239, 172, 0.25);
+  --ring: #4ade80;
+  --brand-button-bg: #4ade80;
+  --brand-button-fg: #052e16;
+  --brand-button-hover: #86efac;
+  --brand-button-outline-border: #22c55e;
+  --brand-button-outline-fg: #dcfce7;
+  --color-indigo-ink: #4ade80;
+  --color-indigo-hover: #86efac;
+  --color-midnight-ink: #dcfce7;
+  --color-mist: #052e16;
+  --color-frost: rgba(134, 239, 172, 0.2);
+}

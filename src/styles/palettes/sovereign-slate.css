@@ -1,0 +1,67 @@
+/* Sovereign Slate — Cool grey professionalism */
+html[data-theme-preset="sovereign-slate"],
+[data-theme-preset="sovereign-slate"] {
+  --background: #f8fafc;
+  --foreground: #1e293b;
+  --card: #ffffff;
+  --card-foreground: #1e293b;
+  --popover: #ffffff;
+  --popover-foreground: #1e293b;
+  --surface-elevated: #ffffff;
+  --surface-muted: #f1f5f9;
+  --muted: #f1f5f9;
+  --muted-foreground: #64748b;
+  --primary: #475569;
+  --primary-foreground: #ffffff;
+  --accent: #475569;
+  --accent-foreground: #ffffff;
+  --secondary: #e2e8f0;
+  --secondary-foreground: #1e293b;
+  --border: #e2e8f0;
+  --input: #e2e8f0;
+  --ring: #475569;
+  --brand-button-bg: #475569;
+  --brand-button-fg: #ffffff;
+  --brand-button-hover: #64748b;
+  --brand-button-outline-border: #cbd5e1;
+  --brand-button-outline-fg: #475569;
+  --color-indigo-ink: #475569;
+  --color-indigo-hover: #64748b;
+  --color-midnight-ink: #1e293b;
+  --color-mist: #f8fafc;
+  --color-frost: #e2e8f0;
+}
+
+html.dark[data-theme-preset="sovereign-slate"],
+[data-theme-mode="dark"][data-theme-preset="sovereign-slate"],
+.dark[data-theme-preset="sovereign-slate"] {
+  --background: #0f172a;
+  --foreground: #e2e8f0;
+  --card: #1e293b;
+  --card-foreground: #e2e8f0;
+  --popover: #1e293b;
+  --popover-foreground: #e2e8f0;
+  --surface-elevated: #1e293b;
+  --surface-muted: #334155;
+  --muted: #334155;
+  --muted-foreground: #94a3b8;
+  --primary: #94a3b8;
+  --primary-foreground: #0f172a;
+  --accent: #94a3b8;
+  --accent-foreground: #0f172a;
+  --secondary: #334155;
+  --secondary-foreground: #e2e8f0;
+  --border: rgba(148, 163, 184, 0.2);
+  --input: rgba(148, 163, 184, 0.25);
+  --ring: #94a3b8;
+  --brand-button-bg: #94a3b8;
+  --brand-button-fg: #0f172a;
+  --brand-button-hover: #cbd5e1;
+  --brand-button-outline-border: #64748b;
+  --brand-button-outline-fg: #e2e8f0;
+  --color-indigo-ink: #94a3b8;
+  --color-indigo-hover: #cbd5e1;
+  --color-midnight-ink: #e2e8f0;
+  --color-mist: #0f172a;
+  --color-frost: rgba(148, 163, 184, 0.2);
+}

@@ -1,0 +1,67 @@
+/* Sovereign Default — Indigo Ink (current default) */
+html[data-theme-preset="sovereign-default"],
+[data-theme-preset="sovereign-default"] {
+  --background: #ffffff;
+  --foreground: #061b31;
+  --card: #ffffff;
+  --card-foreground: #061b31;
+  --popover: #ffffff;
+  --popover-foreground: #061b31;
+  --surface-elevated: #ffffff;
+  --surface-muted: #f8fafd;
+  --muted: #f8fafd;
+  --muted-foreground: #64748d;
+  --primary: #533afd;
+  --primary-foreground: #ffffff;
+  --accent: #533afd;
+  --accent-foreground: #ffffff;
+  --secondary: #e8e9ff;
+  --secondary-foreground: #061b31;
+  --border: #e5edf5;
+  --input: #e5edf5;
+  --ring: #533afd;
+  --brand-button-bg: #533afd;
+  --brand-button-fg: #ffffff;
+  --brand-button-hover: #7389ff;
+  --brand-button-outline-border: #b9b9f9;
+  --brand-button-outline-fg: #533afd;
+  --color-indigo-ink: #533afd;
+  --color-indigo-hover: #7389ff;
+  --color-midnight-ink: #061b31;
+  --color-mist: #f8fafd;
+  --color-frost: #e5edf5;
+}
+
+html.dark[data-theme-preset="sovereign-default"],
+[data-theme-mode="dark"][data-theme-preset="sovereign-default"],
+.dark[data-theme-preset="sovereign-default"] {
+  --background: #061b31;
+  --foreground: #f8fafd;
+  --card: #0c2440;
+  --card-foreground: #ffffff;
+  --popover: #0c2440;
+  --popover-foreground: #ffffff;
+  --surface-elevated: #0c2440;
+  --surface-muted: #102a48;
+  --muted: #102a48;
+  --muted-foreground: #839bc8;
+  --primary: #533afd;
+  --primary-foreground: #ffffff;
+  --accent: #533afd;
+  --accent-foreground: #ffffff;
+  --secondary: #182659;
+  --secondary-foreground: #ffffff;
+  --border: rgba(185, 185, 249, 0.2);
+  --input: rgba(185, 185, 249, 0.25);
+  --ring: #7389ff;
+  --brand-button-bg: #533afd;
+  --brand-button-fg: #ffffff;
+  --brand-button-hover: #7389ff;
+  --brand-button-outline-border: #b9b9f9;
+  --brand-button-outline-fg: #ffffff;
+  --color-indigo-ink: #533afd;
+  --color-indigo-hover: #7389ff;
+  --color-midnight-ink: #f8fafd;
+  --color-mist: #061b31;
+  --color-frost: rgba(185, 185, 249, 0.2);
+}

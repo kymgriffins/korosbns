@@ -8,8 +8,9 @@ import { EditorialCtaBand } from "@/components/ui/editorial";
 import { CIVIC_PROGRAMMES } from "@/content";
 import { PARTNER_LANDING_CTA } from "@/content/partner-landing";
 import { SHOW_NEWSLETTER_POPUP } from "@/lib/marketing-chrome";
-import { useThemePreset } from "@/hooks/use-theme-preset";
+import { useThemeStructure } from "@/hooks/use-theme-preset";
 import {
+  ArkShelterLanding,
   BrutalistNewsroom,
   EditorialNewsroom,
 } from "@/components/marketing/theme-newsroom-layouts";
@@ -69,14 +70,18 @@ export default function PremiumLandingClient({
   sectionsConfig,
   featuredProjects,
 }: PremiumLandingClientProps = {}) {
-  const themePreset = useThemePreset();
+  const structure = useThemeStructure();
 
-  if (themePreset === "editorial") {
+  if (structure === "editorial") {
     return <EditorialNewsroom landingData={landingData} featuredProjects={featuredProjects} />;
   }
 
-  if (themePreset === "brutalist") {
+  if (structure === "brutalist") {
     return <BrutalistNewsroom landingData={landingData} featuredProjects={featuredProjects} />;
+  }
+
+  if (structure === "ark") {
+    return <ArkShelterLanding landingData={landingData} featuredProjects={featuredProjects} />;
   }
 
   const activeCta = {

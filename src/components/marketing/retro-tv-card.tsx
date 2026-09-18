@@ -2,7 +2,24 @@
 
 export default function RetroTvCard() {
   return (
-    <div className="main_wrapper">
+    <div
+      className="main_wrapper"
+      style={{
+        "--tv-orange": "#f27405",
+        "--tv-orange-dark": "#a85103",
+        "--tv-dark": "#171717",
+        "--tv-grey": "#353535",
+        "--tv-silver": "#979797",
+        "--tv-body": "#d36604",
+        "--tv-border": "#1d0e01",
+        "--tv-highlight": "#e69635",
+        "--tv-screen-text": "#252525",
+        "--tv-button": "#7f5934",
+        "--tv-button-highlight": "#b49577",
+        "--tv-button-shadow": "#513721",
+        "--tv-base": "#4d4d4d",
+      } as React.CSSProperties}
+    >
       <div className="main">
         <div className="antenna">
           <div className="antenna_shadow" />
@@ -78,7 +95,7 @@ export default function RetroTvCard() {
           height: 5em;
           border-radius: 50%;
           border: 2px solid black;
-          background-color: #f27405;
+          background-color: var(--tv-orange);
           margin-bottom: -6em;
           z-index: -1;
         }
@@ -91,7 +108,7 @@ export default function RetroTvCard() {
           border-radius: 45%;
           transform: rotate(140deg);
           border: 4px solid transparent;
-          box-shadow: inset 0px 16px #a85103, inset 0px 16px 1px 1px #a85103;
+          box-shadow: inset 0px 16px var(--tv-orange-dark), inset 0px 16px 1px 1px var(--tv-orange-dark);
         }
         .a1 {
           position: relative;
@@ -100,7 +117,7 @@ export default function RetroTvCard() {
           width: 12em;
           height: 5.5em;
           border-radius: 50px;
-          background-image: linear-gradient(#171717, #171717, #353535, #353535, #171717);
+          background-image: linear-gradient(var(--tv-dark), var(--tv-dark), var(--tv-grey), var(--tv-grey), var(--tv-dark));
           transform: rotate(-29deg);
           clip-path: polygon(50% 0%, 49% 100%, 52% 100%);
         }
@@ -113,7 +130,7 @@ export default function RetroTvCard() {
           height: 0.5em;
           border-radius: 50%;
           border: 2px solid black;
-          background-color: #979797;
+          background-color: var(--tv-silver);
           z-index: 99;
         }
         .a2 {
@@ -123,7 +140,7 @@ export default function RetroTvCard() {
           width: 12em;
           height: 4em;
           border-radius: 50px;
-          background-image: linear-gradient(#171717, #171717, #353535, #353535, #171717);
+          background-image: linear-gradient(var(--tv-dark), var(--tv-dark), var(--tv-grey), var(--tv-grey), var(--tv-dark));
           margin-right: 5em;
           clip-path: polygon(47% 0, 47% 0, 34% 34%, 54% 25%, 32% 100%, 29% 96%, 49% 32%, 30% 38%);
           transform: rotate(-8deg);
@@ -136,7 +153,7 @@ export default function RetroTvCard() {
           height: 0.5em;
           border-radius: 50%;
           border: 2px solid black;
-          background-color: #979797;
+          background-color: var(--tv-silver);
           z-index: 99;
         }
 
@@ -154,11 +171,11 @@ export default function RetroTvCard() {
           height: 9em;
           margin-top: 3em;
           border-radius: 15px;
-          background-color: #d36604;
+          background-color: var(--tv-body);
           display: flex;
           justify-content: center;
-          border: 2px solid #1d0e01;
-          box-shadow: inset 0.2em 0.2em #e69635;
+          border: 2px solid var(--tv-border);
+          box-shadow: inset 0.2em 0.2em var(--tv-highlight);
           position: relative;
         }
         .display_div {
@@ -167,7 +184,7 @@ export default function RetroTvCard() {
           align-self: center;
           justify-content: center;
           border-radius: 15px;
-          box-shadow: 3.5px 3.5px 0px #e69635;
+          box-shadow: 3.5px 3.5px 0px var(--tv-highlight);
         }
         .screen_out1 {
           width: 11em;
@@ -180,7 +197,7 @@ export default function RetroTvCard() {
         .screen {
           width: 13em;
           height: 7.85em;
-          border: 2px solid #1d0e01;
+          border: 2px solid var(--tv-border);
           background: repeating-radial-gradient(#000 0 0.0001%, #fff 0 0.0002%) 50% 0/2500px 2500px,
             repeating-conic-gradient(#000 0 0.0001%, #fff 0 0.0002%) 60% 60%/2500px 2500px;
           background-blend-mode: difference;
@@ -191,7 +208,7 @@ export default function RetroTvCard() {
           align-items: center;
           justify-content: center;
           font-weight: bold;
-          color: #252525;
+          color: var(--tv-screen-text);
           letter-spacing: 0.15em;
           text-align: center;
         }
@@ -226,8 +243,8 @@ export default function RetroTvCard() {
           width: 4.25em;
           align-self: center;
           height: 8em;
-          background-color: #e69635;
-          border: 2px solid #1d0e01;
+          background-color: var(--tv-highlight);
+          border: 2px solid var(--tv-border);
           padding: 0.6em;
           border-radius: 10px;
           display: flex;
@@ -235,7 +252,7 @@ export default function RetroTvCard() {
           justify-content: center;
           flex-direction: column;
           row-gap: 0.75em;
-          box-shadow: 3px 3px 0px #e69635;
+          box-shadow: 3px 3px 0px var(--tv-highlight);
           margin-left: 0.6em;
         }
         .b1,
@@ -243,9 +260,9 @@ export default function RetroTvCard() {
           width: 1.65em;
           height: 1.65em;
           border-radius: 50%;
-          background-color: #7f5934;
+          background-color: var(--tv-button);
           border: 2px solid black;
-          box-shadow: inset 2px 2px 1px #b49577, -2px 0px #513721, -2px 0px 0px 1px black;
+          box-shadow: inset 2px 2px 1px var(--tv-button-highlight), -2px 0px var(--tv-button-shadow), -2px 0px 0px 1px black;
         }
         .b1 div {
           position: absolute;
@@ -272,14 +289,14 @@ export default function RetroTvCard() {
           width: 0.65em;
           height: 0.65em;
           border-radius: 50%;
-          background-color: #7f5934;
+          background-color: var(--tv-button);
           border: 2px solid black;
-          box-shadow: inset 1.25px 1.25px 1px #b49577;
+          box-shadow: inset 1.25px 1.25px 1px var(--tv-button-highlight);
         }
         .g {
           width: auto;
           height: 2px;
-          background-color: #171717;
+          background-color: var(--tv-dark);
         }
 
         .bottom {
@@ -293,8 +310,8 @@ export default function RetroTvCard() {
         .base2 {
           height: 1em;
           width: 2em;
-          border: 2px solid #171717;
-          background-color: #4d4d4d;
+          border: 2px solid var(--tv-dark);
+          background-color: var(--tv-base);
           margin-top: -0.15em;
           z-index: -1;
         }
@@ -302,7 +319,7 @@ export default function RetroTvCard() {
           position: absolute;
           height: 0.15em;
           width: 17.5em;
-          background-color: #171717;
+          background-color: var(--tv-dark);
           margin-top: 0.8em;
         }
 

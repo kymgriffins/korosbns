@@ -9,7 +9,7 @@
 
 import type { Transition } from "motion/react";
 
-export type ThemePresetName = "default" | "editorial" | "cinematic" | "brutalist";
+export type ThemePresetName = "default" | "editorial" | "cinematic" | "brutalist" | "ark";
 
 export interface ThemeMotionProfile {
   name: ThemePresetName;
@@ -94,6 +94,23 @@ export const THEME_MOTION_PROFILES: Record<ThemePresetName, ThemeMotionProfile> 
     stagger: 0.04,
     hoverScale: 1.0,
     tapScale: 0.95,
+  },
+  ark: {
+    name: "ark",
+    label: "Ark (Shelter)",
+    description: "Quiet spatial fades with long ease-out and generous stillness between beats",
+    transition: {
+      type: "tween",
+      duration: 0.8,
+      ease: [0.22, 1, 0.36, 1],
+    },
+    fadeUp: {
+      initial: { opacity: 0, y: 20 },
+      animate: { opacity: 1, y: 0 },
+    },
+    stagger: 0.1,
+    hoverScale: 1.01,
+    tapScale: 0.98,
   },
 };
 

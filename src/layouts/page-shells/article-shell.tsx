@@ -300,6 +300,83 @@ export function ArticleShell({
     );
   }
 
+  // 3b. ARK SHELTER ARCHETYPE — airy minimalist reading
+  if (config.id === "ark") {
+    return (
+      <article className="w-full min-h-screen bg-background text-foreground py-16 md:py-24">
+        <div className="mx-auto max-w-[1100px] px-5 sm:px-8 lg:px-12 space-y-14">
+          <Link
+            href={backHref}
+            className="inline-flex items-center gap-1.5 text-xs font-medium tracking-[0.06em] text-muted-foreground transition-colors hover:text-foreground"
+          >
+            <ArrowLeft className="size-3" /> {backLabel}
+          </Link>
+
+          <header className="max-w-3xl space-y-6 border-b border-border pb-12">
+            <h1 className="text-4xl font-bold leading-[1.08] tracking-[-0.03em] md:text-5xl lg:text-6xl">
+              {article.title}
+            </h1>
+            {article.subtitle ? (
+              <p className="max-w-2xl text-base leading-relaxed text-muted-foreground md:text-lg">
+                {article.subtitle}
+              </p>
+            ) : null}
+            <div className="flex flex-wrap gap-x-6 gap-y-2 pt-2 text-xs tracking-[0.04em] text-muted-foreground">
+              {article.authorName ? <span>{article.authorName}</span> : null}
+              {article.publishedAt ? <span>{article.publishedAt}</span> : null}
+              {article.readTime ? <span>{article.readTime} read</span> : null}
+            </div>
+          </header>
+
+          <div className="grid grid-cols-1 gap-14 lg:grid-cols-12">
+            <div className="space-y-10 lg:col-span-8">
+              {article.coverImage ? (
+                <figure className="relative aspect-[16/10] overflow-hidden bg-muted">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={article.coverImage}
+                    alt={article.title}
+                    className="h-full w-full object-cover"
+                  />
+                </figure>
+              ) : null}
+              <div className="prose prose-neutral dark:prose-invert max-w-none text-base leading-[1.8] md:text-[1.05rem]">
+                {(article.content || "").split("\n\n").map((para, idx) => (
+                  <p key={idx}>{para}</p>
+                ))}
+              </div>
+              {children}
+            </div>
+
+            <aside className="hidden space-y-8 border-l border-border pl-8 lg:col-span-4 lg:block">
+              {article.hostInstitution ? (
+                <div className="space-y-2">
+                  <p className="text-[11px] font-medium tracking-[0.12em] text-muted-foreground uppercase">
+                    Institution
+                  </p>
+                  <p className="text-sm font-medium leading-snug">{article.hostInstitution}</p>
+                </div>
+              ) : null}
+              {article.metrics && article.metrics.length > 0 ? (
+                <div className="space-y-4 border-t border-border pt-8">
+                  <p className="text-[11px] font-medium tracking-[0.12em] text-muted-foreground uppercase">
+                    Figures
+                  </p>
+                  {article.metrics.map((m, i) => (
+                    <div key={i} className="flex items-baseline justify-between gap-4 border-b border-border/60 pb-2 text-sm">
+                      <span className="text-muted-foreground">{m.label}</span>
+                      <span className="font-semibold tabular-nums">{m.value}</span>
+                    </div>
+                  ))}
+                </div>
+              ) : null}
+            </aside>
+          </div>
+        </div>
+      </article>
+    );
+  }
+
   // 4. SOVEREIGN CIVIC ARCHETYPE (Default)
   return (
     <article className="w-full bg-background text-foreground min-h-screen py-12 md:py-20">

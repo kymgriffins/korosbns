@@ -1,0 +1,147 @@
+/* Brutalist Orange — Safety orange (current brutalist) */
+html[data-theme-preset="brutalist-orange"],
+[data-theme-preset="brutalist-orange"] {
+  --background: #fffdf5;
+  --foreground: #000000;
+  --card: #ffffff;
+  --card-foreground: #000000;
+  --popover: #ffffff;
+  --popover-foreground: #000000;
+  --surface-elevated: #ffffff;
+  --surface-muted: #fff3c4;
+  --muted: #f4f0db;
+  --muted-foreground: #262626;
+  --primary: #ff4d00;
+  --primary-foreground: #ffffff;
+  --accent: #ffe600;
+  --accent-foreground: #000000;
+  --secondary: #0051ff;
+  --secondary-foreground: #ffffff;
+  --border: #000000;
+  --input: #000000;
+  --ring: #ff4d00;
+  --brand-button-bg: #ff4d00;
+  --brand-button-fg: #ffffff;
+  --brand-button-hover: #e04400;
+  --brand-button-outline-border: #000000;
+  --brand-button-outline-fg: #000000;
+  --color-indigo-ink: #ff4d00;
+  --color-indigo-hover: #e04400;
+  --color-midnight-ink: #000000;
+  --color-mist: #fffdf5;
+  --color-frost: #000000;
+  --theme-news-paper: #fffdf5;
+  --theme-news-ink: #000000;
+  --theme-news-accent: #d9ff00;
+  --theme-news-hot: #ff4d00;
+  --theme-news-muted: #262626;
+  --theme-shell-bg: #ff4d00;
+  --theme-shell-fg: #000000;
+  --theme-shell-border: #000000;
+}
+
+html.dark[data-theme-preset="brutalist-orange"],
+[data-theme-mode="dark"][data-theme-preset="brutalist-orange"],
+.dark[data-theme-preset="brutalist-orange"] {
+  --background: #000000;
+  --foreground: #ffffff;
+  --card: #121212;
+  --card-foreground: #ffffff;
+  --popover: #121212;
+  --popover-foreground: #ffffff;
+  --surface-elevated: #1a1a1a;
+  --surface-muted: #262626;
+  --muted: #262626;
+  --muted-foreground: #d4d4d4;
+  --primary: #ff5500;
+  --primary-foreground: #000000;
+  --accent: #ffe600;
+  --accent-foreground: #000000;
+  --secondary: #3388ff;
+  --secondary-foreground: #ffffff;
+  --border: #ffffff;
+  --input: #ffffff;
+  --ring: #ff5500;
+  --brand-button-bg: #ff5500;
+  --brand-button-fg: #000000;
+  --brand-button-hover: #ff7733;
+  --brand-button-outline-border: #ffffff;
+  --brand-button-outline-fg: #ffffff;
+  --color-indigo-ink: #ff5500;
+  --color-indigo-hover: #ff7733;
+  --color-midnight-ink: #ffffff;
+  --color-mist: #000000;
+  --color-frost: #ffffff;
+  --theme-news-paper: #000000;
+  --theme-news-ink: #ffffff;
+  --theme-news-accent: #ffe600;
+  --theme-news-hot: #ff5500;
+  --theme-news-muted: #d4d4d4;
+  --theme-shell-bg: #ff5500;
+  --theme-shell-fg: #000000;
+  --theme-shell-border: #ffffff;
+}
+
+html[data-theme-preset="brutalist-orange"] button,
+html[data-theme-preset="brutalist-orange"] .btn,
+html[data-theme-preset="brutalist-orange"] [class*="rounded"] {
+  border-radius: 0px !important;
+}
+
+html[data-theme-preset="brutalist-orange"] button:not([class*="ghost"]):not([class*="link"]),
+html[data-theme-preset="brutalist-orange"] .btn {
+  border: 2px solid var(--border) !important;
+  box-shadow: 3px 3px 0px 0px var(--border) !important;
+}
+
+html[data-theme-preset="brutalist-orange"] [class*="card"] {
+  border-radius: 0px !important;
+  border: 2px solid var(--border) !important;
+  box-shadow: 4px 4px 0px 0px var(--border) !important;
+}
+
+html[data-theme-preset="brutalist-orange"] [data-marketing-nav] {
+  background: var(--theme-shell-bg) !important;
+  color: var(--theme-shell-fg);
+  border-color: var(--theme-shell-border) !important;
+  backdrop-filter: none;
+  box-shadow: 4px 4px 0 var(--theme-shell-border);
+}
+
+html[data-theme-preset="brutalist-orange"] [data-marketing-nav] a,
+html[data-theme-preset="brutalist-orange"] [data-marketing-nav] button {
+  color: var(--theme-shell-fg);
+  text-shadow: none;
+}
+
+html[data-theme-preset="brutalist-orange"] [data-marketing-footer] {
+  border-top: 4px solid var(--theme-shell-border);
+  background: var(--theme-news-paper);
+  color: var(--theme-news-ink);
+}
+
+html[data-theme-preset="brutalist-orange"] .budget-news-surface {
+  background: var(--theme-news-paper);
+  color: var(--theme-news-ink);
+}
+
+html[data-theme-preset="brutalist-orange"] .budget-news-surface article,
+html[data-theme-preset="brutalist-orange"] .budget-news-surface [data-slot="collapsible"] {
+  border: 4px solid var(--theme-news-ink);
+  border-radius: 0;
+  box-shadow: 5px 5px 0 var(--theme-news-ink);
+}
+
+html[data-theme-preset="brutalist-orange"] .budget-news-surface h1,
+html[data-theme-preset="brutalist-orange"] .budget-news-surface h2,
+html[data-theme-preset="brutalist-orange"] .budget-news-surface h3 {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: -0.06em;
+}
+
+html[data-theme-preset="brutalist-orange"] .brutalist-newsroom {
+  background: var(--theme-news-paper);
+  color: var(--theme-news-ink);
+}

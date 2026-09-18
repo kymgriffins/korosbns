@@ -1,0 +1,71 @@
+/* Cinematic Cyan — Electric cyan (current cinematic) */
+html[data-theme-preset="cinematic-cyan"],
+[data-theme-preset="cinematic-cyan"] {
+  --background: #080c14;
+  --foreground: #f1f5f9;
+  --card: #0f1624;
+  --card-foreground: #f8fafc;
+  --popover: #0f1624;
+  --popover-foreground: #f8fafc;
+  --surface-elevated: #162032;
+  --surface-muted: #0b111b;
+  --muted: #162032;
+  --muted-foreground: #94a3b8;
+  --primary: #00d2ff;
+  --primary-foreground: #040810;
+  --accent: #8b5cf6;
+  --accent-foreground: #ffffff;
+  --secondary: #1e293b;
+  --secondary-foreground: #f8fafc;
+  --border: rgba(0, 210, 255, 0.2);
+  --input: rgba(0, 210, 255, 0.25);
+  --ring: #00d2ff;
+  --brand-button-bg: #00d2ff;
+  --brand-button-fg: #040810;
+  --brand-button-hover: #38bdf8;
+  --brand-button-outline-border: #00d2ff;
+  --brand-button-outline-fg: #00d2ff;
+  --color-indigo-ink: #00d2ff;
+  --color-indigo-hover: #38bdf8;
+  --color-midnight-ink: #f8fafc;
+  --color-mist: #080c14;
+  --color-frost: rgba(0, 210, 255, 0.2);
+}
+
+html.dark[data-theme-preset="cinematic-cyan"],
+[data-theme-mode="dark"][data-theme-preset="cinematic-cyan"],
+.dark[data-theme-preset="cinematic-cyan"] {
+  --background: #04060a;
+  --foreground: #f8fafc;
+  --card: #0a0f18;
+  --card-foreground: #ffffff;
+  --popover: #0a0f18;
+  --popover-foreground: #ffffff;
+  --surface-elevated: #111a28;
+  --surface-muted: #070a10;
+  --muted: #111a28;
+  --muted-foreground: #8197b4;
+  --primary: #38bdf8;
+  --primary-foreground: #04060a;
+  --accent: #a855f7;
+  --accent-foreground: #ffffff;
+  --secondary: #131b27;
+  --secondary-foreground: #ffffff;
+  --border: rgba(56, 189, 248, 0.25);
+  --input: rgba(56, 189, 248, 0.3);
+  --ring: #38bdf8;
+  --brand-button-bg: #38bdf8;
+  --brand-button-fg: #04060a;
+  --brand-button-hover: #00d2ff;
+  --brand-button-outline-border: #38bdf8;
+  --brand-button-outline-fg: #ffffff;
+  --color-indigo-ink: #38bdf8;
+  --color-indigo-hover: #00d2ff;
+  --color-midnight-ink: #f8fafc;
+  --color-mist: #04060a;
+  --color-frost: rgba(56, 189, 248, 0.25);
+}
+
+html[data-theme-preset="cinematic-cyan"] [class*="card"] {
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.8), 0 0 20px -5px rgba(0, 210, 255, 0.12);
+}

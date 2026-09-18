@@ -18,7 +18,18 @@ export default function DayNightSwitch() {
   };
 
   return (
-    <div className="toggleWrapper">
+    <div
+      className="toggleWrapper"
+      style={{
+        "--dn-sky-day": "#83d8ff",
+        "--dn-sky-label": "#749ed7",
+        "--dn-sun": "#ffcf96",
+        "--dn-sun-shadow": "rgba(0, 0, 0, 0.3)",
+        "--dn-crater": "#e8cda5",
+        "--dn-sky-night": "#749dd6",
+        "--dn-moon": "#ffe5b5",
+      } as React.CSSProperties}
+    >
       <input
         className="input"
         id="dn"
@@ -59,7 +70,7 @@ export default function DayNightSwitch() {
           position: relative;
           width: 90px;
           height: 50px;
-          background-color: #83d8ff;
+          background-color: var(--dn-sky-day);
           border-radius: 84px;
           transition: background-color 200ms cubic-bezier(0.445, 0.05, 0.55, 0.95);
         }
@@ -70,7 +81,7 @@ export default function DayNightSwitch() {
           left: -44px;
           top: 14px;
           font-size: 14px;
-          color: #749ed7;
+          color: var(--dn-sky-label);
         }
 
         .toggle:after {
@@ -89,16 +100,16 @@ export default function DayNightSwitch() {
           left: 3px;
           width: 44px;
           height: 44px;
-          background-color: #ffcf96;
+          background-color: var(--dn-sun);
           border-radius: 50px;
-          box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+          box-shadow: 0 2px 6px var(--dn-sun-shadow);
           transition: all 400ms cubic-bezier(0.25, 0.1, 0.25, 1);
           transform: rotate(-45deg);
         }
 
         .toggle__handler .crater {
           position: absolute;
-          background-color: #e8cda5;
+          background-color: var(--dn-crater);
           opacity: 0;
           transition: opacity 200ms ease-in-out;
           border-radius: 100%;
@@ -191,7 +202,7 @@ export default function DayNightSwitch() {
         }
 
         .input:checked + .toggle {
-          background-color: #749dd6;
+          background-color: var(--dn-sky-night);
         }
 
         .input:checked + .toggle:before {
@@ -199,11 +210,11 @@ export default function DayNightSwitch() {
         }
 
         .input:checked + .toggle:after {
-          color: #749ed7;
+          color: var(--dn-sky-label);
         }
 
         .input:checked + .toggle .toggle__handler {
-          background-color: #ffe5b5;
+          background-color: var(--dn-moon);
           transform: translate3d(40px, 0, 0) rotate(0);
         }
 

@@ -7,6 +7,7 @@ import {
   Film,
   Square,
   Compass,
+  Home,
   Sun,
   Moon,
   Monitor,
@@ -29,18 +30,20 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { usePreferencesStore } from "@/stores/preferences/preferences-provider";
 import { toast } from "sonner";
+import { STRUCTURES, PALETTE_SWATCHES, resolveTheme, type ThemeStructure } from "@/lib/theme-registry";
 
 export const NAV_CONTROL_SIZE = "h-9 min-w-[2.25rem] px-2";
 export const NAV_CONTROL_RADIUS = "rounded-full";
 export const NAV_CONTROL_BORDER =
   "border border-border/50 bg-background/80 text-foreground transition-[background-color,color,transform,border-color] duration-200 ease-out hover:bg-muted/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring shadow-2xs";
 
-export type CmsThemePresetId = "default" | "editorial" | "cinematic" | "brutalist";
+export type CmsThemePresetId = string;
 
 export interface CmsThemeOption {
-  id: CmsThemePresetId;
+  id: string;
   label: string;
   tagline: string;
+  structure: ThemeStructure;
   swatch: {
     bg: string;
     primary: string;
@@ -49,52 +52,31 @@ export interface CmsThemeOption {
   icon: typeof Compass;
 }
 
-export const CMS_THEME_OPTIONS: CmsThemeOption[] = [
-  {
-    id: "default",
-    label: "Sovereign (Default)",
-    tagline: "Modern civic ledger & frosted glass",
-    swatch: {
-      bg: "#f8fafd",
-      primary: "#533afd",
-      border: "#b9b9f9",
-    },
-    icon: Compass,
-  },
-  {
-    id: "editorial",
-    label: "Editorial",
-    tagline: "Broadside journalism, parchment & serif",
-    swatch: {
-      bg: "#fbf9f4",
-      primary: "#881337",
-      border: "#e7e0d3",
-    },
-    icon: BookOpen,
-  },
-  {
-    id: "cinematic",
-    label: "Cinematic",
-    tagline: "BNS Theatre noir & electric cyan glow",
-    swatch: {
-      bg: "#080c14",
-      primary: "#00d2ff",
-      border: "rgba(0,210,255,0.4)",
-    },
-    icon: Film,
-  },
-  {
-    id: "brutalist",
-    label: "Brutalist",
-    tagline: "Raw high contrast & stark pop shadow",
-    swatch: {
-      bg: "#fffdf5",
-      primary: "#ff4d00",
-      border: "#000000",
-    },
-    icon: Square,
-  },
-];
+const STRUCTURE_ICONS: Record<ThemeStructure, typeof Compass> = {
+  sovereign: Compass,
+  editorial: BookOpen,
+  cinematic: Film,
+  brutalist: Square,
+  ark: Home,
+};
+
+export const CMS_THEME_OPTIONS: CmsThemeOption[] = Object.entries(STRUCTURES).flatMap(
+  ([structureId, config]) =>
+    config.palettes.map((palette) => {
+      const compositeKey = `${structureId}-${palette}`;
+      const swatch = PALETTE_SWATCHES[compositeKey];
+      return {
+        id: compositeKey,
+        label: `${config.label} / ${swatch?.label || palette}`,
+        tagline: config.tagline,
+        structure: structureId as ThemeStructure,
+        swatch: swatch
+          ? { bg: swatch.bg, primary: swatch.primary, border: swatch.border }
+          : { bg: "#ffffff", primary: "#000000", border: "#000000" },
+        icon: STRUCTURE_ICONS[structureId as ThemeStructure],
+      };
+    }),
+);
 
 export function ThemeToggle({
   className,
@@ -115,7 +97,12 @@ export function ThemeToggle({
     }
   }, []);
 
-  const activePresetId = (storeThemePreset as CmsThemePresetId) || "default";
+  const activePresetId = (() => {
+    const stored = storeThemePreset as string;
+    if (stored && stored in PALETTE_SWATCHES) return stored;
+    const { compositeKey } = resolveTheme(stored);
+    return compositeKey;
+  })();
   const activeOption =
     CMS_THEME_OPTIONS.find((t) => t.id === activePresetId) || CMS_THEME_OPTIONS[0];
 
@@ -235,37 +222,43 @@ export function ThemeToggle({
         </DropdownMenuLabel>
 
         <div className="space-y-1">
-          {CMS_THEME_OPTIONS.map((themeOption) => {
-            const isSelected = themeOption.id === activePresetId;
+          {(Object.keys(STRUCTURES) as ThemeStructure[]).map((structureId) => {
+            const options = CMS_THEME_OPTIONS.filter((t) => t.structure === structureId);
+            const config = STRUCTURES[structureId];
             return (
-              <DropdownMenuItem
-                key={themeOption.id}
-                onClick={() => handleSelectPreset(themeOption.id)}
-                className={cn(
-                  "flex cursor-pointer items-center justify-between gap-3 rounded-lg px-2.5 py-2 transition-colors",
-                  isSelected
-                    ? "bg-primary/10 text-primary font-medium"
-                    : "text-foreground hover:bg-muted/70",
-                )}
-              >
-                <div className="flex items-center gap-2.5 min-w-0">
-                  <span
-                    className="size-3 rounded-full shrink-0 ring-1 ring-border/60"
-                    style={{ backgroundColor: themeOption.swatch.primary }}
-                  />
-                  <div className="flex flex-col min-w-0">
-                    <span className="text-xs font-semibold leading-tight truncate">
-                      {themeOption.label}
-                    </span>
-                    <span className="text-[10px] text-muted-foreground leading-tight truncate">
-                      {themeOption.tagline}
-                    </span>
-                  </div>
+              <div key={structureId}>
+                <div className="px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-muted-foreground/60">
+                  {config.label}
                 </div>
-                {isSelected ? (
-                  <Check className="size-3.5 shrink-0 text-primary" />
-                ) : null}
-              </DropdownMenuItem>
+                {options.map((themeOption) => {
+                  const isSelected = themeOption.id === activePresetId;
+                  return (
+                    <DropdownMenuItem
+                      key={themeOption.id}
+                      onClick={() => handleSelectPreset(themeOption.id)}
+                      className={cn(
+                        "flex cursor-pointer items-center justify-between gap-3 rounded-lg px-2.5 py-1.5 transition-colors",
+                        isSelected
+                          ? "bg-primary/10 text-primary font-medium"
+                          : "text-foreground hover:bg-muted/70",
+                      )}
+                    >
+                      <div className="flex items-center gap-2 min-w-0">
+                        <span
+                          className="size-2.5 rounded-full shrink-0 ring-1 ring-border/60"
+                          style={{ backgroundColor: themeOption.swatch.primary }}
+                        />
+                        <span className="text-[11px] font-medium leading-tight truncate">
+                          {themeOption.label.split(" / ")[1]}
+                        </span>
+                      </div>
+                      {isSelected ? (
+                        <Check className="size-3 shrink-0 text-primary" />
+                      ) : null}
+                    </DropdownMenuItem>
+                  );
+                })}
+              </div>
             );
           })}
         </div>

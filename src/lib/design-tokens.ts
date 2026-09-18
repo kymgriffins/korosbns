@@ -6,7 +6,7 @@ export type BadgeColorScheme = "emerald" | "brand" | "amber" | "slate";
 export type BadgeTypography = "uppercase" | "normal" | "mono";
 
 export interface DesignTokens {
-  activeThemePreset?: "default" | "editorial" | "cinematic" | "brutalist";
+  activeThemePreset?: "default" | "editorial" | "cinematic" | "brutalist" | "ark" | string;
   brand?: {
     primary?: string;
     primaryForeground?: string;

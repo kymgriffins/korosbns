@@ -1,0 +1,69 @@
+/* Ark Timber — Warm paper white with charcoal wood accents */
+html[data-theme-preset="ark-timber"],
+[data-theme-preset="ark-timber"] {
+  --background: #faf8f5;
+  --foreground: #2c2418;
+  --card: #ffffff;
+  --card-foreground: #2c2418;
+  --popover: #ffffff;
+  --popover-foreground: #2c2418;
+  --surface-elevated: #ffffff;
+  --surface-muted: #f3efe9;
+  --muted: #f3efe9;
+  --muted-foreground: #7a6f62;
+  --primary: #2c2418;
+  --primary-foreground: #faf8f5;
+  --accent: #2c2418;
+  --accent-foreground: #faf8f5;
+  --secondary: #ebe4da;
+  --secondary-foreground: #2c2418;
+  --border: #e4ddd4;
+  --input: #e4ddd4;
+  --ring: #2c2418;
+  --brand-button-bg: #2c2418;
+  --brand-button-fg: #faf8f5;
+  --brand-button-hover: #4a3d2e;
+  --brand-button-outline-border: #2c2418;
+  --brand-button-outline-fg: #2c2418;
+  --color-indigo-ink: #2c2418;
+  --color-indigo-hover: #4a3d2e;
+  --color-midnight-ink: #2c2418;
+  --color-mist: #faf8f5;
+  --color-frost: #e4ddd4;
+  --font-heading: var(--font-sans, "Geist", system-ui, sans-serif);
+}
+
+html.dark[data-theme-preset="ark-timber"],
+[data-theme-mode="dark"][data-theme-preset="ark-timber"],
+.dark[data-theme-preset="ark-timber"] {
+  --background: #14110e;
+  --foreground: #f0ebe4;
+  --card: #1c1814;
+  --card-foreground: #f0ebe4;
+  --popover: #1c1814;
+  --popover-foreground: #f0ebe4;
+  --surface-elevated: #1c1814;
+  --surface-muted: #241f19;
+  --muted: #241f19;
+  --muted-foreground: #a89888;
+  --primary: #d4c4b0;
+  --primary-foreground: #14110e;
+  --accent: #d4c4b0;
+  --accent-foreground: #14110e;
+  --secondary: #2e2820;
+  --secondary-foreground: #f0ebe4;
+  --border: rgba(212, 196, 176, 0.18);
+  --input: rgba(212, 196, 176, 0.22);
+  --ring: #d4c4b0;
+  --brand-button-bg: #d4c4b0;
+  --brand-button-fg: #14110e;
+  --brand-button-hover: #e4d8c8;
+  --brand-button-outline-border: #d4c4b0;
+  --brand-button-outline-fg: #f0ebe4;
+  --color-indigo-ink: #d4c4b0;
+  --color-indigo-hover: #e4d8c8;
+  --color-midnight-ink: #f0ebe4;
+  --color-mist: #14110e;
+  --color-frost: rgba(212, 196, 176, 0.18);
+  --font-heading: var(--font-sans, "Geist", system-ui, sans-serif);
+}

@@ -1,0 +1,71 @@
+/* Cinematic Neon — Purple & magenta glow */
+html[data-theme-preset="cinematic-neon"],
+[data-theme-preset="cinematic-neon"] {
+  --background: #0a0014;
+  --foreground: #f5f0ff;
+  --card: #120024;
+  --card-foreground: #f5f0ff;
+  --popover: #120024;
+  --popover-foreground: #f5f0ff;
+  --surface-elevated: #1a0033;
+  --surface-muted: #0d001a;
+  --muted: #1a0033;
+  --muted-foreground: #c4b5fd;
+  --primary: #d946ef;
+  --primary-foreground: #0a0014;
+  --accent: #f472b6;
+  --accent-foreground: #0a0014;
+  --secondary: #1a0033;
+  --secondary-foreground: #f5f0ff;
+  --border: rgba(217, 70, 239, 0.25);
+  --input: rgba(217, 70, 239, 0.3);
+  --ring: #d946ef;
+  --brand-button-bg: #d946ef;
+  --brand-button-fg: #0a0014;
+  --brand-button-hover: #e879f9;
+  --brand-button-outline-border: #d946ef;
+  --brand-button-outline-fg: #d946ef;
+  --color-indigo-ink: #d946ef;
+  --color-indigo-hover: #e879f9;
+  --color-midnight-ink: #f5f0ff;
+  --color-mist: #0a0014;
+  --color-frost: rgba(217, 70, 239, 0.25);
+}
+
+html.dark[data-theme-preset="cinematic-neon"],
+[data-theme-mode="dark"][data-theme-preset="cinematic-neon"],
+.dark[data-theme-preset="cinematic-neon"] {
+  --background: #05000a;
+  --foreground: #f5f0ff;
+  --card: #0a0014;
+  --card-foreground: #ffffff;
+  --popover: #0a0014;
+  --popover-foreground: #ffffff;
+  --surface-elevated: #120024;
+  --surface-muted: #080010;
+  --muted: #120024;
+  --muted-foreground: #a78bfa;
+  --primary: #e879f9;
+  --primary-foreground: #05000a;
+  --accent: #f472b6;
+  --accent-foreground: #05000a;
+  --secondary: #120024;
+  --secondary-foreground: #ffffff;
+  --border: rgba(232, 121, 249, 0.25);
+  --input: rgba(232, 121, 249, 0.3);
+  --ring: #e879f9;
+  --brand-button-bg: #e879f9;
+  --brand-button-fg: #05000a;
+  --brand-button-hover: #f0abfc;
+  --brand-button-outline-border: #e879f9;
+  --brand-button-outline-fg: #ffffff;
+  --color-indigo-ink: #e879f9;
+  --color-indigo-hover: #f0abfc;
+  --color-midnight-ink: #f5f0ff;
+  --color-mist: #05000a;
+  --color-frost: rgba(232, 121, 249, 0.25);
+}
+
+html[data-theme-preset="cinematic-neon"] [class*="card"] {
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.8), 0 0 20px -5px rgba(217, 70, 239, 0.15);
+}

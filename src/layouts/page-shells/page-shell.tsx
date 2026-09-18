@@ -31,6 +31,7 @@ export function PageShell({
         config.id === "brutalist" && "selection:bg-foreground selection:text-background",
         config.id === "editorial" && "selection:bg-primary/20",
         config.id === "cinematic" && "selection:bg-sky-500/30",
+        config.id === "ark" && "selection:bg-foreground selection:text-background",
         className
       )}
     >
