@@ -26,9 +26,15 @@ beforeEach(() => {
 
 describe("Page Shells & Layout Archetype Engine", () => {
   describe("01 - Archetype Token Configuration", () => {
-    it("defines four distinct archetypes with complete layout tokens", () => {
-      const archetypes: LayoutArchetype[] = ["sovereign", "editorial", "cinematic", "brutalist"];
-      expect(LAYOUT_ARCHETYPES_LIST).toHaveLength(4);
+    it("defines five distinct archetypes with complete layout tokens", () => {
+      const archetypes: LayoutArchetype[] = [
+        "sovereign",
+        "editorial",
+        "cinematic",
+        "brutalist",
+        "ark",
+      ];
+      expect(LAYOUT_ARCHETYPES_LIST).toHaveLength(5);
 
       for (const id of archetypes) {
         const config = LAYOUT_ARCHETYPES[id];
