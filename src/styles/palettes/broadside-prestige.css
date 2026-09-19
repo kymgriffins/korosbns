@@ -1,0 +1,87 @@
+/* Broadside Prestige — Institutional Broadsheet (Forbes x Obama.org prestige)
+ * Zero cards, pure hairline rules, warm parchment, rich velvet ink.
+ */
+html[data-theme-preset="broadside-prestige"],
+[data-theme-preset="broadside-prestige"] {
+  --background: #fbf9f4;
+  --foreground: #0f1115;
+  --card: #fbf9f4;
+  --card-foreground: #0f1115;
+  --popover: #ffffff;
+  --popover-foreground: #0f1115;
+  --surface-elevated: #ffffff;
+  --surface-muted: #f2eee3;
+  --muted: #f2eee3;
+  --muted-foreground: #4a4e59;
+  --primary: #0f1115;
+  --primary-foreground: #fbf9f4;
+  --accent: #9b7236;
+  --accent-foreground: #ffffff;
+  --secondary: #14233c;
+  --secondary-foreground: #ffffff;
+  --border: #e5e0d5;
+  --input: #e5e0d5;
+  --ring: #0f1115;
+  --brand-button-bg: #0f1115;
+  --brand-button-fg: #fbf9f4;
+  --brand-button-hover: #232730;
+  --brand-button-outline-border: #0f1115;
+  --brand-button-outline-fg: #0f1115;
+  --color-indigo-ink: #14233c;
+  --color-indigo-hover: #1e355b;
+  --color-midnight-ink: #0f1115;
+  --color-mist: #fbf9f4;
+  --color-frost: #e5e0d5;
+  --font-heading: var(--font-serif, "Georgia", "Cambria", "Times New Roman", serif);
+  --radius: 0px;
+  --radius-cards: 0px;
+  --radius-inputs: 0px;
+  --brand-button-radius: 0px;
+}
+
+html.dark[data-theme-preset="broadside-prestige"],
+[data-theme-mode="dark"][data-theme-preset="broadside-prestige"],
+.dark[data-theme-preset="broadside-prestige"] {
+  --background: #0f1115;
+  --foreground: #fbf9f4;
+  --card: #0f1115;
+  --card-foreground: #fbf9f4;
+  --popover: #171a21;
+  --popover-foreground: #fbf9f4;
+  --surface-elevated: #171a21;
+  --surface-muted: #20242d;
+  --muted: #20242d;
+  --muted-foreground: #9ca3af;
+  --primary: #fbf9f4;
+  --primary-foreground: #0f1115;
+  --accent: #d4a755;
+  --accent-foreground: #0f1115;
+  --secondary: #253959;
+  --secondary-foreground: #fbf9f4;
+  --border: #282c37;
+  --input: #282c37;
+  --ring: #d4a755;
+  --brand-button-bg: #fbf9f4;
+  --brand-button-fg: #0f1115;
+  --brand-button-hover: #eae5d8;
+  --brand-button-outline-border: #fbf9f4;
+  --brand-button-outline-fg: #fbf9f4;
+  --color-indigo-ink: #3b567d;
+  --color-indigo-hover: #4d6e9c;
+  --color-midnight-ink: #fbf9f4;
+  --color-mist: #0f1115;
+  --color-frost: #282c37;
+  --font-heading: var(--font-serif, "Georgia", "Cambria", "Times New Roman", serif);
+  --radius: 0px;
+  --radius-cards: 0px;
+  --radius-inputs: 0px;
+  --brand-button-radius: 0px;
+}
+
+html[data-theme-preset="broadside-prestige"] h1,
+html[data-theme-preset="broadside-prestige"] h2,
+html[data-theme-preset="broadside-prestige"] h3,
+html[data-theme-preset="broadside-prestige"] .font-heading {
+  font-family: var(--font-serif, "Georgia", "Cambria", "Times New Roman", serif);
+  letter-spacing: -0.025em;
+}

@@ -353,37 +353,35 @@
 }
 
 /* -------------------------------------------------------------
-   CARDS & DOSSIERS (Forbes Intelligence & Obama.org Action)
+   BROADSHEET ARTICLES (Zero Boxed Cards — Pure Editorial Columns)
    ------------------------------------------------------------- */
 .magazine-card {
-  background: var(--magazine-paper-elevated);
-  border: var(--magazine-rule) solid var(--magazine-fence);
-  padding: 1.75rem;
+  background: transparent;
+  border: none;
+  border-top: var(--magazine-rule) solid var(--magazine-fence);
+  padding: 1.5rem 0 0 0;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  transition: transform var(--magazine-motion-fast) ease, box-shadow var(--magazine-motion-fast) ease, border-color var(--magazine-motion-fast) ease;
+  box-shadow: none;
+  transition: border-color var(--magazine-motion-fast) ease;
 }
 
 .magazine-card:hover {
-  transform: translateY(-3px);
+  transform: none;
   border-color: var(--magazine-ink);
-  box-shadow: 0 12px 28px -8px rgba(17, 19, 23, 0.08);
-}
-
-.magazine-card-featured {
-  background: var(--magazine-paper-warm);
-  border-color: var(--magazine-fence);
+  box-shadow: none;
 }
 
 .magazine-card-dark {
-  background: var(--magazine-paper-dark);
-  color: var(--magazine-paper);
-  border-color: var(--magazine-paper-dark);
+  background: transparent;
+  color: var(--magazine-ink);
+  border-top: var(--magazine-rule) solid var(--magazine-fence-strong);
+  padding: 1.5rem 0 0 0;
 }
 
 .magazine-card-dark .magazine-kicker {
-  color: #d1ab65;
+  color: var(--magazine-accent-gold);
 }
 
 .magazine-card-dark p {

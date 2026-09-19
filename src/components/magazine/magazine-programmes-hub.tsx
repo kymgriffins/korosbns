@@ -66,7 +66,7 @@ const PROGRAMME_DOSSIERS = [
       { label: "Community Screenings", value: "52 Events" },
       { label: "Open Archive Access", value: "100% Free" },
     ],
-    href: "/bns-studio",
+    href: "/programmes/studios",
     accent: "Visual Evidence Scope",
   },
 ];

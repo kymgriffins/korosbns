@@ -57,7 +57,7 @@ const defaultPillars = [
     eyebrow: "Creative Evidence",
     title: "BNS Documentary Studios",
     lede: "Translating complex audit spreadsheets into compelling cinematic documentaries, short-form investigations, and public records.",
-    href: "/bns-studio",
+    href: "/programmes/studios",
     stat: "100% Open",
     statLabel: "Public Record",
   },
@@ -230,7 +230,7 @@ export function MagazineFrontPage({
             <div>
               <span className="magazine-kicker">Public Wealth Intelligence</span>
               <h2 className="font-serif text-3xl md:text-5xl font-black tracking-[-0.04em] text-[#111317]">
-                The Investigative Desks
+                The Core Programmes
               </h2>
             </div>
             <p className="mt-4 md:mt-0 font-serif italic text-[#525660] max-w-md text-sm md:text-base">
@@ -250,7 +250,7 @@ export function MagazineFrontPage({
                 </p>
               </div>
               <div className="mt-8 pt-4 border-t border-[#e4e0d4] flex items-center justify-between">
-                <span className="font-mono text-[11px] uppercase tracking-wider text-[#7a7e8a]">Connect Desk</span>
+                <span className="font-mono text-[11px] uppercase tracking-wider text-[#7a7e8a]">Connect Programme</span>
                 <Link
                   href="/programmes/connect"
                   className="font-mono text-[11px] uppercase tracking-widest font-bold text-[#111317] hover:text-[#96702e]"
@@ -271,7 +271,7 @@ export function MagazineFrontPage({
                 </p>
               </div>
               <div className="mt-8 pt-4 border-t border-[#e4e0d4] flex items-center justify-between">
-                <span className="font-mono text-[11px] uppercase tracking-wider text-[#7a7e8a]">Mashinani Desk</span>
+                <span className="font-mono text-[11px] uppercase tracking-wider text-[#7a7e8a]">Mashinani Programme</span>
                 <Link
                   href="/programmes/mashinani"
                   className="font-mono text-[11px] uppercase tracking-widest font-bold text-[#111317] hover:text-[#96702e]"
@@ -292,7 +292,7 @@ export function MagazineFrontPage({
                 </p>
               </div>
               <div className="mt-8 pt-4 border-t border-[#e4e0d4] flex items-center justify-between">
-                <span className="font-mono text-[11px] uppercase tracking-wider text-[#7a7e8a]">Wanahabari Lab</span>
+                <span className="font-mono text-[11px] uppercase tracking-wider text-[#7a7e8a]">Wanahabari Lab Programme</span>
                 <Link
                   href="/programmes/wanahabari-lab"
                   className="font-mono text-[11px] uppercase tracking-widest font-bold text-[#111317] hover:text-[#96702e]"

@@ -1,4 +1,3 @@
-import LoadingScreen from "@/components/global/loading-screen";
 import Providers from "@/components/global/providers";
 import WhatsAppSupport from "@/components/global/whatsapp-support";
 import CookieConsentWrapper from "@/components/global/cookie-consent-wrapper";
@@ -12,7 +11,6 @@ import type { Viewport } from "next";
 import { cookies } from "next/headers";
 import Script from "next/script";
 import { getLivePartnerPageSections, getLiveDesignTokens } from "@/lib/cms-live-data";
-import { getGlobalSplashConfig } from "@/lib/page-loading";
 
 export const metadata = generateMetadata();
 
@@ -151,7 +149,6 @@ export default async function RootLayout({
   const cookiePreset = cookieStore.get("theme_preset")?.value;
   // If an admin has a preview cookie set, respect it; otherwise use the live CMS production theme
   const themePreset = cookiePreset || liveCmsTheme;
-  const splash = getGlobalSplashConfig(sections);
 
   return (
     <html lang="en" data-theme-preset={themePreset} suppressHydrationWarning>
@@ -207,9 +204,6 @@ export default async function RootLayout({
       >
         <BrandTokensInjector />
         <Providers>
-          {splash.enabled ? (
-            <LoadingScreen enabled minMs={splash.minMs} />
-          ) : null}
           <WhatsAppSupport />
           {children}
           <CookieConsentWrapper />
