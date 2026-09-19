@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { notFound, redirect } from "next/navigation";
+import { notFound } from "next/navigation";
 import { buildPageMetadata } from "@/utils/page-metadata";
 import { MagazineProgrammeDetail } from "@/components/magazine/magazine-programme-detail";
 import type { ProgrammeBlock } from "@/content";
@@ -25,14 +25,6 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
-  if (slug === "studios") {
-    return buildPageMetadata({
-      title: "BNS Studio | Budget Ndio Story",
-      description:
-        "Commissioned evidence production that funds Budget Ndio Story programmes.",
-      path: "/bns-studio",
-    });
-  }
   const programmes = await getLiveProgrammesContent();
   const programme = findProgrammeInContent(programmes, slug) as
     | ProgrammeBlock
@@ -53,10 +45,6 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function ProgrammeSlugPage({ params }: PageProps) {
   const { slug } = await params;
-  if (slug === "studios") {
-    redirect("/bns-studio");
-  }
-
   const [programmesData, studiosEvidenceData] = await Promise.all([
     getLiveProgrammesContent(),
     getLiveStudiosEvidence(),
@@ -65,7 +53,7 @@ export default async function ProgrammeSlugPage({ params }: PageProps) {
   const programme = findProgrammeInContent(programmesData, slug) as
     | ProgrammeBlock
     | undefined;
-  if (!programme || programme.slug === "studios") notFound();
+  if (!programme) notFound();
 
   const civic = civicProgrammesFromContent(programmesData) as ProgrammeBlock[];
 

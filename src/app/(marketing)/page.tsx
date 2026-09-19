@@ -1,242 +1,199 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ScrollReveal } from "@/components/clean-slate/scroll-reveal";
+import { ArrowRight } from "lucide-react";
 import {
-  getProgrammeCards,
-  getImpactStats,
   getFeaturedProjects,
-  getCommunityImages,
+  getHeroImage,
+  getImpactStats,
+  getLandingContent,
+  getProgrammeCards,
 } from "@/data/marketing";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 export const metadata: Metadata = {
   title: "Budget Ndio Story | Kenya's Public Wealth, Made Clear",
   description:
-    "Translating Kenya's complex national budget into clear, actionable civic narratives. Independent journalism tracking public money from Nairobi to the grassroots.",
+    "Translating Kenya's complex national budget into clear, actionable civic narratives.",
   alternates: { canonical: "https://budgetndiostory.org/" },
-  openGraph: {
-    title: "Budget Ndio Story",
-    description: "Kenya's public wealth, made clear.",
-    url: "/",
-    type: "website",
-  },
 };
 
 export default function LandingPage() {
+  const content = getLandingContent();
   const programmes = getProgrammeCards();
-  const stats = getImpactStats();
   const featured = getFeaturedProjects(3);
-  const images = getCommunityImages();
+  const stats = getImpactStats();
+  const impactStats = [
+    { value: stats.productionCount, label: "Verified productions" },
+    { value: stats.partnerCount, label: "Partner organisations" },
+    { value: stats.programmeCount, label: "Active programmes" },
+    { value: stats.bnsLedCount, label: "BNS-led projects" },
+  ].filter((stat) => stat.value > 0);
 
   return (
     <>
-      {/* Hero */}
-      <section className="cs-hero" style={{ borderBottom: "2px solid var(--cs-black)" }}>
-        <div className="cs-container">
-          <ScrollReveal>
-            <h1 className="cs-display" style={{ maxWidth: "14ch" }}>
-              Budget Ndio Story
-            </h1>
-          </ScrollReveal>
-          <ScrollReveal delay={100}>
-            <p
-              className="cs-body"
-              style={{
-                marginTop: "16px",
-                maxWidth: "50ch",
-                color: "var(--cs-gray-600)",
-                fontSize: "clamp(1rem, 2.5vw, 1.125rem)",
-              }}
-            >
-              Kenya&apos;s public wealth, translated into clear, actionable civic narratives.
-            </p>
-          </ScrollReveal>
-          <ScrollReveal delay={200}>
-            <Link href="/programmes" className="cs-btn cs-btn-primary" style={{ marginTop: "24px" }}>
-              Explore Programmes
-            </Link>
-          </ScrollReveal>
-        </div>
-      </section>
-
-      {/* Manifesto */}
-      <section className="cs-section cs-section-muted">
-        <div className="cs-container">
-          <div className="cs-editorial-2col">
-            <ScrollReveal>
-              <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
-                <p className="cs-body" style={{ maxWidth: "65ch" }}>
-                  Public budgets in Kenya have historically lived behind dense bureaucratic language,
-                  releasing numbers only when policy decisions are already irreversible.
-                </p>
-                <p className="cs-body" style={{ maxWidth: "65ch" }}>
-                  We open the paper trail, verify physical works, and hand the evidence back to citizens.
-                  Every claim is sourced from National Treasury and Parliament.
-                </p>
-                <p className="cs-body" style={{ maxWidth: "65ch" }}>
-                  From Treasury appropriations in Nairobi to county dispensaries and rural roads,
-                  we track the verified trajectory of public money through independent reporting.
-                </p>
-              </div>
-            </ScrollReveal>
-            <ScrollReveal delay={150}>
-              <div className="cs-aspect-3/4 cs-image-wrap">
-                <img
-                  src={images.forumB}
-                  alt="Community town hall meeting in Kenya"
-                  className="cs-image"
-                  style={{ filter: "grayscale(1)" }}
-                />
-              </div>
-            </ScrollReveal>
-          </div>
-        </div>
-      </section>
-
-      {/* Programmes Bento */}
-      <section className="cs-section">
-        <div className="cs-container">
-          <ScrollReveal>
-            <h2 className="cs-headline" style={{ marginBottom: "32px" }}>
-              Programmes
-            </h2>
-          </ScrollReveal>
-          <div className="cs-bento">
-            {programmes.map((p, i) => (
-              <ScrollReveal
-                key={p.slug}
-                delay={i * 80}
-                className="cs-cell"
-                style={{ gridColumn: "span 12" }}
-              >
-                <Link
-                  href={`/programmes/${p.slug}`}
-                  className="cs-project-card"
-                  style={{ display: "block", padding: "24px 0" }}
-                >
-                  <div className="cs-grid-sidebar">
-                    <div>
-                      {i === 0 && (
-                        <div
-                          className="cs-aspect-16/9 cs-image-wrap"
-                          style={{ marginBottom: "16px" }}
-                        >
-                          <img src={p.thumbnail} alt={p.title} className="cs-image" />
-                        </div>
-                      )}
-                      <h3 className="cs-headline cs-project-card-title" style={{ fontSize: "clamp(1.125rem, 2.5vw, 1.5rem)" }}>
-                        {p.title}
-                      </h3>
-                      <p
-                        className="cs-body"
-                        style={{ marginTop: "8px", color: "var(--cs-gray-600)", maxWidth: "50ch" }}
-                      >
-                        {p.description}
-                      </p>
-                    </div>
-                    <div style={{ display: "flex", gap: "16px", alignItems: "baseline" }}>
-                      <div>
-                        <div className="cs-stat-number" style={{ fontSize: "clamp(1.5rem, 3vw, 2.5rem)" }}>
-                          {p.projectCount}
-                        </div>
-                        <div className="cs-stat-label">Projects</div>
-                      </div>
-                    </div>
-                  </div>
+      <section className="border-b">
+        <div className="mx-auto grid min-h-[calc(100svh-4rem)] max-w-7xl items-center gap-10 px-4 py-16 sm:px-6 lg:grid-cols-2 lg:px-8">
+          <div className="flex flex-col items-start gap-6">
+            <Badge variant="secondary">{content.heroNarrative.eyebrow}</Badge>
+            <div className="flex flex-col gap-4">
+              <h1 className="max-w-3xl text-4xl font-bold tracking-tight text-balance sm:text-5xl lg:text-6xl">
+                {content.heroNarrative.title}
+              </h1>
+              <p className="max-w-2xl text-lg leading-8 text-muted-foreground">
+                {content.heroNarrative.lede}
+              </p>
+            </div>
+            <div className="flex flex-wrap gap-3">
+              <Button asChild size="lg">
+                <Link href="/programmes">
+                  Explore programmes
+                  <ArrowRight data-icon="inline-end" />
                 </Link>
-              </ScrollReveal>
+              </Button>
+              <Button asChild size="lg" variant="outline">
+                <Link href={content.partnerCta.ctaHref}>{content.partnerCta.ctaLabel}</Link>
+              </Button>
+            </div>
+          </div>
+          <div className="overflow-hidden rounded-2xl border bg-muted">
+            <img
+              src={getHeroImage()}
+              alt="Budget Ndio Story community budget forum"
+              className="aspect-[4/3] size-full object-cover"
+            />
+          </div>
+        </div>
+      </section>
+
+      <section className="border-b bg-muted/30 py-16 sm:py-24">
+        <div className="mx-auto grid max-w-7xl gap-8 px-4 sm:px-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,2fr)] lg:px-8">
+          <div className="flex flex-col gap-3">
+            <Badge variant="outline">{content.thesis.eyebrow}</Badge>
+            <h2 className="text-3xl font-bold tracking-tight">{content.thesis.title}</h2>
+          </div>
+          <div className="flex flex-col gap-4">
+            <p className="text-lg leading-8 text-muted-foreground">{content.thesis.body}</p>
+            <p className="text-sm font-medium">{content.thesis.method}</p>
+          </div>
+        </div>
+      </section>
+
+      <section className="border-b py-16 sm:py-24">
+        <div className="mx-auto flex max-w-7xl flex-col gap-8 px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+            <div className="flex flex-col gap-3">
+              <Badge variant="outline">What we do</Badge>
+              <h2 className="text-3xl font-bold tracking-tight">Programmes</h2>
+            </div>
+            <Button asChild variant="outline">
+              <Link href="/programmes">View all programmes</Link>
+            </Button>
+          </div>
+          <div className="grid gap-4 md:grid-cols-2">
+            {programmes.map((programme) => (
+              <Card key={programme.slug} className="overflow-hidden">
+                <img
+                  src={programme.thumbnail}
+                  alt={programme.title}
+                  className="aspect-video w-full object-cover"
+                />
+                <CardHeader>
+                  <CardTitle>{programme.title}</CardTitle>
+                  <CardDescription>{programme.description}</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm text-muted-foreground">
+                    {programme.projectCount > 0
+                      ? `${programme.projectCount} published ${programme.projectCount === 1 ? "project" : "projects"}`
+                      : "Programme information and partnership details"}
+                  </p>
+                </CardContent>
+                <CardFooter>
+                  <Button asChild variant="outline">
+                    <Link href={`/programmes/${programme.slug}`}>
+                      Explore {programme.title}
+                    </Link>
+                  </Button>
+                </CardFooter>
+              </Card>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Impact Numbers */}
-      <section className="cs-section cs-section-muted">
-        <div className="cs-container">
-          <div className="cs-stats-row">
-            {[
-              { number: String(stats.productionCount || 55), label: "Productions Completed" },
-              { number: String(stats.partnerCount || 8), label: "Partner Organisations" },
-              { number: String(stats.programmeCount || 4), label: "Active Programmes" },
-              { number: String(stats.bnsLedCount || 12), label: "BNS-Led Projects" },
-            ].map((item, i) => (
-              <ScrollReveal key={item.label} delay={i * 60} style={{ padding: "24px" }}>
-                <div className="cs-stat-number">{item.number}</div>
-                <div className="cs-stat-label" style={{ marginTop: "8px" }}>
-                  {item.label}
-                </div>
-              </ScrollReveal>
+      {impactStats.length > 0 && (
+        <section className="border-b bg-muted/30">
+          <div className="mx-auto grid max-w-7xl gap-px bg-border px-4 sm:grid-cols-2 sm:px-6 lg:grid-cols-4 lg:px-8">
+            {impactStats.map((stat) => (
+              <div key={stat.label} className="flex flex-col gap-2 bg-background py-8 sm:px-6">
+                <p className="text-3xl font-bold tracking-tight">{stat.value}</p>
+                <p className="text-sm text-muted-foreground">{stat.label}</p>
+              </div>
             ))}
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
-      {/* Featured Projects */}
       {featured.length > 0 && (
-        <section className="cs-section">
-          <div className="cs-container">
-            <ScrollReveal>
-              <h2 className="cs-headline" style={{ marginBottom: "32px" }}>
-                Featured Work
+        <section className="border-b py-16 sm:py-24">
+          <div className="mx-auto flex max-w-7xl flex-col gap-8 px-4 sm:px-6 lg:px-8">
+            <div className="flex flex-col gap-3">
+              <Badge variant="outline">{content.featuredIntro.eyebrow}</Badge>
+              <h2 className="max-w-3xl text-3xl font-bold tracking-tight">
+                {content.featuredIntro.headline}
               </h2>
-            </ScrollReveal>
-            <div className="cs-grid-3">
-              {featured.map((project, i) => (
-                <ScrollReveal key={project.id} delay={i * 80}>
-                  <Link
-                    href={project.href}
-                    className="cs-project-card"
-                    style={{ display: "block" }}
-                  >
-                    <div
-                      className="cs-aspect-16/9 cs-image-wrap"
-                      style={{ marginBottom: "12px" }}
-                    >
-                      <img
-                        src={project.thumbnail}
-                        alt={project.title}
-                        className="cs-image"
-                      />
-                    </div>
-                    <p className="cs-label" style={{ color: "var(--cs-gray-400)", marginBottom: "4px" }}>
-                      {project.programmeLabel}
-                    </p>
-                    <h3 className="cs-headline cs-project-card-title" style={{ fontSize: "1rem" }}>
-                      {project.title}
-                    </h3>
-                    {project.subtitle && (
-                      <p className="cs-body" style={{ marginTop: "4px", color: "var(--cs-gray-600)", fontSize: "0.875rem" }}>
-                        {project.subtitle}
-                      </p>
-                    )}
-                  </Link>
-                </ScrollReveal>
+              <p className="max-w-3xl text-muted-foreground">{content.featuredIntro.lede}</p>
+            </div>
+            <div className="grid gap-4 md:grid-cols-3">
+              {featured.map((project) => (
+                <Card key={project.id} className="overflow-hidden">
+                  <img
+                    src={project.thumbnail}
+                    alt={project.title}
+                    className="aspect-video w-full object-cover"
+                  />
+                  <CardHeader>
+                    <CardTitle>{project.title}</CardTitle>
+                    <CardDescription>
+                      {project.subtitle || project.programmeLabel}
+                    </CardDescription>
+                  </CardHeader>
+                  <CardFooter>
+                    <Button asChild variant="outline">
+                      <Link href={project.href}>View project</Link>
+                    </Button>
+                  </CardFooter>
+                </Card>
               ))}
             </div>
           </div>
         </section>
       )}
 
-      {/* CTA */}
-      <section className="cs-section cs-section-dark">
-        <div className="cs-container">
-          <ScrollReveal>
-            <h2 className="cs-display" style={{ color: "var(--cs-white)", maxWidth: "12ch" }}>
-              Get in touch
-            </h2>
-          </ScrollReveal>
-          <ScrollReveal delay={100}>
-            <p
-              className="cs-body"
-              style={{ marginTop: "12px", color: "var(--cs-gray-400)", maxWidth: "50ch" }}
-            >
-              Investigation tip-offs, partnerships, and inquiries.
-            </p>
-          </ScrollReveal>
-          <ScrollReveal delay={200}>
-            <Link href="/contact" className="cs-btn cs-btn-primary" style={{ marginTop: "24px" }}>
-              Contact Us
+      <section className="py-16 sm:py-24">
+        <div className="mx-auto flex max-w-4xl flex-col items-start gap-5 px-4 sm:px-6 lg:px-8">
+          <Badge>{content.partnerCta.eyebrow}</Badge>
+          <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
+            {content.partnerCta.title}
+          </h2>
+          <p className="max-w-2xl text-lg text-muted-foreground">
+            {content.partnerCta.description}
+          </p>
+          <Button asChild size="lg">
+            <Link href={content.partnerCta.ctaHref}>
+              {content.partnerCta.ctaLabel}
+              <ArrowRight data-icon="inline-end" />
             </Link>
-          </ScrollReveal>
+          </Button>
         </div>
       </section>
     </>

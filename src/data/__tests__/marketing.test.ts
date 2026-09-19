@@ -7,7 +7,13 @@ vi.mock("@/lib/api-client", () => ({
   apiFetch: vi.fn(),
 }));
 
-import { marketingData } from "@/data/marketing";
+import {
+  getContactContent,
+  getMarketingNavigation,
+  getProgrammeContent,
+  getProgrammeContentList,
+  marketingData,
+} from "@/data/marketing";
 
 beforeEach(() => {
   vi.clearAllMocks();
@@ -48,5 +54,36 @@ describe("marketingData campaigns", () => {
     (apiFetch as any).mockRejectedValue(new Error("fail"));
     const result = await marketingData.campaigns.fetch();
     expect(result).toEqual([]);
+  });
+});
+
+describe("core marketing content", () => {
+  it("defines the four programme routes from canonical content", () => {
+    expect(getProgrammeContentList().map((programme) => programme.href)).toEqual([
+      "/programmes/connect",
+      "/programmes/mashinani",
+      "/programmes/wanahabari-lab",
+      "/programmes/studios",
+    ]);
+  });
+
+  it("uses canonical programme metadata", () => {
+    const connect = getProgrammeContent("connect");
+    expect(connect?.name).toBe("BNS Connect");
+    expect(connect?.seoTitle).toBeTruthy();
+    expect(connect?.visual.hero).toBeTruthy();
+  });
+
+  it("builds navigation without dead routes", () => {
+    const navigation = getMarketingNavigation();
+    expect(navigation.at(0)).toEqual({ label: "Programmes", href: "/programmes" });
+    expect(navigation.at(-1)).toEqual({ label: "Contact", href: "/contact" });
+    expect(navigation.every((item) => item.href.startsWith("/"))).toBe(true);
+  });
+
+  it("uses the canonical public contact details", () => {
+    const contact = getContactContent();
+    expect(contact.directContact.email).toContain("@");
+    expect(contact.socials.length).toBeGreaterThan(0);
   });
 });

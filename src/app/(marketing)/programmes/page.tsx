@@ -1,174 +1,101 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ScrollReveal } from "@/components/clean-slate/scroll-reveal";
-import { getProgrammeCards, getImpactStats } from "@/data/marketing";
+import { ArrowRight } from "lucide-react";
+import { getProgrammeCards, getProgrammeContentList } from "@/data/marketing";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 export const metadata: Metadata = {
   title: "Programmes | Budget Ndio Story",
   description:
-    "Four programmes tracking Kenya's public wealth from national treasury to county communities.",
+    "Explore Budget Ndio Story programmes for national budget intelligence, county accountability, journalism, and evidence production.",
   alternates: { canonical: "https://budgetndiostory.org/programmes" },
 };
 
 export default function ProgrammesPage() {
-  const programmes = getProgrammeCards();
-  const stats = getImpactStats();
-
-  const connect = programmes.find((p) => p.slug === "connect");
-  const mashinani = programmes.find((p) => p.slug === "mashinani");
-  const wanahabari = programmes.find((p) => p.slug === "wanahabari-lab");
-  const studio = programmes.find((p) => p.slug === "studios");
+  const programmes = getProgrammeContentList();
+  const cards = getProgrammeCards();
 
   return (
     <>
-      {/* Hero */}
-      <section
-        className="cs-section"
-        style={{ borderBottom: "2px solid var(--cs-black)", paddingBottom: "32px" }}
-      >
-        <div className="cs-container">
-          <ScrollReveal>
-            <h1 className="cs-display">Programmes</h1>
-          </ScrollReveal>
-          <ScrollReveal delay={80}>
-            <p
-              className="cs-body"
-              style={{ marginTop: "12px", color: "var(--cs-gray-600)", maxWidth: "50ch" }}
-            >
-              Four programmes tracking Kenya&apos;s public wealth from national treasury to county communities.
-            </p>
-          </ScrollReveal>
+      <section className="border-b bg-muted/30 py-16 sm:py-24">
+        <div className="mx-auto flex max-w-7xl flex-col items-start gap-5 px-4 sm:px-6 lg:px-8">
+          <Badge variant="secondary">Budget Ndio Story</Badge>
+          <h1 className="max-w-4xl text-4xl font-bold tracking-tight text-balance sm:text-5xl lg:text-6xl">
+            Programmes that follow public money from policy to delivery
+          </h1>
+          <p className="max-w-3xl text-lg leading-8 text-muted-foreground">
+            National budget tracking, county delivery verification, newsroom training,
+            and evidence production share one public-interest evidence system.
+          </p>
         </div>
       </section>
 
-      {/* Programme Cards */}
-      <section className="cs-section">
-        <div className="cs-container">
-          <div className="cs-bento">
-            {/* Connect — full width */}
-            {connect && (
-              <ScrollReveal className="cs-cell" style={{ gridColumn: "span 12" }}>
-                <Link
-                  href="/programmes/connect"
-                  className="cs-project-card"
-                  style={{ display: "block", padding: "24px 0" }}
-                >
-                  <div className="cs-grid-sidebar">
-                    <div>
-                      <div className="cs-aspect-16/9 cs-image-wrap" style={{ marginBottom: "16px" }}>
-                        <img src={connect.thumbnail} alt={connect.title} className="cs-image" />
-                      </div>
-                      <h2 className="cs-headline cs-project-card-title">{connect.title}</h2>
-                      <p className="cs-body" style={{ marginTop: "8px", color: "var(--cs-gray-600)" }}>
-                        {connect.description}
-                      </p>
-                    </div>
-                    <div>
-                      <div className="cs-stat-number">{connect.projectCount}</div>
-                      <div className="cs-stat-label">Projects</div>
-                    </div>
-                  </div>
-                </Link>
-              </ScrollReveal>
-            )}
-
-            {/* Mashinani + Wanahabari — half width */}
-            {[mashinani, wanahabari].filter(Boolean).map((p, i) => (
-              <ScrollReveal key={p!.slug} className="cs-cell" delay={i * 80} style={{ gridColumn: "span 12" }}>
-                <Link
-                  href={`/programmes/${p!.slug}`}
-                  className="cs-project-card"
-                  style={{ display: "block", padding: "24px 0" }}
-                >
-                  <h3 className="cs-headline cs-project-card-title" style={{ fontSize: "clamp(1.125rem, 2.5vw, 1.5rem)" }}>
-                    {p!.title}
-                  </h3>
-                  <p className="cs-body" style={{ marginTop: "8px", color: "var(--cs-gray-600)", maxWidth: "40ch" }}>
-                    {p!.description}
+      <section className="border-b py-16 sm:py-24">
+        <div className="mx-auto grid max-w-7xl gap-6 px-4 sm:px-6 lg:grid-cols-2 lg:px-8">
+          {programmes.map((programme) => {
+            const card = cards.find((item) => item.slug === programme.slug);
+            return (
+              <Card key={programme.slug} className="overflow-hidden">
+                <img
+                  src={card?.thumbnail || programme.visual.hero}
+                  alt={programme.visual.heroAlt}
+                  className="aspect-video w-full object-cover"
+                />
+                <CardHeader>
+                  <Badge className="w-fit" variant="outline">
+                    {programme.eyebrow}
+                  </Badge>
+                  <CardTitle>{programme.name}</CardTitle>
+                  <CardDescription>{programme.headline}</CardDescription>
+                </CardHeader>
+                <CardContent className="flex flex-col gap-3">
+                  <p className="text-sm leading-6 text-muted-foreground">
+                    {programme.whatWeDo || programme.body}
                   </p>
-                  <div style={{ marginTop: "16px" }}>
-                    <div className="cs-stat-number" style={{ fontSize: "clamp(1.5rem, 3vw, 2rem)" }}>
-                      {p!.projectCount}
-                    </div>
-                    <div className="cs-stat-label">Projects</div>
-                  </div>
-                </Link>
-              </ScrollReveal>
-            ))}
-
-            {/* Studio — full width strip */}
-            {studio && (
-              <ScrollReveal className="cs-cell" delay={160} style={{ gridColumn: "span 12" }}>
-                <Link
-                  href="/programmes/studios"
-                  className="cs-project-card"
-                  style={{ display: "block", padding: "24px 0" }}
-                >
-                  <div className="cs-grid-sidebar">
-                    <div>
-                      <h3 className="cs-headline cs-project-card-title" style={{ fontSize: "clamp(1.125rem, 2.5vw, 1.5rem)" }}>
-                        {studio.title}
-                      </h3>
-                      <p className="cs-body" style={{ marginTop: "4px", color: "var(--cs-gray-600)" }}>
-                        {studio.description}
-                      </p>
-                    </div>
-                    <div style={{ textAlign: "right" }}>
-                      <div className="cs-stat-number" style={{ fontSize: "clamp(1.5rem, 3vw, 2rem)" }}>
-                        {studio.projectCount}
-                      </div>
-                      <div className="cs-stat-label">Productions</div>
-                    </div>
-                  </div>
-                </Link>
-              </ScrollReveal>
-            )}
-          </div>
+                  {card && card.projectCount > 0 && (
+                    <p className="text-sm font-medium">
+                      {card.projectCount} published {card.projectCount === 1 ? "project" : "projects"}
+                    </p>
+                  )}
+                </CardContent>
+                <CardFooter>
+                  <Button asChild>
+                    <Link href={programme.href}>
+                      Explore {programme.name}
+                      <ArrowRight data-icon="inline-end" />
+                    </Link>
+                  </Button>
+                </CardFooter>
+              </Card>
+            );
+          })}
         </div>
       </section>
 
-      {/* Comparison */}
-      <section className="cs-section cs-section-muted">
-        <div className="cs-container">
-          <ScrollReveal>
-            <h2 className="cs-headline" style={{ marginBottom: "32px" }}>
-              At a glance
-            </h2>
-          </ScrollReveal>
-          <div className="cs-grid-3">
-            {programmes.map((p, i) => (
-              <ScrollReveal key={p.slug} delay={i * 60} style={{ padding: "16px 0" }}>
-                <p style={{ fontWeight: 600, fontSize: "0.9375rem", marginBottom: "12px" }}>
-                  {p.title}
-                </p>
-                <div>
-                  <div className="cs-stat-number" style={{ fontSize: "1.5rem" }}>
-                    {p.projectCount}
-                  </div>
-                  <div className="cs-stat-label">{p.projectCount === 1 ? "Project" : "Projects"}</div>
-                </div>
-                <p className="cs-body" style={{ marginTop: "8px", color: "var(--cs-gray-600)", fontSize: "0.875rem" }}>
-                  {p.description}
-                </p>
-              </ScrollReveal>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* CTA */}
-      <section className="cs-section cs-section-dark">
-        <div className="cs-container">
-          <ScrollReveal>
-            <h2 className="cs-display" style={{ color: "var(--cs-white)" }}>
-              Follow the money
-            </h2>
-          </ScrollReveal>
-          <ScrollReveal delay={100}>
-            <Link href="/programmes/connect" className="cs-btn cs-btn-primary" style={{ marginTop: "24px" }}>
-              Start with BNS Connect
+      <section className="py-16 sm:py-24">
+        <div className="mx-auto flex max-w-4xl flex-col items-start gap-5 px-4 sm:px-6 lg:px-8">
+          <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
+            Work with a programme
+          </h2>
+          <p className="max-w-2xl text-lg text-muted-foreground">
+            Tell us whether you are exploring a programme partnership, evidence request,
+            newsroom collaboration, or production commission.
+          </p>
+          <Button asChild size="lg">
+            <Link href="/contact?intent=partner">
+              Contact the team
+              <ArrowRight data-icon="inline-end" />
             </Link>
-          </ScrollReveal>
+          </Button>
         </div>
       </section>
     </>

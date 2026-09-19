@@ -533,7 +533,7 @@
         "href": "/bns-studio",
         "note": "Browse current studio productions"
       },
-      "href": "/bns-studio",
+      "href": "/programmes/studios",
       "visual": {
         "hero": "/images/media/main media image.jpg",
         "heroAlt": "BNS Studios production capturing civic storytelling on set",

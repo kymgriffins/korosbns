@@ -9,6 +9,7 @@ const SEED = [
   "/programmes/connect",
   "/programmes/mashinani",
   "/programmes/wanahabari-lab",
+  "/programmes/studios",
   "/bns-studio",
   "/contact",
   "/contact?intent=partner",

@@ -16,6 +16,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { path: "/programmes/connect", priority: 0.85, frequency: "monthly" as const },
     { path: "/programmes/mashinani", priority: 0.85, frequency: "monthly" as const },
     { path: "/programmes/wanahabari-lab", priority: 0.85, frequency: "monthly" as const },
+    { path: "/programmes/studios", priority: 0.85, frequency: "monthly" as const },
     { path: "/projects", priority: 0.9, frequency: "weekly" as const },
     { path: "/about", priority: 0.85, frequency: "monthly" as const },
     { path: "/reports", priority: 0.9, frequency: "weekly" as const },

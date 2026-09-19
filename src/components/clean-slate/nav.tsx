@@ -1,79 +1,92 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
-import { cn } from "@/utils";
+import { MenuIcon } from "lucide-react";
+import { usePathname } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import {
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 
-const NAV_ITEMS = [
-  { label: "Programmes", href: "/programmes" },
-  { label: "Connect", href: "/programmes/connect" },
-  { label: "Studio", href: "/programmes/studios" },
-  { label: "Wanahabari", href: "/programmes/wanahabari-lab" },
-  { label: "Mashinani", href: "/programmes/mashinani" },
-  { label: "Contact", href: "/contact" },
-];
+export type NavigationItem = {
+  label: string;
+  href: string;
+};
 
-export function CleanSlateNav() {
-  const [scrolled, setScrolled] = useState(false);
-  const [menuOpen, setMenuOpen] = useState(false);
+type CleanSlateNavProps = {
+  items: NavigationItem[];
+};
 
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 20);
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-
-  useEffect(() => {
-    if (menuOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "";
-    }
-    return () => { document.body.style.overflow = ""; };
-  }, [menuOpen]);
+export function CleanSlateNav({ items }: CleanSlateNavProps) {
+  const pathname = usePathname();
+  const activeHref = items.reduce<string | undefined>((active, item) => {
+    const matches =
+      item.href === "/"
+        ? pathname === item.href
+        : pathname === item.href || pathname.startsWith(`${item.href}/`);
+    return matches && (!active || item.href.length > active.length) ? item.href : active;
+  }, undefined);
+  const isActive = (href: string) => href === activeHref;
 
   return (
-    <header className={cn("cs-nav", scrolled && "scrolled")}>
-      <div className="cs-nav-inner">
-        <Link href="/" className="cs-nav-logo" onClick={() => setMenuOpen(false)}>
-          BNS.
+    <header className="fixed inset-x-0 top-0 z-40 h-16 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
+      <div className="mx-auto flex h-full max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+        <Link
+          href="/"
+          className="rounded-sm text-lg font-bold tracking-tight focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        >
+          Budget Ndio Story
         </Link>
 
-        {/* Desktop nav */}
-        <nav className="cs-nav-links" aria-label="Primary navigation">
-          {NAV_ITEMS.map((item) => (
-            <Link key={item.href} href={item.href} className="cs-nav-link">
-              {item.label}
-            </Link>
-          ))}
-        </nav>
-
-        {/* Mobile hamburger */}
-        <button
-          className="cs-nav-hamburger"
-          onClick={() => setMenuOpen(!menuOpen)}
-          aria-label={menuOpen ? "Close menu" : "Open menu"}
-          aria-expanded={menuOpen}
-        >
-          <span className={cn("cs-hamburger-line", menuOpen && "open")} />
-          <span className={cn("cs-hamburger-line", menuOpen && "open")} />
-        </button>
-      </div>
-
-      {/* Mobile menu overlay */}
-      <div className={cn("cs-mobile-menu", menuOpen && "open")}>
-        <nav aria-label="Mobile navigation">
-          {NAV_ITEMS.map((item) => (
-            <Link
+        <nav className="hidden items-center gap-1 lg:flex" aria-label="Primary navigation">
+          {items.map((item) => (
+            <Button
               key={item.href}
-              href={item.href}
-              className="cs-mobile-link"
-              onClick={() => setMenuOpen(false)}
+              asChild
+              variant={isActive(item.href) ? "secondary" : "ghost"}
+              size="sm"
             >
-              {item.label}
-            </Link>
+              <Link href={item.href} aria-current={isActive(item.href) ? "page" : undefined}>
+                {item.label}
+              </Link>
+            </Button>
           ))}
         </nav>
+
+        <Sheet>
+          <SheetTrigger asChild>
+            <Button className="lg:hidden" variant="outline" size="icon" aria-label="Open navigation">
+              <MenuIcon />
+            </Button>
+          </SheetTrigger>
+          <SheetContent>
+            <SheetHeader>
+              <SheetTitle>Budget Ndio Story</SheetTitle>
+              <SheetDescription>Explore our programmes and contact the team.</SheetDescription>
+            </SheetHeader>
+            <nav className="flex flex-col gap-1 px-4" aria-label="Mobile navigation">
+              {items.map((item) => (
+                <SheetClose key={item.href} asChild>
+                  <Button
+                    asChild
+                    className="justify-start"
+                    variant={isActive(item.href) ? "secondary" : "ghost"}
+                  >
+                    <Link href={item.href} aria-current={isActive(item.href) ? "page" : undefined}>
+                      {item.label}
+                    </Link>
+                  </Button>
+                </SheetClose>
+              ))}
+            </nav>
+          </SheetContent>
+        </Sheet>
       </div>
     </header>
   );

@@ -1,8 +1,13 @@
 import { withFallback } from "@/data/adapter";
 import { communicationApi } from "@/lib/communication/api";
+import { citizenApi } from "@/lib/api-client";
 import type { ContactMessage, EmailHook, NewsletterSubscriber } from "@/types/communication";
 
 export const communicationData = {
+  publicContact: {
+    submit: (body: { name: string; email: string; message: string; source?: string }) =>
+      citizenApi.submitContact(body),
+  },
   contacts: {
     fetch: (params?: { page?: number; search?: string }) =>
       withFallback(

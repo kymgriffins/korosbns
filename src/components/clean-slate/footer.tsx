@@ -1,59 +1,63 @@
 import Link from "next/link";
+import type { NavigationItem } from "@/components/clean-slate/nav";
+import { Separator } from "@/components/ui/separator";
 
-const FOOTER_LINKS = [
-  {
-    title: "Programmes",
-    links: [
-      { label: "BNS Connect", href: "/programmes/connect" },
-      { label: "BNS Mashinani", href: "/programmes/mashinani" },
-      { label: "Wanahabari Lab", href: "/programmes/wanahabari-lab" },
-      { label: "BNS Studio", href: "/programmes/studios" },
-    ],
-  },
-  {
-    title: "Organisation",
-    links: [
-      { label: "About", href: "/" },
-      { label: "Contact", href: "/contact" },
-      { label: "Programmes", href: "/programmes" },
-    ],
-  },
-];
+type SocialLink = {
+  name: string;
+  url: string;
+};
 
-export function CleanSlateFooter() {
+type CleanSlateFooterProps = {
+  items: NavigationItem[];
+  email: string;
+  socials: SocialLink[];
+};
+
+export function CleanSlateFooter({ items, email, socials }: CleanSlateFooterProps) {
   return (
-    <footer className="cs-footer">
-      <div className="cs-container">
-        <div className="cs-footer-grid">
-          <div>
-            <Link href="/" className="cs-nav-logo" style={{ fontSize: "1.5rem" }}>
-              BNS.
+    <footer className="border-t bg-muted/30">
+      <div className="mx-auto flex max-w-7xl flex-col gap-10 px-4 py-12 sm:px-6 lg:px-8">
+        <div className="grid gap-10 md:grid-cols-3">
+          <div className="flex flex-col gap-3">
+            <Link href="/" className="w-fit text-lg font-bold tracking-tight">
+              Budget Ndio Story
             </Link>
-            <p
-              className="cs-body"
-              style={{ marginTop: "16px", color: "var(--cs-gray-600)", maxWidth: "40ch" }}
-            >
-              Translating Kenya&apos;s national budget into clear, actionable civic narratives.
+            <p className="max-w-sm text-sm leading-6 text-muted-foreground">
+              Following public money and turning budget evidence into stories people can use.
             </p>
+            <a className="w-fit text-sm font-medium underline-offset-4 hover:underline" href={`mailto:${email}`}>
+              {email}
+            </a>
           </div>
-          {FOOTER_LINKS.map((section) => (
-            <div key={section.title}>
-              <p className="cs-label" style={{ marginBottom: "16px", color: "var(--cs-gray-400)" }}>
-                {section.title}
-              </p>
-              <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: "12px" }}>
-                {section.links.map((link) => (
-                  <li key={link.href}>
-                    <Link href={link.href} className="cs-link" style={{ fontSize: "0.875rem" }}>
-                      {link.label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
+          <nav className="flex flex-col gap-2" aria-label="Footer navigation">
+            <p className="text-sm font-semibold">Pages</p>
+            {items.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="w-fit text-sm text-muted-foreground underline-offset-4 hover:text-foreground hover:underline"
+              >
+                {item.label}
+              </Link>
+            ))}
+          </nav>
+          <div className="flex flex-col gap-2">
+            <p className="text-sm font-semibold">Follow</p>
+            {socials.map((social) => (
+              <a
+                key={social.url}
+                href={social.url}
+                target="_blank"
+                rel="noreferrer"
+                className="w-fit text-sm text-muted-foreground underline-offset-4 hover:text-foreground hover:underline"
+              >
+                {social.name}
+              </a>
+            ))}
+          </div>
         </div>
-        <div className="cs-footer-bottom">
+        <Separator />
+        <div className="flex flex-col gap-2 text-xs text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
           <span>&copy; {new Date().getFullYear()} Budget Ndio Story</span>
           <span>Nairobi, Kenya</span>
         </div>
