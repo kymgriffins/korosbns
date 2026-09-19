@@ -1,6 +1,12 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ScrollReveal } from "@/components/clean-slate/scroll-reveal";
+import {
+  getProgrammeCards,
+  getImpactStats,
+  getFeaturedProjects,
+  getCommunityImages,
+} from "@/data/marketing";
 
 export const metadata: Metadata = {
   title: "Budget Ndio Story | Kenya's Public Wealth, Made Clear",
@@ -15,56 +21,16 @@ export const metadata: Metadata = {
   },
 };
 
-const PROGRAMMES = [
-  {
-    slug: "connect",
-    title: "BNS Connect",
-    description: "National budget intelligence. Tracking debt, appropriations, and parliamentary fiscal legislation.",
-    stat: "KSh 4.8T",
-    statLabel: "Appropriation Tracked",
-  },
-  {
-    slug: "mashinani",
-    title: "BNS Mashinani",
-    description: "County delivery evidence. Following funds past treasury accounts to verify clinics, boreholes, and roads.",
-    stat: "47",
-    statLabel: "Counties Monitored",
-  },
-  {
-    slug: "wanahabari-lab",
-    title: "Wanahabari Lab",
-    description: "Investigative journalism lab. Equipping grassroots reporters with forensic data toolkits.",
-    stat: "120+",
-    statLabel: "Stories Published",
-  },
-  {
-    slug: "studios",
-    title: "BNS Studio",
-    description: "Evidence production. Translating audit spreadsheets into compelling cinematic investigations.",
-    stat: "100%",
-    statLabel: "Public Record",
-  },
-];
-
-const TEAM = [
-  { name: "Faith Muthoni", role: "Grassroots Civic Fellow" },
-  { name: "James Kariuki", role: "Lead Investigator" },
-  { name: "Amina Hassan", role: "Data Analyst" },
-];
-
 export default function LandingPage() {
+  const programmes = getProgrammeCards();
+  const stats = getImpactStats();
+  const featured = getFeaturedProjects(3);
+  const images = getCommunityImages();
+
   return (
     <>
-      {/* Section 1 — Hero */}
-      <section
-        className="cs-section"
-        style={{
-          minHeight: "100dvh",
-          display: "flex",
-          alignItems: "center",
-          borderBottom: "2px solid var(--cs-black)",
-        }}
-      >
+      {/* Hero */}
+      <section className="cs-hero" style={{ borderBottom: "2px solid var(--cs-black)" }}>
         <div className="cs-container">
           <ScrollReveal>
             <h1 className="cs-display" style={{ maxWidth: "14ch" }}>
@@ -75,44 +41,36 @@ export default function LandingPage() {
             <p
               className="cs-body"
               style={{
-                marginTop: "24px",
+                marginTop: "16px",
                 maxWidth: "50ch",
                 color: "var(--cs-gray-600)",
-                fontSize: "1.125rem",
+                fontSize: "clamp(1rem, 2.5vw, 1.125rem)",
               }}
             >
               Kenya&apos;s public wealth, translated into clear, actionable civic narratives.
             </p>
           </ScrollReveal>
           <ScrollReveal delay={200}>
-            <Link href="/programmes" className="cs-btn cs-btn-primary" style={{ marginTop: "32px" }}>
+            <Link href="/programmes" className="cs-btn cs-btn-primary" style={{ marginTop: "24px" }}>
               Explore Programmes
             </Link>
           </ScrollReveal>
         </div>
       </section>
 
-      {/* Section 2 — Manifesto */}
+      {/* Manifesto */}
       <section className="cs-section cs-section-muted">
         <div className="cs-container">
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "2fr 1fr",
-              gap: "48px",
-              alignItems: "start",
-            }}
-          >
+          <div className="cs-editorial-2col">
             <ScrollReveal>
-              <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
+              <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
                 <p className="cs-body" style={{ maxWidth: "65ch" }}>
                   Public budgets in Kenya have historically lived behind dense bureaucratic language,
                   releasing numbers only when policy decisions are already irreversible.
                 </p>
                 <p className="cs-body" style={{ maxWidth: "65ch" }}>
                   We open the paper trail, verify physical works, and hand the evidence back to citizens.
-                  Every claim is sourced from National Treasury and Parliament. The design communicates
-                  trust without being boring.
+                  Every claim is sourced from National Treasury and Parliament.
                 </p>
                 <p className="cs-body" style={{ maxWidth: "65ch" }}>
                   From Treasury appropriations in Nairobi to county dispensaries and rural roads,
@@ -121,16 +79,9 @@ export default function LandingPage() {
               </div>
             </ScrollReveal>
             <ScrollReveal delay={150}>
-              <div
-                style={{
-                  width: "100%",
-                  aspectRatio: "3/4",
-                  background: "var(--cs-gray-200)",
-                  overflow: "hidden",
-                }}
-              >
+              <div className="cs-aspect-3/4 cs-image-wrap">
                 <img
-                  src="/images/towwnhallmay/129A3912.jpg"
+                  src={images.forumB}
                   alt="Community town hall meeting in Kenya"
                   className="cs-image"
                   style={{ filter: "grayscale(1)" }}
@@ -141,63 +92,38 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Section 3 — Programmes Bento */}
+      {/* Programmes Bento */}
       <section className="cs-section">
         <div className="cs-container">
           <ScrollReveal>
-            <h2 className="cs-headline" style={{ marginBottom: "48px" }}>
+            <h2 className="cs-headline" style={{ marginBottom: "32px" }}>
               Programmes
             </h2>
           </ScrollReveal>
           <div className="cs-bento">
-            {PROGRAMMES.map((p, i) => (
+            {programmes.map((p, i) => (
               <ScrollReveal
                 key={p.slug}
                 delay={i * 80}
-                className={
-                  i === 0
-                    ? "cs-cell"
-                    : i === 3
-                      ? "cs-cell"
-                      : "cs-cell"
-                }
-                style={
-                  i === 0
-                    ? { gridColumn: "span 12" }
-                    : i === 3
-                      ? { gridColumn: "span 12" }
-                      : { gridColumn: "span 6" }
-                }
+                className="cs-cell"
+                style={{ gridColumn: "span 12" }}
               >
                 <Link
                   href={`/programmes/${p.slug}`}
-                  style={{
-                    display: "block",
-                    padding: "32px 0",
-                    textDecoration: "none",
-                    color: "inherit",
-                  }}
+                  className="cs-project-card"
+                  style={{ display: "block", padding: "24px 0" }}
                 >
-                  {i === 0 && (
-                    <div
-                      style={{
-                        width: "100%",
-                        aspectRatio: "16/9",
-                        background: "var(--cs-gray-200)",
-                        marginBottom: "24px",
-                        overflow: "hidden",
-                      }}
-                    >
-                      <img
-                        src="/images/towwnhallmay/129A3912.jpg"
-                        alt={p.title}
-                        className="cs-image"
-                      />
-                    </div>
-                  )}
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "24px" }}>
-                    <div style={{ flex: 1 }}>
-                      <h3 className="cs-headline" style={{ fontSize: "1.25rem" }}>
+                  <div className="cs-grid-sidebar">
+                    <div>
+                      {i === 0 && (
+                        <div
+                          className="cs-aspect-16/9 cs-image-wrap"
+                          style={{ marginBottom: "16px" }}
+                        >
+                          <img src={p.thumbnail} alt={p.title} className="cs-image" />
+                        </div>
+                      )}
+                      <h3 className="cs-headline cs-project-card-title" style={{ fontSize: "clamp(1.125rem, 2.5vw, 1.5rem)" }}>
                         {p.title}
                       </h3>
                       <p
@@ -207,12 +133,14 @@ export default function LandingPage() {
                         {p.description}
                       </p>
                     </div>
-                    {i !== 0 && (
-                      <div style={{ textAlign: "right", flexShrink: 0 }}>
-                        <div className="cs-stat-number">{p.stat}</div>
-                        <div className="cs-stat-label">{p.statLabel}</div>
+                    <div style={{ display: "flex", gap: "16px", alignItems: "baseline" }}>
+                      <div>
+                        <div className="cs-stat-number" style={{ fontSize: "clamp(1.5rem, 3vw, 2.5rem)" }}>
+                          {p.projectCount}
+                        </div>
+                        <div className="cs-stat-label">Projects</div>
                       </div>
-                    )}
+                    </div>
                   </div>
                 </Link>
               </ScrollReveal>
@@ -221,30 +149,17 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Section 4 — Impact Numbers */}
+      {/* Impact Numbers */}
       <section className="cs-section cs-section-muted">
         <div className="cs-container">
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(4, 1fr)",
-              gap: "0",
-            }}
-          >
+          <div className="cs-stats-row">
             {[
-              { number: "KSh 4.8T", label: "National Budget Tracked" },
-              { number: "47", label: "Counties Monitored" },
-              { number: "120+", label: "Investigations Published" },
-              { number: "100%", label: "Public Record" },
+              { number: String(stats.productionCount || 55), label: "Productions Completed" },
+              { number: String(stats.partnerCount || 8), label: "Partner Organisations" },
+              { number: String(stats.programmeCount || 4), label: "Active Programmes" },
+              { number: String(stats.bnsLedCount || 12), label: "BNS-Led Projects" },
             ].map((item, i) => (
-              <ScrollReveal
-                key={item.label}
-                delay={i * 60}
-                style={{
-                  padding: "32px 24px",
-                  borderRight: i < 3 ? "1px solid var(--cs-gray-200)" : "none",
-                }}
-              >
+              <ScrollReveal key={item.label} delay={i * 60} style={{ padding: "24px" }}>
                 <div className="cs-stat-number">{item.number}</div>
                 <div className="cs-stat-label" style={{ marginTop: "8px" }}>
                   {item.label}
@@ -255,44 +170,53 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Section 5 — Team */}
-      <section className="cs-section">
-        <div className="cs-container">
-          <ScrollReveal>
-            <h2 className="cs-headline" style={{ marginBottom: "48px" }}>
-              The Desk
-            </h2>
-          </ScrollReveal>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "24px" }}>
-            {TEAM.map((person, i) => (
-              <ScrollReveal key={person.name} delay={i * 80}>
-                <div
-                  style={{
-                    width: "100%",
-                    aspectRatio: "1",
-                    background: "var(--cs-gray-200)",
-                    overflow: "hidden",
-                    marginBottom: "16px",
-                  }}
-                >
-                  <img
-                    src="/images/towwnhallmay/129A3912.jpg"
-                    alt={person.name}
-                    className="cs-image"
-                    style={{ filter: "grayscale(1)", transition: "filter 0.3s" }}
-                    onMouseEnter={(e) => (e.currentTarget.style.filter = "grayscale(0)")}
-                    onMouseLeave={(e) => (e.currentTarget.style.filter = "grayscale(1)")}
-                  />
-                </div>
-                <p style={{ fontWeight: 600, fontSize: "0.9375rem" }}>{person.name}</p>
-                <p className="cs-stat-label">{person.role}</p>
-              </ScrollReveal>
-            ))}
+      {/* Featured Projects */}
+      {featured.length > 0 && (
+        <section className="cs-section">
+          <div className="cs-container">
+            <ScrollReveal>
+              <h2 className="cs-headline" style={{ marginBottom: "32px" }}>
+                Featured Work
+              </h2>
+            </ScrollReveal>
+            <div className="cs-grid-3">
+              {featured.map((project, i) => (
+                <ScrollReveal key={project.id} delay={i * 80}>
+                  <Link
+                    href={project.href}
+                    className="cs-project-card"
+                    style={{ display: "block" }}
+                  >
+                    <div
+                      className="cs-aspect-16/9 cs-image-wrap"
+                      style={{ marginBottom: "12px" }}
+                    >
+                      <img
+                        src={project.thumbnail}
+                        alt={project.title}
+                        className="cs-image"
+                      />
+                    </div>
+                    <p className="cs-label" style={{ color: "var(--cs-gray-400)", marginBottom: "4px" }}>
+                      {project.programmeLabel}
+                    </p>
+                    <h3 className="cs-headline cs-project-card-title" style={{ fontSize: "1rem" }}>
+                      {project.title}
+                    </h3>
+                    {project.subtitle && (
+                      <p className="cs-body" style={{ marginTop: "4px", color: "var(--cs-gray-600)", fontSize: "0.875rem" }}>
+                        {project.subtitle}
+                      </p>
+                    )}
+                  </Link>
+                </ScrollReveal>
+              ))}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
-      {/* Section 6 — Contact CTA */}
+      {/* CTA */}
       <section className="cs-section cs-section-dark">
         <div className="cs-container">
           <ScrollReveal>
@@ -303,13 +227,13 @@ export default function LandingPage() {
           <ScrollReveal delay={100}>
             <p
               className="cs-body"
-              style={{ marginTop: "16px", color: "var(--cs-gray-400)", maxWidth: "50ch" }}
+              style={{ marginTop: "12px", color: "var(--cs-gray-400)", maxWidth: "50ch" }}
             >
               Investigation tip-offs, partnerships, and inquiries.
             </p>
           </ScrollReveal>
           <ScrollReveal delay={200}>
-            <Link href="/contact" className="cs-btn cs-btn-primary" style={{ marginTop: "32px" }}>
+            <Link href="/contact" className="cs-btn cs-btn-primary" style={{ marginTop: "24px" }}>
               Contact Us
             </Link>
           </ScrollReveal>

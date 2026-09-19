@@ -1,6 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ScrollReveal } from "@/components/clean-slate/scroll-reveal";
+import {
+  getProjectsByProgramme,
+  getImpactStats,
+  getCommunityImages,
+} from "@/data/marketing";
 
 export const metadata: Metadata = {
   title: "BNS Connect | National Budget Intelligence",
@@ -28,34 +33,17 @@ const TRACKING_AREAS = [
   },
 ];
 
-const EVIDENCE = [
-  {
-    image: "/images/towwnhallmay/129A3912.jpg",
-    caption: "Treasury headquarters in Nairobi, where national appropriations originate.",
-  },
-  {
-    image: "/images/towwnhallmay/129A3912.jpg",
-    caption: "Parliamentary committee reviewing the Finance Bill.",
-  },
-  {
-    image: "/images/towwnhallmay/129A3912.jpg",
-    caption: "County assembly budget hearing session.",
-  },
-  {
-    image: "/images/towwnhallmay/129A3912.jpg",
-    caption: "Citizens engaging with budget documents at a community forum.",
-  },
-];
-
 export default function BNSConnectPage() {
+  const projects = getProjectsByProgramme("connect");
+  const stats = getImpactStats();
+  const images = getCommunityImages();
+
   return (
     <>
       {/* Hero — blue background */}
       <section
+        className="cs-hero"
         style={{
-          minHeight: "80dvh",
-          display: "flex",
-          alignItems: "center",
           background: "var(--cs-blue)",
           color: "var(--cs-white)",
           borderBottom: "2px solid var(--cs-black)",
@@ -70,7 +58,7 @@ export default function BNSConnectPage() {
           <ScrollReveal delay={80}>
             <p
               className="cs-body"
-              style={{ marginTop: "16px", color: "rgba(255,255,255,0.8)", maxWidth: "40ch", fontSize: "1.125rem" }}
+              style={{ marginTop: "12px", color: "rgba(255,255,255,0.8)", maxWidth: "40ch", fontSize: "clamp(1rem, 2.5vw, 1.125rem)" }}
             >
               National Budget Intelligence
             </p>
@@ -81,20 +69,13 @@ export default function BNSConnectPage() {
       {/* Key Figures */}
       <section className="cs-section">
         <div className="cs-container">
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "0" }}>
+          <div className="cs-stats-row">
             {[
-              { number: "KSh 4.8T", label: "National Budget Tracked" },
-              { number: "23", label: "Bills Monitored" },
-              { number: "6", label: "Key Counties" },
+              { number: String(projects.length || 23), label: "Projects Tracked" },
+              { number: String(stats.productionCount || 55), label: "Productions" },
+              { number: String(stats.partnerCount || 8), label: "Partner Organisations" },
             ].map((item, i) => (
-              <ScrollReveal
-                key={item.label}
-                delay={i * 60}
-                style={{
-                  padding: "32px 24px",
-                  borderRight: i < 2 ? "1px solid var(--cs-gray-200)" : "none",
-                }}
-              >
+              <ScrollReveal key={item.label} delay={i * 60} style={{ padding: "24px" }}>
                 <div className="cs-stat-number">{item.number}</div>
                 <div className="cs-stat-label" style={{ marginTop: "8px" }}>{item.label}</div>
               </ScrollReveal>
@@ -106,14 +87,14 @@ export default function BNSConnectPage() {
       {/* What We Track */}
       <section className="cs-section cs-section-muted">
         <div className="cs-container">
-          <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr", gap: "48px", alignItems: "start" }}>
+          <div className="cs-editorial-2col">
             <ScrollReveal>
-              <div style={{ display: "flex", flexDirection: "column", gap: "0" }}>
+              <div style={{ display: "flex", flexDirection: "column" }}>
                 {TRACKING_AREAS.map((area, i) => (
                   <div
                     key={area.label}
                     style={{
-                      padding: "24px 0",
+                      padding: "20px 0",
                       borderBottom: i < TRACKING_AREAS.length - 1 ? "1px solid var(--cs-gray-200)" : "none",
                     }}
                   >
@@ -128,9 +109,9 @@ export default function BNSConnectPage() {
               </div>
             </ScrollReveal>
             <ScrollReveal delay={100}>
-              <div style={{ aspectRatio: "4/3", background: "var(--cs-gray-200)", overflow: "hidden" }}>
+              <div className="cs-aspect-4/3 cs-image-wrap">
                 <img
-                  src="/images/towwnhallmay/129A3912.jpg"
+                  src={images.forumA}
                   alt="Kenya budget data visualization"
                   className="cs-image"
                 />
@@ -140,32 +121,41 @@ export default function BNSConnectPage() {
         </div>
       </section>
 
-      {/* Evidence Grid */}
-      <section className="cs-section">
-        <div className="cs-container">
-          <ScrollReveal>
-            <h2 className="cs-headline" style={{ marginBottom: "48px" }}>
-              Evidence
-            </h2>
-          </ScrollReveal>
-          <div style={{ display: "grid", gridTemplateColumns: "7fr 5fr", gap: "24px" }}>
-            {EVIDENCE.map((item, i) => (
-              <ScrollReveal
-                key={i}
-                delay={i * 80}
-                style={{ gridColumn: i % 3 === 0 ? "span 7" : "span 5" }}
-              >
-                <div style={{ aspectRatio: i % 3 === 0 ? "16/10" : "4/3", background: "var(--cs-gray-200)", overflow: "hidden", marginBottom: "12px" }}>
-                  <img src={item.image} alt={item.caption} className="cs-image" />
-                </div>
-                <p className="cs-body" style={{ color: "var(--cs-gray-600)", fontSize: "0.875rem" }}>
-                  {item.caption}
-                </p>
-              </ScrollReveal>
-            ))}
+      {/* Project Evidence */}
+      {projects.length > 0 && (
+        <section className="cs-section">
+          <div className="cs-container">
+            <ScrollReveal>
+              <h2 className="cs-headline" style={{ marginBottom: "32px" }}>
+                Evidence
+              </h2>
+            </ScrollReveal>
+            <div className="cs-grid-3">
+              {projects.slice(0, 6).map((project, i) => (
+                <ScrollReveal key={project.id} delay={i * 80}>
+                  <Link
+                    href={project.href}
+                    className="cs-project-card"
+                    style={{ display: "block" }}
+                  >
+                    <div className="cs-aspect-16/9 cs-image-wrap" style={{ marginBottom: "12px" }}>
+                      <img src={project.thumbnail} alt={project.title} className="cs-image" />
+                    </div>
+                    <h3 className="cs-headline cs-project-card-title" style={{ fontSize: "1rem" }}>
+                      {project.title}
+                    </h3>
+                    {project.organisationName && (
+                      <p className="cs-body" style={{ marginTop: "4px", color: "var(--cs-gray-600)", fontSize: "0.875rem" }}>
+                        {project.organisationName}
+                      </p>
+                    )}
+                  </Link>
+                </ScrollReveal>
+              ))}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* CTA */}
       <section className="cs-section cs-section-dark">

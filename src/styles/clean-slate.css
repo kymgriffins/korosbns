@@ -357,6 +357,82 @@
   color: var(--cs-blue);
 }
 
+/* ─── Mobile Nav ─── */
+
+.cs-nav-hamburger {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  z-index: 110;
+}
+
+@media (max-width: 768px) {
+  .cs-nav-hamburger {
+    display: flex;
+  }
+}
+
+.cs-hamburger-line {
+  display: block;
+  width: 20px;
+  height: 2px;
+  background: var(--cs-black);
+  transition: transform var(--cs-transition), opacity var(--cs-transition);
+}
+
+.cs-hamburger-line.open:first-child {
+  transform: translateY(3.5px) rotate(45deg);
+}
+
+.cs-hamburger-line.open:last-child {
+  transform: translateY(-3.5px) rotate(-45deg);
+}
+
+.cs-mobile-menu {
+  display: none;
+  position: fixed;
+  top: 64px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--cs-white);
+  z-index: 99;
+  padding: 24px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--cs-transition);
+}
+
+.cs-mobile-menu.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+@media (max-width: 768px) {
+  .cs-mobile-menu {
+    display: block;
+  }
+}
+
+.cs-mobile-link {
+  display: block;
+  padding: 16px 0;
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--cs-black);
+  text-decoration: none;
+  border-bottom: 1px solid var(--cs-gray-200);
+  transition: color var(--cs-transition);
+}
+
+.cs-mobile-link:hover {
+  color: var(--cs-blue);
+}
+
 /* ─── Footer ─── */
 
 .cs-footer {
@@ -476,4 +552,236 @@
 
 .cs-section-dark .cs-link:hover {
   color: var(--cs-gray-200);
+}
+
+/* ─── Responsive Grid Utilities ─── */
+
+.cs-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--cs-grid-gap);
+}
+
+.cs-grid-3 {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--cs-grid-gap);
+}
+
+.cs-grid-4 {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--cs-grid-gap);
+}
+
+@media (min-width: 640px) {
+  .cs-grid-2 {
+    grid-template-columns: 1fr 1fr;
+  }
+  .cs-grid-3 {
+    grid-template-columns: 1fr 1fr;
+  }
+  .cs-grid-4 {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (min-width: 1024px) {
+  .cs-grid-3 {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+  .cs-grid-4 {
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+  }
+}
+
+.cs-grid-sidebar {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 48px;
+  align-items: start;
+}
+
+@media (min-width: 768px) {
+  .cs-grid-sidebar {
+    grid-template-columns: 2fr 1fr;
+  }
+}
+
+.cs-grid-sidebar-reverse {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 48px;
+  align-items: start;
+}
+
+@media (min-width: 768px) {
+  .cs-grid-sidebar-reverse {
+    grid-template-columns: 1fr 2fr;
+  }
+}
+
+/* ─── Stats Row (responsive) ─── */
+
+.cs-stats-row {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0;
+}
+
+@media (min-width: 640px) {
+  .cs-stats-row {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (min-width: 1024px) {
+  .cs-stats-row {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.cs-stats-row > * + * {
+  border-top: var(--cs-border);
+}
+
+@media (min-width: 640px) {
+  .cs-stats-row > * + * {
+    border-top: none;
+    border-left: var(--cs-border);
+  }
+}
+
+/* ─── Evidence Grid (7/5 asymmetric, stacks on mobile) ─── */
+
+.cs-evidence-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--cs-grid-gap);
+}
+
+@media (min-width: 768px) {
+  .cs-evidence-grid {
+    grid-template-columns: 7fr 5fr;
+  }
+}
+
+/* ─── County Grid (responsive) ─── */
+
+.cs-county-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0;
+}
+
+@media (min-width: 640px) {
+  .cs-county-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (min-width: 1024px) {
+  .cs-county-grid {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+}
+
+/* ─── Services Grid (2x2 with 1px gap) ─── */
+
+.cs-services-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1px;
+  background: var(--cs-gray-200);
+}
+
+@media (min-width: 640px) {
+  .cs-services-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* ─── Horizontal Scroll (touch-friendly) ─── */
+
+.cs-hscroll {
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 16px;
+  scrollbar-width: thin;
+}
+
+@media (min-width: 768px) {
+  .cs-hscroll {
+    gap: 24px;
+  }
+}
+
+.cs-hscroll > * {
+  scroll-snap-align: start;
+  flex-shrink: 0;
+  min-width: 280px;
+}
+
+@media (min-width: 768px) {
+  .cs-hscroll > * {
+    min-width: 320px;
+  }
+}
+
+/* ─── Hero (responsive height) ─── */
+
+.cs-hero {
+  min-height: 100dvh;
+  min-height: 100svh;
+  display: flex;
+  align-items: center;
+}
+
+@media (max-width: 768px) {
+  .cs-hero {
+    min-height: 80dvh;
+    min-height: 80svh;
+  }
+}
+
+/* ─── Two-col editorial (stacks on mobile) ─── */
+
+.cs-editorial-2col {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 32px;
+  align-items: start;
+}
+
+@media (min-width: 768px) {
+  .cs-editorial-2col {
+    grid-template-columns: 2fr 1fr;
+    gap: 48px;
+  }
+}
+
+/* ─── Responsive image aspect ratios ─── */
+
+.cs-aspect-16\/9 { aspect-ratio: 16/9; }
+.cs-aspect-4\/3 { aspect-ratio: 4/3; }
+.cs-aspect-3\/4 { aspect-ratio: 3/4; }
+.cs-aspect-1\/1 { aspect-ratio: 1; }
+
+/* ─── Featured project card ─── */
+
+.cs-project-card {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+}
+
+.cs-project-card:hover .cs-project-card-title {
+  color: var(--cs-blue);
+}
+
+.cs-project-card-title {
+  transition: color var(--cs-transition);
 }

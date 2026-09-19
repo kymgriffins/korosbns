@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { ScrollReveal } from "@/components/clean-slate/scroll-reveal";
 
 export const metadata: Metadata = {
@@ -15,10 +14,7 @@ export default function ContactPage() {
       {/* Hero */}
       <section
         className="cs-section"
-        style={{
-          borderBottom: "2px solid var(--cs-black)",
-          paddingBottom: "48px",
-        }}
+        style={{ borderBottom: "2px solid var(--cs-black)", paddingBottom: "32px" }}
       >
         <div className="cs-container">
           <ScrollReveal>
@@ -27,7 +23,7 @@ export default function ContactPage() {
           <ScrollReveal delay={80}>
             <p
               className="cs-body"
-              style={{ marginTop: "16px", color: "var(--cs-gray-600)", maxWidth: "50ch" }}
+              style={{ marginTop: "12px", color: "var(--cs-gray-600)", maxWidth: "50ch" }}
             >
               Investigation tip-offs, partnerships, and inquiries.
             </p>
@@ -38,12 +34,12 @@ export default function ContactPage() {
       {/* Form + Info */}
       <section className="cs-section cs-section-muted">
         <div className="cs-container">
-          <div style={{ display: "grid", gridTemplateColumns: "7fr 5fr", gap: "48px" }}>
+          <div className="cs-editorial-2col">
             {/* Form */}
             <ScrollReveal>
               <form
                 onSubmit={(e) => e.preventDefault()}
-                style={{ display: "flex", flexDirection: "column", gap: "20px" }}
+                style={{ display: "flex", flexDirection: "column", gap: "16px" }}
               >
                 <div>
                   <label className="cs-label" style={{ display: "block", marginBottom: "8px", color: "var(--cs-gray-600)" }}>
@@ -83,7 +79,7 @@ export default function ContactPage() {
 
             {/* Info */}
             <ScrollReveal delay={100}>
-              <div style={{ display: "flex", flexDirection: "column", gap: "32px" }}>
+              <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
                 <div>
                   <p className="cs-label" style={{ color: "var(--cs-gray-400)", marginBottom: "8px" }}>
                     Email
@@ -110,7 +106,7 @@ export default function ContactPage() {
                   <p className="cs-label" style={{ color: "var(--cs-gray-400)", marginBottom: "8px" }}>
                     Social
                   </p>
-                  <div style={{ display: "flex", gap: "16px" }}>
+                  <div style={{ display: "flex", gap: "16px", flexWrap: "wrap" }}>
                     <a href="https://twitter.com/budgetndiostory" className="cs-link" target="_blank" rel="noopener noreferrer">
                       Twitter
                     </a>

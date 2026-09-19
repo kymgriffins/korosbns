@@ -1,6 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ScrollReveal } from "@/components/clean-slate/scroll-reveal";
+import {
+  getProjectsByProgramme,
+  getCommunityImages,
+} from "@/data/marketing";
 
 export const metadata: Metadata = {
   title: "Wanahabari Lab | Investigative Journalism Training",
@@ -32,23 +36,16 @@ const TRAINING_AREAS = [
   },
 ];
 
-const IMPACT = [
-  { number: "120+", label: "Stories Published" },
-  { number: "45", label: "Journalists Trained" },
-  { number: "28", label: "Community Radios" },
-  { number: "12", label: "Counties Reached" },
-];
-
 export default function WanahabariPage() {
+  const projects = getProjectsByProgramme("wanahabari-lab");
+  const images = getCommunityImages();
+
   return (
     <>
       {/* Hero */}
       <section
         className="cs-section"
-        style={{
-          borderBottom: "2px solid var(--cs-black)",
-          paddingBottom: "48px",
-        }}
+        style={{ borderBottom: "2px solid var(--cs-black)", paddingBottom: "32px" }}
       >
         <div className="cs-container">
           <ScrollReveal>
@@ -57,10 +54,18 @@ export default function WanahabariPage() {
           <ScrollReveal delay={80}>
             <p
               className="cs-body"
-              style={{ marginTop: "16px", color: "var(--cs-gray-600)", maxWidth: "45ch" }}
+              style={{ marginTop: "12px", color: "var(--cs-gray-600)", maxWidth: "45ch" }}
             >
               Forensic Journalism Training
             </p>
+          </ScrollReveal>
+          <ScrollReveal delay={120}>
+            <div style={{ marginTop: "24px", display: "flex", gap: "32px", flexWrap: "wrap" }}>
+              <div>
+                <div className="cs-stat-number">{projects.length}</div>
+                <div className="cs-stat-label">Investigations</div>
+              </div>
+            </div>
           </ScrollReveal>
         </div>
       </section>
@@ -68,9 +73,9 @@ export default function WanahabariPage() {
       {/* Mission — editorial 2-col */}
       <section className="cs-section cs-section-muted">
         <div className="cs-container">
-          <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr", gap: "48px", alignItems: "start" }}>
+          <div className="cs-editorial-2col">
             <ScrollReveal>
-              <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
+              <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
                 <p className="cs-body" style={{ maxWidth: "65ch" }}>
                   Community radios in Kenya reach millions of citizens who never read a newspaper or open a budget document.
                   Wanahabari Lab trains grassroots journalists to decode County Integrated Development Plans,
@@ -83,23 +88,16 @@ export default function WanahabariPage() {
                   Kiswahili, and local languages, not just English.
                 </p>
                 <p className="cs-body" style={{ maxWidth: "65ch" }}>
-                  Since launch, Wanahabari Lab fellows have published over 120 investigations covering
+                  Since launch, Wanahabari Lab fellows have published investigations covering
                   county health budgets, bursary allocations, and infrastructure spending. Their work
                   has been cited by parliamentary committees and national media outlets.
                 </p>
               </div>
             </ScrollReveal>
             <ScrollReveal delay={150}>
-              <div
-                style={{
-                  width: "100%",
-                  aspectRatio: "3/4",
-                  background: "var(--cs-gray-200)",
-                  overflow: "hidden",
-                }}
-              >
+              <div className="cs-aspect-3/4 cs-image-wrap">
                 <img
-                  src="/images/towwnhallmay/129A3912.jpg"
+                  src={images.cohortA}
                   alt="Journalist reviewing budget documents"
                   className="cs-image"
                   style={{ filter: "grayscale(1)" }}
@@ -113,16 +111,14 @@ export default function WanahabariPage() {
       {/* Impact Numbers */}
       <section className="cs-section">
         <div className="cs-container">
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "0" }}>
-            {IMPACT.map((item, i) => (
-              <ScrollReveal
-                key={item.label}
-                delay={i * 60}
-                style={{
-                  padding: "32px 24px",
-                  borderRight: i < 3 ? "1px solid var(--cs-gray-200)" : "none",
-                }}
-              >
+          <div className="cs-stats-row">
+            {[
+              { number: String(projects.length || 120), label: "Stories Published" },
+              { number: "45", label: "Journalists Trained" },
+              { number: "28", label: "Community Radios" },
+              { number: "12", label: "Counties Reached" },
+            ].map((item, i) => (
+              <ScrollReveal key={item.label} delay={i * 60} style={{ padding: "24px" }}>
                 <div className="cs-stat-number">{item.number}</div>
                 <div className="cs-stat-label" style={{ marginTop: "8px" }}>{item.label}</div>
               </ScrollReveal>
@@ -135,7 +131,7 @@ export default function WanahabariPage() {
       <section className="cs-section cs-section-muted">
         <div className="cs-container">
           <ScrollReveal>
-            <h2 className="cs-headline" style={{ marginBottom: "48px" }}>
+            <h2 className="cs-headline" style={{ marginBottom: "32px" }}>
               Training Areas
             </h2>
           </ScrollReveal>
@@ -144,15 +140,13 @@ export default function WanahabariPage() {
               <ScrollReveal key={area.label} delay={i * 60}>
                 <div
                   style={{
-                    padding: "24px 0",
+                    padding: "20px 0",
                     borderBottom: i < TRAINING_AREAS.length - 1 ? "1px solid var(--cs-gray-200)" : "none",
-                    display: "grid",
-                    gridTemplateColumns: "200px 1fr",
-                    gap: "32px",
-                    alignItems: "start",
                   }}
                 >
-                  <p style={{ fontWeight: 600, fontSize: "0.9375rem" }}>{area.label}</p>
+                  <p style={{ fontWeight: 600, fontSize: "0.9375rem", marginBottom: "8px" }}>
+                    {area.label}
+                  </p>
                   <p className="cs-body" style={{ color: "var(--cs-gray-600)", maxWidth: "55ch" }}>
                     {area.description}
                   </p>
@@ -163,10 +157,46 @@ export default function WanahabariPage() {
         </div>
       </section>
 
+      {/* Published Investigations */}
+      {projects.length > 0 && (
+        <section className="cs-section">
+          <div className="cs-container">
+            <ScrollReveal>
+              <h2 className="cs-headline" style={{ marginBottom: "32px" }}>
+                Published Work
+              </h2>
+            </ScrollReveal>
+            <div className="cs-grid-3">
+              {projects.slice(0, 6).map((project, i) => (
+                <ScrollReveal key={project.id} delay={i * 80}>
+                  <Link
+                    href={project.href}
+                    className="cs-project-card"
+                    style={{ display: "block" }}
+                  >
+                    <div className="cs-aspect-16/9 cs-image-wrap" style={{ marginBottom: "12px" }}>
+                      <img src={project.thumbnail} alt={project.title} className="cs-image" />
+                    </div>
+                    <h3 className="cs-headline cs-project-card-title" style={{ fontSize: "1rem" }}>
+                      {project.title}
+                    </h3>
+                    {project.organisationName && (
+                      <p className="cs-body" style={{ marginTop: "4px", color: "var(--cs-gray-600)", fontSize: "0.875rem" }}>
+                        {project.organisationName}
+                      </p>
+                    )}
+                  </Link>
+                </ScrollReveal>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* Featured Investigation — full-bleed */}
-      <section style={{ position: "relative", height: "60dvh", overflow: "hidden" }}>
+      <section style={{ position: "relative", minHeight: "60dvh", overflow: "hidden" }}>
         <img
-          src="/images/towwnhallmay/129A3912.jpg"
+          src={images.forumD}
           alt="Investigation field work"
           className="cs-image"
           style={{ position: "absolute", inset: 0, filter: "brightness(0.4)" }}
