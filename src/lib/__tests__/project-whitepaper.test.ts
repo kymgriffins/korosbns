@@ -33,12 +33,16 @@ describe("project white-paper coverage", () => {
 
   it("maps legacy project aliases to live pages (no dead redirects)", () => {
     const aliases = [
-      "proj-003",
-      "nakuru-citizen-baraza",
-      "proj-004",
-      "finance-bill-motion-explainer",
-      "proj-005",
-      "mashinani-field-documentary",
+      "proj-001",
+      "budget-sasa-ni-delivery-explainer",
+      "proj-002",
+      "budget-ndio-story-podcast",
+      "proj-006",
+      "cra-formula-research-spotlight",
+      "proj-007",
+      "budget-tiktok-vertical-series",
+      "proj-008",
+      "wajir-community-listening",
       "terra",
       "proj-terra",
     ];

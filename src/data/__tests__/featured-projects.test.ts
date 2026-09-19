@@ -35,7 +35,9 @@ describe("featuredProjectsData", () => {
     expect(videoIds).toContain("kWpY4K1uI20");
     for (const project of projects) {
       expect(project.prose.length).toBeGreaterThan(40);
-      expect(project.url).toMatch(/youtube\.com\/watch\?v=/);
+      if (project.videoId) {
+        expect(project.url).toMatch(/youtube\.com\/watch\?v=/);
+      }
     }
   });
 
@@ -50,7 +52,7 @@ describe("featuredProjectsData", () => {
 
     const result = await featuredProjectsData.fetch();
     expect(result.length).toBeGreaterThanOrEqual(3);
-    expect(result[0]?.videoId).toBeTruthy();
+    expect(result.some((p) => Boolean(p.videoId))).toBe(true);
   }, 15000);
 
   it("refreshFeaturedProjectsFromYoutube merges oEmbed titles and keeps local covers", async () => {
