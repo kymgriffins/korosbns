@@ -1,0 +1,479 @@
+/* Clean Slate Design System — Apple Blue + White, Zero Radius */
+
+:root {
+  /* Brand */
+  --cs-blue: #0055FF;
+  --cs-blue-hover: #0044CC;
+  --cs-black: #0A0A0A;
+  --cs-white: #FFFFFF;
+
+  /* Neutrals */
+  --cs-gray-50: #FAFAFA;
+  --cs-gray-100: #F5F5F5;
+  --cs-gray-200: #E5E5E5;
+  --cs-gray-400: #A3A3A3;
+  --cs-gray-600: #525252;
+  --cs-gray-900: #171717;
+
+  /* Typography */
+  --cs-font: "Geist", system-ui, -apple-system, sans-serif;
+  --cs-display-size: clamp(2.5rem, 5vw, 4.5rem);
+  --cs-display-weight: 700;
+  --cs-display-tracking: -0.04em;
+  --cs-display-leading: 1.05;
+
+  --cs-headline-size: clamp(1.5rem, 3vw, 2.25rem);
+  --cs-headline-weight: 600;
+  --cs-headline-tracking: -0.03em;
+  --cs-headline-leading: 1.2;
+
+  --cs-body-size: 1rem;
+  --cs-body-weight: 400;
+  --cs-body-leading: 1.6;
+
+  --cs-label-size: 0.8125rem;
+  --cs-label-weight: 500;
+  --cs-label-tracking: 0.02em;
+  --cs-label-leading: 1.4;
+
+  --cs-mono-size: 0.75rem;
+  --cs-mono-tracking: 0.04em;
+
+  /* Spacing */
+  --cs-section-y: 120px;
+  --cs-section-y-mobile: 80px;
+  --cs-grid-gap: 24px;
+  --cs-content-max: 1200px;
+
+  /* Borders */
+  --cs-border: 1px solid var(--cs-gray-200);
+  --cs-border-heavy: 2px solid var(--cs-black);
+  --cs-border-light: 1px solid var(--cs-gray-200);
+
+  /* Radius — zero everywhere except form inputs */
+  --cs-radius: 0px;
+  --cs-radius-input: 2px;
+
+  /* Transitions */
+  --cs-transition: 200ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ─── Base Resets ─── */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+.cs-page {
+  font-family: var(--cs-font);
+  color: var(--cs-black);
+  background: var(--cs-white);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ─── Typography ─── */
+
+.cs-display {
+  font-size: var(--cs-display-size);
+  font-weight: var(--cs-display-weight);
+  letter-spacing: var(--cs-display-tracking);
+  line-height: var(--cs-display-leading);
+}
+
+.cs-headline {
+  font-size: var(--cs-headline-size);
+  font-weight: var(--cs-headline-weight);
+  letter-spacing: var(--cs-headline-tracking);
+  line-height: var(--cs-headline-leading);
+}
+
+.cs-body {
+  font-size: var(--cs-body-size);
+  font-weight: var(--cs-body-weight);
+  line-height: var(--cs-body-leading);
+}
+
+.cs-label {
+  font-size: var(--cs-label-size);
+  font-weight: var(--cs-label-weight);
+  letter-spacing: var(--cs-label-tracking);
+  line-height: var(--cs-label-leading);
+  text-transform: uppercase;
+}
+
+.cs-mono {
+  font-size: var(--cs-mono-size);
+  letter-spacing: var(--cs-mono-tracking);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ─── Section Shell ─── */
+
+.cs-section {
+  width: 100%;
+  padding: var(--cs-section-y) 0;
+  border-bottom: var(--cs-border);
+}
+
+@media (max-width: 768px) {
+  .cs-section {
+    padding: var(--cs-section-y-mobile) 0;
+  }
+}
+
+.cs-section-dark {
+  background: var(--cs-black);
+  color: var(--cs-white);
+  border-bottom: var(--cs-border-heavy);
+}
+
+.cs-section-muted {
+  background: var(--cs-gray-50);
+}
+
+.cs-container {
+  width: 100%;
+  max-width: var(--cs-content-max);
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+@media (max-width: 768px) {
+  .cs-container {
+    padding: 0 16px;
+  }
+}
+
+/* ─── Grid System ─── */
+
+.cs-bento {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: var(--cs-grid-gap);
+}
+
+@media (max-width: 768px) {
+  .cs-bento {
+    grid-template-columns: 1fr;
+  }
+}
+
+.cs-cell {
+  border-bottom: var(--cs-border);
+  padding: 0;
+  min-height: 0;
+}
+
+.cs-cell-dark {
+  border-color: var(--cs-gray-600);
+}
+
+/* ─── Stat Block ─── */
+
+.cs-stat-number {
+  font-size: clamp(2rem, 4vw, 3.5rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.cs-stat-label {
+  font-size: var(--cs-label-size);
+  font-weight: var(--cs-label-weight);
+  letter-spacing: var(--cs-label-tracking);
+  line-height: var(--cs-label-leading);
+  color: var(--cs-gray-600);
+}
+
+/* ─── Links ─── */
+
+.cs-link {
+  color: var(--cs-blue);
+  text-decoration: none;
+  font-weight: 500;
+  transition: color var(--cs-transition);
+}
+
+.cs-link:hover {
+  color: var(--cs-blue-hover);
+}
+
+.cs-link-white {
+  color: var(--cs-white);
+}
+
+.cs-link-white:hover {
+  color: var(--cs-gray-200);
+}
+
+/* ─── Button (zero radius) ─── */
+
+.cs-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 24px;
+  font-size: var(--cs-label-size);
+  font-weight: 600;
+  letter-spacing: var(--cs-label-tracking);
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  transition: background var(--cs-transition), transform var(--cs-transition);
+}
+
+.cs-btn:active {
+  transform: translateY(1px);
+}
+
+.cs-btn-primary {
+  background: var(--cs-blue);
+  color: var(--cs-white);
+}
+
+.cs-btn-primary:hover {
+  background: var(--cs-blue-hover);
+}
+
+.cs-btn-white {
+  background: var(--cs-white);
+  color: var(--cs-black);
+}
+
+.cs-btn-white:hover {
+  background: var(--cs-gray-100);
+}
+
+.cs-btn-ghost {
+  background: transparent;
+  color: var(--cs-gray-600);
+  border: 1px solid var(--cs-gray-200);
+}
+
+.cs-btn-ghost:hover {
+  background: var(--cs-gray-50);
+  color: var(--cs-black);
+}
+
+/* ─── Image ─── */
+
+.cs-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* ─── Scroll Reveal ─── */
+
+.cs-reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.cs-reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ─── Nav ─── */
+
+.cs-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(12px);
+  border-bottom: var(--cs-border);
+  transition: background var(--cs-transition);
+}
+
+.cs-nav.scrolled {
+  background: rgba(255, 255, 255, 0.98);
+  box-shadow: 0 1px 0 var(--cs-gray-200);
+}
+
+.cs-nav-inner {
+  width: 100%;
+  max-width: var(--cs-content-max);
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+@media (max-width: 768px) {
+  .cs-nav-inner {
+    padding: 0 16px;
+  }
+}
+
+.cs-nav-logo {
+  font-size: 1.125rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: var(--cs-black);
+  text-decoration: none;
+}
+
+.cs-nav-links {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+}
+
+@media (max-width: 768px) {
+  .cs-nav-links {
+    display: none;
+  }
+}
+
+.cs-nav-link {
+  font-size: var(--cs-label-size);
+  font-weight: 500;
+  color: var(--cs-gray-600);
+  text-decoration: none;
+  transition: color var(--cs-transition);
+}
+
+.cs-nav-link:hover {
+  color: var(--cs-black);
+}
+
+.cs-nav-link.active {
+  color: var(--cs-blue);
+}
+
+/* ─── Footer ─── */
+
+.cs-footer {
+  padding: 64px 0;
+  border-top: var(--cs-border-heavy);
+}
+
+.cs-footer-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 48px;
+}
+
+@media (max-width: 768px) {
+  .cs-footer-grid {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+}
+
+.cs-footer-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 48px;
+  padding-top: 24px;
+  border-top: var(--cs-border);
+  font-size: var(--cs-label-size);
+  color: var(--cs-gray-400);
+}
+
+/* ─── Form ─── */
+
+.cs-input {
+  width: 100%;
+  height: 48px;
+  padding: 0 16px;
+  font-size: var(--cs-body-size);
+  font-family: var(--cs-font);
+  border: 1px solid var(--cs-gray-200);
+  background: var(--cs-white);
+  color: var(--cs-black);
+  outline: none;
+  transition: border-color var(--cs-transition);
+}
+
+.cs-input:focus {
+  border-color: var(--cs-blue);
+}
+
+.cs-input::placeholder {
+  color: var(--cs-gray-400);
+}
+
+.cs-textarea {
+  width: 100%;
+  min-height: 160px;
+  padding: 12px 16px;
+  font-size: var(--cs-body-size);
+  font-family: var(--cs-font);
+  border: 1px solid var(--cs-gray-200);
+  background: var(--cs-white);
+  color: var(--cs-black);
+  outline: none;
+  resize: vertical;
+  transition: border-color var(--cs-transition);
+}
+
+.cs-textarea:focus {
+  border-color: var(--cs-blue);
+}
+
+.cs-textarea::placeholder {
+  color: var(--cs-gray-400);
+}
+
+.cs-select {
+  width: 100%;
+  height: 48px;
+  padding: 0 16px;
+  font-size: var(--cs-body-size);
+  font-family: var(--cs-font);
+  border: 1px solid var(--cs-gray-200);
+  background: var(--cs-white);
+  color: var(--cs-black);
+  outline: none;
+  appearance: none;
+  cursor: pointer;
+  transition: border-color var(--cs-transition);
+}
+
+.cs-select:focus {
+  border-color: var(--cs-blue);
+}
+
+/* ─── Horizontal Rule ─── */
+
+.cs-divider {
+  border: none;
+  border-top: var(--cs-border);
+  margin: 0;
+}
+
+.cs-divider-heavy {
+  border-top: var(--cs-border-heavy);
+}
+
+/* ─── Dark Section Overrides ─── */
+
+.cs-section-dark .cs-stat-label {
+  color: var(--cs-gray-400);
+}
+
+.cs-section-dark .cs-link {
+  color: var(--cs-white);
+}
+
+.cs-section-dark .cs-link:hover {
+  color: var(--cs-gray-200);
+}
