@@ -1,18 +1,13 @@
 import { Metadata } from "next";
-import About from "@/components/marketing/about";
+import { MagazineAbout } from "@/components/magazine/magazine-about";
 import { canonicalUrl } from "@/utils/metadata";
-import {
-  getLiveAboutContent,
-  getLiveLandingSections,
-  getLivePartnerPageSections,
-} from "@/lib/cms-live-data";
 
 export const revalidate = 60;
 
 export const metadata: Metadata = {
-  title: "About | Budget Ndio Story",
+  title: "The Masthead & Editorial Charter | Budget Ndio Story",
   description:
-    "Meet the youth-led team behind Budget Ndio Story making Kenya's budget, Finance Bill, and Appropriation Bill transparent and accessible to everyone.",
+    "Meet the editorial desk and investigators behind Budget Ndio Story, making Kenya's budget, Finance Bill, and county expenditures transparent to every citizen.",
   keywords: [
     "Budget Ndio Story",
     "Kenya budget transparency",
@@ -24,26 +19,14 @@ export const metadata: Metadata = {
   ],
   alternates: { canonical: canonicalUrl("/about") },
   openGraph: {
-    title: "About | Budget Ndio Story",
+    title: "The Masthead & Editorial Charter | Budget Ndio Story",
     description:
-      "Youth-led initiative increasing budget literacy and civic engagement around Kenya's Finance Bill, Appropriation Bill, and parliamentary budget process.",
+      "Independent civic journalism increasing budget literacy and forensic accountability around Kenya's public wealth.",
     url: "/about",
     images: ["/logo.svg"],
   },
 };
 
-export default async function AboutPage() {
-  const [aboutData, landingSections, sectionsConfig] = await Promise.all([
-    getLiveAboutContent(),
-    getLiveLandingSections(),
-    getLivePartnerPageSections(),
-  ]);
-
-  return (
-    <About
-      aboutData={aboutData}
-      landingSections={landingSections}
-      sectionsConfig={sectionsConfig}
-    />
-  );
+export default function AboutPage() {
+  return <MagazineAbout />;
 }

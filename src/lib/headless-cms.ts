@@ -53,6 +53,7 @@ import programmeReelsContent from "@/content/programme-reels.json";
 import studiosEvidenceContent from "@/data/fallbacks/studios-evidence.json";
 import bnsStudioContent from "@/content/bns-studio.json";
 import redirectsContent from "@/content/redirects.json";
+import magazineGlobalContent from "@/content/magazine-global.json";
 
 // Optional imports for budgethub datasets
 let budgetFyEpisodesContent: unknown = {};
@@ -125,6 +126,7 @@ export type CmsCollectionSlug =
   | "programme-reels"
   | "studios-evidence"
   | "bns-studio"
+  | "magazine-global"
   | "redirects";
 
 export type CmsCategory =
@@ -599,6 +601,20 @@ export const CMS_COLLECTIONS_CATALOG: Record<CmsCollectionSlug, CmsCollectionMet
     lastUpdated: new Date().toISOString(),
     schemaKeys: ["hero", "screening", "productionSpectrum", "commission", "about", "images", "featuredWork", "seo"],
   },
+  "magazine-global": {
+    slug: "magazine-global",
+    name: "Magazine Global Chrome",
+    description:
+      "The Dispatch, masthead navigation, publication statement, partner wordmarks, and legal colophon for the magazine branch.",
+    category: "Marketing & Site Copy",
+    filePath: "src/content/magazine-global.json",
+    itemCount:
+      (magazineGlobalContent.dispatch.items?.length ?? 0) +
+      (magazineGlobalContent.masthead.navigation?.length ?? 0) +
+      (magazineGlobalContent.footer.partners?.length ?? 0),
+    lastUpdated: new Date().toISOString(),
+    schemaKeys: ["dispatch", "masthead", "footer", "provenance"],
+  },
   redirects: {
     slug: "redirects",
     name: "URL Redirects",
@@ -657,6 +673,7 @@ const _cmsDataCache: Record<CmsCollectionSlug, Record<string, unknown>> = {
   "programme-reels": programmeReelsContent as Record<string, unknown>,
   "studios-evidence": studiosEvidenceContent as unknown as Record<string, unknown>,
   "bns-studio": bnsStudioContent as Record<string, unknown>,
+  "magazine-global": magazineGlobalContent as Record<string, unknown>,
   redirects: redirectsContent as Record<string, unknown>,
 };
 

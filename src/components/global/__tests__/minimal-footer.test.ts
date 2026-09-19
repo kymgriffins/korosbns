@@ -22,4 +22,11 @@ describe("MinimalFooter partner chrome", () => {
     expect(src).not.toMatch(/label:\s*"Learn"/);
     expect(src).not.toMatch(/label:\s*"Reports"/);
   });
+
+  it("marks extra nav and socials for editorial mobile collapse", () => {
+    expect(src).toMatch(/data-footer-nav-extra/);
+    expect(src).toMatch(/data-footer-social/);
+    expect(src).toMatch(/data-footer-blurb/);
+    expect(src).toMatch(/data-editorial-footer/);
+  });
 });

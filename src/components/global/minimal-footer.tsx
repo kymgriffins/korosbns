@@ -2,79 +2,108 @@
 
 import React, { useMemo } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { useOrg } from "@/contexts/org-context";
-import { socialLinks as defaultSocialLinks } from "@/constants/links";
-import { socialIconComponents } from "@/components/ui/social-icons";
+import { useThemeStructure } from "@/hooks/use-theme-preset";
 import { SECTION_SHELL_INNER } from "@/layouts/section-shell";
 import { cn } from "@/utils";
 
 /** Partner-oriented chrome: no Learn/Reports capture paths. */
 const minimalNavLinks = [
-  { label: "Programmes", href: "/programmes" },
-  { label: "About", href: "/about" },
-  { label: "Studios", href: "/bns-studio" },
-  { label: "Budget Glossary", href: "/glossary" },
-  { label: "Help & FAQ", href: "/help" },
-  { label: "Privacy", href: "/privacy" },
-  { label: "Terms", href: "/terms" },
-  { label: "Contact", href: "/contact" },
+  { label: "Programmes", href: "/programmes", primary: true },
+  { label: "About", href: "/about", primary: true },
+  { label: "Studios", href: "/bns-studio", primary: false },
+  { label: "Budget Glossary", href: "/glossary", primary: false },
+  { label: "Help & FAQ", href: "/help", primary: false },
+  { label: "Privacy", href: "/privacy", primary: false },
+  { label: "Terms", href: "/terms", primary: false },
+  { label: "Contact", href: "/contact", primary: true },
 ];
 
-function normalizeSocialIcon(platform: string): string {
-  const key = platform.trim().toLowerCase();
-  return key === "twitter" ? "x" : key;
-}
+const fallbackPartnerMarks = [
+  "Wanahabari Lab",
+  "House of Fiscal Wisdom",
+  "BNS Studio",
+];
 
 export default function MinimalFooter() {
   const { config } = useOrg();
+  const structure = useThemeStructure();
+  const isEditorial = structure === "editorial";
   const organizationTitle = config.seo?.title || "Budget Ndio Story";
 
-  const displaySocial = useMemo(() => {
-    const api = config.socials?.filter(
-      (s) => s.url && s.platform && s.platform !== "website",
-    );
-    if (api?.length) {
-      return api.map((s) => ({
-        label: s.label?.trim() || s.platform,
-        href: s.url,
-        icon: normalizeSocialIcon(s.platform),
-      }));
-    }
-    return defaultSocialLinks.map((s) => ({
-      ...s,
-      icon: normalizeSocialIcon(s.icon),
-    }));
-  }, [config.socials]);
+  const partnerMarks = useMemo(() => {
+    const names =
+      config.partners
+        ?.map((partner) => partner.name?.trim())
+        .filter((name): name is string => Boolean(name)) ?? [];
+
+    return names.length ? names.slice(0, 6) : fallbackPartnerMarks;
+  }, [config.partners]);
+
+  const primaryLinks = minimalNavLinks.filter((l) => l.primary);
+  const extraLinks = minimalNavLinks.filter((l) => !l.primary);
 
   return (
-    <footer className="w-full border-t border-border/40 bg-background/95 text-foreground py-8 sm:py-10">
-      <div className={cn(SECTION_SHELL_INNER, "flex flex-col gap-6 sm:gap-8")}>
-        {/* Top Row: Brand Summary & Navigation Links */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-6 border-b border-border/30">
-          <div className="space-y-1.5">
-            <Link href="/" className="inline-flex items-center gap-2 group">
-              <Image
-                src="/logo.svg"
-                alt={organizationTitle}
-                width={130}
-                height={26}
-                className="h-5 sm:h-6 w-auto transition-opacity group-hover:opacity-85 dark:brightness-110"
-              />
+    <footer
+      data-editorial-footer={isEditorial ? "true" : undefined}
+      className={cn(
+        "w-full border-t border-stone-950 bg-[#f7f5ef] text-stone-950",
+        isEditorial ? "py-6 sm:py-8" : "py-8 sm:py-10",
+      )}
+    >
+      <div
+        className={cn(
+          SECTION_SHELL_INNER,
+          "flex flex-col px-4 sm:px-6 md:px-10",
+          isEditorial ? "gap-4 sm:gap-8" : "gap-6 sm:gap-8",
+        )}
+      >
+        <div
+          className={cn(
+            "flex flex-col justify-between gap-4 md:flex-row md:items-end",
+            isEditorial
+              ? "border-b border-stone-950 pb-4 sm:gap-6 sm:pb-6"
+              : "gap-6 border-b border-stone-950 pb-6",
+          )}
+        >
+          <div className="max-w-2xl space-y-2">
+            <Link href="/" className="group inline-flex items-end gap-3">
+              <span className="font-serif text-4xl font-black uppercase leading-none tracking-[0.02em] transition-opacity group-hover:opacity-80">
+                BNS
+              </span>
+              <span className="pb-1 text-[10px] font-semibold uppercase leading-none tracking-[0.28em] text-stone-600">
+                Budget Ndio Story
+              </span>
             </Link>
-            <p className="text-xs text-muted-foreground leading-relaxed max-w-md">
-              Civic fiscal literacy for Kenya. Strictly non-partisan, editorially independent, and
-              grounded in verified public finance records.
+            <p
+              data-footer-blurb
+              className="max-w-xl text-sm leading-relaxed text-stone-700"
+            >
+              {isEditorial
+                ? "Youth-led civic newsroom for Kenya's public money. Non-partisan. Evidence-led."
+                : "Civic fiscal literacy for Kenya. Strictly non-partisan, editorially independent, and grounded in verified public finance records."}
             </p>
           </div>
 
-          {/* Navigation links */}
-          <nav aria-label="Footer navigation" className="flex flex-wrap items-center gap-x-5 gap-y-2 text-xs font-medium">
-            {minimalNavLinks.map((link) => (
+          <nav
+            aria-label="Footer navigation"
+            className="flex flex-wrap items-center gap-x-5 gap-y-3 text-[11px] font-semibold uppercase tracking-[0.2em]"
+          >
+            {primaryLinks.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
-                className="text-muted-foreground hover:text-foreground transition-colors"
+                className="text-stone-700 transition-colors hover:text-stone-950"
+              >
+                {link.label}
+              </Link>
+            ))}
+            {extraLinks.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                data-footer-nav-extra
+                className="text-stone-500 transition-colors hover:text-stone-950"
               >
                 {link.label}
               </Link>
@@ -82,39 +111,30 @@ export default function MinimalFooter() {
           </nav>
         </div>
 
-        {/* Bottom Row: Legal Note, Copyright & Social Icons */}
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-muted-foreground">
-          <div className="flex flex-wrap items-center gap-2 sm:gap-3 text-center sm:text-left font-mono text-[11px]">
-            <span>© {new Date().getFullYear()} {organizationTitle}.</span>
-            <span className="hidden sm:inline text-border">•</span>
-            <span>Article 201 · CoK 2010</span>
-            <span className="hidden sm:inline text-border">•</span>
-            <span>All rights reserved.</span>
-          </div>
+        <div
+          data-footer-social
+          className="flex flex-wrap items-center gap-x-4 gap-y-2 border-b border-stone-950 pb-4 text-[10px] font-semibold uppercase tracking-[0.22em] text-stone-600 sm:gap-x-6"
+          aria-label="Partner marks"
+        >
+          <span className="text-stone-950">Partner line</span>
+          {partnerMarks.map((partner) => (
+            <span key={partner}>{partner}</span>
+          ))}
+        </div>
 
-          {/* Compact Socials */}
-          <div className="flex items-center gap-2">
-            {displaySocial.map((social) => {
-              const Icon = socialIconComponents[social.icon];
-              return (
-                <Link
-                  key={`${social.label}-${social.href}`}
-                  href={social.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label={social.label}
-                  className="size-8 rounded-full flex items-center justify-center border border-border/60 bg-muted/30 text-muted-foreground hover:text-primary hover:border-primary/40 hover:bg-primary/5 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                  title={social.label}
-                >
-                  {Icon ? (
-                    <Icon className="size-3.5" />
-                  ) : (
-                    <span className="text-[10px] font-bold uppercase">{social.label.charAt(0)}</span>
-                  )}
-                </Link>
-              );
-            })}
+        <div className="flex flex-col items-start justify-between gap-3 text-xs text-stone-600 sm:flex-row sm:items-center sm:gap-4">
+          <div className="flex flex-wrap items-center gap-2 font-mono text-[11px] sm:gap-3">
+            <span>
+              (c) {new Date().getFullYear()} {organizationTitle}.
+            </span>
+            <span className="hidden text-stone-400 sm:inline">/</span>
+            <span className="hidden sm:inline">Article 201 / CoK 2010</span>
+            <span className="hidden text-stone-400 sm:inline">/</span>
+            <span className="hidden sm:inline">All rights reserved.</span>
           </div>
+          <p className="text-[11px] uppercase tracking-[0.18em] text-stone-500">
+            No paywall. No party line. No noise.
+          </p>
         </div>
       </div>
     </footer>

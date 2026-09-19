@@ -34,15 +34,13 @@ beforeEach(() => {
 describe("FeaturedProjectsSection", () => {
   it("renders seeded featured project titles and local cover stills", async () => {
     render(<FeaturedProjectsSection />);
-
-    expect(
-      screen.getByRole("heading", { name: /Projects communities can learn from/i }),
-    ).toBeInTheDocument();
+    const heading = document.getElementById("featured-projects-heading");
+    expect(heading).toBeInTheDocument();
 
     await waitFor(() => {
       expect(
         screen.getByRole("heading", {
-          name: /UON Cohort/i,
+          name: /The University of Nairobi|UON Cohort/i,
         }),
       ).toBeInTheDocument();
       expect(

@@ -1,13 +1,11 @@
 import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
 import { buildPageMetadata } from "@/utils/page-metadata";
-import { ProgrammeDetail } from "@/components/programmes/programme-detail";
+import { MagazineProgrammeDetail } from "@/components/magazine/magazine-programme-detail";
 import type { ProgrammeBlock } from "@/content";
 import {
   civicProgrammesFromContent,
   findProgrammeInContent,
-  getLivePartnerPageSections,
-  getLiveProgrammeReels,
   getLiveProgrammesContent,
   getLiveStudiosEvidence,
 } from "@/lib/cms-live-data";
@@ -47,7 +45,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     });
   }
   return buildPageMetadata({
-    title: programme.seoTitle,
+    title: `${programme.seoTitle} | Programme Dossier`,
     description: programme.seoDescription,
     path: `/programmes/${programme.slug}`,
   });
@@ -59,10 +57,8 @@ export default async function ProgrammeSlugPage({ params }: PageProps) {
     redirect("/bns-studio");
   }
 
-  const [programmesData, sectionsConfig, reelsData, studiosEvidenceData] = await Promise.all([
+  const [programmesData, studiosEvidenceData] = await Promise.all([
     getLiveProgrammesContent(),
-    getLivePartnerPageSections(),
-    getLiveProgrammeReels(),
     getLiveStudiosEvidence(),
   ]);
 
@@ -74,25 +70,11 @@ export default async function ProgrammeSlugPage({ params }: PageProps) {
   const civic = civicProgrammesFromContent(programmesData) as ProgrammeBlock[];
 
   return (
-    <ProgrammeDetail
+    <MagazineProgrammeDetail
       programme={programme}
       civicProgrammes={civic}
       closing={programmesData.closing}
-      sectionsConfig={sectionsConfig}
-      reels={(reelsData as { reels?: unknown[] }).reels as never}
       studiosEvidence={studiosEvidenceData as never}
-      projectCtaLabels={{
-        openProjectLabel: (
-          programmesData as {
-            landing?: { featuredIntro?: { openProjectLabel?: string; watchReelLabel?: string } };
-          }
-        ).landing?.featuredIntro?.openProjectLabel,
-        watchReelLabel: (
-          programmesData as {
-            landing?: { featuredIntro?: { openProjectLabel?: string; watchReelLabel?: string } };
-          }
-        ).landing?.featuredIntro?.watchReelLabel,
-      }}
     />
   );
 }

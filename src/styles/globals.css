@@ -5,6 +5,7 @@
 @import "./learn-tokens.css";
 @import "./studio-theatre.css";
 @import "./programmes-editorial.css";
+@import "./magazine.css";
 @import "./presets.css";
 
 /* Composable palette imports — each scoped to data-theme-preset="structure-palette" */

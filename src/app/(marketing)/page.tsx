@@ -1,14 +1,17 @@
 import React from "react";
-import { Metadata } from "next";
+import type { Metadata } from "next";
 import { metaDescription, canonicalUrl } from "@/utils/metadata";
-import Background from "@/components/global/background";
-import PremiumLandingClient from "@/components/marketing/premium-landing-client";
+import { MagazineFrontPage } from "@/components/marketing/magazine-front-page";
 import { PROGRAMMES_LANDING } from "@/constants/programmes-content";
+import {
+  getLiveLandingData,
+  getLiveFeaturedProjects,
+} from "@/lib/cms-live-data";
 
 const homeDescription = metaDescription(PROGRAMMES_LANDING.seoDescription);
 
 export const metadata: Metadata = {
-  title: PROGRAMMES_LANDING.seoTitle,
+  title: `${PROGRAMMES_LANDING.seoTitle} | Magazine of Kenya's Public Wealth`,
   description: homeDescription,
   keywords: [
     "Budget Ndio Story",
@@ -41,29 +44,18 @@ export const metadata: Metadata = {
   },
 };
 
-import {
-  getLiveLandingData,
-  getLivePartnerPageSections,
-  getLiveFeaturedProjects,
-} from "@/lib/cms-live-data";
-
 export const revalidate = 60;
 
 export default async function HomePage() {
-  const [landingData, sectionsConfig, featuredProjects] = await Promise.all([
+  const [landingData, featuredProjects] = await Promise.all([
     getLiveLandingData(),
-    getLivePartnerPageSections(),
     getLiveFeaturedProjects(),
   ]);
 
   return (
-    <div className="w-full min-h-dvh bg-background overflow-x-clip">
-      <Background />
-      <PremiumLandingClient
-        landingData={landingData}
-        sectionsConfig={sectionsConfig}
-        featuredProjects={featuredProjects}
-      />
-    </div>
+    <MagazineFrontPage
+      landingData={landingData}
+      featuredProjects={featuredProjects}
+    />
   );
 }

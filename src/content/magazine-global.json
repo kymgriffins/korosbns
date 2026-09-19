@@ -1,0 +1,136 @@
+{
+  "dispatch": {
+    "label": "The Dispatch",
+    "items": [
+      {
+        "id": "public-record",
+        "text": "Independent fiscal intelligence on Kenya's public money",
+        "href": "/programmes"
+      },
+      {
+        "id": "field-notes",
+        "text": "From Treasury appropriations to verified county delivery",
+        "href": "/programmes/mashinani"
+      },
+      {
+        "id": "newsroom",
+        "text": "The living civic record, investigated and edited in Nairobi",
+        "href": "/programmes/wanahabari-lab"
+      },
+      {
+        "id": "civic-movement",
+        "text": "Citizen assembly audits active across Nakuru, Kisumu, and Mombasa",
+        "href": "/obama-org"
+      }
+    ]
+  },
+  "masthead": {
+    "name": "Budget Ndio Story",
+    "shortName": "BNS",
+    "edition": "Vol. IV - Nairobi Edition",
+    "tagline": "The Public Record of Kenya's Money",
+    "navigation": [
+      {
+        "id": "cover",
+        "label": "Cover",
+        "href": "/"
+      },
+      {
+        "id": "programmes",
+        "label": "Programmes",
+        "href": "/programmes"
+      },
+      {
+        "id": "civic-platform",
+        "label": "Civic Movement",
+        "href": "/obama-org"
+      },
+      {
+        "id": "about",
+        "label": "Masthead",
+        "href": "/about"
+      },
+      {
+        "id": "studio",
+        "label": "Studio",
+        "href": "/bns-studio"
+      },
+      {
+        "id": "contact",
+        "label": "Inquiries",
+        "href": "/contact"
+      }
+    ]
+  },
+  "footer": {
+    "kicker": "The Public Record",
+    "statement": "Budget Ndio Story investigates Kenya's public wealth from national Treasury decisions to county reality.",
+    "navigation": [
+      {
+        "id": "cover",
+        "label": "Cover Story",
+        "href": "/"
+      },
+      {
+        "id": "programmes",
+        "label": "Programmes",
+        "href": "/programmes"
+      },
+      {
+        "id": "civic-platform",
+        "label": "Civic Platform",
+        "href": "/obama-org"
+      },
+      {
+        "id": "about",
+        "label": "About & Masthead",
+        "href": "/about"
+      },
+      {
+        "id": "studio",
+        "label": "BNS Studio",
+        "href": "/bns-studio"
+      },
+      {
+        "id": "contact",
+        "label": "Newsroom Desk",
+        "href": "/contact"
+      }
+    ],
+    "partnersLabel": "Published in partnership with",
+    "partners": [
+      {
+        "id": "sen-media",
+        "name": "Sen Media & Events",
+        "href": "https://senmedia-events.co.ke/"
+      },
+      {
+        "id": "continental-pot",
+        "name": "The Continental Pot",
+        "href": "https://continentalpot.africa/"
+      },
+      {
+        "id": "colour-twist",
+        "name": "Colour Twist Media",
+        "href": "https://colortwistmedia.com/"
+      }
+    ],
+    "legal": [
+      {
+        "id": "privacy",
+        "label": "Privacy Policy",
+        "href": "/privacy"
+      },
+      {
+        "id": "terms",
+        "label": "Terms of Publication",
+        "href": "/terms"
+      }
+    ],
+    "copyright": "An independent civic journalism and public wealth intelligence publication."
+  },
+  "provenance": {
+    "source": "Budget Ndio Story Editorial Desk",
+    "lastUpdated": "2026-09-19T00:00:00.000Z"
+  }
+}

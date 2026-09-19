@@ -18,9 +18,9 @@ describe("CMS Comprehensive CRUD & Validation Test Suite", () => {
   // 1. CATALOG & DISCOVERY
   // ==========================================
   describe("Catalog & Discovery", () => {
-    it("exposes all 43 registered JSON collections in getAllCollections", () => {
+    it("exposes all 44 registered JSON collections in getAllCollections", () => {
       const all = headlessCmsApi.getAllCollections();
-      expect(all.length).toBe(43);
+      expect(all.length).toBe(44);
 
       const slugs = all.map((c) => c.slug);
       expect(slugs).toContain("landing");
@@ -30,6 +30,7 @@ describe("CMS Comprehensive CRUD & Validation Test Suite", () => {
       expect(slugs).toContain("legal");
       expect(slugs).toContain("faq");
       expect(slugs).toContain("contact");
+      expect(slugs).toContain("magazine-global");
     });
 
     it("maintains backward-compatible core 6 collections in getCollections", () => {
@@ -55,7 +56,7 @@ describe("CMS Comprehensive CRUD & Validation Test Suite", () => {
   // 2. READ (GET) OPERATIONS
   // ==========================================
   describe("Read (GET) Operations", () => {
-    it("successfully retrieves valid data for all 43 collections", () => {
+    it("successfully retrieves valid data for all 44 collections", () => {
       const all = headlessCmsApi.getAllCollections();
       for (const item of all) {
         const data = headlessCmsApi.getCollectionData(item.slug);
@@ -68,9 +69,10 @@ describe("CMS Comprehensive CRUD & Validation Test Suite", () => {
     it("bundles and exports all collections without data loss", () => {
       const bundle = headlessCmsApi.exportAllCollectionsJson();
       const bundleKeys = Object.keys(bundle);
-      expect(bundleKeys.length).toBe(43);
+      expect(bundleKeys.length).toBe(44);
       expect(bundle.landing).toBeDefined();
       expect(bundle["custom-pages"]).toBeDefined();
+      expect(bundle["magazine-global"]).toBeDefined();
     });
 
     it("exports individual collections as clean JSON string", () => {

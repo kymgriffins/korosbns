@@ -19,6 +19,7 @@ import landingSectionsFallback from "@/content/landing-sections.json";
 import programmeReelsFallback from "@/content/programme-reels.json";
 import studiosEvidenceFallback from "@/data/fallbacks/studios-evidence.json";
 import bnsStudioFallback from "@/content/bns-studio.json";
+import magazineGlobalFallback from "@/content/magazine-global.json";
 import type { CmsCollectionSlug } from "@/lib/headless-cms";
 
 export type LandingContent = typeof landingFallback;
@@ -41,6 +42,7 @@ export type LandingSectionsContent = typeof landingSectionsFallback;
 export type ProgrammeReelsContent = typeof programmeReelsFallback;
 export type StudiosEvidenceContent = typeof studiosEvidenceFallback;
 export type BnsStudioContent = typeof bnsStudioFallback;
+export type MagazineGlobalContent = typeof magazineGlobalFallback;
 
 const FALLBACK_MAP: Partial<Record<CmsCollectionSlug, unknown>> = {
   landing: landingFallback,
@@ -63,6 +65,7 @@ const FALLBACK_MAP: Partial<Record<CmsCollectionSlug, unknown>> = {
   "programme-reels": programmeReelsFallback,
   "studios-evidence": studiosEvidenceFallback,
   "bns-studio": bnsStudioFallback,
+  "magazine-global": magazineGlobalFallback,
 };
 
 /**
@@ -253,4 +256,14 @@ export async function getLiveStudiosEvidence(): Promise<StudiosEvidenceContent> 
  */
 export async function getLiveBnsStudioContent(): Promise<BnsStudioContent> {
   return getLiveCmsCollection<BnsStudioContent>("bns-studio", bnsStudioFallback);
+}
+
+/**
+ * Loads the magazine branch's dedicated dispatch, masthead, and colophon.
+ */
+export async function getLiveMagazineGlobalData(): Promise<MagazineGlobalContent> {
+  return getLiveCmsCollection<MagazineGlobalContent>(
+    "magazine-global",
+    magazineGlobalFallback,
+  );
 }

@@ -6,9 +6,13 @@
 const LEGACY_PROJECT_ID_ALIASES: Record<string, string> = {
   "proj-001": "budget-sasa-ni-delivery-explainer",
   "proj-002": "budget-ndio-story-podcast",
-  "proj-003": "nakuru-citizen-baraza",
-  "proj-004": "finance-bill-motion-explainer",
-  "proj-005": "mashinani-field-documentary",
+  // Historical IDs that never landed as separate dossiers — resolve to closest live evidence pages
+  "proj-003": "wajir-community-listening",
+  "nakuru-citizen-baraza": "wajir-community-listening",
+  "proj-004": "budget-sasa-ni-delivery-explainer",
+  "finance-bill-motion-explainer": "budget-sasa-ni-delivery-explainer",
+  "proj-005": "illicit-financial-flows-benin-cabo-verde",
+  "mashinani-field-documentary": "illicit-financial-flows-benin-cabo-verde",
   "proj-006": "cra-formula-research-spotlight",
   "proj-007": "budget-tiktok-vertical-series",
   "proj-008": "wajir-community-listening",

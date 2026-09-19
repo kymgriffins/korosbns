@@ -8,11 +8,20 @@
  *
  * Every page that shows a project should read from this store.
  * Adding a project here reflects across: /work, /bns-project, featured section, programme grids.
+ *
+ * Documentation rule: every visible project gets white-paper-grade body copy via
+ * `generateProjectWhitePaper` (authored prose + transcript when present, else production dossier).
  */
 
 import studiosEvidence from "@/data/fallbacks/studios-evidence.json";
 import featuredSeeds from "@/data/fallbacks/featured-projects.json";
 import { withFallback } from "@/data/adapter";
+import { getProjectTranscript } from "@/data/project-transcripts";
+import {
+  generateProjectWhitePaper,
+  type WhitePaperImpact,
+} from "@/lib/project-whitepaper";
+import { resolveProjectId } from "@/lib/programme-project-ids";
 
 export type ProjectMediaType = "youtube" | "vimeo" | "reel" | "audio" | "image" | "animation" | "none";
 
@@ -66,6 +75,10 @@ export type CanonicalProject = {
   authorName?: string;
   publishedAt?: string;
   channelHandle?: string;
+  /** Case-study fields from studios-evidence (feed white-paper generator) */
+  briefChallenge?: string;
+  whatWeProduced?: string;
+  impactEvidence?: WhitePaperImpact;
 };
 
 type FeaturedSeed = (typeof featuredSeeds.results)[number];
@@ -87,16 +100,14 @@ function programmeLabelFor(slug: string): string {
     connect: "BNS Connect",
     mashinani: "BNS Mashinani",
     "wanahabari-lab": "Wanahabari Lab",
+    studios: "BNS Studios",
   };
   return labels[slug] || slug;
 }
 
 function thumbnailFor(p: StudioProject, featured?: FeaturedSeed): string {
-  // Prefer editorial thumbnail from featured seeds
   if (featured?.thumbnail) return featured.thumbnail;
-  // Then studio media poster
   if (p.media?.posterUrl) return p.media.posterUrl;
-  // Fallback
   return "/images/hall/129A4248.jpg";
 }
 
@@ -105,7 +116,6 @@ function videoIdFrom(p: StudioProject, featured?: FeaturedSeed): string | undefi
   if (p.media?.videoUrl) {
     const match = p.media.videoUrl.match(/[?&]v=([^&]+)/);
     if (match) return match[1];
-    // Already a bare video ID
     if (/^[a-zA-Z0-9_-]{11}$/.test(p.media.videoUrl)) return p.media.videoUrl;
   }
   return undefined;
@@ -119,9 +129,8 @@ function resolveMediaType(p: StudioProject): ProjectMediaType {
   if (t === "audio") return "audio";
   if (t === "animation") return "animation";
   if (t === "image") return "image";
-  // Check for reel-style URLs (R2 mp4, tiktok)
   if (p.media?.videoUrl && /\.mp4|\.webm|\.mov/i.test(p.media.videoUrl)) return "reel";
-  if (p.media?.videoUrl) return "youtube"; // default video assumption
+  if (p.media?.videoUrl) return "youtube";
   return "none";
 }
 
@@ -132,6 +141,35 @@ function resolveGallery(p: StudioProject): ProjectGalleryItem[] {
     caption: g.caption,
     alt: g.caption || p.title,
   }));
+}
+
+function attachWhitePaper(project: CanonicalProject): CanonicalProject {
+  const transcript = getProjectTranscript({
+    videoId: project.videoId,
+    projectId: project.id,
+  });
+  const wysiwygProse = generateProjectWhitePaper({
+    id: project.id,
+    slug: project.slug,
+    title: project.title,
+    subtitle: project.subtitle,
+    description: project.description,
+    prose: project.prose,
+    wysiwygProse: project.wysiwygProse,
+    briefChallenge: project.briefChallenge,
+    whatWeProduced: project.whatWeProduced,
+    outputs: project.outputs,
+    impactEvidence: project.impactEvidence,
+    organisationName: project.organisationName,
+    programmeLabel: project.programmeLabel,
+    contentType: project.contentType,
+    date: project.date,
+    videoUrl: project.videoUrl,
+    videoId: project.videoId,
+    tags: project.tags,
+    transcript,
+  });
+  return { ...project, wysiwygProse };
 }
 
 function mergeProject(studio: StudioProject): CanonicalProject {
@@ -145,12 +183,15 @@ function mergeProject(studio: StudioProject): CanonicalProject {
   const mediaType = resolveMediaType(studio);
   const reelUrl = mediaType === "reel" ? studio.media?.videoUrl : undefined;
   const audioUrl = mediaType === "audio" ? studio.media?.videoUrl : undefined;
+  const impact = studio.impactEvidence as WhitePaperImpact | undefined;
 
-  return {
+  const base: CanonicalProject = {
     id: studio.id,
     slug: studio.slug,
     title: featured?.title || studio.title,
-    subtitle: (featured as { subtitle?: string })?.subtitle || (studio as { subtitle?: string }).subtitle,
+    subtitle:
+      (featured as { subtitle?: string })?.subtitle ||
+      (studio as { subtitle?: string }).subtitle,
     description: studio.description,
     programmeSlug,
     programmeLabel: programmeLabelFor(programmeSlug),
@@ -161,7 +202,9 @@ function mergeProject(studio: StudioProject): CanonicalProject {
     year: studio.year,
     mediaType,
     videoId,
-    videoUrl: studio.media?.videoUrl || (videoId ? `https://www.youtube.com/watch?v=${videoId}` : undefined),
+    videoUrl:
+      studio.media?.videoUrl ||
+      (videoId ? `https://www.youtube.com/watch?v=${videoId}` : undefined),
     reelUrl,
     audioUrl,
     thumbnail: thumbnailFor(studio, featured),
@@ -180,7 +223,12 @@ function mergeProject(studio: StudioProject): CanonicalProject {
     authorName: featured?.authorName || org?.name,
     publishedAt: featured?.publishedAt || studio.date,
     channelHandle: featured?.channelHandle,
+    briefChallenge: studio.briefChallenge,
+    whatWeProduced: studio.whatWeProduced,
+    impactEvidence: impact,
   };
+
+  return attachWhitePaper(base);
 }
 
 /**
@@ -195,7 +243,7 @@ function fromFeaturedOnly(featured: FeaturedSeed): CanonicalProject {
     ? galleryRaw.filter((g) => Boolean(g?.url))
     : [];
 
-  return {
+  const base: CanonicalProject = {
     id: featured.id,
     slug: featured.slug || featured.id,
     title: featured.title,
@@ -206,7 +254,7 @@ function fromFeaturedOnly(featured: FeaturedSeed): CanonicalProject {
     contentType: "featured-editorial",
     date: (featured.publishedAt || "").slice(0, 10) || "2026-01-01",
     year: (featured.publishedAt || "2026").slice(0, 4),
-    mediaType: videoId ? "youtube" : "none",
+    mediaType: videoId ? "youtube" : "image",
     videoId,
     videoUrl: featured.url || (videoId ? `https://www.youtube.com/watch?v=${videoId}` : undefined),
     thumbnail: featured.thumbnail || "/images/hall/129A4248.jpg",
@@ -223,7 +271,11 @@ function fromFeaturedOnly(featured: FeaturedSeed): CanonicalProject {
     authorName: featured.authorName,
     publishedAt: featured.publishedAt,
     channelHandle: featured.channelHandle,
+    briefChallenge: featured.prose,
+    whatWeProduced: "Featured civic editorial dossier published on Budget Ndio Story.",
   };
+
+  return attachWhitePaper(base);
 }
 
 const studioIdAndSlug = new Set<string>();
@@ -248,30 +300,25 @@ export const FLAGSHIP_PROJECT_ID =
   featuredSeeds.results[0]?.id ||
   "project-terra";
 
-const _featuredIds = new Set(
-  featuredSeeds.results.map((f) => f.id),
-);
+const _featuredIds = new Set(featuredSeeds.results.map((f) => f.id));
 
 let _cache: CanonicalProject[] | null = null;
 
 function getAll(): CanonicalProject[] {
   if (_cache) return _cache;
-  _cache = ALL_PROJECTS
-    .filter((p) => p.visible)
-    .sort((a, b) => a.order - b.order);
+  _cache = ALL_PROJECTS.filter((p) => p.visible).sort((a, b) => a.order - b.order);
   return _cache;
 }
 
 /** Projects marked as featured in studios-evidence OR present in featured-projects.json */
 function getFeatured(): CanonicalProject[] {
-  return getAll().filter(
-    (p) => (p.featured || _featuredIds.has(p.id)) && p.visible,
-  );
+  return getAll().filter((p) => (p.featured || _featuredIds.has(p.id)) && p.visible);
 }
 
 /** Find a single project by id or slug — returns hidden projects too (direct URL access) */
 function getById(id: string): CanonicalProject | undefined {
-  const norm = id.toLowerCase().trim();
+  const resolved = resolveProjectId(id);
+  const norm = resolved.toLowerCase().trim();
   return ALL_PROJECTS.find(
     (p) => p.id.toLowerCase() === norm || p.slug.toLowerCase() === norm,
   );

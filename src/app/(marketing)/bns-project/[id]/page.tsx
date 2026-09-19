@@ -1,11 +1,10 @@
 import { redirect } from "next/navigation";
 import type { Metadata } from "next";
-import { projectsData, type CanonicalProject } from "@/data/projects";
-import { ProjectTerraEditorial } from "@/components/project/project-terra-editorial";
-import { ProjectEditorialView, type ProjectEditorialData } from "@/components/project/project-editorial-view";
+import { projectsData } from "@/data/projects";
+import { MagazineProjectDossier } from "@/components/project/magazine-project-dossier";
+import type { ProjectEditorialData } from "@/components/project/project-editorial-view";
 import { buildPageMetadata } from "@/utils/page-metadata";
 import { resolveProjectId } from "@/lib/programme-project-ids";
-import { getLivePartnerPageSections } from "@/lib/cms-live-data";
 
 export const revalidate = 60;
 
@@ -18,8 +17,8 @@ function isTerraProject(id: string): boolean {
 }
 
 function findCanonicalProject(idOrSlug: string): ProjectEditorialData | null {
-  const norm = idOrSlug.toLowerCase().trim();
-  const canonical = projectsData.getById(norm);
+  const resolved = resolveProjectId(idOrSlug);
+  const canonical = projectsData.getById(resolved);
   if (!canonical) return null;
 
   const body = canonical.wysiwygProse || canonical.prose || canonical.description;
@@ -40,23 +39,15 @@ function findCanonicalProject(idOrSlug: string): ProjectEditorialData | null {
     useYoutubeThumbnail: canonical.mediaType === "youtube",
     publishedAt: canonical.publishedAt || canonical.date,
     channelHandle: canonical.channelHandle,
-    funder: "Supported by Consortium Partners",
+    funder: "Public Wealth Investigative Consortium",
     hostInstitution: "House of Fiscal Wisdom",
-    // Pass media fields to editorial view
     mediaType: canonical.mediaType,
     reelUrl: canonical.reelUrl,
     audioUrl: canonical.audioUrl,
     gallery: canonical.gallery,
     mediaCaption: canonical.mediaCaption,
     hideCaptions: canonical.hideCaptions,
-  } as ProjectEditorialData & {
-    mediaType: string;
-    reelUrl?: string;
-    audioUrl?: string;
-    gallery?: Array<{ url: string; caption?: string; alt?: string }>;
-    mediaCaption?: string;
-    hideCaptions?: boolean;
-  };
+  } as ProjectEditorialData;
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
@@ -65,8 +56,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   if (project) {
     return buildPageMetadata({
-      title: `${project.title} | Budget Ndio Story`,
-      description: project.prose || "Civic evidence and policy investigation from Budget Ndio Story.",
+      title: `${project.title} | Investigation Dossier`,
+      description: project.prose || "Civic evidence and public wealth investigation from Budget Ndio Story.",
       path: `/bns-project/${id}`,
       type: "article",
     });
@@ -74,7 +65,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   if (isTerraProject(id)) {
     return buildPageMetadata({
-      title: "Project TERRA: Technology, Equality, Regulatory Risk Assessment | Budget Ndio Story",
+      title: "Project TERRA: Technology, Equality, Regulatory Risk Assessment | Investigation Dossier",
       description:
         "Project TERRA investigates how platform algorithms and data centre tax holidays systematically exclude African women workers from fiscal systems.",
       path: `/bns-project/${id}`,
@@ -83,7 +74,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   }
 
   return buildPageMetadata({
-    title: "Project | Budget Ndio Story",
+    title: "Investigation File | Budget Ndio Story",
     description: "Civic projects and investigations from Budget Ndio Story.",
     path: `/bns-project/${id}`,
   });
@@ -91,22 +82,29 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function ProjectDetailPage({ params }: PageProps) {
   const { id } = await params;
-  const [canonicalProject, sectionsConfig] = await Promise.all([
-    Promise.resolve(findCanonicalProject(id)),
-    getLivePartnerPageSections(),
-  ]);
-
-  const pages = sectionsConfig?.pages as Record<string, any> | undefined;
-  const archetype = pages?.projectDetail?.layoutArchetype || pages?.projects?.layoutArchetype || "sovereign";
-
-  if (isTerraProject(id)) {
-    return <ProjectTerraEditorial project={canonicalProject || undefined} />;
-  }
+  const canonicalProject = findCanonicalProject(id);
 
   if (canonicalProject) {
-    return <ProjectEditorialView project={canonicalProject} archetype={archetype} />;
+    return <MagazineProjectDossier project={canonicalProject} />;
   }
 
-  // Unknown ids → project index (JSON-backed), never a programmes dump.
-  redirect("/projects");
+  if (isTerraProject(id)) {
+    const terraFallback: ProjectEditorialData = {
+      id: "project-terra",
+      slug: "project-terra",
+      title: "Project TERRA: Technology, Equality, Regulatory Risk Assessment",
+      subtitle: "Investigating platform algorithms, data centre tax holidays, and public revenue loss.",
+      prose: "A six-month investigative audit cross-referencing county expenditure reports with ground photography, contractor filings, and citizen testimony.",
+      authorName: "BNS Investigations Desk",
+      programmeSlug: "mashinani",
+      programmeLabel: "Ground Forensics",
+      publishedAt: "September 2026",
+      thumbnail: "/images/towwnhallmay/129A3912.jpg",
+      funder: "Public Wealth Investigative Consortium",
+      hostInstitution: "House of Fiscal Wisdom",
+    };
+    return <MagazineProjectDossier project={terraFallback} />;
+  }
+
+  redirect("/programmes");
 }

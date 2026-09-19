@@ -19,9 +19,9 @@ describe("Persistent Headless CMS & JSON Studio Test Suite", () => {
     expect(slugs).toContain("timeline");
   });
 
-  it("exposes all 43 registered JSON datasets in getAllCollections", () => {
+  it("exposes all 44 registered JSON datasets in getAllCollections", () => {
     const all = headlessCmsApi.getAllCollections();
-    expect(all.length).toBe(43);
+    expect(all.length).toBe(44);
 
     const slugs = all.map((c) => c.slug);
     expect(slugs).toContain("partner-page-sections");
@@ -52,9 +52,10 @@ describe("Persistent Headless CMS & JSON Studio Test Suite", () => {
     expect(slugs).toContain("programme-reels");
     expect(slugs).toContain("studios-evidence");
     expect(slugs).toContain("bns-studio");
+    expect(slugs).toContain("magazine-global");
   });
 
-  it("ensures all 39 collections have valid file paths, categories and schema keys", () => {
+  it("ensures all 44 collections have valid file paths, categories and schema keys", () => {
     const all = headlessCmsApi.getAllCollections();
 
     for (const item of all) {
@@ -96,9 +97,9 @@ describe("Persistent Headless CMS & JSON Studio Test Suite", () => {
     expect(parsed._lastEditedBy).toBe("admin@budgetndiostory.org");
   });
 
-  it("exports a complete bundle of all 43 collections", () => {
+  it("exports a complete bundle of all 44 collections", () => {
     const bundle = headlessCmsApi.exportAllCollectionsJson();
-    expect(Object.keys(bundle).length).toBe(43);
+    expect(Object.keys(bundle).length).toBe(44);
     expect(bundle.landing).toBeDefined();
     expect(bundle.org).toBeDefined();
     expect(bundle["bns-config"]).toBeDefined();
@@ -107,6 +108,7 @@ describe("Persistent Headless CMS & JSON Studio Test Suite", () => {
     expect(bundle["featured-projects"]).toBeDefined();
     expect(bundle.navigation).toBeDefined();
     expect(bundle["design-tokens"]).toBeDefined();
+    expect(bundle["magazine-global"]).toBeDefined();
   });
 
   it("rejects unauthorized external emails from editing JSON collections", () => {

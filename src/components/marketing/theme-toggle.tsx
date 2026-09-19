@@ -119,8 +119,12 @@ export function ThemeToggle({
       );
     }
     const chosen = CMS_THEME_OPTIONS.find((t) => t.id === id);
+    const { structure } = resolveTheme(id);
     toast.info(`Theme Preview: ${chosen?.label || id}`, {
-      description: "Click 'Publish Theme to Production' to push live for all visitors.",
+      description:
+        structure === "editorial"
+          ? "Newspaper newsroom on — desks, edition feed, and partners visible. Mobile footer stays minimal."
+          : "Click 'Publish Theme to Production' to push live for all visitors.",
     });
   };
 

@@ -8,6 +8,7 @@ import type {
   LandingContent,
 } from "@/lib/cms-live-data";
 import type { ProgrammeBlock } from "@/content";
+import { CONSORTIUM_FOUNDERS, CONSORTIUM_SUMMARY } from "@/constants/consortium-founders";
 
 type ThemeNewsroomProps = {
   landingData?: Partial<LandingContent>;
@@ -44,47 +45,223 @@ const ARK_SPEC_CELLS = [
   { n: "06", label: "Citizen tools" },
 ] as const;
 
+const EDITORIAL_DESKS = [
+  {
+    slug: "connect",
+    eyebrow: "Connect",
+    title: "National budget intelligence",
+    lede: "Translate Treasury circulars, Budget Day theatre, and debt questions into youth-ready explainers.",
+    href: "/programmes/connect",
+  },
+  {
+    slug: "mashinani",
+    eyebrow: "Mashinani",
+    title: "County delivery evidence",
+    lede: "Field snapshots from clinics, roads, and markets — what equitable share looks like on the ground.",
+    href: "/programmes/mashinani",
+  },
+  {
+    slug: "wanahabari-lab",
+    eyebrow: "Wanahabari",
+    title: "Newsroom verification",
+    lede: "Train and co-produce with journalists so the spending story stays alive after Budget Day.",
+    href: "/programmes/wanahabari-lab",
+  },
+] as const;
+
+/**
+ * Broadside editorial landing — newspaper composition.
+ * When editorial theme is active, every section below is always on (not CMS-gated).
+ */
 export function EditorialNewsroom({ landingData, featuredProjects }: ThemeNewsroomProps) {
   const projects = getProjects(featuredProjects);
   const programmes = getProgrammes(landingData);
   const hero = landingData?.heroNarrative;
+  const thesis = landingData?.thesis;
   const leadProject = projects[0];
+  const feed = projects.slice(0, 6);
+  const desks =
+    programmes.length >= 3
+      ? programmes.slice(0, 3).map((p) => ({
+          slug: p.slug,
+          eyebrow: p.eyebrow || p.title,
+          title: p.title,
+          lede: p.lede,
+          href: p.href,
+        }))
+      : [...EDITORIAL_DESKS];
+
+  const mastheadDate = new Date().toLocaleDateString("en-KE", {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
 
   return (
     <div className="min-h-dvh bg-background text-foreground [font-family:var(--font-heading)]">
       <header className="border-b border-border px-5 py-4 md:px-10">
-        <div className="mx-auto flex max-w-[1280px] items-center justify-between gap-6">
-          <Link href="/" className="text-lg font-bold tracking-[-0.04em] md:text-2xl">BUDGET NDIO STORY</Link>
-          <nav className="hidden items-center gap-7 text-xs font-bold uppercase tracking-[0.16em] md:flex">
-            <Link href="/budgetnews" className="hover:text-primary">Budget desk</Link>
-            <Link href="/projects" className="hover:text-primary">Investigations</Link>
-            <Link href="/programmes" className="hover:text-primary">Programmes</Link>
-          </nav>
-          <button type="button" aria-label="Search the newsroom" className="rounded-full border border-border p-2"><Search className="size-4" /></button>
+        <div className="mx-auto flex max-w-[1280px] flex-col gap-3">
+          <div className="flex items-center justify-between gap-4">
+            <p className="hidden text-[10px] font-bold tracking-[0.18em] text-muted-foreground uppercase sm:block">
+              {mastheadDate}
+            </p>
+            <Link href="/" className="text-center text-xl font-bold tracking-[-0.04em] md:text-3xl">
+              BUDGET NDIO STORY
+            </Link>
+            <nav className="hidden items-center gap-6 text-[11px] font-bold tracking-[0.14em] uppercase md:flex">
+              <Link href="/budgetnews" className="hover:text-primary">Desk</Link>
+              <Link href="/projects" className="hover:text-primary">Archive</Link>
+              <Link href="/programmes" className="hover:text-primary">Programmes</Link>
+              <Link href="/contact" className="hover:text-primary">Contact</Link>
+            </nav>
+            <button type="button" aria-label="Search the newsroom" className="rounded-full border border-border p-2 md:hidden">
+              <Search className="size-4" />
+            </button>
+          </div>
+          <p className="text-center text-[10px] font-medium tracking-[0.12em] text-muted-foreground uppercase sm:hidden">
+            {mastheadDate}
+          </p>
         </div>
       </header>
-      <div className="border-b border-border bg-primary px-5 py-2 text-center text-[10px] font-bold uppercase tracking-[0.2em] text-primary-foreground md:px-10">The civic newsroom for Kenya&apos;s public money</div>
+
+      <div className="border-b border-border bg-primary px-5 py-2 text-center text-[10px] font-bold tracking-[0.18em] text-primary-foreground uppercase md:px-10">
+        Youth-led civic newsroom · Kenya&apos;s public money · Connect · Mashinani · Wanahabari
+      </div>
 
       <main className="mx-auto max-w-[1280px] px-5 md:px-10">
-        <section className="grid gap-8 border-b border-border py-14 md:grid-cols-[1.25fr_0.75fr] md:py-20">
+        <section className="grid gap-8 border-b border-border py-12 md:grid-cols-[1.25fr_0.75fr] md:py-16">
           <div>
-            <p className="mb-5 text-xs font-bold uppercase tracking-[0.22em] text-primary">{hero?.eyebrow || "After Budget Day"}</p>
-            <h1 className="max-w-4xl text-5xl font-black leading-[0.92] tracking-[-0.06em] md:text-8xl">{hero?.title || "The budget lands. Then the silence."}</h1>
-            <p className="mt-8 max-w-2xl text-lg leading-relaxed md:text-xl">{hero?.lede || "We follow the money from the Exchequer to the mwananchi."}</p>
-            <Link href="/budgetnews" className="mt-8 inline-flex items-center gap-2 border-b-2 border-primary pb-1 text-sm font-bold uppercase tracking-[0.12em] text-primary">Enter the budget desk <ArrowUpRight className="size-4" /></Link>
+            <p className="mb-4 text-xs font-bold tracking-[0.2em] text-primary uppercase">
+              {hero?.eyebrow || "After Budget Day"}
+            </p>
+            <h1 className="max-w-4xl text-4xl font-black leading-[0.95] tracking-[-0.05em] sm:text-5xl md:text-7xl">
+              {hero?.title || "The budget lands. Then the silence."}
+            </h1>
+            <p className="mt-6 max-w-2xl text-base leading-relaxed md:text-lg">
+              {hero?.lede ||
+                "We follow the money from the Exchequer to the mwananchi — with video, podcasts, explainers, and community monitoring young people can actually use."}
+            </p>
+            <div className="mt-8 flex flex-wrap gap-4">
+              <Link href="/budgetnews" className="inline-flex items-center gap-2 border-b-2 border-primary pb-1 text-sm font-bold tracking-[0.1em] text-primary uppercase">
+                Enter the budget desk <ArrowUpRight className="size-4" />
+              </Link>
+              <Link href="/programmes" className="inline-flex items-center gap-2 border-b border-border pb-1 text-sm font-bold tracking-[0.1em] uppercase hover:border-foreground">
+                Open programmes
+              </Link>
+            </div>
           </div>
-          <div className="flex items-end border-t border-border pt-5 md:border-l md:border-t-0 md:pl-8 md:pt-0"><p className="max-w-sm text-2xl leading-tight md:text-3xl">Clear numbers. Reported evidence. A public record that stays alive after Budget Day.</p></div>
+          <div className="flex flex-col justify-end gap-6 border-t border-border pt-5 md:border-t-0 md:border-l md:pl-8 md:pt-0">
+            <p className="max-w-sm text-xl leading-tight md:text-2xl">
+              {thesis?.body || "Clear numbers. Reported evidence. A public record that stays alive after Budget Day."}
+            </p>
+            <p className="text-xs leading-relaxed text-muted-foreground">{CONSORTIUM_SUMMARY}</p>
+          </div>
+        </section>
+
+        <section className="border-b border-border py-10 md:py-14" aria-label="Programme desks">
+          <div className="mb-6 flex items-baseline justify-between gap-4">
+            <h2 className="text-2xl font-bold tracking-[-0.03em] md:text-4xl">The three desks</h2>
+            <Link href="/programmes" className="text-[11px] font-bold tracking-[0.14em] text-primary uppercase">
+              All programmes <ArrowUpRight className="inline size-3" />
+            </Link>
+          </div>
+          <div className="grid border-t border-border md:grid-cols-3">
+            {desks.map((desk) => (
+              <article key={desk.slug} className="border-b border-border py-6 md:border-r md:border-b-0 md:px-6 md:first:pl-0 md:last:border-r-0 md:last:pr-0">
+                <p className="text-[11px] font-bold tracking-[0.16em] text-primary uppercase">{desk.eyebrow}</p>
+                <h3 className="mt-3 text-xl font-bold leading-tight md:text-2xl">
+                  <Link href={desk.href} className="hover:text-primary">{desk.title}</Link>
+                </h3>
+                <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{desk.lede}</p>
+                <Link href={desk.href} className="mt-5 inline-flex items-center gap-1 text-[11px] font-bold tracking-[0.12em] text-primary uppercase">
+                  Open desk <ArrowUpRight className="size-3" />
+                </Link>
+              </article>
+            ))}
+          </div>
         </section>
 
         <section className="border-b border-border py-10 md:py-14">
-          <div className="mb-7 flex items-baseline justify-between gap-4"><h2 className="text-3xl font-bold tracking-[-0.04em] md:text-5xl">Latest from the field</h2><Link href="/projects" className="text-xs font-bold uppercase tracking-[0.16em] text-primary">All stories <ArrowUpRight className="inline size-3" /></Link></div>
-          {leadProject ? <article className="grid gap-6 md:grid-cols-[1.15fr_0.85fr]">
-            <Link href={leadProject.href} className="group relative block aspect-[16/9] overflow-hidden bg-muted"><Image src={getImage(leadProject)} alt={leadProject.title} fill className="object-cover transition-transform duration-500 group-hover:scale-[1.03]" sizes="(max-width: 768px) 100vw, 60vw" /></Link>
-            <div className="flex flex-col justify-center"><p className="text-xs font-bold uppercase tracking-[0.16em] text-primary">{leadProject.programmeLabel || "Investigation"}</p><h3 className="mt-3 text-3xl font-bold leading-tight md:text-5xl"><Link href={leadProject.href} className="hover:text-primary">{leadProject.title}</Link></h3><p className="mt-5 max-w-xl text-base leading-relaxed text-muted-foreground">{leadProject.prose}</p></div>
-          </article> : null}
+          <div className="mb-7 flex items-baseline justify-between gap-4">
+            <h2 className="text-2xl font-bold tracking-[-0.03em] md:text-4xl">Latest from the field</h2>
+            <Link href="/projects" className="text-[11px] font-bold tracking-[0.14em] text-primary uppercase">
+              All stories <ArrowUpRight className="inline size-3" />
+            </Link>
+          </div>
+          {leadProject ? (
+            <article className="grid gap-6 md:grid-cols-[1.15fr_0.85fr]">
+              <Link href={leadProject.href} className="group relative block aspect-[16/9] overflow-hidden bg-muted">
+                <Image src={getImage(leadProject)} alt={leadProject.title} fill className="object-cover transition-transform duration-500 group-hover:scale-[1.03]" sizes="(max-width: 768px) 100vw, 60vw" />
+              </Link>
+              <div className="flex flex-col justify-center">
+                <p className="text-[11px] font-bold tracking-[0.16em] text-primary uppercase">{leadProject.programmeLabel || "Investigation"}</p>
+                <h3 className="mt-3 text-2xl font-bold leading-tight md:text-4xl">
+                  <Link href={leadProject.href} className="hover:text-primary">{leadProject.title}</Link>
+                </h3>
+                <p className="mt-4 max-w-xl text-sm leading-relaxed text-muted-foreground md:text-base">{leadProject.prose}</p>
+              </div>
+            </article>
+          ) : null}
         </section>
 
-        <section className="py-10 md:py-14"><p className="mb-7 text-xs font-bold uppercase tracking-[0.2em] text-primary">The reporting beats</p><div className="grid border-t border-border md:grid-cols-3">{programmes.map((programme) => <article key={programme.slug} className="border-b border-border py-6 md:border-b-0 md:border-r md:px-6 md:first:pl-0 md:last:border-r-0 md:last:pr-0"><p className="text-xs font-bold uppercase tracking-[0.16em] text-primary">{programme.eyebrow}</p><h3 className="mt-3 text-2xl font-bold leading-tight"><Link href={programme.href} className="hover:text-primary">{programme.title}</Link></h3><p className="mt-3 text-sm leading-relaxed text-muted-foreground">{programme.lede}</p><Link href={programme.href} className="mt-5 inline-flex items-center gap-1 text-xs font-bold uppercase tracking-[0.14em] text-primary">Read the beat <ArrowUpRight className="size-3" /></Link></article>)}</div></section>
+        <section className="border-b border-border py-10 md:py-14" aria-label="Evidence feed">
+          <div className="mb-7 flex items-baseline justify-between gap-4">
+            <h2 className="text-2xl font-bold tracking-[-0.03em] md:text-4xl">Today&apos;s edition</h2>
+            <span className="text-[11px] font-bold tracking-[0.14em] text-muted-foreground uppercase">Programme distribution</span>
+          </div>
+          <div className="grid gap-0 border-t border-border sm:grid-cols-2 lg:grid-cols-3">
+            {feed.map((project) => (
+              <Link key={project.id} href={project.href} className="group border-b border-border sm:border-r lg:[&:nth-child(3n)]:border-r-0">
+                <article className="flex h-full flex-col">
+                  <div className="relative aspect-[16/10] overflow-hidden bg-muted">
+                    <Image src={getImage(project)} alt={project.title} fill className="object-cover transition-transform duration-500 group-hover:scale-[1.02]" sizes="(max-width: 640px) 100vw, 33vw" />
+                  </div>
+                  <div className="flex flex-1 flex-col gap-2 p-4">
+                    <p className="text-[10px] font-bold tracking-[0.16em] text-primary uppercase">{project.programmeLabel || "Evidence"}</p>
+                    <h3 className="text-lg font-bold leading-snug tracking-[-0.02em] group-hover:text-primary">{project.title}</h3>
+                    <p className="line-clamp-3 text-sm leading-relaxed text-muted-foreground">{project.prose}</p>
+                  </div>
+                </article>
+              </Link>
+            ))}
+          </div>
+        </section>
+
+        <section className="border-b border-border py-10 md:py-14" aria-label="Implementing partners">
+          <p className="mb-2 text-[11px] font-bold tracking-[0.18em] text-primary uppercase">Implementing partners</p>
+          <h2 className="max-w-2xl text-2xl font-bold tracking-[-0.03em] md:text-3xl">
+            The Continental Pot · Colour Twist Media · Sen Media &amp; Events
+          </h2>
+          <p className="mt-4 max-w-2xl text-sm leading-relaxed text-muted-foreground">{CONSORTIUM_SUMMARY}</p>
+          <ul className="mt-8 grid gap-6 border-t border-border pt-8 sm:grid-cols-3">
+            {CONSORTIUM_FOUNDERS.map((partner) => (
+              <li key={partner.id} className="space-y-2">
+                <a href={partner.website} target="_blank" rel="noopener noreferrer" className="text-base font-bold tracking-[-0.02em] underline decoration-foreground/20 underline-offset-4 hover:decoration-foreground">
+                  {partner.name}
+                </a>
+                <p className="text-xs font-medium tracking-[0.06em] text-muted-foreground uppercase">{partner.role}</p>
+                <p className="text-sm leading-relaxed text-muted-foreground">{partner.description}</p>
+              </li>
+            ))}
+          </ul>
+        </section>
+
+        <section className="py-12 md:py-16">
+          <div className="flex flex-col gap-6 border-t border-border pt-10 md:flex-row md:items-end md:justify-between">
+            <div>
+              <h2 className="max-w-xl text-2xl font-bold tracking-[-0.03em] md:text-3xl">
+                One story. Three desks. Public evidence.
+              </h2>
+              <p className="mt-3 max-w-md text-sm leading-relaxed text-muted-foreground">
+                Publish into Connect, Mashinani, or Wanahabari — and let the record travel across programmes, counties, and partners.
+              </p>
+            </div>
+            <Link href="/contact?intent=partner" className="inline-flex w-fit border border-foreground bg-foreground px-5 py-2.5 text-xs font-bold tracking-[0.12em] text-background uppercase transition-colors hover:bg-transparent hover:text-foreground">
+              Work with the newsroom
+            </Link>
+          </div>
+        </section>
       </main>
     </div>
   );

@@ -14,8 +14,8 @@ import { resolveAppUrl } from "@/lib/api-url";
 export type FeaturedProject = {
   id: string;
   slug: string;
-  videoId: string;
-  url: string;
+  videoId?: string;
+  url?: string;
   title: string;
   subtitle?: string;
   prose: string;
@@ -55,8 +55,8 @@ function fromSeed(row: SeedRow): FeaturedProject {
   return {
     id: row.id,
     slug: row.slug,
-    videoId: row.videoId,
-    url: row.url,
+    videoId: (row as { videoId?: string }).videoId ?? "",
+    url: (row as { url?: string }).url ?? "",
     title: row.title,
     subtitle: (row as { subtitle?: string }).subtitle,
     prose: row.prose,
@@ -166,6 +166,7 @@ export async function refreshFeaturedProjectsFromYoutube(
 
   const refreshed = await Promise.all(
     seed.map(async (project) => {
+      if (!project.url || !project.videoId) return project;
       const oembed = await fetchYoutubeOembed(project.url).catch(() => null);
       const merged = mergeYoutubeProjectMeta({
         urlOrId: project.videoId,

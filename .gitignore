@@ -39,8 +39,11 @@ yarn-error.log*
 # vercel
 .vercel
 
-# scratch
+# test results & scratch
 scratch/
+test-results/
+.kilo/
+tmp-*.json
 
 # typescript
 *.tsbuildinfo

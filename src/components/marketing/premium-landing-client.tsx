@@ -73,6 +73,7 @@ export default function PremiumLandingClient({
   const structure = useThemeStructure();
 
   if (structure === "editorial") {
+    // Full newspaper newsroom — all editorial sections always on (desks, feed, partners).
     return <EditorialNewsroom landingData={landingData} featuredProjects={featuredProjects} />;
   }
 
